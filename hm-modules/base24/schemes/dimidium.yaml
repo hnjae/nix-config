@@ -1,0 +1,52 @@
+# Repository of original colorscheme: https://github.com/dofuuz/dimidium
+#
+# Copyright (c) 2024 Myungchul Keum
+#
+# This software is provided 'as-is', without any express or implied
+# warranty. In no event will the authors be held liable for any damages
+# arising from the use of this software.
+#
+# Permission is granted to anyone to use this software for any purpose,
+# including commercial applications, and to alter it and redistribute it
+# freely, subject to the following restrictions:
+#
+# 1. The origin of this software must not be misrepresented; you must not
+#    claim that you wrote the original software. If you use this software
+#    in a product, an acknowledgment in the product documentation would be
+#    appreciated but is not required.
+# 2. Altered source versions must be plainly marked as such, and must not be
+#    misrepresented as being the original software.
+# 3. This notice may not be removed or altered from any source distribution.
+
+# NOTE: color of base11, 10, 0F, 03, 04 는 임의로 작성해서 넣음.
+# https://github.com/tinted-theming/base24/blob/master/styling.md
+
+system: "base24"
+name: "dimidium"
+author: "dofuuz"
+variant: "dark"
+palette:
+  base0F: "9E4A5F" # deprecated (HSV 색영역에서 bright red와 red 가 떨어진 만큼 계산해서 작성)
+  base10: "0A0A0A" # darker background (HSV 색영역에서 background와 000000 의 중간)
+  base11: "000000" # darkest background (000000)
+  base00: "141414" # background
+  base01: "000000" # ANSI 0 - black
+  base02: "565554" # ANSI 8 - bright black
+  base03: "565554" # comments (bright black과 동일 색)
+  base04: "8A8A8A" # dark foreground (HSV 색영역에서 base02 와 base05의 중간)
+  base05: "BAB7B6" # Foreground
+  base06: "BAB7B6" # ANSI  7 - White
+  base07: "DAD6D5" # ANSI 15 - bright white
+  base08: "CF494C" # ANSI  1 - red
+  base12: "FF643B" # ANSI  9 - bright red
+  base0B: "60B442" # ANSI  2 - green
+  base14: "37E57B" # ANSI 10 - bright green
+  base09: "DB9C11" # ANSI  3 - yellow
+  base13: "FCCD1A" # ANSI 11 - bright yellow
+  base0A: "FCCD1A" # (ANSI ~11)
+  base0D: "0575D8" # ANSI  4 - blue
+  base16: "688DFD" # ANSI 12 - bright blue
+  base0E: "AF5ED2" # ANSI  5 - purple
+  base17: "ED6FE9" # ANSI 13 - bright purple
+  base0C: "1DB6BB" # ANSI  6 - cyan
+  base15: "32E0FB" # ANSI 14 - bright cyan

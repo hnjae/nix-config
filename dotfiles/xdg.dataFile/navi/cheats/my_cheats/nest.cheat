@@ -1,0 +1,7 @@
+% nest, NestJS
+
+# create new project
+nest new <project-naem>
+
+# generate element help
+nest generate --help

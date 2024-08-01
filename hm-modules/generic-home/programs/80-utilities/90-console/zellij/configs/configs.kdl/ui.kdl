@@ -1,0 +1,7 @@
+pane_frames false
+borderless true
+ui {
+  pane_frames {
+    rounded_corners true
+  }
+}

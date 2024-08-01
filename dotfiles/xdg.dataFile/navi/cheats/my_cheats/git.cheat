@@ -1,0 +1,80 @@
+% git
+
+; function of git checkout is split to switch and restore
+
+$ branch: git branch | awk '{print $NF}'
+
+; git-checkout 의 기능이 switch 랑 restore 로 분할됨 <from git 2.23.0>
+; https://stackoverflow.com/questions/57265785/whats-the-difference-between-git-switch-and-git-checkout-branch
+
+# switch branch
+git switch <branch>
+
+# make other branch to point commit (use `-f` to force) (or use `git reset --hard`)
+git branch <branch> <commit>
+
+# delete branch
+git branch --delete <branch>
+
+# switch to specific commit
+git reset [--hard] <commit>
+
+# git diff staged
+git diff --staged
+
+# git diff specific file
+git diff HEAD <file>
+
+;#############################################################################
+; log
+;############################################################################
+# pretty prints `.git/logs/HEAD`
+git reflog
+
+;#############################################################################
+; merge
+;############################################################################
+# merge commit
+git merge <commit>
+
+# cancel merge
+git merge --abort
+
+;#############################################################################
+; rebase
+;############################################################################
+# NOTE: don't forget to set export NO_VERIFY=1 while rebase
+
+# cherry-pick other commit's changes to `HEAD`
+git cherry-pick <commit> [--ff]
+
+# cherry-pick other commit's chagnes to `HEAD` but DO NOT commit (like restore all files in that commit)
+git cherry-pick -n <commit>
+
+# git restore specific file from other commit (-s: --source)
+git restore -s <commint> -- <file>
+
+# git rebase
+git rebase --interactive <commit>
+
+# cancel git rebase
+git rebase --abort
+
+# contiune
+git rebase --continue
+
+# remove specific commit
+git revert <commit>
+
+;########################################################################
+# remote add
+git remote add origin git@github.com:<owner>/<repository>.git
+
+# list remote
+git remote -v
+
+# change remote
+git remote set-url <origin> git@github.com:<owner>/<repository>.git
+
+# delete remote branch
+git push origin -d <branch>

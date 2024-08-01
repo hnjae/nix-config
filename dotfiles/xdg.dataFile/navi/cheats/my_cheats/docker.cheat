@@ -1,0 +1,19 @@
+% docker
+
+# Remove  image
+docker image rm <image_id>
+
+# stop all containers
+docker stop $(docker ps -a -q)
+
+# rm all containers
+docker rm $(docker ps -a -q)
+
+# list all running containers
+docker ps
+
+# list all containers
+docker ps -a
+
+# docker container prune (remove all stopped container)
+docker container prune

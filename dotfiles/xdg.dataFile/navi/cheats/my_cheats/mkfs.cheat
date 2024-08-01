@@ -1,0 +1,4 @@
+% mkfs
+
+# mkfs.fat
+mkfs.fat -F 32 -n "<label>" -S 4096 -v "<disk>"

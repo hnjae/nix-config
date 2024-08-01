@@ -1,0 +1,34 @@
+[shell]
+program = "zellij"
+
+# [font]
+# size = 10.0
+
+[font.bold]
+family = "monospace"
+style = "Bold"
+
+[font.bold_italic]
+family = "monospace"
+style = "Bold Italic"
+
+[font.italic]
+family = "monospace"
+style = "Italic"
+
+[font.normal]
+family = "monospace"
+style = "Regular"
+
+[window.padding]
+x = 0
+y = 0
+
+[window]
+dynamic_padding = false
+decorations = "full"
+dynamic_title = true
+
+[window.dimensions]
+columns = 90
+lines = 30

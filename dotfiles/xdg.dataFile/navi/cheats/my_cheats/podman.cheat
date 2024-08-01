@@ -1,0 +1,10 @@
+% podman, docker, container
+
+#
+podman run -it "<image-name>" --mount=
+
+#
+sudo podman run  --mount=type=bind,source=./centos-7_x86_64,destination=/mnt --device=/dev/<>:/dev/xvda:rwm -it "centos:7"
+
+# run podman
+podman exec -it <Container ID> /bin/bash

@@ -1,0 +1,11 @@
+% tar, archive
+
+# extract tar archive (`tar` will auto-detect the compression type)
+tar -xv -f <archive>
+$ archive: fd "\.tar" --max-depth=1 --type f
+
+# compress tar archive
+tar -I zstd -cvf <directory>.tar.zst <directory>
+
+# compress tar archive
+ZSTD_CLEVEL=19 tar --zstd -cvf <directory>.tar.zst <directory>

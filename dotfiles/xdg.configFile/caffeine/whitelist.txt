@@ -1,0 +1,9 @@
+cc
+cmake
+home-manager
+make
+nix
+nixos-rebuild
+rsync
+rustc
+ssh
