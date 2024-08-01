@@ -3,5 +3,7 @@
   # "AC/Display".TurnOffDisplayIdleTimeoutSec.value = 240; # seconds
   # };
 
-  programs.plasma.powerdevil = {turnOffDisplay = {idleTimeout = 240;};};
+  programs.plasma.powerdevil = {
+    AC.turnOffDisplay = {idleTimeout = 240;};
+  };
 }
