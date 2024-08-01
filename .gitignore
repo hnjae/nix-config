@@ -1,5 +1,6 @@
 .mypy_cache
 .direnv
+result
 
 /dotfiles/xdg.configFile/lazygit/state.yml
 /dotfiles/xdg.configFile/navi/navi.log

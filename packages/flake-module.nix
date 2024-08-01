@@ -15,6 +15,8 @@ in {
     #   };
     # };
     packages = {
+      nixvim = (import ./tools/nixvim) inputs.nixvim pkgs;
+      vim-declared = (import ./tools/vim-declared) pkgs;
       fonts-dmca-sans-serif = pkgs.callPackage ./fonts/fonts-dmca-sans-serif {};
       fonts-plangothic = pkgs.callPackage ./fonts/fonts-plangothic {};
       fonts-ridibatang = pkgs.callPackage ./fonts/fonts-ridibatang {};
