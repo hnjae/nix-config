@@ -1,5 +1,4 @@
 {
-  self,
   inputs,
   pkgs,
   ...
@@ -11,9 +10,8 @@
     #
     ./modules
     ./system-settings
-    ./plasma-default-apps
-    ./app-settings
-    ./fcitx5
+    ./options
+    ./app-configs
   ];
 
   config = {
