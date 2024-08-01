@@ -1,0 +1,85 @@
+// prohibited bindings:
+// vi insert mode editing: C-h | C-w
+// vi normal mode : C-e
+// Process control: C - c/l/q/d/z | s/
+// https://ss64.com/bash/syntax-keyboard.html
+// C-m | sends RET as the enter key in terminal
+// c-i: auto-complets in shells
+// C-j: terminal 단위에서 동작하는 것 같음.
+keybinds {
+  // Q_F_B ____;[]\
+  // a_S_G ____O'
+  // X____ Kh,./
+
+  unbind \
+    "Ctrl a" \
+    "Ctrl t" \
+    "Ctrl p" \
+    "Ctrl n" \
+    "Ctrl g" \ //
+    "Ctrl h" //
+    // "Ctrl q" \
+
+  // xbfjk / so
+
+  // https://zellij.dev/documentation/keybindings-keys
+  shared_except  "renametab" "renamepane" "entersearch" "search" {
+    bind "PageUp" { "GoToPreviousTab"; }
+    bind "PageDown" { "GoToNextTab"; }
+  }
+
+  shared_except "normal" "locked" "renametab" "renamepane" "entersearch" "search" {
+    bind "Enter" "Space" "Esc" { SwitchToMode "normal"; }
+  }
+
+  shared_except "locked" "renametab" "renamepane" "entersearch" "search" {
+    bind "Ctrl x" { SwitchToMode "locked"; }
+  }
+
+  locked {
+    bind "Ctrl x" { SwitchToMode "normal"; }
+  }
+
+  shared_except "scroll" "locked" "renametab" "renamepane" "entersearch" "search" {
+    bind "Ctrl q" { SwitchToMode "scroll"; }
+  }
+  scroll {
+    bind "Ctrl q" { SwitchToMode "normal"; }
+  }
+
+  shared_except "session" "locked" "renametab" "renamepane" "entersearch" "search" {
+    bind "Ctrl o" { SwitchToMode "session"; }
+  }
+  session {
+    bind "Ctrl o" { SwitchToMode "normal"; }
+  }
+
+
+  shared_except "tab" "locked" "renametab" "renamepane" "entersearch" "search" {
+    bind "Ctrl b" { SwitchToMode "tab"; }
+  }
+  tab {
+    bind "Ctrl b"  { SwitchToMode "normal"; }
+  }
+
+  shared_except "pane" "locked" "renametab" "renamepane" "entersearch" "search" {
+    bind "Ctrl f" { SwitchToMode "pane"; }
+  }
+  pane {
+    bind "Ctrl f" { SwitchToMode "normal"; }
+  }
+
+  shared_except "resize" "locked" "renametab" "renamepane" "entersearch" "search" {
+    bind "Ctrl k" { SwitchToMode "resize"; }
+  }
+  resize {
+    bind "Ctrl k" { SwitchToMode "normal"; }
+  }
+
+  shared_except "move" "locked" "renametab" "renamepane" "entersearch" "search" {
+    bind "Ctrl s" { SwitchToMode "move"; }
+  }
+  move {
+    bind "Ctrl s"  { SwitchToMode "normal"; }
+  }
+}

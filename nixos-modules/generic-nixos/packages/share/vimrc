@@ -1,0 +1,41 @@
+set nocompatible
+" set backspace=indent,eol,start
+" filetype on
+syntax on
+set number
+set ruler
+set relativenumber
+
+set hlsearch
+set incsearch
+set ignorecase " requires smartcase to be working (why?)
+set smartcase
+
+set autoindent
+set autoread
+set nofsync
+set nostartofline
+
+set laststatus=2 " statusline is always shown
+set background=dark
+
+set mouse=nvi
+
+colorscheme jellybeans
+let g:lightline = { 'colorscheme': 'jellybeans' }
+
+"
+let g:rainbow_active = 1
+
+" better whitespace
+let g:better_whitespace_enabled=0 " no highlight
+let g:strip_whitespace_confirm=0
+let g:strip_whitespace_on_save=1
+let g:strip_whitelines_at_eof=1
+let g:show_spaces_that_precede_tabs=1
+
+" mu-complete
+" set completeopt+=menuone
+" set completeopt+=noselect
+" set shortmess+=c   " Shut off completion messages
+" set belloff+=ctrlg " Add only if Vim beeps during completion

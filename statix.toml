@@ -1,0 +1,3 @@
+# run `statix list` to list options
+
+disabled = ["repeated_keys", "useless_parens", "empty_pattern"]

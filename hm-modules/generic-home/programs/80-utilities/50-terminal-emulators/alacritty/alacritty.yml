@@ -1,0 +1,20 @@
+shell:
+  program: zellij
+font:
+  size: 10
+  normal:
+    family: Monospace
+    style: Regular
+window:
+  padding:
+    x: 0
+    y: 0
+  dynamic_padding: false
+  decorations: full
+  dimensions:
+    columns: 90
+    lines: 30
+  dynamic_title: true
+default:
+  extension: .toml
+  output: colors

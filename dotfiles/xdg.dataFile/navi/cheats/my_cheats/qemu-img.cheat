@@ -1,0 +1,4 @@
+% qemu-img, qemu
+
+# create image
+qemu-img create -f qcow2 <name.qcow2> <20G>

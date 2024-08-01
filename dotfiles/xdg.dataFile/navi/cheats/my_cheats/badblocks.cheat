@@ -1,0 +1,7 @@
+% badblocks
+
+# test
+badblocks -wsv /dev/<device>
+
+# when value too large (must be 32-bit value)
+badblocks -wsv -b 4096 /dev/<device>

@@ -1,0 +1,7 @@
+.mypy_cache
+.direnv
+
+/dotfiles/xdg.configFile/lazygit/state.yml
+/dotfiles/xdg.configFile/navi/navi.log
+
+/packages/*/default.nix

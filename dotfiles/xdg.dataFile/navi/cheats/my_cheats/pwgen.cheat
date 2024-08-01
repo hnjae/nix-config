@@ -1,0 +1,4 @@
+% pwgen, password
+
+# pwgen
+pwgen -s "<size-in-number>" 1 | tr -d '\n' >"<file>"

@@ -1,0 +1,4 @@
+mouse_mode false
+
+// https://zellij.dev/documentation/options
+session_serialization false

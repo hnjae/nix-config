@@ -1,0 +1,1 @@
+{...}: {imports = [./application-permissions.nix];}

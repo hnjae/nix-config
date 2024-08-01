@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+set -e
+
+if ! which stow >/dev/null 2>&1; then
+  echo "stow is not installed"
+  exit 1
+fi
+
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+
+mode="stow"
+
+usage() {
+  echo "Usage: $(basename -- "${0}") [-m mode]"
+  echo "available mode: stow (default), restow, delete"
+  exit 1
+}
+
+while getopts ":m:h" opt; do
+  case ${opt} in
+  h)
+    usage
+    ;;
+  m)
+    mode=$OPTARG
+    modes=("stow" "restow" "delete")
+    found=false
+    # Loop through the array
+    for element in "${modes[@]}"; do
+      if [ "$mode" = "$element" ]; then
+        found=true
+        break
+      fi
+    done
+
+    if ! "$found"; then
+      usage
+    fi
+    ;;
+  \?)
+    echo "Invalid Option: -$OPTARG" 1>&2
+    usage
+    ;;
+  :)
+    echo "Invalid Option: -$OPTARG requires an argument" 1>&2
+    usage
+    ;;
+  esac
+done
+
+main() {
+  echo "mode: $mode"
+
+  xdg_config=("xdg.configFile" "${XDG_CONFIG_HOME}")
+  xdg_data=("xdg.dataFile" "${XDG_DATA_HOME}")
+  home=("home" "${HOME}")
+
+  if [ -d "${xdg_config[0]}" ]; then
+    echo "DRY-RUN: $XDG_CONFIG_HOME"
+    stow --no -v --"${mode}" --target="${xdg_config[1]}" "${xdg_config[0]}"
+    echo ""
+  fi
+
+  if [ -d "${xdg_data[0]}" ]; then
+    echo "DRY-RUN: ${XDG_DATA_HOME}"
+    stow --no -v --"${mode}" --target="${xdg_data[1]}" "${xdg_data[0]}"
+    echo ""
+  fi
+
+  if [ -d "${home[0]}" ]; then
+    echo "DRY-RUN: ${HOME}"
+    stow --no -v --"${mode}" --target="${home[1]}" "${home[0]}"
+    echo ""
+  fi
+
+  read -r -p "Continue? (y/Any)" should_run
+  [ "$should_run" != "y" ] && echo "O.K. No" && exit 0
+  echo ""
+
+  [ -d "${xdg_config[0]}" ] &&
+    stow --"$mode" --target="${xdg_config[1]}" "${xdg_config[0]}"
+  [ -d "${xdg_data[0]}" ] &&
+    stow --"$mode" --target="${xdg_data[1]}" "${xdg_data[0]}"
+  [ -d "${home[0]}" ] &&
+    stow --"$mode" --target="${home[1]}" "${home[0]}"
+}
+
+main
