@@ -1,11 +1,9 @@
 {
   pkgs,
   config,
-  extraConfig,
   ...
 }: {
   imports = [
-    ./vim.nix
     ./desktop.nix
     ./filesystem.nix
     ./shell.nix
@@ -20,6 +18,8 @@
 
   # Set of default packages that aren't strictly necessary for a running system
   environment.defaultPackages = with pkgs; [
+    nixvim
+
     dash
     elvish
 
