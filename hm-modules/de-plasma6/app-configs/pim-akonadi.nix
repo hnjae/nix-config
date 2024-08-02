@@ -1,4 +1,11 @@
 {config, ...}: {
+  programs.plasma.resetFilesExclude = ["kmail2rc"];
+
+  programs.plasma.configFile."kmail2rc" = {
+    "Geometry" = {
+      readerWindowMode = "right"; # display mail on right
+    };
+  };
   stateful.cowNodes = [
     {
       path = "${config.xdg.configHome}/akonadi";
