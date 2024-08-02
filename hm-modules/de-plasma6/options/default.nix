@@ -1,4 +1,7 @@
 {...}: {
+  imports = [
+    ./stateful.nix
+  ];
   default-app = {
     image = "org.kde.gwenview";
     fileManager = "org.kde.dolphin";
