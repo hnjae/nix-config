@@ -3,7 +3,7 @@
     ./dolphin.nix
     ./krunner.nix
     ./konsole.nix
-    ./pim.nix
+    ./pim-akonadi.nix
     ./okular.nix
     ./kate.nix
   ];
