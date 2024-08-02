@@ -10,7 +10,6 @@ in {
         "wmclass".value = wmclassMaker [
           "ticktick"
           "1Password"
-          "Logseq"
 
           # KDE's
           "systemsettings"
