@@ -7,6 +7,7 @@
   };
 
   home.shellAliases = {
+    na = "navi";
     # navi = ''echo "use <C-g> instead"'';
   };
 }
