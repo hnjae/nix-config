@@ -4,5 +4,6 @@ result
 
 /dotfiles/xdg.configFile/lazygit/state.yml
 /dotfiles/xdg.configFile/navi/navi.log
+/dotfiles/xdg.configFile/qalculate/qalc.history
 
 /packages/*/default.nix
