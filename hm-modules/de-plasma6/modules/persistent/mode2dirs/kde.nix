@@ -33,13 +33,11 @@
       # ".config/kwalletrc" # 덮어쓰기됨
       # ".config/kxkbrc" # 덮어쓰기 됨
       # ".config/mimeapps.list" # 덮어쓰기됨
-      ".config/kactivitymanagerdrc" # 덮어쓰기 됨.
       # ".config/systemsettingsrc"
       # ".config/plasmashellrc" # 덮어쓰기 됨.
       # ".config/kded5rc"
       # ".config/kded6rc"
       ".config/kwriterc"
-      ".config/kactivitymanagerd-pluginsrc"
       ".config/arkrc"
       ".config/plasmarc"
       ".config/kdeveloprc"
@@ -70,8 +68,6 @@
       ".config/kglobalshortcutsrc"
       ".config/kconf_updaterc"
       ".config/kcminputrc"
-      ".config/kactivitymanagerd-statsrc"
-      ".config/kactivitymanagerd-switcher"
       ".config/gwenviewrc"
       ".config/filetypesrc"
       ".config/bluedevilglobalrc"
@@ -95,9 +91,7 @@
       ".config/breezerc"
       ".config/gtkrc"
       ".config/gtkrc-2.0"
-      ".config/kiorc"
       ".config/ksplashrc"
-      ".config/plasma_calendar_holiday_regions"
       ".config/plasmaparc"
       ".config/QtProject.conf"
       ".config/user-dirs.locale"
