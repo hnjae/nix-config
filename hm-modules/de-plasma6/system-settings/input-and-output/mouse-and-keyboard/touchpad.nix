@@ -1,19 +1,23 @@
 {lib, ...}: let
   optionTouchpadDefault = {
-    "ClickMethod".value = 2;
-    "NaturalScroll".value = true;
+    "ClickMethod" = 2;
+    "NaturalScroll" = true;
   };
-  touchpads = ["Libinput/1267/12693/ELAN0676:00 04F3:3195 Touchpad"];
+  touchpads = [
+    "Libinput/1267/12693/ELAN0676:00 04F3:3195 Touchpad"
+  ];
 
   inherit (builtins) listToAttrs map;
   inherit (lib.attrsets) mergeAttrsList;
 
   mapper = devices: opts:
-    listToAttrs (map (dev: {
+    listToAttrs (
+      map (dev: {
         name = dev;
         value = opts;
       })
-      devices);
+      devices
+    );
 in {
   programs.plasma.configFile."kcminputrc" =
     mergeAttrsList [(mapper touchpads optionTouchpadDefault)];

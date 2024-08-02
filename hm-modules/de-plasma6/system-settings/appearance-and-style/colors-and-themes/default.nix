@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{config, ...}: let
   # isBase24 = config.plasma6.base24.enable;
   base24Cfg = config.base24;
 
