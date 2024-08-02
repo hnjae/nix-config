@@ -16,6 +16,7 @@
     ./gitui
     ./web-dev
     ./python.nix
+    ./sql.nix
     ./99-misc.nix
   ];
 }
