@@ -4,6 +4,5 @@
     ./extensions.nix
     ./libraries.nix
     ./kde-apps.nix
-    ./kdeconnect.nix
   ];
 }

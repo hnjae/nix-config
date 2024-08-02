@@ -7,6 +7,10 @@
       kontact = true;
       merkuro = true;
     };
+    kdeconnect = {
+      enable = true;
+      # package = pkgs.kdePackages.kdeconnect-kde;
+    };
   };
 
   environment.defaultPackages = with pkgs; [
