@@ -1,5 +1,4 @@
 {
-  self,
   config,
   lib,
   ...
@@ -7,10 +6,6 @@
   inherit (lib) mkOverride;
   inherit (config.generic-nixos) isDesktop;
 in {
-  imports = [
-    self.nixosModules.services-nix
-  ];
-
   services.nix-gc-system-generations = {
     enable = mkOverride 999 true;
     delThreshold = mkOverride 999 (

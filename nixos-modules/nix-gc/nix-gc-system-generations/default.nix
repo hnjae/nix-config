@@ -23,7 +23,7 @@ README:
   documentation = ["man:nix-env-delete-generations(1)"];
   serviceName = "nix-gc-system-generations";
   cfg = config.services.${serviceName};
-  package = pkgs.callPackage ./pkg {};
+  package = pkgs.callPackage ./package {};
 
   inherit (lib) mkEnableOption mkOption mkIf types;
 
