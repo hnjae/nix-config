@@ -17,14 +17,14 @@
       # services-flatpak = import ./services-flatpak;
 
       # my services
-      oci-container-auto-update = import ./oci-container-auto-update;
-      nix-gc = import ./nix-gc;
+      nix-gc = import ./services/nix-gc;
+      oci-container-auto-update = import ./services/oci-container-auto-update;
 
       default = {
         imports = [
           self.nixosModules.generic-nixos
-          self.nixosModules.oci-container-auto-update
           self.nixosModules.nix-gc
+          self.nixosModules.oci-container-auto-update
         ];
       };
     };
