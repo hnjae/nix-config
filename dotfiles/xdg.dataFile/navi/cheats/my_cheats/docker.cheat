@@ -1,5 +1,8 @@
 % docker
 
+# run and destroy container
+docker run --rm <image>
+
 # List images
 docker image ls
 

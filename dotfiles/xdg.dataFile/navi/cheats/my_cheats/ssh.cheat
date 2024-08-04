@@ -1,0 +1,4 @@
+% ssh
+
+# run command
+ssh <dst> <command>

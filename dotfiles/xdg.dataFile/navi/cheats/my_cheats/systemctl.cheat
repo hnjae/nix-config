@@ -1,6 +1,6 @@
 % systemctl, systemd
 
-# list failed
+# list units failed
 systemctl <opt_user> list-units --failed
 
 # list dependencies
