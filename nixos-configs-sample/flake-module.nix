@@ -23,7 +23,7 @@
             ];
           };
         }
-        self.nixosModules.generic-nixos
+        self.nixosModules.default
       ];
     };
 
@@ -42,7 +42,7 @@
             ];
           };
         }
-        self.nixosModules.generic-nixos
+        self.nixosModules.default
         {
           generic-nixos.isDesktop = true;
         }
@@ -64,7 +64,7 @@
             ];
           };
         }
-        self.nixosModules.generic-nixos
+        self.nixosModules.default
         {
           generic-nixos.isDesktop = true;
         }
@@ -87,7 +87,7 @@
             ];
           };
         }
-        self.nixosModules.generic-nixos
+        self.nixosModules.default
         {
           generic-nixos.isDesktop = true;
         }
