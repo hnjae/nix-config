@@ -1,6 +1,6 @@
 {...}: {
   imports = [./touchpad.nix ./mouse.nix];
 
-  # to keep color appearance
+  # keep changes
   programs.plasma.resetFilesExclude = ["kcminputrc"];
 }
