@@ -1,3 +1,10 @@
+/*
+NOTE: <NixOS 24.05>
+  The `oci-containers` in nixpkgs are declared to run images with the `--rm`
+  flag, meaning they are disposable containers.
+  This means that restarting the service will create a new container that uses
+  a new image downloaded.
+*/
 {
   pkgs,
   name,
@@ -28,12 +35,12 @@ pkgs.writeShellApplication {
       exit 1
     fi
 
-    prev_img=$(
+    prev_img=''$(
       podman images --format json |
         jq -r '.[] | select(.Names | index("${image}")) | .Id' |
         uniq
     )
-    new_img=$(podman pull "${image}" 2>/dev/null)
+    new_img=''$(podman pull "${image}" 2>/dev/null)
 
     if [ "''$prev_img" = "''$new_img" ]; then
       echo "INFO: ${image} is up to date"
@@ -41,9 +48,11 @@ pkgs.writeShellApplication {
     fi
 
     echo "INFO: detected updates of ${image}"
+
+    echo "INFO: restarting service ${targetService}"
     systemctl restart "${targetService}"
 
-    echo "INFO: removing previous ${image} (''${prev_img})"
+    echo "INFO: removing previous image of ${image} (''${prev_img})"
     podman rmi "''$prev_img" 2>/dev/null
   '';
 }
