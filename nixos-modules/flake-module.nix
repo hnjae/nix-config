@@ -16,6 +16,7 @@
       expose-fhs-resources = import ./expose-fhs-resources;
       # services-flatpak = import ./services-flatpak;
 
+      oci-container-auto-update = import ./oci-container-auto-update;
       services-nix = import ./services-nix;
     };
   };
