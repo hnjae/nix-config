@@ -39,6 +39,7 @@ in {
     };
 
     containers = mkOption {
+      default = {};
       example = ''
         {
           traefik.enable = true;
