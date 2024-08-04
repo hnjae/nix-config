@@ -16,13 +16,15 @@
       expose-fhs-resources = import ./expose-fhs-resources;
       # services-flatpak = import ./services-flatpak;
 
+      # my services
       oci-container-auto-update = import ./oci-container-auto-update;
-      services-nix = import ./services-nix;
+      nix-gc = import ./nix-gc;
 
       default = {
         imports = [
           self.nixosModules.generic-nixos
           self.nixosModules.oci-container-auto-update
+          self.nixosModules.nix-gc
         ];
       };
     };

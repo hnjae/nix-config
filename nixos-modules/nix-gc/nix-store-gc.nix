@@ -1,11 +1,12 @@
 /*
-NOTE: nix-collect-garbage -d vs nix-store --gc
+NOTE:
+#### nix-collect-garbage -d vs nix-store --gc
+<https://discourse.nixos.org/t/what-is-the-difference-if-any-between-nix-collect-garbage-and-nix-store-gc/45078/2>
 
-: https://discourse.nixos.org/t/what-is-the-difference-if-any-between-nix-collect-garbage-and-nix-store-gc/45078/2
+`nix.gc` (`nix-collect-garbage`) 는 old profiles 도 추가로 지우는 차이가 있다.
 
-nix.gc (nix-collect-garbage) 는 old profiles 도 추가로 지운다.
+#### from man:nix-collect-garbage(1)
 
-from man:nix-collect-garbage(1)
 > •  --delete-old / -d
 >    Delete all old generations of profiles.
 >
