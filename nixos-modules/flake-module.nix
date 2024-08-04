@@ -1,4 +1,4 @@
-{...}: {
+{self, ...}: {
   flake = {
     nixosModules = {
       generic-nixos = import ./generic-nixos;
@@ -18,6 +18,13 @@
 
       oci-container-auto-update = import ./oci-container-auto-update;
       services-nix = import ./services-nix;
+
+      default = {
+        imports = [
+          self.nixosModules.generic-nixos
+          self.nixosModules.oci-container-auto-update
+        ];
+      };
     };
   };
 }
