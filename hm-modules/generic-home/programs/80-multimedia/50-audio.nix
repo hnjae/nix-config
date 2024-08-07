@@ -13,8 +13,6 @@ in {
         ["org.strawberrymusicplayer.strawberry"])
       (optionals (genericHomeCfg.isDesktop && genericHomeCfg.installTestApps) [
         "com.rafaelmardojai.Blanket" # white noise
-        "org.gnome.Lollypop"
-        "org.kde.elisa"
       ])
     ];
 }

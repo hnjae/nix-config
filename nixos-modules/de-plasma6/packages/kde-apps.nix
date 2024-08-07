@@ -3,8 +3,8 @@
     partition-manager.enable = true;
     kde-pim = {
       enable = true;
-      kmail = true;
-      kontact = true;
+      kmail = false;
+      kontact = false;
       merkuro = true;
     };
     kdeconnect = {

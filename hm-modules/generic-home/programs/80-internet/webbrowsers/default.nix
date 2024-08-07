@@ -10,7 +10,7 @@ in {
     ./brave.nix
     ./google-chrome.nix
     ./firefox.nix
-    ./vivaldi.nix
+    # ./vivaldi.nix
     # ./microsoft-edge.nix
     # ./opera.nix
   ];
@@ -23,7 +23,11 @@ in {
         # vimb
       ]
       (lib.lists.optionals (pkgs.stdenv.isLinux)
-        (with pkgs; [nyxt luakit qutebrowser]))
+        (with pkgs; [
+          nyxt
+          luakit
+          qutebrowser
+        ]))
     ];
   };
 }

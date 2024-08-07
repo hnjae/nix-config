@@ -11,10 +11,9 @@ in {
     lib.lists.optionals genericHomeCfg.installTestApps
     (builtins.concatLists [
       (with pkgsUnstable; [
-        vifm
-
-        xplr
-        felix
+        # vifm
+        # xplr
+        felix-fx
         # xplorer # gui
       ])
     ]);
