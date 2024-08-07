@@ -12,7 +12,8 @@ in {
       (optionals genericHomeCfg.installTestApps [
         # weather
         "io.github.amit9838.mousam"
-        "org.gnome.Weather"
+        # "org.gnome.Weather"
+
         "io.github.elevenhsoft.WebApps" # cosmic de's webapp creator
         "org.ferdium.Ferdium" # apache 1
 

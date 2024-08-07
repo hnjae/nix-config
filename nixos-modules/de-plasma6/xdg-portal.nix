@@ -12,6 +12,6 @@ in {
   xdg.portal.enable = true;
   xdg.portal.extraPortals = with pkgs; [
     kdePackages.xdg-desktop-portal-kde
-    xdg-desktop-portal-gtk # 없으면 gtk 앱에서 antialasing+cursor theme 안됨. <NixOS 23.05>
+    xdg-desktop-portal-gtk # 없으면 gtk 앱에서 antialasing+cursor theme 안됨. <NixOS 23.05 & NixOS 24.05>
   ];
 }

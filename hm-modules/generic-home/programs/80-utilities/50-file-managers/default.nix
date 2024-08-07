@@ -2,7 +2,7 @@
   imports = [
     ./lf
     ./yazi
-    ./ranger.nix
+    # ./ranger.nix
     ./nnn.nix
 
     ./misc.nix
