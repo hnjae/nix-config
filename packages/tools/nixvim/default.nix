@@ -66,8 +66,6 @@ nixvim: pkgs: let
       autoCmd = [
         {
           # formatoptions 는 쉽게 override 되어 autocmd 로 설정
-          # vim.opt.formatoptions:remove("r")
-          # vim.opt.formatoptions:remove("o")
           event = [
             "BufRead"
             "BufNewFile"
@@ -181,6 +179,9 @@ in
   pkgs.runCommand "vim" {} ''
     mkdir -p "$out/bin"
     ln -s "${package}/bin/nvim" "$out/bin/vim"
+    ln -s "${package}/bin/nvim" "$out/bin/nvim"
+    ln -s "${package}/bin/nvim" "$out/bin/vi"
+    ln -s "${package}/bin/nvim" "$out/bin/nano"
   ''
 # pkgs.writeScriptBin "vim" ''
 #   #!${pkgs.dash}/bin/dash
