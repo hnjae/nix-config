@@ -8,3 +8,14 @@ sudo podman run  --mount=type=bind,source=./centos-7_x86_64,destination=/mnt --d
 
 # run podman
 podman exec -it <Container ID> /bin/bash
+
+# podman pod list (ls)
+podman pod ls
+
+# podman pod create
+podman pod create --replace --ip <string> --label <string>
+
+# get ip of container
+podman inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container-id>
+
+$ container-id: podman ps --- --headers 1 --column 1

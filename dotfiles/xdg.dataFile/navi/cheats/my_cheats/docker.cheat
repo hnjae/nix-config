@@ -3,6 +3,9 @@
 # run and destroy container
 docker run --rm <image>
 
+# attach volume
+docker run --rm -v <path-in-host>:<path-in-container> <image>
+
 # List images
 docker image ls
 
