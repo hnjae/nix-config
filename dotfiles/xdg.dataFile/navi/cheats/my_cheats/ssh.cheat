@@ -2,3 +2,6 @@
 
 # run command
 ssh <dst> <command>
+
+# ssh tunnel
+ssh -L [LOCAL_IP:]LOCAL_PORT:DESTINATION:DESTINATION_PORT <dst>
