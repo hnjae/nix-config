@@ -4,9 +4,7 @@
   pkgsUnstable,
   lib,
   ...
-}: let
-  inherit (lib.strings) optionalString;
-in {
+}: {
   programs.skim = {
     # NOTE: skim: fzf in rust
     enable = true;
@@ -25,12 +23,17 @@ in {
     '')
   ];
 
-  programs.zsh.initExtra = with config.programs.skim; (optionalString (enable && (!enableZshIntegration)) ''
-    if [[ $options[zle] = on ]]; then
-      . ${package}/share/skim/completion.zsh
-      . ${package}/share/skim/key-bindings.zsh
-    fi
-  '');
+  programs.zsh.initExtra =
+    lib.strings.optionalString (
+      with config.programs.skim; (enable && (!enableZshIntegration))
+    ) (let
+      inherit (config.programs.skim) package;
+    in ''
+      if [[ $options[zle] = on ]]; then
+        . ${package}/share/skim/completion.zsh
+        . ${package}/share/skim/key-bindings.zsh
+      fi
+    '');
 
   home.sessionVariables = let
     skim_command = [
@@ -50,8 +53,9 @@ in {
       ''--exclude \".idea\"''
       ''--exclude \".vscode\"''
       ''--exclude \".vscode-server\"''
-      #
+      # nodejs
       ''--exclude \"node_modules\"''
+      # python
       ''--exclude \".mypy_cache\"''
       ''--exclude \".ruff_cache\"''
       ''--exclude \".__pycache__\"''

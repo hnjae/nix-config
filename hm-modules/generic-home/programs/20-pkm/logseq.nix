@@ -1,4 +1,3 @@
-# vi:tw=0:
 {
   config,
   lib,

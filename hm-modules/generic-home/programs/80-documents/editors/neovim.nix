@@ -53,6 +53,7 @@ in {
       type = "dir";
     }
   ];
+
   python = {
     enable = true;
     pythonPackages = [
