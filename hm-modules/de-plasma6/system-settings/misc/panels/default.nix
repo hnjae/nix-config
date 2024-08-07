@@ -8,6 +8,7 @@
       location = "top";
       alignment = "center";
       floating = false;
+      screen = "all";
       widgets = [
         "org.kde.plasma.marginsseparator"
         (import ./widgets/kicker-dash.nix)
@@ -18,9 +19,11 @@
         "org.kde.plasma.marginsseparator"
 
         (import ./widgets/app-menu.nix)
+
         "org.kde.plasma.panelspacer"
 
         (import ./widgets/icon-tasks-alt.nix)
+
         "org.kde.plasma.marginsseparator"
 
         (import ./widgets/system-tray.nix)
