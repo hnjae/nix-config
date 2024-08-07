@@ -18,9 +18,9 @@ in {
       type = types.str;
       description = ''
         In the format of a systemd timer onCalendar configuration.
-        See {manpage}`systemd.timer(5)`.
+        See {manpage}`systemd.time(7)`.
       '';
-      default = "weekly";
+      default = "Mon *-*-* 04:00:00";
     };
     randomizedDelaySec = mkOption {
       default = "15min";
