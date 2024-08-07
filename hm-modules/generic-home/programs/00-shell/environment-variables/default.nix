@@ -14,5 +14,8 @@
     (lib.attrsets.optionalAttrs pkgs.stdenv.isLinux {
       LC_TIME = "en_IE.UTF-8";
     })
+    {
+      EDITOR = lib.mkDefault "vi";
+    }
   ];
 }
