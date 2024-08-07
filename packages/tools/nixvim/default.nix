@@ -178,7 +178,11 @@ nixvim: pkgs: let
       };
     };
 in
-  pkgs.writeScriptBin "vim" ''
-    #!${pkgs.dash}/bin/dash
-     ${package}/bin/nvim "$@"
+  pkgs.runCommand "vim" {} ''
+    mkdir -p "$out/bin"
+    ln -s "${package}/bin/nvim" "$out/bin/vim"
   ''
+# pkgs.writeScriptBin "vim" ''
+#   #!${pkgs.dash}/bin/dash
+#    ${package}/bin/nvim "$@"
+# ''

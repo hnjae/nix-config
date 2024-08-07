@@ -1,1 +1,6 @@
-{...}: {imports = [./logseq.nix ./zotero.nix];}
+{...}: {
+  imports = [
+    ./logseq.nix
+    ./zotero.nix
+  ];
+}
