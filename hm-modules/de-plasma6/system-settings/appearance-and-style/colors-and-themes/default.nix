@@ -1,25 +1,33 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   # isBase24 = config.plasma6.base24.enable;
-  base24Cfg = config.base24;
-
-  cursorTheme =
-    if base24Cfg.variant == "light"
-    then "Breeze"
-    else "BreezeLight";
-
-  colorScheme =
-    if base24Cfg.variant == "light"
-    then "BreezeLight"
-    else "Breeze";
+  genericHomeCfg = config.generic-home;
 in {
   imports = [./night-light.nix ./window-decorations.nix ./splash-screen.nix];
 
-  programs.plasma.workspace = {
+  programs.plasma.workspace = lib.mkIf genericHomeCfg.base24.enable {
+    # run `plasma-apply-desktoptheme --list-themes`
     theme = "default";
+
+    # run `plasma-apply-colorscheme --list-schemes`
+    colorScheme =
+      if genericHomeCfg.base24.darkMode
+      then "BreezeDark"
+      else "BreezeLight";
+
+    # run `plasma-apply-cursortheme --list-themes`
+    cursor.theme =
+      if genericHomeCfg.base24.darkMode
+      then "Breeze_Light"
+      else "breeze_cursors";
+
+    # run `plasma-apply-lookandfeel --list`
     lookAndFeel = "org.kde.breeze.desktop";
-    inherit colorScheme;
-    cursor.theme = cursorTheme;
-    # iconTheme = "Breeze";
+
+    iconTheme = "breeze";
   };
 
   # to keep color appearance if not using base24
