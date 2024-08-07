@@ -95,7 +95,7 @@ in {
         name = "${backend}-${containerName}-update";
         targetService = "${backend}-${containerName}.service";
         package = import ./package {
-          inherit pkgs name targetService;
+          inherit pkgs name targetService containerName;
           inherit (cfgOciContainers."${containerName}") image;
         };
         description = "Update ${containerName}";
