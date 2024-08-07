@@ -121,6 +121,8 @@
         # Utilized by `nix develop`
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            sops
+
             # LSPs
             nil
             nixd
