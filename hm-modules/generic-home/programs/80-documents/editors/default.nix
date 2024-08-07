@@ -9,7 +9,6 @@
 in {
   imports = [
     ./neovim.nix
-    # ./nixvim
     ./vscodium.nix
     ./neovide.nix
     ./vscode.nix
@@ -39,6 +38,6 @@ in {
     # editors
     "org.gnome.gitlab.cheywood.Buffer" # empty editor
     "io.gitlab.liferooter.TextPieces" # Developer's scratchpad
-    "dev.pulsar_edit.Pulsar" # editor, mit
+    # "dev.pulsar_edit.Pulsar" # editor, mit
   ];
 }
