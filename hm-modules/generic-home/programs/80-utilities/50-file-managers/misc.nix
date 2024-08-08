@@ -13,7 +13,7 @@ in {
       (with pkgsUnstable; [
         # vifm
         # xplr
-        felix-fx
+        felix-fm
         # xplorer # gui
       ])
     ]);
