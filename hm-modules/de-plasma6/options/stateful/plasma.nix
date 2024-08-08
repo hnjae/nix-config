@@ -20,5 +20,10 @@
       mode = "755";
       type = "dir";
     }
+    {
+      path = "${config.xdg.configHome}/kiorc";
+      mode = "644";
+      type = "file";
+    }
   ];
 }
