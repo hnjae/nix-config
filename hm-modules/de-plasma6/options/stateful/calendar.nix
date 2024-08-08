@@ -1,11 +1,6 @@
 {config, ...}: {
   stateful.cowNodes = [
     {
-      path = "${config.xdg.dataHome}/apps/korganizer";
-      mode = "755";
-      type = "dir";
-    }
-    {
       path = "${config.xdg.configHome}/plasma_calendar_astronomicalevents";
       mode = "600";
       type = "file";

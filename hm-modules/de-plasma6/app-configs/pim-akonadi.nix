@@ -153,6 +153,16 @@
       type = "dir";
     }
     {
+      path = "${config.xdg.dataHome}/KDE/merkuro.contact";
+      mode = "755";
+      type = "dir";
+    }
+    {
+      path = "${config.xdg.dataHome}/apps/korganizer";
+      mode = "755";
+      type = "dir";
+    }
+    {
       path = "${config.xdg.dataHome}/kontact";
       mode = "755";
       type = "dir";

@@ -1,6 +1,6 @@
 _: {
   imports = [
-    ./kdepim.nix
+    ./calendar.nix
     ./plasma.nix
     ./kactivitymanager.nix
   ];
