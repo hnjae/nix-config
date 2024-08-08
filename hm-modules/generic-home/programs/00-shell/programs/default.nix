@@ -1,7 +1,8 @@
 # NOTE: enableBashIntegration 같은 것이 있는 옵션들 <2024-02-13>
 {...}: {
   imports = [
-    ./skim.nix
+    ./fzf.nix
+    # ./skim.nix
     ./starship.nix
     ./greeting.nix
     ./zoxide.nix

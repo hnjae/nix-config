@@ -9,7 +9,7 @@ __ne_select() {
       fd "$term" "${CHEATS_DIR}" -e cheat -t f
     ) |
       sed -e "s|^$CHEATS_DIR||g" -e "s|\.cheat$||g" |
-      sk --select-1 --exit-0 --preview='bat -l sh --color=always --italic-text=always --paging=never --decorations=never '"$CHEATS_DIR"'/{}.cheat' |
+      fzf --select-1 --exit-0 --preview='bat -l sh --color=always --italic-text=always --paging=never --decorations=never '"$CHEATS_DIR"'/{}.cheat' |
       awk -v path="$CHEATS_DIR" -v ext=".cheat" '{print path $0 ext}'
   )"
 
