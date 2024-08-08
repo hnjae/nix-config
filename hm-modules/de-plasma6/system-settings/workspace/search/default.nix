@@ -1,1 +1,6 @@
-{...}: {imports = [./file-search.nix];}
+{...}: {
+  imports = [
+    ./file-search.nix
+    ./plasma-search.nix
+  ];
+}
