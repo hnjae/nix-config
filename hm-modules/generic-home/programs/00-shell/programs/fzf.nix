@@ -1,41 +1,14 @@
-{
-  config,
-  pkgs,
-  pkgsUnstable,
-  lib,
-  ...
-}: {
-  programs.skim = {
-    # NOTE: skim: fzf in rust
+{pkgsUnstable, ...}: {
+  programs.fzf = {
     enable = true;
-    package = pkgsUnstable.skim;
+    package = pkgsUnstable.fzf;
     enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
   };
 
-  home.packages = [
-    (pkgs.runCommand "fzf" {} ''
-      mkdir -p $out/bin
-      ln -s "${config.programs.skim.package}/bin/sk" "$out/bin/fzf"
-      ln -s "${config.programs.skim.package}/bin/sk-tmux" "$out/bin/fzf-tmux"
-    '')
-  ];
-
-  programs.zsh.initExtra =
-    lib.strings.optionalString (
-      with config.programs.skim; (enable && (!enableZshIntegration))
-    ) (let
-      inherit (config.programs.skim) package;
-    in ''
-      if [[ $options[zle] = on ]]; then
-        . ${package}/share/skim/completion.zsh
-        . ${package}/share/skim/key-bindings.zsh
-      fi
-    '');
-
   home.sessionVariables = let
-    skim_command = [
+    fzf_command = [
       "command fd"
       "-H"
       "-L"
@@ -60,10 +33,11 @@
       ''--exclude \".__pycache__\"''
     ];
   in {
-    SKIM_ALT_C_COMMAND =
+    FZF_ALT_C_COMMAND =
       builtins.concatStringsSep " "
-      (skim_command ++ ["--type d" "--one-file-system" "." "2>/dev/null"]);
-    SKIM_CTRL_T_COMMAND = builtins.concatStringsSep " " (skim_command
+      (fzf_command ++ ["--type d" "." "2>/dev/null"]);
+
+    FZF_CTRL_T_COMMAND = builtins.concatStringsSep " " (fzf_command
       ++ [
         ''--exclude \".DS_Store\"''
         ''--exclude \"*.pyc\"''
