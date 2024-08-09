@@ -42,6 +42,7 @@ in {
         cavif-rs = pkgs.callPackage ./tools/cavif-rs {};
         lf-sixel = pkgs.callPackage ./tools/lf-sixel {};
         xdg-terminal-exec = pkgs.callPackage ./tools/xdg-terminal-exec {};
+        qimgv-git = pkgs.kdePackages.callPackage ./tools/qimgv-git {};
 
         # Plasma 6
         compact-pager = pkgs.callPackage ./kde/compact-pager {};
