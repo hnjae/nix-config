@@ -1,6 +1,6 @@
-{...}: {
+{lib, ...}: {
   default-app = {
-    image = "org.kde.gwenview";
+    image = lib.mkDefault "org.kde.gwenview";
     fileManager = "org.kde.dolphin";
     fromApps = [
       "org.kde.konsole"

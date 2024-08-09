@@ -1,7 +1,4 @@
-{
-  config,
-  pkgs,
-}: let
+{pkgs, ...}: let
   inherit (pkgs.stdenv) isDarwin;
 in
   pkgs.ffmpeg.override {

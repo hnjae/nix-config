@@ -116,7 +116,7 @@ in {
             ]
           ];
           extraSpecialArgs = {
-            inherit inputs;
+            inherit inputs self;
             pkgsUnstable = getPkgsUnstable system pkgs.config.allowUnfree;
           };
         };

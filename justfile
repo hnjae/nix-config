@@ -72,6 +72,18 @@ drybuild-homes:
     echo ""
   done
 
+drybuild-home-desktop-plasma6-unfree-x86_64-linux:
+    nix build \
+      --dry-run \
+      --no-warn-dirty \
+      --no-print-missing \
+      --option keep-env-derivations true \
+      --option pure-eval true \
+      --option show-trace false \
+      --quiet \
+      --json \
+      --builders "" \
+      ".#homeConfigurations.desktop-plasma6-unfree-x86_64-linux.activationPackage"
 
 # slower than nix flake check
 drybuild-nixoses:
