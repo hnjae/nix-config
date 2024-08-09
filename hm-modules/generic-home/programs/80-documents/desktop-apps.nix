@@ -9,7 +9,9 @@
 in {
   config = lib.mkIf (genericHomeCfg.isDesktop) {
     services.flatpak.packages = builtins.concatLists [
-      ["org.libreoffice.LibreOffice" "com.calibre_ebook.calibre"]
+      [
+        "com.calibre_ebook.calibre"
+      ]
       (optionals genericHomeCfg.installTestApps [
         "com.jgraph.drawio.desktop" # apache2
 
