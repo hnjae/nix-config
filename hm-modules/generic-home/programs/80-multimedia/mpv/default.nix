@@ -21,7 +21,11 @@ in {
         scripts = builtins.concatLists [
           (lib.lists.optionals pkgs.stdenv.isLinux
             (with pkgs.mpvScripts; [mpris]))
-          (with pkgs.mpvScripts; [visualizer vr-reversal])
+          (with pkgs.mpvScripts; [
+            visualizer
+            vr-reversal
+            mpv-cheatsheet # type ? to see keybord shortcuts
+          ])
         ];
       };
     defaultProfiles = ["gpu-hq"];

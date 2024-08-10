@@ -10,10 +10,9 @@ in {
     home.packages = with pkgsUnstable; [
       biome # linters, formatters
 
-      # yarn-berry
-      # nodePackages.pnpm
-
-      corepack_20 # wrappers for npm pnpm, yarn
+      # not working
+      pnpm-shell-completion
+      corepack_20 # Wrappers for npm, pnpm and Yarn via Node.js Corepack
 
       # current LTS (2024-02-29)
       nodejs_20

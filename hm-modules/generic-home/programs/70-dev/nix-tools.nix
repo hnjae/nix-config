@@ -14,8 +14,10 @@ in {
       comma
       # auto-generate nix stderivation
       nix-init
-      # ?
+      # locate the package providing a certain files in `nixpkgs`
       nix-index
+      # create nix fetche calls from repository URLs
+      nurl
     ];
   };
 }
