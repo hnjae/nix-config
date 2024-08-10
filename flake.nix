@@ -141,7 +141,7 @@
           if (builtins.hasAttr prev.stdenv.system self.packages)
           then
             # self.packages.${prev.stdenv.system}
-            # prev.config.allowuUnfree 값 전달 위한 코드
+            # prev.config.allowUnfree 값 전달 위한 코드
             (builtins.mapAttrs (
                 _: drv: (
                   prev.stdenv.mkDerivation (

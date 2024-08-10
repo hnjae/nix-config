@@ -18,58 +18,71 @@
   ];
 
   # Set of default packages that aren't strictly necessary for a running system
-  environment.defaultPackages = with pkgs; [
-    dash
-    elvish
+  environment.defaultPackages = builtins.concatLists [
+    (
+      with pkgs; [
+        dash
+        elvish
 
-    # nix-shell -c, nix-index wrapper
-    comma
+        # nix-shell -c, nix-index wrapper
+        comma
 
-    # for nixos/nix
-    perl
-    rsync
-    strace
-    # for flake
-    git
+        # for nixos/nix
+        perl
+        rsync
+        strace
+        # for flake
+        git
 
-    file
-    sysstat # iostat
-    dosfstools # mkfs.vfat
-    lsof
-    beep
-    wget
+        file
+        sysstat # iostat
+        dosfstools # mkfs.vfat
+        lsof
+        beep
+        wget
 
-    # Get hardware info
-    pciutils # lspci
-    lshw
-    usbutils # lsusb
-    dmidecode
-    lm_sensors
+        # Get hardware info
+        pciutils # lspci
+        lshw
+        usbutils # lsusb
+        dmidecode
+        lm_sensors
 
-    # some basic utils
-    dig
-    curl
-    lsb-release
+        # some basic utils
+        dig
+        curl
+        lsb-release
 
-    # some "modern" utils
-    fd
-    ripgrep
-    eza
-    hexyl # replace od
-    procs # replace ps
-    viddy # replace watch
+        # some "modern" utils
+        fd
+        ripgrep
+        eza
+        hexyl # replace od
+        procs # replace ps
+        viddy # replace watch
+
+        # misc
+        pwgen
+        wireguard-tools
+
+        # tops
+        bottom
+      ]
+    )
 
     # archives
-    unzip
-    p7zip
-    _7zz
-
-    # misc
-    pwgen
-    wireguard-tools
-
-    # tops
-    bottom
+    (let
+      package7z = pkgs._7zz.override {enableUnfree = pkgs.config.allowUnfree;};
+    in [
+      pkgs.unzip
+      package7z
+      (
+        pkgs.runCommand "p7zip" {} ''
+          mkdir -p "$out/bin"
+          ln -s "${package7z}/bin/7zz" "$out/bin/7z"
+        ''
+      )
+    ])
   ];
 
   programs.htop = {
