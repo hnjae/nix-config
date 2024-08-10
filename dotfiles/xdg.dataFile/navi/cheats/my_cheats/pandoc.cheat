@@ -1,0 +1,11 @@
+% pandoc
+
+
+# list all supported input formats
+pandoc --list-input-formats
+
+# list all supported output formats
+pandoc --list-output-formats
+
+#
+pandoc <input> -o <output>
