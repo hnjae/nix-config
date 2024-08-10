@@ -48,6 +48,7 @@
   </Menu>
   <Separator weakSeparator="1"/>
   <Separator weakSeparator="1"/>
+  <Separator weakSeparator="1"/>
   <Menu alreadyVisited="1" name="settings" noMerge="1">
    <text translationDomain="kxmlgui6">&amp;Settings</text>
    <DefineGroup name="session-settings"/>
@@ -89,7 +90,6 @@
  <ToolBar alreadyVisited="1" name="mainToolBar" noMerge="1">
   <text translationDomain="kxmlgui6">Main Toolbar</text>
   <index>0</index>
-  <Action name="open_kcommand_bar"/>
  </ToolBar>
  <ActionProperties scheme="Default">
   <Action name="last-used-tab" shortcut=""/>
