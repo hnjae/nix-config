@@ -22,7 +22,6 @@
     (
       with pkgs; [
         dash
-        elvish
 
         # nix-shell -c, nix-index wrapper
         comma
@@ -31,7 +30,8 @@
         perl
         rsync
         strace
-        # for flake
+
+        # for flake.nix
         git
 
         file
@@ -74,7 +74,6 @@
     (let
       package7z = pkgs._7zz.override {enableUnfree = pkgs.config.allowUnfree;};
     in [
-      pkgs.unzip
       package7z
       (
         pkgs.runCommand "p7zip" {} ''
