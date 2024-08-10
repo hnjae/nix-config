@@ -20,6 +20,7 @@
         inputs.impermanence.nixosModules.home-manager.impermanence
         inputs.nix-flatpak.homeManagerModules.nix-flatpak
         inputs.base16.homeManagerModule
+        inputs.nix-index-database.hmModules.nix-index
 
         self.homeManagerModules.base24
         self.homeManagerModules.default-app

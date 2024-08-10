@@ -43,6 +43,11 @@
       };
     };
 
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     # base16
     base16.url = "github:SenchoPens/base16.nix";
     base16-schemes = {
@@ -80,19 +85,6 @@
       follows = "nixvim/devshell";
       inputs.flake-utils.follows = "flake-utils";
     };
-
-    # kwin-scripts = {
-    #   url = "github:hnjae/kwin-scripts";
-    #   inputs.flake-utils.follows = "flake-utils";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-
-    # bavarder = {
-    #   url = "github:Bavarder/Bavarder";
-    #   inputs.flake-utils.follows = "flake-utils";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    #   flake = true;
-    # };
   };
 
   outputs = inputs @ {
