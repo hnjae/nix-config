@@ -5,9 +5,9 @@
     ./fish.nix
     ./nushell.nix
 
-    ./environment-variables
-    ./aliases
-
     ./programs
+
+    ./shell-aliases.nix
+    ./session-variables.nix
   ];
 }

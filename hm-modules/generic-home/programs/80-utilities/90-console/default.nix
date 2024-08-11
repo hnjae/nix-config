@@ -7,6 +7,7 @@
   imports = [
     ./99-fancy.nix
     ./99-modern-utils.nix
+    ./eza.nix
     ./bat.nix
     ./bottom.nix
     ./cheat.nix
@@ -17,6 +18,8 @@
     ./tldr
     ./zellij
     ./qalc.nix
+    ./fzf.nix
+    ./rsync.nix
   ];
 
   # https://github.com/ibraheemdev/modern-unix

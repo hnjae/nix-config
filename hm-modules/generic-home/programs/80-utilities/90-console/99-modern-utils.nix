@@ -11,7 +11,6 @@
       fd
       ripgrep
       ripgrep-all # ripgrep & PDF E-Books & Office documents & etc.
-      eza # lsd 는 ANSI color 안써서 eza 쓰자. <2022-?>
       git
 
       mprocs
