@@ -1,13 +1,10 @@
 {
   config,
-  pkgs,
   pkgsUnstable,
-  lib,
   ...
 }: let
   # inherit (config.home) shellAliases;
   # inherit (lib.strings) optionalString;
-  common = (import ./share/common.nix) {inherit pkgs config lib;};
   concat = builtins.concatStringsSep "\n";
 in {
   # NOTE: source order:
@@ -27,14 +24,16 @@ in {
     # NOTE: envExtra being ignored or override for unknown reason <2023-03-26>
     # .zshenv 말미
     envExtra = concat [
-      common.envExtra
       ''
         ZVM_CURSOR_STYLE_ENABLED=false
       ''
     ];
 
-    # .zprofile
-    inherit (common) profileExtra;
+    # .zprofle
+    profileExtra = ''
+      [ -n "$__PROFILE_SOURCED" ] && return
+      __PROFILE_SOURCED=1
+    '';
 
     # .zshrc 중간 (after zplugin, history)
     initExtra = concat [
@@ -56,7 +55,7 @@ in {
     history = {
       path = "${config.xdg.stateHome}/zsh_history";
       ignoreDups = true;
-      ignorePatterns = common.historyIgnore;
+      ignorePatterns = config.programs.bash.historyIgnore;
       ignoreSpace = true;
       extended = true; # save timestamp into the history file
       save = 90000;

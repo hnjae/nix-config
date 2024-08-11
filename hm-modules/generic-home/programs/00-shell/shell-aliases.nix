@@ -1,10 +1,9 @@
 {
   lib,
   pkgs,
+  config,
   ...
 }: {
-  imports = [./rsync.nix ./ls.nix];
-
   # zsh, bash, fish 공통사용
   home.shellAliases =
     {

@@ -1,20 +1,10 @@
-{
-  pkgs,
-  pkgsUnstable,
-  config,
-  lib,
-  ...
-}: let
-  common = (import ./share/common.nix) {inherit pkgs config lib;};
-  concat = builtins.concatStringsSep "\n";
-in {
+{lib, ...}: {
   programs.fish = {
     enable = true;
 
     # NOTE: shellInit -> loginShellInit(konsole에서는 source x) ->  interactiveShellInit (2023-04-19 checked)
 
-    shellInit = concat [
-      common.envExtraFish
+    shellInit = lib.concatLines [
       ''
         # set -U fish_greeting
         fish_vi_key_bindings
@@ -23,10 +13,10 @@ in {
 
     # NOTE: loginShellInit won't be sourced while using terminal like konsole
     # loginShellInit:: config.fish 의 ``status --is-login; and begin ... end`` 안에 들어감
-    loginShellInit = concat [common.profileExtraFish];
+    loginShellInit = "";
 
     # interactiveShellInit:: config.fish 에서 alias 다음에 들어감
-    interactiveShellInit = concat [
+    interactiveShellInit = lib.concatLines [
       ''
         # interactiveShellInit start
 
