@@ -1,6 +1,7 @@
 {
   config,
   pkgsUnstable,
+  lib,
   ...
 }: let
   # inherit (config.home) shellAliases;
@@ -30,7 +31,7 @@ in {
     ];
 
     # .zprofle
-    profileExtra = ''
+    profileExtra = lib.mkOrder 1 ''
       [ -n "$__PROFILE_SOURCED" ] && return
       __PROFILE_SOURCED=1
     '';
