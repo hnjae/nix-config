@@ -1,5 +1,8 @@
 {...}: {
-  imports = [./plugin-mousemark.nix];
+  imports = [
+    ./plugin-mousemark.nix
+    ./plugin-diminactive.nix
+  ];
 
   programs.plasma.configFile."kwinrc" = {
     "Effect-slide"."SlideBackground" = false;
