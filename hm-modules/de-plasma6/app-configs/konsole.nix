@@ -32,6 +32,7 @@
       Name=${name}
       TerminalColumns=85
       Environment=TERM=xterm-256color
+      Parent=FALLBACK/
 
       [Scrolling]
       HistorySize=5000
@@ -48,7 +49,6 @@
 
       [Terminal Features]
       ReverseUrlHints=false
-      UrlHintsModifiers=134217728
     ''
     (''
         [Cursor Options]
