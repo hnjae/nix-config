@@ -9,6 +9,10 @@
       # fi
       __zoxide_z "$@"
     }
+
+    si() {
+      __zoxide_zi "$@"
+    }
   '';
 in {
   # cannot override z here
@@ -18,6 +22,11 @@ in {
   programs.fish.functions.s = {
     body = ''
       __zoxide_z "$argv"
+    '';
+  };
+  programs.fish.functions.si = {
+    body = ''
+      __zoxide_zi "$argv"
     '';
   };
 
