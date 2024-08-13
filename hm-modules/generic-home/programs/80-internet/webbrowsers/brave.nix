@@ -16,23 +16,17 @@ in {
         (pkgs.brave.override {
           # NOTE: barve v1.62.165 에서는 --gtk-version=4 안먹음 + xwayand 에서
           # 한국어 입력 안됨 <2024-02-20>
-          /*
           commandLineArgs = (
-            builtins.concatStringsSep " " (
-              [
-                "--ozone-platform-hint=auto"
-                "--enable-features=UseOzonePlatform"
-                "--enable-features=WaylandWindowDecorations"
-                "--enable-wayland-ime"
-              ]
-              ++ [
-                "--enable-features=VaapiVideoDecoder"
-                "--enable-features=VaapiVideoEncoder"
-                "--enable-features=VaapiIgnoreDriverChecks"
-              ]
-            )
+            builtins.concatStringsSep " " [
+              "--ozone-platform-hint=auto"
+              "--enable-features=UseOzonePlatform"
+              "--enable-features=WaylandWindowDecorations"
+              "--enable-wayland-ime"
+              #   "--enable-features=VaapiVideoDecoder"
+              #   "--enable-features=VaapiVideoEncoder"
+              #   "--enable-features=VaapiIgnoreDriverChecks"
+            ]
           );
-          */
         })
       ];
 
