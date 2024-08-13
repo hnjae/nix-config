@@ -1,4 +1,4 @@
-mouse_mode false
+mouse_mode true // allow console programs to receive mouse events
 
 // https://zellij.dev/documentation/options
 session_serialization false
