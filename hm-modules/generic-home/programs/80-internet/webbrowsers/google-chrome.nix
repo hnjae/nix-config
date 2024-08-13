@@ -13,17 +13,17 @@ in {
     home.packages = [
       (pkgs.google-chrome.override {
         # NOTE: gtk-version=4 flag 안먹음 <2024-06-05>
-        # commandLineArgs =
-        #   builtins.concatStringsSep
-        #   " " [
-        #     "--ozone-platform-hint=auto"
-        #     "--enable-features=UseOzonePlatform"
-        #     "--enable-wayland-ime"
-        #     "--gtk-version=4"
-        #     "--enable-features=VaapiVideoDecoder"
-        #     "--enable-features=WaylandWindowDecorations"
-        #     "--enable-features=VaapiIgnoreDriverChecks"
-        # ];
+        commandLineArgs =
+          builtins.concatStringsSep
+          " " [
+            "--ozone-platform-hint=auto"
+            "--enable-features=UseOzonePlatform"
+            "--enable-features=WaylandWindowDecorations"
+            "--enable-wayland-ime"
+            #     "--gtk-version=4"
+            #     "--enable-features=VaapiVideoDecoder"
+            #     "--enable-features=VaapiIgnoreDriverChecks"
+          ];
       })
     ];
 
