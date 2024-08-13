@@ -7,20 +7,22 @@
 in {
   programs.zellij = {
     enable = true;
-    # enableBashIntegration = true;
-    # enableFishIntegration = true;
-    # enableZshIntegration = true;
+
+    # these options autostarts zellij
+    enableBashIntegration = false;
+    enableFishIntegration = false;
+    enableZshIntegration = false;
   };
 
   xdg.configFile."zellij/config.kdl".text = lib.concatLines [
     (builtins.readFile ./configs/configs.kdl/ui.kdl)
-    (builtins.readFile ./configs/configs.kdl/keybinds.kdl)
     (builtins.readFile ./configs/configs.kdl/others.kdl)
     (
       if (genericHomeCfg.base24.enable)
       then ''theme "base24"''
       else ''theme "ansi"''
     )
+    (builtins.readFile ./configs/configs.kdl/keybinds.kdl)
   ];
 
   xdg.configFile."zellij/layouts".source = ./configs/layouts;

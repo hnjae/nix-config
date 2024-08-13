@@ -33,11 +33,11 @@ keybinds {
   }
 
   shared_except "locked" "renametab" "renamepane" "entersearch" "search" {
-    bind "Ctrl x" { SwitchToMode "locked"; }
+    bind "Ctrl X" { SwitchToMode "locked"; }
   }
 
   locked {
-    bind "Ctrl x" { SwitchToMode "normal"; }
+    bind "Ctrl X" { SwitchToMode "normal"; }
   }
 
   shared_except "scroll" "locked" "renametab" "renamepane" "entersearch" "search" {

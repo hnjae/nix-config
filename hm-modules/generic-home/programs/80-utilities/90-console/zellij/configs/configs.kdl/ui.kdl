@@ -1,7 +1,9 @@
-pane_frames false
-borderless true
+pane_frames true
+simplified_ui true // do not use arrow fonts
 ui {
   pane_frames {
-    rounded_corners true
+    rounded_corners false // rounded_corners looks awful on non HiDPI Screen
+    // hide_session_name true
   }
 }
+// default_layout "compact"
