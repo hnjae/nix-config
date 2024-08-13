@@ -45,12 +45,25 @@ in {
 
         # history 에서 일치하는 명령 줄 배경색으로 표기
         . "${pkgsUnstable.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
         # alias 에 있는 커맨드와 동일하면 표기
         . "${pkgsUnstable.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh"
         . "${pkgsUnstable.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
         . "${pkgsUnstable.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh"
       ''
       # starship, zoxide, skim, direnv, aliases will follow
+
+      ''
+        # EDITOR가 vi 이여도, ^A, ^E 같은 emacs 키는 사용할 수 있게 설정
+        # https://github.com/simnalamburt/.dotfiles/blob/997d482/.zshrc
+        if (( $+commands[vim] )); then
+          bindkey '^A' beginning-of-line
+          bindkey '^E' end-of-line
+        elif (( $+commands[nvim] )); then
+          bindkey '^A' beginning-of-line
+          bindkey '^E' end-of-line
+        fi
+      ''
     ];
 
     history = {
