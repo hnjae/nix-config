@@ -1,7 +1,7 @@
 {...}: {
   imports = [
     ./bash.nix
-    ./zsh.nix
+    ./zsh
     ./fish.nix
     ./nushell.nix
 
