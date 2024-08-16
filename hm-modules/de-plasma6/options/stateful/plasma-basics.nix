@@ -25,5 +25,10 @@
       mode = "644";
       type = "file";
     }
+    {
+      path = "${config.xdg.dataHome}/color-schemes";
+      mode = "755";
+      type = "dir";
+    }
   ];
 }

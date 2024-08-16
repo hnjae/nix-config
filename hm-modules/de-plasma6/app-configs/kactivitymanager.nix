@@ -20,6 +20,11 @@
       mode = "600";
       type = "file";
     }
+    {
+      path = "${config.xdg.configHome}/kactivitymanagerd-switcher";
+      mode = "600";
+      type = "file";
+    }
   ];
   stateful.nocowNodes = [
   ];

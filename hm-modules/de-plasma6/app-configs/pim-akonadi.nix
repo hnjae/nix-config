@@ -18,6 +18,11 @@
       type = "file";
     }
     {
+      path = "${config.xdg.configHome}/akonadikderc";
+      mode = "600";
+      type = "file";
+    }
+    {
       path = "${config.xdg.configHome}/mailtransports";
       mode = "600";
       type = "file";
@@ -128,12 +133,12 @@
       type = "dir";
     }
     {
-      path = "${config.xdg.dataHome}/akonadi_migration_agent";
+      path = "${config.xdg.dataHome}/contacts";
       mode = "755";
       type = "dir";
     }
     {
-      path = "${config.xdg.configHome}/Unknown Organization";
+      path = "${config.xdg.dataHome}/akonadi_migration_agent";
       mode = "755";
       type = "dir";
     }

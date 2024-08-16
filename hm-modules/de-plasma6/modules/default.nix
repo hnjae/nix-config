@@ -1,6 +1,5 @@
 {...}: {
   imports = [
-    ./persistent
     ./syncthingtray.nix
     ./window-rules.nix
     ./activity.nix
