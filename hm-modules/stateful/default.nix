@@ -102,10 +102,9 @@ in {
         (builtins.filter (node: node.type == "dir") nodes));
     in (lib.concatLists [
       [
-        ''v "${cfg.cowPath}" 700 ${username} users''
+        ''d "${cfg.cowPath}" 700 ${username} users''
         ''v "${cfg.nocowPath}" 700 ${username} users''
         ''H "${cfg.nocowPath}" - - - - +C'' # -- nocow
-        ''R "${cfg.cowPath}/.Trash-*"''
         ''R "${cfg.nocowPath}/.Trash-*"''
       ]
       (generateTmpfileLines cfg.cowPath cfg.cowNodes)

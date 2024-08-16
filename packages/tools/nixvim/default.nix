@@ -176,7 +176,7 @@ nixvim: pkgs: let
       };
     };
 in
-  pkgs.runCommand "vim" {} ''
+  pkgs.runCommandLocal "vim" {} ''
     mkdir -p "$out/bin"
     ln -s "${package}/bin/nvim" "$out/bin/vim"
     ln -s "${package}/bin/nvim" "$out/bin/nvim"
@@ -187,3 +187,4 @@ in
 #   #!${pkgs.dash}/bin/dash
 #    ${package}/bin/nvim "$@"
 # ''
+

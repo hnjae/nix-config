@@ -4,6 +4,9 @@
   ...
 }: let
   rsyncArgs = [
+    "ionice"
+    "-c"
+    "idle"
     "rsync"
     "--info=progress2"
     "-h"

@@ -58,9 +58,9 @@ in {
           description = "Make some browser only at home activity";
           Match = {
             "wmclass".value = wmclassMaker [
-              "firefox"
+              # "firefox"
               # "[bB]rave-browser"
-              "chromium-browser"
+              # "chromium-browser"
             ];
             "wmclassmatch".value = 3;
           };

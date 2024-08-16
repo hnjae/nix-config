@@ -61,5 +61,12 @@ in {
           # ffmpegthumbnailer
         ]))
     ];
+    stateful.cowNodes = [
+      {
+        path = "${config.xdg.dataHome}/icons/distrobox";
+        mode = "755";
+        type = "dir";
+      }
+    ];
   };
 }

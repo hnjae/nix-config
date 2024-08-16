@@ -76,7 +76,7 @@
     in [
       package7z
       (
-        pkgs.runCommand "p7zip" {} ''
+        pkgs.runCommandLocal "p7zip" {} ''
           mkdir -p "$out/bin"
           ln -s "${package7z}/bin/7zz" "$out/bin/7z"
         ''
