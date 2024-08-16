@@ -41,11 +41,11 @@
   };
   stateful.cowNodes = [
     # ".config/dolphinrc" # 덮어쓰기 됨.
-    # {
-    #   path = "${config.xdg.configHome}/dolphinrc";
-    #   mode = "600";
-    #   type = "file";
-    # }
+    {
+      path = "${config.xdg.configHome}/dolphinrc";
+      mode = "600";
+      type = "file";
+    }
     {
       path = "${config.xdg.configHome}/trashrc";
       mode = "600";

@@ -1,7 +1,6 @@
 _: {
   imports = [
-    ./calendar.nix
-    ./plasma.nix
-    ./kactivitymanager.nix
+    ./plasma-basics.nix
+    ./plasma-calendar.nix
   ];
 }
