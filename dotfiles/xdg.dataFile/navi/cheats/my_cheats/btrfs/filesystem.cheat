@@ -1,0 +1,4 @@
+% btrfs, btrfs-filesystem
+
+# defrag
+btrfs -v fi defragment -czstd -t size <file>|<dir>
