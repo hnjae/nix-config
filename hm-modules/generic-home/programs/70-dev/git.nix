@@ -25,6 +25,7 @@ in {
       # "org.kde.kommit"
     ];
 
+    # bindings https://github.com/wfxr/forgit 참고
     home.shellAliases = {
       g = "git";
       gcl = "git clone --depth 1";

@@ -16,8 +16,8 @@ in {
 
     default-app.fromApps = ["org.wezfurlong.wezterm"];
 
-    programs.bash.initExtra = shellIntgrationStr;
-    programs.zsh.initExtra = shellIntgrationStr;
+    # programs.bash.initExtra = shellIntgrationStr;
+    # programs.zsh.initExtra = shellIntgrationStr;
 
     # xdg.dataFile."wezterm/colors/base24.toml".source =
     #   config.scheme

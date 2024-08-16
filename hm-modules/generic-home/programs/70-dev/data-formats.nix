@@ -21,7 +21,7 @@ in {
         yamlfmt
       ])
       [
-        (pkgs.runCommand "vscode-json-language-server" {} ''
+        (pkgs.runCommandLocal "vscode-json-language-server" {} ''
           mkdir -p $out/bin
           ln -s "${pkgsUnstable.vscode-langservers-extracted}/bin/vscode-json-language-server" "$out/bin/vscode-json-language-server"
         '')
