@@ -1,3 +1,4 @@
+prefers_reduced_motion = true
 ## where to store your database, default is your system data directory
 ## linux/mac: ~/.local/share/atuin/history.db
 ## windows: %USERPROFILE%/.local/share/atuin/history.db
@@ -32,7 +33,7 @@ update_check = false
 
 ## which search mode to use
 ## possible values: prefix, fulltext, fuzzy, skim
-search_mode = "skim"
+search_mode = "fuzzy"
 
 ## which filter mode to use
 ## possible values: global, host, session, directory
@@ -45,7 +46,7 @@ search_mode = "skim"
 ## which filter mode to use when atuin is invoked from a shell up-key binding
 ## the accepted values are identical to those of "filter_mode"
 ## leave unspecified to use same mode set in "filter_mode"
-filter_mode_shell_up_key_binding = "session"
+filter_mode_shell_up_key_binding = "directory"
 
 ## which search mode to use when atuin is invoked from a shell up-key binding
 ## the accepted values are identical to those of "search_mode"
@@ -58,13 +59,13 @@ style = "compact"
 
 ## the maximum number of lines the interface should take up
 ## set it to 0 to always go full screen
-# inline_height = 0
+inline_height = 24
 
 ## Invert the UI - put the search bar at the top , Default to `false`
-# invert = false
+invert = false
 
 ## useful when the command is longer than the terminal width and is cut off
-show_preview = true
+show_preview = false
 
 ## what to do when the escape key is pressed when searching
 ## possible values: return-original, return-query
@@ -95,8 +96,8 @@ history_filter = [
   "^rcp [^(-n)]*",
   "^rsync [^(-n)]*",
   # cd
-  "^s .*",
-  "^cd .*",
+  # "^s .*",
+  # "^cd .*",
   # files
   "^rm .*",
   "^rm -rf",
@@ -151,19 +152,20 @@ secrets_filter = true
 
 ## Defaults to true. If enabled, upon hitting enter Atuin will immediately execute the command. Press tab to return to the shell and edit.
 # This applies for new installs. Old installs will keep the old behaviour unless configured otherwise.
-enter_accept = true
+enter_accept = false
 
 #[stats]
 # Set commands where we should consider the subcommand for statistics. Eg, kubectl get vs just kubectl
-#common_subcommands = [
-#  "cargo",
-#  "go",
-#  "git",
-#  "npm",
-#  "yarn",
-#  "pnpm",
-#  "kubectl",
-#]
+common_subcommands = [
+  "nix",
+  "cargo",
+  "go",
+  "git",
+  "npm",
+  "yarn",
+  "pnpm",
+  "kubectl",
+]
 #
 # Set commands that should be totally stripped and ignored from stats
 common_prefix = ["sudo"]

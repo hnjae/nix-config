@@ -1,9 +1,11 @@
 cc
 cmake
-home-manager
 make
+home-manager
 nix
 nixos-rebuild
 rsync
 rustc
 ssh
+stress
+just

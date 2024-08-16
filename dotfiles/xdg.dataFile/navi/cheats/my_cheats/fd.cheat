@@ -1,0 +1,4 @@
+% fd
+
+# include ignored and hidden
+fd -H -I <pattern>
