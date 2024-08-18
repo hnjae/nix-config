@@ -115,7 +115,7 @@ in {
             wantedBy = ["timers.target"];
 
             timerConfig = {
-              inherit (cfg) onCalendar;
+              OnCalendar = cfg.onCalendar;
               RandomizedDelaySec = cfg.randomizedDelaySec;
               Persistent = cfg.persistent;
             };
