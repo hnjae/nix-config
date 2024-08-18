@@ -9,6 +9,8 @@ $ branch: git branch | awk '{print $NF}'
 
 # switch branch
 git switch <branch>
+# switch to orphan branch (branch with no commit)
+git switch --orphan <branch-name>
 
 # make other branch to point commit (use `-f` to force) (or use `git reset --hard`)
 git branch <branch> <commit>
@@ -36,6 +38,9 @@ git reflog
 ;############################################################################
 # merge commit
 git merge <commit>
+
+# merge unrelated commits
+git merge <commit> --allow-unrelated-histories
 
 # cancel merge
 git merge --abort
