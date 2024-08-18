@@ -1,13 +1,18 @@
 {
   pkgsUnstable,
-  # config,
-  # lib,
+  config,
+  lib,
   ...
-}:
-# let
-# genericHomeCfg = config.generic-home;
-# in
-{
-  home.packages =
-    builtins.concatLists [(with pkgsUnstable; [typst typst-lsp typstfmt])];
+}: let
+  genericHomeCfg = config.generic-home;
+in {
+  config = lib.mkIf genericHomeCfg.installDevPackages {
+    home.packages = builtins.concatLists [
+      (with pkgsUnstable; [
+        typst
+        typst-lsp
+        typstfmt
+      ])
+    ];
+  };
 }
