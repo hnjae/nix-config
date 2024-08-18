@@ -14,6 +14,9 @@
       git
 
       mprocs
+
+      # nixpkgs-unstable 의 delta 가 빌드에러가 있어서 stable 버전 사용. <2024-08-18>
+      delta # replace diff
     ])
 
     (with pkgsUnstable; [
@@ -21,7 +24,6 @@
       procs # replace ps
       # rm-improved
 
-      delta # replace diff
       viddy # replace watch
 
       # renamer
