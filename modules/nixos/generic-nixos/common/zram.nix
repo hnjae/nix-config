@@ -8,9 +8,8 @@ in {
   # disable zswap and use zram
   zramSwap = {
     enable = mkOverride 999 true;
-    # algorithm = "zstd";
-    algorithm = mkOverride 999 "lz4";
-    memoryPercent = mkOverride 999 90;
+    algorithm = mkOverride 999 "zstd";
+    memoryPercent = mkOverride 999 75;
     memoryMax = mkOverride 999 null;
     priority = mkOverride 999 32766;
   };
@@ -23,7 +22,12 @@ in {
   # https://old.reddit.com/r/Fedora/comments/mzun99/new_zram_tuning_benchmarks/
   boot.kernel.sysctl = lib.mkIf config.zramSwap.enable {
     # kernel default: 3 (6.6)
-    "vm.page-cluster" = mkOverride 100 2;
-    "vm.swappiness" = mkOverride 100 1;
+    "vm.page-cluster" = mkOverride 100 0;
+
+    # kernel 6.6 default: 100
+    # from docs.kernel.org:
+    # if the random IO against the swap device is on average 2x faster than IO
+    # from the filesystem, swappiness should be 133 (x + 2x = 200, 2x = 133.33).
+    "vm.swappiness" = mkOverride 100 180;
   };
 }
