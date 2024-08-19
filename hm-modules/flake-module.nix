@@ -21,6 +21,7 @@
         inputs.nix-flatpak.homeManagerModules.nix-flatpak
         inputs.base16.homeManagerModule
         inputs.nix-index-database.hmModules.nix-index
+        inputs.nix-web-app.homeManagerModules.default
 
         self.homeManagerModules.base24
         self.homeManagerModules.default-app
