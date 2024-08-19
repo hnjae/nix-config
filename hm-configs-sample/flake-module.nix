@@ -19,6 +19,9 @@
     import inputs.nixpkgs {
       inherit system;
       config.allowUnfree = allowUnfree;
+      overlays = [
+        self.overlays.default
+      ];
     };
   inherit (inputs.home-manager.lib) homeManagerConfiguration;
 
@@ -36,14 +39,14 @@ in {
   flake.homeConfigurations = inputs.nixpkgs.lib.attrsets.mergeAttrsList [
     (eachSystem (with inputs.flake-utils.lib.system; [
         x86_64-linux
-        aarch64-darwin
+        # aarch64-darwin
       ]) ({
         pkgs,
         system,
         ...
       }: {
         "shell-${system}" = homeManagerConfiguration {
-          inherit pkgs;
+          pkgs = getPkgs system false;
           modules = builtins.concatLists [
             commonModules
             [
@@ -66,7 +69,7 @@ in {
         };
 
         "desktop-${system}" = homeManagerConfiguration {
-          inherit pkgs;
+          pkgs = getPkgs system false;
           modules = builtins.concatLists [
             commonModules
             [
@@ -92,15 +95,13 @@ in {
       }))
     (eachSystem (with inputs.flake-utils.lib.system; [
         x86_64-linux
-      ]) ({system, ...}: let
-        allowUnfree = true;
-      in {
+      ]) ({system, ...}: {
         "desktop-plasma6-unfree-${system}" = homeManagerConfiguration rec {
-          pkgs = getPkgs system allowUnfree;
+          pkgs = getPkgs system true;
           modules = builtins.concatLists [
             commonModules
             [
-              self.homeManagerModules.de-plasma6
+              self.homeManagerModules.plasma6
               {
                 generic-home = {
                   isDesktop = true;
@@ -116,7 +117,33 @@ in {
             ]
           ];
           extraSpecialArgs = {
-            inherit inputs self;
+            inherit inputs;
+            pkgsUnstable = getPkgsUnstable system pkgs.config.allowUnfree;
+          };
+        };
+
+        "desktop-plasma6-free-${system}" = homeManagerConfiguration rec {
+          pkgs = getPkgs system false;
+          modules = builtins.concatLists [
+            commonModules
+            [
+              self.homeManagerModules.plasma6
+              {
+                generic-home = {
+                  isDesktop = true;
+                  base24 = {
+                    enable = true;
+                    scheme = "kanagawa";
+                    darkMode = false;
+                  };
+                  installDevPackages = true;
+                  installTestApps = true;
+                };
+              }
+            ]
+          ];
+          extraSpecialArgs = {
+            inherit inputs;
             pkgsUnstable = getPkgsUnstable system pkgs.config.allowUnfree;
           };
         };
