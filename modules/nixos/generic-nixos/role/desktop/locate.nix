@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   ...
@@ -6,7 +7,7 @@
   inherit (lib) mkOverride;
 in {
   services.locate = {
-    enable = mkOverride 999 true;
+    enable = mkOverride 999 (config.generic-nixos.role == "desktop");
     package = pkgs.plocate;
     interval = "monthly";
     localuser = null; # NOTE: plocate does not support localuser options <nixos 23.05>
