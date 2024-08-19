@@ -99,11 +99,11 @@
         ./apps/flake-module.nix
         ./packages/flake-module.nix
 
-        ./nixos-configs-sample/flake-module.nix
-        ./nixos-modules/flake-module.nix
+        ./modules/nixos/flake-module.nix
+        ./modules/home-manager/flake-module.nix
 
+        ./nixos-configs-sample/flake-module.nix
         ./hm-configs-sample/flake-module.nix
-        ./hm-modules/flake-module.nix
       ];
       systems = with flake-utils.lib.system; [
         x86_64-linux
@@ -142,18 +142,29 @@
           if (builtins.hasAttr prev.stdenv.system self.packages)
           then
             # self.packages.${prev.stdenv.system}
+            # NOTE: 아래 방법을 사용하면 override 같은 것이 동작 안함 <2024-08-19>
             # prev.config.allowUnfree 값 전달 위한 코드
-            (builtins.mapAttrs (
-                _: drv: (
-                  prev.stdenv.mkDerivation (
-                    drv.drvAttrs
-                    // {
-                      inherit (drv) meta;
-                    }
-                  )
-                )
+            # (builtins.mapAttrs (
+            #     _: drv: (
+            #       prev.stdenv.mkDerivation (
+            #         drv.drvAttrs
+            #         // {
+            #           inherit (drv) meta;
+            #         }
+            #       )
+            #     )
+            #   )
+            #   self.packages.${prev.stdenv.system})
+            (
+              builtins.mapAttrs (_: drv: drv)
+              (
+                prev.lib.filterAttrs
+                (_: drv: (
+                  prev.config.allowUnfree || (!drv.meta.unfree)
+                ))
+                self.packages.${prev.stdenv.system}
               )
-              self.packages.${prev.stdenv.system})
+            )
           else {}
         );
       };

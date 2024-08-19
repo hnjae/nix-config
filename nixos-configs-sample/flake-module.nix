@@ -8,71 +8,7 @@
 
     specialArgs = {inherit inputs self;};
   in {
-    generic = nixosSystem {
-      inherit specialArgs;
-      modules = [
-        {
-          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
-          boot.loader.systemd-boot.enable = true;
-          system.stateVersion = "24.05";
-          nixpkgs = {
-            config.allowUnfree = true;
-            hostPlatform = "x86_64-linux";
-            overlays = [
-              self.overlays.default
-            ];
-          };
-        }
-        self.nixosModules.default
-      ];
-    };
-
-    generic-dekstop = nixosSystem {
-      inherit specialArgs;
-      modules = [
-        {
-          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
-          boot.loader.systemd-boot.enable = true;
-          system.stateVersion = "24.05";
-          nixpkgs = {
-            config.allowUnfree = false;
-            hostPlatform = "x86_64-linux";
-            overlays = [
-              self.overlays.default
-            ];
-          };
-        }
-        self.nixosModules.default
-        {
-          generic-nixos.isDesktop = true;
-        }
-      ];
-    };
-
-    generic-dekstop-plasma6 = nixosSystem {
-      inherit specialArgs;
-      modules = [
-        {
-          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
-          boot.loader.systemd-boot.enable = true;
-          system.stateVersion = "24.05";
-          nixpkgs = {
-            config.allowUnfree = false;
-            hostPlatform = "x86_64-linux";
-            overlays = [
-              self.overlays.default
-            ];
-          };
-        }
-        self.nixosModules.default
-        {
-          generic-nixos.isDesktop = true;
-        }
-        self.nixosModules.de-plasma6
-      ];
-    };
-
-    generic-dekstop-plasma6-unfree = nixosSystem {
+    vm = nixosSystem {
       inherit specialArgs;
       modules = [
         {
@@ -89,9 +25,98 @@
         }
         self.nixosModules.default
         {
-          generic-nixos.isDesktop = true;
+          generic-nixos.role = "vm";
         }
-        self.nixosModules.de-plasma6
+      ];
+    };
+
+    hypervisor = nixosSystem {
+      inherit specialArgs;
+      modules = [
+        {
+          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
+          boot.loader.systemd-boot.enable = true;
+          system.stateVersion = "24.05";
+          nixpkgs = {
+            config.allowUnfree = true;
+            hostPlatform = "x86_64-linux";
+            overlays = [
+              self.overlays.default
+            ];
+          };
+        }
+        self.nixosModules.default
+        {
+          generic-nixos.role = "hypervisor";
+        }
+      ];
+    };
+
+    dekstop = nixosSystem {
+      inherit specialArgs;
+      modules = [
+        {
+          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
+          boot.loader.systemd-boot.enable = true;
+          system.stateVersion = "24.05";
+          nixpkgs = {
+            config.allowUnfree = false;
+            hostPlatform = "x86_64-linux";
+            overlays = [
+              self.overlays.default
+            ];
+          };
+        }
+        self.nixosModules.default
+        {
+          generic-nixos.role = "desktop";
+        }
+      ];
+    };
+
+    dekstop-plasma6 = nixosSystem {
+      inherit specialArgs;
+      modules = [
+        {
+          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
+          boot.loader.systemd-boot.enable = true;
+          system.stateVersion = "24.05";
+          nixpkgs = {
+            config.allowUnfree = false;
+            hostPlatform = "x86_64-linux";
+            overlays = [
+              self.overlays.default
+            ];
+          };
+        }
+        self.nixosModules.default
+        {
+          generic-nixos.role = "desktop";
+        }
+        self.nixosModules.plasma6
+      ];
+    };
+
+    dekstop-plasma6-unfree = nixosSystem {
+      inherit specialArgs;
+      modules = [
+        {
+          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
+          boot.loader.systemd-boot.enable = true;
+          system.stateVersion = "24.05";
+          nixpkgs = {
+            config.allowUnfree = true;
+            hostPlatform = "x86_64-linux";
+            overlays = [
+              self.overlays.default
+            ];
+          };
+        }
+        self.nixosModules.default
+        {
+          generic-nixos.role = "desktop";
+        }
+        self.nixosModules.plasma6
       ];
     };
   };

@@ -36,6 +36,19 @@ drybuild-homes-wip:
       --json \
       '.#homeConfigurations.{}.activationPackage' 2> >(sed '/^[[:space:]]*\/nix\/store\//d')"
 
+drybuild-home-plasma6:
+  nix build \
+    --dry-run \
+    --no-warn-dirty \
+    --no-print-missing \
+    --option keep-env-derivations true \
+    --option pure-eval true \
+    --option show-trace false \
+    --json \
+    --update-input nix-web-app \
+    --builders "" \
+    ".#homeConfigurations.desktop-plasma6-unfree-x86_64-linux.activationPackage"
+
 drybuild-homes:
   #!/bin/sh
 
@@ -67,6 +80,7 @@ drybuild-homes:
       --quiet \
       --json \
       --builders "" \
+      --update-input nix-web-app \
       "${target}"
 
     echo ""
@@ -84,6 +98,30 @@ drybuild-home-desktop-plasma6-unfree-x86_64-linux:
       --json \
       --builders "" \
       ".#homeConfigurations.desktop-plasma6-unfree-x86_64-linux.activationPackage"
+
+drybuild-nixos-desktop:
+  nix build \
+    --dry-run \
+    --no-warn-dirty \
+    --option eval-cache false \
+    --no-print-missing \
+    --quiet \
+    --json \
+    --update-input nix-web-app \
+    --builders "" \
+    ".#nixosConfigurations.dekstop.config.system.build.toplevel"
+
+drybuild-nixos-desktop-plasma6:
+  nix build \
+    --dry-run \
+    --no-warn-dirty \
+    --option eval-cache false \
+    --no-print-missing \
+    --quiet \
+    --json \
+    --update-input nix-web-app \
+    --builders "" \
+    ".#nixosConfigurations.dekstop-plasma6-unfree.config.system.build.toplevel"
 
 # slower than nix flake check
 drybuild-nixoses:
