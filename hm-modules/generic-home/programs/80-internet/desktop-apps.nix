@@ -10,6 +10,8 @@ in {
   config = lib.mkIf (genericHomeCfg.isDesktop) {
     services.flatpak.packages = builtins.concatLists [
       (optionals genericHomeCfg.installTestApps [
+        "org.kde.kasts" # podcast
+
         # weather
         "io.github.amit9838.mousam"
         # "org.gnome.Weather"

@@ -43,6 +43,7 @@ in {
     (builtins.concatLists [
       [
         "org.gimp.GIMP"
+        "org.kde.kolourpaint" # basic painting
         "org.kde.krita"
 
         "org.kde.kdenlive"

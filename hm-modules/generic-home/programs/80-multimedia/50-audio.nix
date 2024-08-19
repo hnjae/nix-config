@@ -13,6 +13,7 @@ in {
         ["org.strawberrymusicplayer.strawberry"])
       (optionals (genericHomeCfg.isDesktop && genericHomeCfg.installTestApps) [
         "com.rafaelmardojai.Blanket" # white noise
+        "org.kde.vvave" # music
       ])
     ];
 }
