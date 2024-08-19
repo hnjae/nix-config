@@ -10,10 +10,7 @@
     stateful = import ./stateful;
     generic-home = import ./generic-home;
 
-    de-gnome = import ./de-gnome;
-    de-plasma5 = import ./de-plasma5;
     de-plasma6 = import ./de-plasma6;
-    de-sway = import ./de-sway;
 
     default = {
       imports = [
