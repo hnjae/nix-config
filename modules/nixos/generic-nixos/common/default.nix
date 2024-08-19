@@ -16,6 +16,7 @@ _: {
     ./locale.nix
     ./network.nix
     ./pam.nix
+    ./polkit.nix
     ./samba.nix
     ./shell.nix
     ./ssh.nix

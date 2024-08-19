@@ -1,9 +1,10 @@
 {
+  config,
   pkgs,
   lib,
   ...
 }: {
-  fonts = {
+  config.fonts = lib.mkIf (config.generic-nixos.role == "desktop") {
     fontDir.enable = lib.mkOverride 999 true;
     packages = builtins.concatLists [
       (lib.lists.optionals pkgs.config.allowUnfree (with pkgs; [
