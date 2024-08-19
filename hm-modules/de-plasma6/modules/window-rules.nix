@@ -6,6 +6,10 @@
   inherit (lib) types mkOption;
   windowRuleType = lib.types.submodule {
     options = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+      };
       uuid = mkOption {type = types.str;};
       description = mkOption {type = types.str;};
       Match = mkOption {type = types.attrs;};
@@ -18,6 +22,9 @@ in {
     type = lib.types.listOf windowRuleType;
     default = [];
     description = "";
+    apply = rules: (
+      builtins.filter (rule: rule.enable) rules
+    );
   };
 
   config = {
