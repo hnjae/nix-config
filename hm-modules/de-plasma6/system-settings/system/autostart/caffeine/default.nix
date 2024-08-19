@@ -1,5 +1,7 @@
 {pkgs, ...}: {
-  home.packages = with pkgs; [caffeine-ng];
+  home.packages = [
+    (pkgs.callPackage ./package {})
+  ];
   xdg.configFile."autostart/caffeine.desktop" = {
     enable = true;
     # KDE Panel 실행 기다리기 위해 sleep 필요 (NixOS 23.11, KDE 5.27.1)
