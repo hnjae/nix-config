@@ -330,6 +330,21 @@
         "type": "github"
       }
     },
+    "nix-web-app": {
+      "locked": {
+        "lastModified": 1723916182,
+        "narHash": "sha256-lOy89UfEwUMVjgz4U0Fhqc1r2XTd76iFHXNwA3WKBGQ=",
+        "ref": "refs/heads/main",
+        "rev": "676e2c5f8bf8c51445ccbd41874353cc0980146d",
+        "revCount": 9,
+        "type": "git",
+        "url": "file:///home/hyunjae/Projects/nix-web-app"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/hyunjae/Projects/nix-web-app"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1723938990,
@@ -461,6 +476,7 @@
         "impermanence": "impermanence",
         "nix-flatpak": "nix-flatpak",
         "nix-index-database": "nix-index-database",
+        "nix-web-app": "nix-web-app",
         "nixpkgs": "nixpkgs",
         "nixpkgs-mozilla": "nixpkgs-mozilla",
         "nixpkgs-unstable": "nixpkgs-unstable",
