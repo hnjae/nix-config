@@ -10,20 +10,16 @@ in {
 
   boot.kernel.sysctl = lib.attrsets.mergeAttrsList [
     (lib.attrsets.optionalAttrs isDesktop {
+      # "kernel.sysrq" = 1;
       # https://docs.kernel.org/admin-guide/sysrq.html
       "sysrq" = 1;
       # defaults: 16 ? / 64: enable signalling of process
       # NOTE: 강제 재부팅을 위해서는 1 이 되어야 함. <NixOS 24.05>
     })
     {
-      # "kernel.sysrq" = 1;
       # kernel default: 3 (6.6)
       "vm.page-cluster" = mkOverride 999 2;
 
-      # kernel 6.6 default: 100
-      # from docs.kernel.org:
-      # if the random IO against the swap device is on average 2x faster than IO
-      # from the filesystem, swappiness should be 133 (x + 2x = 200, 2x = 133.33).
       "vm.swappiness" = mkOverride 999 1;
     }
     {
