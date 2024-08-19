@@ -19,7 +19,6 @@ pkgs.writeShellApplication {
   runtimeInputs = with pkgs; [
     podman
     jq
-    # coreutils
     systemd
   ];
 
