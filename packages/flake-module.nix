@@ -7,19 +7,25 @@
     map (system: withSystem system module) systems
   ));
 in {
-  perSystem = {pkgs, ...}: {
-    # _module.args.pkgs = import inputs.nixpkgs {
-    #   inherit system;
-    #   config = {
-    #     allowUnfree = true;
-    #   };
-    # };
+  perSystem = {
+    pkgs,
+    system,
+    ...
+  }: {
+    _module.args.pkgs = import inputs.nixpkgs {
+      inherit system;
+      config = {
+        allowUnfree = true;
+      };
+    };
+
     packages = {
       nixvim = (import ./tools/nixvim) inputs.nixvim pkgs;
       vim-declared = (import ./tools/vim-declared) pkgs;
       fonts-dmca-sans-serif = pkgs.callPackage ./fonts/fonts-dmca-sans-serif {};
       fonts-plangothic = pkgs.callPackage ./fonts/fonts-plangothic {};
       fonts-ridibatang = pkgs.callPackage ./fonts/fonts-ridibatang {};
+
       # unfree
       fonts-kopub-world = pkgs.callPackage ./fonts/fonts-kopub-world {};
       fonts-toss-face = pkgs.callPackage ./fonts/fonts-toss-face {};
