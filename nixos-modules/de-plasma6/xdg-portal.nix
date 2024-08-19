@@ -1,5 +1,6 @@
 # import this unit if xserver.enable
 {
+  config,
   lib,
   pkgs,
   ...
@@ -7,6 +8,12 @@
   inherit (lib) mkOverride;
 in {
   xdg.portal.xdgOpenUsePortal = mkOverride 999 true;
+
+  environment.sessionVariables =
+    lib.attrsets.optionalAttrs
+    config.xdg.portal.xdgOpenUsePortal {
+      GTK_USE_PORTAL = "1";
+    };
 
   # NOTE: flatpak requires xdg.portal.enable
   xdg.portal.enable = true;
