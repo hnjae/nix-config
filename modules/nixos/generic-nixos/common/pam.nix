@@ -5,7 +5,7 @@
 }: {
   security.pam.services = let
     enableGnomeKeyring = config.services.gnome.gnome-keyring.enable;
-    enableKwallet = config.services.xserver.desktopManager.plasma6.enable;
+    enableKwallet = config.services.desktopManager.plasma6.enable;
   in
     builtins.mapAttrs
     (_: _: {
