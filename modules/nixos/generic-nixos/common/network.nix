@@ -3,8 +3,9 @@
   lib,
   pkgs,
   ...
-}: {
-  # networking.networkmanager.enable = config.services.xserver.enable;
+}: let
+  inherit (lib) mkOverride;
+in {
   networking.networkmanager = {
     enable = lib.mkOverride 999 true;
     plugins = with pkgs; [
@@ -16,4 +17,29 @@
     lib.lists.optional
     config.networking.networkmanager.enable
     pkgs.strongswanNM;
+
+  # TODO: use host's dns in vm <2024-08-20>
+  networking.nameservers = mkOverride 999 [
+    "1.1.1.1"
+    "1.0.0.1"
+    "2606:4700:4700::1111"
+    "2606:4700:4700::1001"
+  ];
+
+  # org.freedesktop.resolve1
+  services.resolved = {
+    # DoH not supported: <2024-08-20>
+    # https://github.com/systemd/systemd/issues/8639
+    # TODO: use resolved on my servers <2024-08-20>
+    enable = mkOverride 999 (config.generic-nixos.role == "desktop");
+    # dnsovertls = mkOverride 999 "opportunistic"; # will fallback
+    dnsovertls = mkOverride 999 "true";
+    dnssec = mkOverride 999 "allow-downgrade";
+    fallbackDns = mkOverride 999 [
+      "8.8.8.8"
+      "8.8.4.4"
+      "2001:4860:4860::8888"
+      "2001:4860:4860::8844"
+    ];
+  };
 }

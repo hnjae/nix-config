@@ -23,6 +23,7 @@
       (import ../../../home-manager/stateful)
       (import ../../../home-manager/generic-home)
     ];
+
     extraSpecialArgs = {
       pkgsUnstable = import inputs.nixpkgs-unstable {
         inherit (pkgs.stdenv) system;

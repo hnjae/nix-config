@@ -21,7 +21,5 @@ _: {
         lact
       ];
     };
-
-    plasma6 = import ./plasma6;
   };
 }
