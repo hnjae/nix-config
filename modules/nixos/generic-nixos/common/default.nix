@@ -1,6 +1,5 @@
 _: {
   imports = [
-    ./nix
     ./chrony.nix
     ./console.nix
     ./containers.nix
@@ -15,15 +14,16 @@ _: {
     ./libvirtd.nix
     ./locale.nix
     ./network.nix
+    ./nix
     ./pam.nix
     ./polkit.nix
     ./samba.nix
     ./shell.nix
     ./ssh.nix
     ./sysctl.nix
-    ./systemd-tmpfiles.nix
     ./systemd.nix
     ./time.nix
+    ./tmpfiles.nix
     ./users.nix
     ./zram.nix
   ];

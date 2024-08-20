@@ -8,14 +8,14 @@
     # for nix shell nixpkgs#blabla
     # run `nix registry list` to list current registry
     registry = {
-      nixpkgs = {
+      nixpkgs-unstable = {
         flake = inputs.nixpkgs-unstable;
         to = {
           path = "${inputs.nixpkgs-unstable}";
           type = "path";
         };
       };
-      nixpkgs-stable = {
+      nixpkgs = {
         flake = inputs.nixpkgs;
         to = {
           path = "${inputs.nixpkgs}";
@@ -27,8 +27,8 @@
     # to use nix-shell, run `nix repl :l <nixpkgs>`
     channel.enable = true;
     nixPath = lib.lists.optionals config.nix.channel.enable [
-      "nixpkgs=${inputs.nixpkgs-unstable}"
-      "nixpkgs-stable=${inputs.nixpkgs}"
+      "nixpkgs=${inputs.nixpkgs}"
+      "nixpkgs-unstable=${inputs.nixpkgs-unstable}"
       # "/nix/var/nix/profiles/per-user/root/channels"
     ];
   };

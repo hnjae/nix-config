@@ -4,6 +4,7 @@
       "FilterBar".value = true;
       "ShowFullPath".value = true;
       "GlobalViewProps".value = true; # use common display style for all folders
+      "RememberOpenedTabs".value = false;
     };
     "CompactMode" = {
       "MaximumTextWidthIndex".value = 3; # Large
