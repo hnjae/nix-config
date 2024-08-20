@@ -6,7 +6,7 @@ _: {
       [Desktop Entry]
       Categories=Office;
       Comment=Password manager and secure wallet
-      Exec=sh -c 'sleep 1 && unset GTK_USE_PORTAL && 1password --silent'
+      Exec=sh -c 'sleep 1 && GTK_USE_PORTAL=0 1password --silent --enable-features=UseOzonePlatform --ozone-platform-hint=auto --enable-wayland-ime'
       Icon=1password
       MimeType=x-scheme-handler/onepassword;
       Name=1Password
