@@ -17,14 +17,15 @@ in {
         if isDesktop
         then "offline"
         else "iburst";
-      enableNTS = isDesktop;
+      enableNTS = true;
       servers =
         if config.services.chrony.enableNTS
         then [
-          "time.cloudflare.com"
+          # https://github.com/jauderho/nts-servers
+          "time.cloudflare.com" # anycast
+          "nts.netnod.se" # anycast
           "oregon.time.system76.com"
           "paris.time.system76.com"
-          # "nts.netnod.se"
           # "brazil.time.system76.com"
         ]
         else [

@@ -27,16 +27,7 @@ in {
   # sound
   sound.enable = mkOverride 999 isDesktop;
   security.rtkit.enable = mkOverride 999 isDesktop;
-  hardware.pulseaudio.enable = mkOverride 999 false;
-  services.pipewire = {
-    enable = mkOverride 999 isDesktop;
-    wireplumber.enable = mkOverride 999 isDesktop;
-    audio.enable = mkOverride 999 isDesktop;
-    alsa.enable = mkOverride 999 isDesktop;
-    alsa.support32Bit = mkOverride 999 isDesktop;
-    pulse.enable = mkOverride 999 isDesktop;
-    jack.enable = mkOverride 999 isDesktop;
-  };
+  hardware.pulseaudio.enable = false;
 
   # bluetooth
   hardware.bluetooth.enable = mkOverride 999 isDesktop;
@@ -52,19 +43,6 @@ in {
   #     bluetooth_policy.policy["media-role.use-headset-profile"] = false
   #   '';
   # };
-
-  environment.etc."wireplumber/bluetooth.lua.d/51-bluez-config.lua" = {
-    enable = mkOverride 999 isDesktop;
-    text = ''
-      bluez_monitor.properties = {
-        ["bluez5.a2dp.ldac.quality"] = "sq", -- 660
-      }
-    '';
-    # ["bluez5.a2dp.aac.bitratemode"] = 1,
-    # ["bluez5.enable-sbc-xq"] = true,
-    # ["bluez5.enable-msbc"] = true,
-    # ["bluez5.codecs"] = "[ aac ldac aptx aptx_hd aptx_ll aptx_ll_duplex faststream faststream_duplex ]",
-  };
 
   # opengl
   hardware.opengl = {
