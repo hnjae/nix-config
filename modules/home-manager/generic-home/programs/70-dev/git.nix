@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  inputs,
   pkgsUnstable,
   ...
 }: let
@@ -16,6 +17,7 @@ in {
 
       # tig
     ];
+
     services.flatpak.packages = lib.mkIf genericHomeCfg.isDesktop [
       # opensource git client
       # "com.jetpackduba.Gitnuro"
@@ -32,5 +34,18 @@ in {
       gclr = "git clone --depth 1 --recurse-submodules --shallow-submodules";
       lg = "lazygit";
     };
+    home.sessionVariables = {
+      forgit_log = "glof";
+    };
+
+    programs.zsh.initExtra = ''
+      . "${inputs.cgitc}/init.zsh"
+      . "${pkgsUnstable.zsh-forgit}/share/zsh/zsh-forgit/forgit.plugin.zsh"
+    '';
+
+    programs.fish.interactiveShellInit = ''
+      # . "${inputs.cgitc}/init.fish"
+      . "${pkgsUnstable.fishPlugins.forgit}/share/fish/vendor_conf.d/forgit.plugin.fish"
+    '';
   };
 }
