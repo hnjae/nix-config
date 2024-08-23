@@ -13,6 +13,7 @@ _: {
     ./keyboard.nix
     ./libvirtd.nix
     ./locale.nix
+    ./login-defs.nix
     ./network.nix
     ./nix
     ./pam.nix
