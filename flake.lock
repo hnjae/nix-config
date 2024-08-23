@@ -98,6 +98,22 @@
         "type": "github"
       }
     },
+    "cgitc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1648707975,
+        "narHash": "sha256-Zb8P0paRCsSAsIseVJYSbicecp8pqPP+vHdW5kbI6zc=",
+        "owner": "hnjae",
+        "repo": "cgitc",
+        "rev": "7141621f64e82e828f5197c7ae43166b745d8d57",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hnjae",
+        "repo": "cgitc",
+        "type": "github"
+      }
+    },
     "devshell": {
       "inputs": {
         "nixpkgs": [
@@ -458,6 +474,7 @@
         "base24-kdeplasma": "base24-kdeplasma",
         "base24-konsole": "base24-konsole",
         "base24-vscode-terminal": "base24-vscode-terminal",
+        "cgitc": "cgitc",
         "devshell": [
           "nixvim",
           "devshell"

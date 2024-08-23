@@ -86,6 +86,12 @@
       follows = "nixvim/devshell";
       inputs.flake-utils.follows = "flake-utils";
     };
+
+    # others
+    cgitc = {
+      url = "github:hnjae/cgitc";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
