@@ -87,7 +87,7 @@ in {
 
       timerConfig = {
         OnCalendar = cfg.onCalendar;
-        AccuracySec = "1d";
+        AccuracySec = "1h";
         Persistent = true;
       };
 
