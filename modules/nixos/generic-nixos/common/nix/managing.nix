@@ -23,7 +23,6 @@ in {
         hypervisor = 7;
       }
       ."${cfg.role}";
-    onCalendar = mkOverride 999 "daily";
   };
 
   services.nix-store-gc = {
