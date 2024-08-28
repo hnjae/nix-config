@@ -25,9 +25,12 @@ in {
       (optionals (genericHomeCfg.isDesktop) (with pkgsUnstable; [
         lapce
         # jetbrains.idea-community
+
         # emacs related
-        emacs29-gtk3
-        graphviz-nox
+        emacs29-pgtk
+        # graphviz-nox
+
+        zed-editor
       ]))
     ]))
   ]);

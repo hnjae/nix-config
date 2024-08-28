@@ -78,7 +78,6 @@
  </Menu>
  <ToolBar name="sessionToolbar" noMerge="1">
   <Spacer name="spacer_0"/>
-  <Action name="hamburger_menu"/>
   <text translationDomain="konsole">Session Toolbar</text>
   <index>1</index>
  </ToolBar>

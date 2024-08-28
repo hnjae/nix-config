@@ -234,7 +234,7 @@ def main() -> int:
                 gens.discard(gen)
 
             if len(generations) == len(gens):
-                # keep latest 
+                # keep latest
                 gens.remove(max(gens))
 
             generations_to_remove.update(gens)

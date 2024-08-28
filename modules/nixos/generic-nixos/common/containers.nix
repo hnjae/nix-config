@@ -21,15 +21,17 @@ in {
   );
 
   virtualisation.docker = {
-    enable = isDocker;
+    enable = lib.mkOverride 999 isDocker;
     inherit storageDriver;
   };
 
   virtualisation.podman = {
-    enable = isPodman;
-    dockerSocket.enable = false;
-    dockerCompat = false;
-    defaultNetwork.settings.dns_enabled = false;
+    enable = lib.mkOverride 999 isPodman;
+    dockerSocket.enable = lib.mkOverride 999 false;
+    dockerCompat = lib.mkOverride 999 false;
+    defaultNetwork.settings = lib.mkOverride 999 {
+      dns_enabled = false;
+    };
   };
 
   environment.systemPackages = [

@@ -1,4 +1,0 @@
-% pvcreate, lvm
-
-# create
-sudo pvcreate -v <block-device>

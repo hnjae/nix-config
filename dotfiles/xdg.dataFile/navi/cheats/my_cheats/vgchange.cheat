@@ -1,4 +1,0 @@
-% lvm, vgchange
-
-# close vg
-vgchange -an <vg-name>

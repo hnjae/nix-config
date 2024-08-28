@@ -11,8 +11,10 @@ in {
       biome # linters, formatters
 
       # not working
-      pnpm-shell-completion
-      corepack_20 # Wrappers for npm, pnpm and Yarn via Node.js Corepack
+      # pnpm-shell-completion
+      # corepack_20 # Wrappers for npm, pnpm and Yarn via Node.js Corepack
+
+      pnpm
 
       # current LTS (2024-02-29)
       nodejs_20

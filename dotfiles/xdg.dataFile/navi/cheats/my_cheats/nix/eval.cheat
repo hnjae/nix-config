@@ -4,8 +4,7 @@
 nix eval --raw nixpkgs-stable#<package-name>
 
 # cd to specific packages path
-cd "$(nix eval --raw nixpkgs-stable#<package-name>)"
-; nix shell nixpkgs-stable#<package-name> &&
+nix copy --from "https://cache.nixos.org" "$(nix eval --raw "nixpkgs#<package-name>")" && cd -- "$(nix eval --raw "nixpkgs#<package-name>")"
 
 # apply
 nix eval --no-warn-dirty --json ".#homeConfigurations" --apply builtins.attrNames
