@@ -15,7 +15,7 @@ sudo cryptsetup --type luks2 --cipher "aes-xts-plain64" --hash sha256 --key-size
 sudo cryptsetup --type luks2 --cipher "aes-xts-plain64" --hash sha256 --key-size "256" --sector-size "4096" --label "LUKS2_<label>" --use-urandom --verify-passphrase luksFormat "<path-to-block-device>"
 
 # for nvme. (for opened device)
-cryptsetup --allow-discards --persistent --perf-no_read_workqueue --perf-no_wriet_workqueue refresh <name>
+cryptsetup --allow-discards --persistent --perf-no_read_workqueue --perf-no_write_workqueue refresh <name>
 
 # luks header backup
 cryptsetup luksHeaderBackup /dev/<device> --header-backup-file "<header-name>.img"

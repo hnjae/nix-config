@@ -1,4 +1,0 @@
-% vgcreate, lvm
-
-# create
-vgcreate <vg_name> <blockdevice>

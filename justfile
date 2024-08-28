@@ -4,6 +4,23 @@ alias fmt := format
 format:
   nix fmt --no-warn-dirty
 
+flake-update-except-unstable:
+  nix flake lock \
+    --update-input nixpkgs \
+    --update-input flake-parts \
+    --update-input flake-utils \
+    --update-input home-manager \
+    --update-input plasma-manager \
+    --update-input nix-flatpak \
+    --update-input nix-web-app \
+    --update-input impermanence \
+    --update-input rust-overlay \
+    --update-input nixpkgs-mozilla \
+    --update-input nixvim \
+    --update-input nix-index-database \
+    --update-input cgitc
+
+
 test-flake:
   #!/bin/sh
   set -e

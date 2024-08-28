@@ -5,7 +5,10 @@ in {
   services.openssh = {
     enable = mkOverride 999 true;
     # settings.PermitRootLogin = "prohibit-password";
-    settings.PermitRootLogin = mkOverride 999 "yes";
-    settings.PasswordAuthentication = mkOverride 999 false;
+    settings = {
+      PermitRootLogin = "yes";
+      PasswordAuthentication = mkOverride 999 false;
+      # UseDns = mkOverride 999 true;
+    };
   };
 }

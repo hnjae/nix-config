@@ -1,7 +1,0 @@
-% lvcreate, lvm
-
-# lv create with size
-sudo lvcreate -L "${SWAP_LV_SIZE}" -n "${SWAP_LV_NAME}" "${VG_NAME}"
-
-# lv create free
-sudo lvcreate -l "100%FREE" -n "${SWAP_LV_NAME}" "${VG_NAME}"

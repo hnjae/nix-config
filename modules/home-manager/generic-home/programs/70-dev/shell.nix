@@ -16,7 +16,7 @@ in {
       shellcheck
 
       # shellcheck deprecated over bashls in none-ls
-      nodePackages.bash-language-server
+      bash-language-server
     ];
   };
 }
