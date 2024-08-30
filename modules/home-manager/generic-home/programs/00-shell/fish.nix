@@ -1,6 +1,6 @@
 {lib, ...}: {
   programs.fish = {
-    enable = true;
+    enable = false;
 
     # NOTE: shellInit -> loginShellInit(konsole에서는 source x) ->  interactiveShellInit (2023-04-19 checked)
 

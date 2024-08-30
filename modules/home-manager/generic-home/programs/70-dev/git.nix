@@ -29,9 +29,8 @@ in {
 
     # bindings https://github.com/wfxr/forgit 참고
     home.shellAliases = {
-      g = "git";
-      gcl = "git clone --depth 1";
-      gclr = "git clone --depth 1 --recurse-submodules --shallow-submodules";
+      # gcl = "git clone --depth 1";
+      # gclr = "git clone --depth 1 --recurse-submodules --shallow-submodules";
       lg = "lazygit";
     };
     home.sessionVariables = {
@@ -40,12 +39,14 @@ in {
 
     programs.zsh.initExtra = ''
       . "${inputs.cgitc}/init.zsh"
+
+      forgit_stash_show=gsts
+      forgit_stash_push=gstP
       . "${pkgsUnstable.zsh-forgit}/share/zsh/zsh-forgit/forgit.plugin.zsh"
     '';
 
     programs.fish.interactiveShellInit = ''
-      # . "${inputs.cgitc}/init.fish"
-      . "${pkgsUnstable.fishPlugins.forgit}/share/fish/vendor_conf.d/forgit.plugin.fish"
+      # . "${pkgsUnstable.fishPlugins.forgit}/share/fish/vendor_conf.d/forgit.plugin.fish"
     '';
   };
 }
