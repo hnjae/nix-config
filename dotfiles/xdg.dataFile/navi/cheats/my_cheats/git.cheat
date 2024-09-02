@@ -16,7 +16,10 @@ git switch --orphan <branch-name>
 git branch <branch> <commit>
 
 # delete branch
-git branch --delete <branch>
+git branch -d <branch>
+
+# move/rename branch
+git branch -m <new-name>
 
 # switch to specific commit
 git reset [--hard] <commit>
