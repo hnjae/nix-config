@@ -60,7 +60,7 @@ git cherry-pick <commit> [--ff]
 git cherry-pick -n <commit>
 
 # git restore specific file from other commit (-s: --source)
-git restore -s <commint> -- <file>
+git restore -s <commit> -- <file>
 
 # git rebase
 git rebase --interactive <commit>
