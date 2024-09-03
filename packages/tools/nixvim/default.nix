@@ -95,6 +95,11 @@ nixvim: pkgs: let
       # extraFiles = import ./share/ftplugin.nix;
 
       plugins = {
+        sleuth = {
+          enable = true;
+          settings = {};
+        };
+
         # nvim-autopairs.enable = true;
         surround.enable = true;
 
@@ -187,4 +192,3 @@ in
 #   #!${pkgs.dash}/bin/dash
 #    ${package}/bin/nvim "$@"
 # ''
-
