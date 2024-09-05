@@ -8,7 +8,7 @@ in {
       description = "show-in-all-activities-and-desktop";
       Match = {
         "wmclass".value = wmclassMaker [
-          "ticktick"
+          # "ticktick"
           "1Password"
 
           # KDE's
