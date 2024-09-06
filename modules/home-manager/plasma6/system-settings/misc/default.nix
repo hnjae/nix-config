@@ -1,8 +1,9 @@
 {...}: {
   imports = [
-    ./kwin.nix
-    ./kwin-desktops.nix
-    ./panels
     # ./hotkeys.nix
+    ./kwin-desktops.nix
+    ./kwin-tiling.nix
+    ./kwin.nix
+    ./panels
   ];
 }
