@@ -16,6 +16,8 @@ in {
 
         "org.gaphor.Gaphor" # UML modeling, apache 2
         "se.sjoerd.Graphs" # manipulate data and plot, gpl3
+
+        "org.onlyoffice.desktopeditors" # agpl-3.0
       ])
     ];
   };

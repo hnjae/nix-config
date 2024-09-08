@@ -11,13 +11,16 @@ flake-update-except-unstable:
     --update-input flake-utils \
     --update-input home-manager \
     --update-input plasma-manager \
-    --update-input nix-flatpak \
-    --update-input nix-web-app \
     --update-input impermanence \
     --update-input rust-overlay \
     --update-input nixpkgs-mozilla \
     --update-input nixvim \
     --update-input nix-index-database \
+    --update-input base16-schemes \
+    --update-input base24-konsole \
+    --update-input base24-kdeplasma \
+    --update-input nix-flatpak \
+    --update-input nix-web-app \
     --update-input cgitc
 
 
