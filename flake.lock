@@ -499,7 +499,8 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "plasma-manager": "plasma-manager",
-        "rust-overlay": "rust-overlay"
+        "rust-overlay": "rust-overlay",
+        "ww-run-raise": "ww-run-raise"
       }
     },
     "rust-overlay": {
@@ -555,6 +556,32 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "ww-run-raise": {
+      "inputs": {
+        "devshell": [
+          "devshell"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1725947418,
+        "narHash": "sha256-yBcDcVyL58uw3ldvZa2kc2bZNoZ4Gtr5tstNR8Ey6zA=",
+        "owner": "hnjae",
+        "repo": "ww-run-raise",
+        "rev": "f95469f792f51426018056f23330688859c81aba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hnjae",
+        "repo": "ww-run-raise",
         "type": "github"
       }
     }
