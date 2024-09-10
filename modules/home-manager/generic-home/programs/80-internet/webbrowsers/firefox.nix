@@ -7,7 +7,10 @@
   genericHomeCfg = config.generic-home;
 in {
   config = lib.mkIf (genericHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
-    home.packages = [pkgs.firefox-bin];
+    home.packages = [
+      # pkgs.firefox-bin
+      pkgs.firefox
+    ];
 
     stateful.cowNodes = [
       {
