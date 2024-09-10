@@ -5,5 +5,6 @@
     ./custom.nix
     ./ksmserver.nix
     ./system-settings.nix
+    ./ww.nix
   ];
 }
