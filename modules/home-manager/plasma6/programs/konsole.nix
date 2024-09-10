@@ -71,11 +71,14 @@ in {
     #   mode = "755";
     #   type = "dir";
     # }
-    {
-      path = "${config.xdg.configHome}/konsolerc";
-      mode = "600";
-      type = "file";
-    }
+
+    # 선언됨
+    # {
+    #   path = "${config.xdg.configHome}/konsolerc";
+    #   mode = "600";
+    #   type = "file";
+    # }
+
     {
       path = "${config.xdg.configHome}/konsolesshconfig";
       mode = "600";
@@ -109,6 +112,17 @@ in {
 
   programs.plasma.configFile."konsolerc" = {
     "Desktop Entry" = {DefaultProfile.value = "zsh.profile";};
+
+    FileLocation = {
+      # use `~/.cache/konsole` instead of `/tmp`
+      scrollbackUseCacheLocation = true;
+      scrollbackUseSystemLocation = false;
+    };
+
+    ThumbnailsSettings = {
+      ThumbnailAlt = true;
+    };
+
     General = {ConfigVersion.value = 1;};
     KonsoleWindow = {RememberWindowSize.value = false;};
     "MainWindow.Toolbar mainToolBar" = {Iconsize.value = 16;};
