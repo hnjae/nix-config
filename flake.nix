@@ -92,6 +92,15 @@
       url = "github:hnjae/cgitc";
       flake = false;
     };
+
+    ww-run-raise = {
+      url = "github:hnjae/ww-run-raise";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        devshell.follows = "devshell";
+      };
+    };
   };
 
   outputs = inputs @ {
