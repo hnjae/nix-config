@@ -12,8 +12,10 @@
       widgets = [
         "org.kde.plasma.marginsseparator"
         (import ./widgets/kicker-dash.nix)
+
         # "org.kde.plasma.marginsseparator"
         # (import ./widgets/show-activity-manager.nix)
+
         "org.kde.plasma.marginsseparator"
         (import ./widgets/compact-pager.nix)
         "org.kde.plasma.marginsseparator"
@@ -22,13 +24,41 @@
 
         "org.kde.plasma.panelspacer"
 
-        (import ./widgets/icon-tasks-alt.nix)
+        # (import ./widgets/icon-tasks-alt.nix)
 
-        "org.kde.plasma.marginsseparator"
+        # "org.kde.plasma.marginsseparator"
 
         (import ./widgets/system-tray.nix)
         (import ./widgets/digital-clock.nix)
         "org.kde.plasma.showdesktop"
+      ];
+    }
+    {
+      height = 40;
+      location = "bottom";
+      alignment = "center";
+      lengthMode = "fit";
+      floating = true;
+      hiding = "dodgewindows";
+      screen = "all";
+      widgets = [
+        {
+          name = "org.kde.plasma.icontasks";
+          config = {
+            General = {
+              fill = "false";
+              reverseMode = "false";
+              launchers = [
+                "applications:org.kde.konsole.desktop"
+                "applications:brave-browser.desktop"
+                "applications:com.logseq.Logseq.desktop"
+                "applications:chrome-lobe.hjae.xyz__-Default.desktop"
+                "applications:brave-ticktick.com__webapp-Default.desktop"
+                # "applications:com.ticktick.TickTick.desktop"
+              ];
+            };
+          };
+        }
       ];
     }
   ];
