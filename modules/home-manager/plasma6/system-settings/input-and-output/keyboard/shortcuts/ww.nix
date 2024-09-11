@@ -3,11 +3,37 @@
   pkgs,
   ...
 }: {
+  # 참고: https://colemakmods.github.io/mod-dh/gfx/compare/keyboard_calc_std_ergonomic_scores.png
+
   home.packages = [
     inputs.ww-run-raise.packages.${pkgs.stdenv.system}.default
   ];
   # disable dolphin launch
   programs.plasma.shortcuts."services/org.kde.dolphin.desktop"."_launch" = [];
+
+  xdg.desktopEntries."ww-terminal" = {
+    name = "ww-terminal";
+    exec = "ww -pn konsole -fc org.kde.konsole -d org.kde.konsole";
+    type = "Application";
+    noDisplay = true;
+    startupNotify = false;
+    settings = {
+      "X-KDE-GlobalAccel-CommandShortcut" = "true";
+    };
+  };
+  programs.plasma.shortcuts."services/ww-terminal.desktop"."_launch" = "Meta+N";
+
+  xdg.desktopEntries."ww-browser" = {
+    name = "ww-browser";
+    exec = "ww -pn brave -fc brave-browser -d brave-browser";
+    type = "Application";
+    noDisplay = true;
+    startupNotify = false;
+    settings = {
+      "X-KDE-GlobalAccel-CommandShortcut" = "true";
+    };
+  };
+  programs.plasma.shortcuts."services/ww-browser.desktop"."_launch" = "Meta+E";
 
   xdg.desktopEntries."ww-pkm" = {
     name = "ww-pkm";
@@ -21,9 +47,9 @@
   };
   programs.plasma.shortcuts."services/ww-pkm.desktop"."_launch" = "Meta+I";
 
-  xdg.desktopEntries."ww-browser" = {
-    name = "ww-browser";
-    exec = "ww -pn brave -fc brave-browser -d brave-browser";
+  xdg.desktopEntries."ww-ai" = {
+    name = "ww-ai";
+    exec = "ww -pn chromium -fc chrome-lobe.hjae.xyz__-Default -d chrome-lobe.hjae.xyz__-Default";
     type = "Application";
     noDisplay = true;
     startupNotify = false;
@@ -31,11 +57,11 @@
       "X-KDE-GlobalAccel-CommandShortcut" = "true";
     };
   };
-  programs.plasma.shortcuts."services/ww-browser.desktop"."_launch" = "Meta+N";
+  programs.plasma.shortcuts."services/ww-ai.desktop"."_launch" = "Meta+O";
 
-  xdg.desktopEntries."ww-terminal" = {
-    name = "ww-brave";
-    exec = "ww -pn konsole -fc org.kde.konsole -d org.kde.konsole";
+  xdg.desktopEntries."ww-todo" = {
+    name = "ww-todo";
+    exec = "ww -pn brave -fc brave-ticktick.com__webapp-Default -d brave-ticktick.com__webapp-Default";
     type = "Application";
     noDisplay = true;
     startupNotify = false;
@@ -43,5 +69,5 @@
       "X-KDE-GlobalAccel-CommandShortcut" = "true";
     };
   };
-  programs.plasma.shortcuts."services/ww-terminal.desktop"."_launch" = "Meta+E";
+  programs.plasma.shortcuts."services/ww-todo.desktop"."_launch" = "Meta+H";
 }

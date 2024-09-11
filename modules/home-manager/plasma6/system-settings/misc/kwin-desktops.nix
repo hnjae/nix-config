@@ -1,4 +1,4 @@
-{...}: {
+_: {
   programs.plasma.configFile."kwinrc"."Desktops" = {
     "Id_1" = "d1ce52c5-b0be-4e5d-9f11-87d3b4f6a44c";
     "Id_2" = "ce46e82f-4d71-4960-8226-dd8b1fc634f2";
