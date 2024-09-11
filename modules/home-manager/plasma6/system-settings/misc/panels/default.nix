@@ -1,4 +1,4 @@
-{...}: {
+_: {
   # NOTE: ~/.config/plasma-org.kde.plasma.desktop-appletsrc
   # /run/current-system/sw/lib/qt-6/plugins/plasma/applets
   # /run/current-system/sw/share/plasma/plasmoids
@@ -55,6 +55,9 @@
                 "applications:chrome-lobe.hjae.xyz__-Default.desktop"
                 "applications:brave-ticktick.com__webapp-Default.desktop"
                 # "applications:com.ticktick.TickTick.desktop"
+                "applications:chrome-calendar.notion.so__-Default"
+                "applications:org.mozilla.Thunderbird.desktop"
+                "applications:1password.desktop"
               ];
             };
           };
@@ -70,4 +73,3 @@
 [Containments][2][Applets][34][Shortcuts]
 global=Meta+F
 */
-

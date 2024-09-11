@@ -70,4 +70,40 @@
     };
   };
   programs.plasma.shortcuts."services/ww-todo.desktop"."_launch" = "Meta+H";
+
+  xdg.desktopEntries."ww-calendar" = {
+    name = "ww-calendar";
+    exec = "ww -pn chromium -fc chrome-calendar.notion.so__-Default -d applications:chrome-calendar.notion.so__-Default";
+    type = "Application";
+    noDisplay = true;
+    startupNotify = false;
+    settings = {
+      "X-KDE-GlobalAccel-CommandShortcut" = "true";
+    };
+  };
+  programs.plasma.shortcuts."services/ww-calendar.desktop"."_launch" = "Meta+U";
+
+  xdg.desktopEntries."ww-mail" = {
+    name = "ww-mail";
+    exec = "ww -pn thunderbird -fc org.mozilla.Thunderbird -d org.mozilla.Thunderbird";
+    type = "Application";
+    noDisplay = true;
+    startupNotify = false;
+    settings = {
+      "X-KDE-GlobalAccel-CommandShortcut" = "true";
+    };
+  };
+  programs.plasma.shortcuts."services/ww-mail.desktop"."_launch" = "Meta+L";
+
+  xdg.desktopEntries."ww-password" = {
+    name = "ww-password";
+    exec = "ww -pn 1password -fc 1Password -d 1password.desktop";
+    type = "Application";
+    noDisplay = true;
+    startupNotify = false;
+    settings = {
+      "X-KDE-GlobalAccel-CommandShortcut" = "true";
+    };
+  };
+  programs.plasma.shortcuts."services/ww-password.desktop"."_launch" = "Meta+K";
 }
