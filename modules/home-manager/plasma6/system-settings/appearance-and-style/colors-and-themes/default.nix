@@ -30,7 +30,10 @@ in {
     # run `plasma-apply-lookandfeel --list`
     lookAndFeel = "org.kde.breeze.desktop";
 
-    iconTheme = "breeze";
+    iconTheme =
+      if genericHomeCfg.base24.darkMode
+      then "breeze-dark"
+      else "breeze";
   };
 
   # to keep color appearance if not using base24
