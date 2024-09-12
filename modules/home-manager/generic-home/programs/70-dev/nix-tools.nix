@@ -24,7 +24,9 @@ in {
       nix-init
 
       # run nixpkgs' pkg with , (comma)
-      comma
+      # comma
     ];
+
+    programs.nix-index-database.comma.enable = true;
   };
 }
