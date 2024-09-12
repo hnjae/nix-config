@@ -3,7 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.follows = "nix-index-database/nixpkgs";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs = {
@@ -46,7 +47,7 @@
 
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     # base16
