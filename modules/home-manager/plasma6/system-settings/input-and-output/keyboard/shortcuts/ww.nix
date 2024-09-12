@@ -11,18 +11,6 @@
   # disable dolphin launch
   programs.plasma.shortcuts."services/org.kde.dolphin.desktop"."_launch" = [];
 
-  xdg.desktopEntries."ww-terminal" = {
-    name = "ww-terminal";
-    exec = "ww -pn konsole -fc org.kde.konsole -d org.kde.konsole";
-    type = "Application";
-    noDisplay = true;
-    startupNotify = false;
-    settings = {
-      "X-KDE-GlobalAccel-CommandShortcut" = "true";
-    };
-  };
-  programs.plasma.shortcuts."services/ww-terminal.desktop"."_launch" = "Meta+N";
-
   xdg.desktopEntries."ww-browser" = {
     name = "ww-browser";
     exec = "ww -pn brave -fc brave-browser -d brave-browser";
@@ -33,7 +21,19 @@
       "X-KDE-GlobalAccel-CommandShortcut" = "true";
     };
   };
-  programs.plasma.shortcuts."services/ww-browser.desktop"."_launch" = "Meta+E";
+  programs.plasma.shortcuts."services/ww-browser.desktop"."_launch" = "Meta+N";
+
+  xdg.desktopEntries."ww-terminal" = {
+    name = "ww-terminal";
+    exec = "ww -pn konsole -fc org.kde.konsole -d org.kde.konsole";
+    type = "Application";
+    noDisplay = true;
+    startupNotify = false;
+    settings = {
+      "X-KDE-GlobalAccel-CommandShortcut" = "true";
+    };
+  };
+  programs.plasma.shortcuts."services/ww-terminal.desktop"."_launch" = "Meta+E";
 
   xdg.desktopEntries."ww-pkm" = {
     name = "ww-pkm";
@@ -73,7 +73,7 @@
 
   xdg.desktopEntries."ww-calendar" = {
     name = "ww-calendar";
-    exec = "ww -pn chromium -fc chrome-calendar.notion.so__-Default -d applications:chrome-calendar.notion.so__-Default";
+    exec = "ww -pn chromium -fc chrome-calendar.notion.so__-Default -d chrome-calendar.notion.so__-Default";
     type = "Application";
     noDisplay = true;
     startupNotify = false;

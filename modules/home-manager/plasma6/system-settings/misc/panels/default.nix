@@ -49,13 +49,13 @@ _: {
               fill = "false";
               reverseMode = "false";
               launchers = [
-                "applications:org.kde.konsole.desktop"
                 "applications:brave-browser.desktop"
+                "applications:org.kde.konsole.desktop"
                 "applications:com.logseq.Logseq.desktop"
                 "applications:chrome-lobe.hjae.xyz__-Default.desktop"
                 "applications:brave-ticktick.com__webapp-Default.desktop"
                 # "applications:com.ticktick.TickTick.desktop"
-                "applications:chrome-calendar.notion.so__-Default"
+                "applications:chrome-calendar.notion.so__-Default.desktop"
                 "applications:org.mozilla.Thunderbird.desktop"
                 "applications:1password.desktop"
               ];
