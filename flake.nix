@@ -32,7 +32,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
-    # nur.url = "github:nix-community/NUR";
+    nur.url = "github:nix-community/NUR";
 
     nixvim = {
       url = "github:nix-community/nixvim/nixos-24.05";
