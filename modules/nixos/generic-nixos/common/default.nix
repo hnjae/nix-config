@@ -16,6 +16,7 @@ _: {
     ./login-defs.nix
     ./network.nix
     ./nix
+    ./nixpkgs.nix
     ./pam.nix
     ./polkit.nix
     ./samba.nix
