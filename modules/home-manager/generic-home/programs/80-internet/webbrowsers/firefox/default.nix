@@ -23,6 +23,7 @@ in {
   imports = [
     ./betterfox.nix
     ./firefox-ui-fix.nix
+    ./my-overrides.nix
   ];
 
   programs.firefox = {
