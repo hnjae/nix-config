@@ -20,7 +20,7 @@ in {
         "wmclass".value = wmclassMaker [
           "microsoft-edge"
           "[vV]ivaldi-stable"
-          "brave-browser"
+          "brave" # not brave-browser
           "google-chrome"
           "chromium-browser"
           "Opera"
