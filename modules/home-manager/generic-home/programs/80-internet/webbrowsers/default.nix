@@ -9,7 +9,7 @@ in {
   imports = [
     ./brave.nix
     ./google-chrome.nix
-    ./firefox.nix
+    ./firefox
     # ./vivaldi.nix
     # ./microsoft-edge.nix
     # ./opera.nix
