@@ -23,6 +23,7 @@ in {
   imports = [
     ./betterfox.nix
     ./my-overrides.nix
+    ./sidebery.nix
   ];
 
   programs.firefox = {
