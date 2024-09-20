@@ -16,4 +16,3 @@
 # rio: terminal built with rust, no fontconfig, sixel support
 # darktile: no wayland support
 # contour: wayland 에서 폰트 렌더링이 이상함.
-

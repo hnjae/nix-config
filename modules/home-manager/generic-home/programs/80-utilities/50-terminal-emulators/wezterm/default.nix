@@ -13,7 +13,9 @@ in {
   config = lib.mkIf (genericHomeCfg.isDesktop) {
     home.packages = [package];
 
-    default-app.fromApps = ["org.wezfurlong.wezterm"];
+    default-app.fromApps = [
+      "org.wezfurlong.wezterm"
+    ];
 
     # programs.bash.initExtra = shellIntgrationStr;
     # programs.zsh.initExtra = shellIntgrationStr;

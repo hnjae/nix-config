@@ -12,6 +12,7 @@
     };
     "Plugins" = {
       "dimscreenEnabled" = true; # dim screen for Administrator
+      "shakecursorEnabled" = true; # shake cursor make cursor BIG
 
       # desktop switch animation
       "fadedesktopEnabled" = false;

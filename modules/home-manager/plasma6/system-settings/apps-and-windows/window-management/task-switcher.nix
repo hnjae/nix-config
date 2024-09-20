@@ -10,4 +10,11 @@
     "Walk Through Windows of Current Application Alternative" = ["Alt+`"];
     "Walk Through Windows of Current Application Alternative (Reverse)" = ["Alt+~"];
   };
+
+  # do not show selected windows
+  programs.plasma.configFile."kwinrc" = {
+    "Plugins"."highlightwindowEnabled" = false;
+    "TabBox"."HighlightWindows" = false;
+    "TabBoxAlternative"."HighlightWindows" = false;
+  };
 }

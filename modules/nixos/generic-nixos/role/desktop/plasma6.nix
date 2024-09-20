@@ -62,7 +62,10 @@
     };
 
     # packages
-    environment.plasma6.excludePackages = [];
+    environment.plasma6.excludePackages = with pkgs.kdePackages; [
+      plasma-systemmonitor
+    ];
+
     environment.defaultPackages = builtins.concatLists [
       (with pkgs; [
         # widgets

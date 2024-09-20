@@ -38,7 +38,7 @@ in {
 
     resetPrevious = mkOption {
       type = types.bool;
-      default = false;
+      default = true;
     };
 
     # setPortal = mkOption {
@@ -147,10 +147,12 @@ in {
     };
 
     systemd.user.services."flatpak-set-default-app" = let
-      mimeData = builtins.concatLists (map (fromApp: (lib.mapAttrsToList
-        (mime: defaultApp: {inherit mime defaultApp fromApp;})
-        mimeMerged))
-      cfg.fromApps);
+      mimeData = builtins.concatLists (
+        map (fromApp: (lib.mapAttrsToList
+          (mime: defaultApp: {inherit mime defaultApp fromApp;})
+          mimeMerged))
+        cfg.fromApps
+      );
 
       flatpakSetDefaultApp = pkgs.writeShellApplication {
         name = "flatpak-set-default-app";

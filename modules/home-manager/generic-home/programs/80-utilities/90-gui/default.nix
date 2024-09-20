@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgsUnstable,
   ...
 }: let
   genericHomeCfg = config.generic-home;
@@ -21,7 +22,7 @@ in {
         "xyz.tytanium.DoorKnocker" # check availability of all portals provided by xdg-desktop-portal.
         "dev.serebit.Waycheck" # displays the list of Wayland protocols
         # "io.missioncenter.MissionCenter" # not working <NixOS 23.11>
-        "net.nokyan.Resources" # resource monitor
+        # "net.nokyan.Resources" # resource monitor; flatpak's 은 프로세스를 볼수 없음. https://github.com/nokyan/resources/issues/357 2024-09-19
         "com.github.tchx84.Flatseal"
         "org.freedesktop.Bustle" # debug dbus, gpl2
 
@@ -52,6 +53,7 @@ in {
       (optionals (pkgs.stdenv.isLinux) [
         # pkgs.dupeguru
         pkgs.qdirstat
+        pkgsUnstable.resources
       ])
       (optionals (pkgs.stdenv.isLinux && genericHomeCfg.installTestApps)
         (with pkgs; [

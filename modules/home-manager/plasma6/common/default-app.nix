@@ -4,6 +4,7 @@
     fileManager = "org.kde.dolphin";
     fromApps = [
       "org.kde.konsole"
+
       # "org.kde.dolphin" dolphin 은 xdg-portal 안쓰는듯??? <NixOS 24.05>
     ];
     mime = {
