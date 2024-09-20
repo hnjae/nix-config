@@ -5,7 +5,6 @@
   };
   mouses = [
     "Libinput/9639/64124/Compx X2 Mini Wireless"
-    "Libinput/1133/50504/Logitech USB Receiver Mouse"
   ];
 
   inherit (builtins) listToAttrs map;
@@ -27,6 +26,14 @@ in {
         // {
           "NaturalScroll".value = false;
           "PointerAccelerationProfile".value = 1; # no pointer acceleration
+          "ScrollFactor" = 0.5;
+        }))
+    (mapper [
+        # Logi: LeftHanded mouse
+        "Libinput/1133/50504/Logitech USB Receiver Mouse"
+      ] (optionMouseDefault
+        // {
+          "PointerAcceleration" = "-0.500";
         }))
     (mapper [
         # Trackballs

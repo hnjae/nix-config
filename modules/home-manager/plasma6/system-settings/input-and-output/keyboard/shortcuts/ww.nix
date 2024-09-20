@@ -8,6 +8,11 @@
   home.packages = [
     inputs.ww-run-raise.packages.${pkgs.stdenv.system}.default
   ];
+  default-app.fromApps = [
+    "ww-terminal" # ww-run-raise 관련 desktop 파일로 해당 이름으로 등록되는 듯.
+    "ww-pkm"
+  ];
+
   # disable dolphin launch
   programs.plasma.shortcuts."services/org.kde.dolphin.desktop"."_launch" = [];
 

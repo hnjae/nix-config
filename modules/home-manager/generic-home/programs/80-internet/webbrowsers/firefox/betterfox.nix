@@ -1,7 +1,7 @@
 {lib, ...}: {
   # https://github.com/yokoffing/Betterfox
 
-  # update: 2024-09-16
+  # update: 2024-09-17
   programs.firefox.profiles.home.extraConfig = lib.mkOrder 1 ''
     //
     /* You may copy+paste this file and use it as it is.

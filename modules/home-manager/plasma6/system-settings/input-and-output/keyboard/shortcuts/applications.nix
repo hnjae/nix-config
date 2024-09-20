@@ -17,8 +17,10 @@
   # Emoji Selector
   programs.plasma.shortcuts."services/org.kde.plasma.emojier.desktop"."_launch" = [
     "Meta+Ctrl+Alt+Shift+Space"
-    "Meta+."
-    "Alt+." # Meta/Alt 스왑 대응
+
+    # fcitx 의 quickpharase 기능 쓸 것.
+    # "Meta+."
+    # "Alt+." # Meta/Alt 스왑 대응
   ];
 
   # Krunner
