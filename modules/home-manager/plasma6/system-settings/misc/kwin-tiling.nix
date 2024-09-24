@@ -2,7 +2,7 @@ _: {
   programs.plasma.kwin.tiling = {
     padding = 4;
     layout = {
-      id = "3862d012-fbfb-49ae-b709-031b73f773a0";
+      id = "1149fce3-af8f-5c41-849f-30cea799ba45"; # 이거 내가 임의로 설정하면 작동 안됨.
       tiles = {
         layoutDirection = "horizontal";
         tiles = [

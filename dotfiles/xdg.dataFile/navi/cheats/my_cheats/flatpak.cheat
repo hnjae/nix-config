@@ -7,7 +7,7 @@ flatpak list
 flatpak list --app
 
 # override
-flatpak override [org.mozilla.firefox] --[system|user] --filesystem=home
+flatpak override <installed_app_name> --[system|user] --filesystem=home
 
 # override-show
 flatpak override --show

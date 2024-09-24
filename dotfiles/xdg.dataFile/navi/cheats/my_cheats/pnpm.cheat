@@ -18,8 +18,11 @@ pnpm remove [-D] <pkg>
 # pnpm prune
 pnpm prune
 
-# npm run <cmd>
-pnpm <cmd>
+# Run script from package.json `npm run <cmd>`
+pnpm run <cmd>
+
+# Run binaries from `node_modules/bin`
+pnpm exec <binary-name>
 
 # npm init
 pnpm init

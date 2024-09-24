@@ -20,4 +20,31 @@
     '';
     # Exec=sh -c 'sleep 1 && unset GTK_USE_PORTAL && GTK_IM_MODULE=xim 1password --silent'
   };
+
+  # xdg.configFile."caffeine/audio_blacklist.txt" = [
+  #   "cider"
+  #   "brave"
+  # ];
+
+  # xdg.configFile."caffeine/whitelist.txt" = [
+  #   "ssh"
+  #
+  #   #
+  #   "cc"
+  #   "rustc"
+  #
+  #   #
+  #   "make"
+  #   "cmake"
+  #
+  #   #
+  #   "nix"
+  #   "nixos-rebuild"
+  #   "home-manager"
+  #
+  #   #
+  #   "rsync"
+  #   "wget"
+  #   "curl"
+  # ];
 }

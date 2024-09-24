@@ -18,13 +18,13 @@ in {
       # tig
     ];
 
-    services.flatpak.packages = lib.mkIf genericHomeCfg.isDesktop [
+    services.flatpak.packages = lib.mkIf (genericHomeCfg.isDesktop && genericHomeCfg.installTestApps) [
       # opensource git client
-      # "com.jetpackduba.Gitnuro"
-      # "org.gnome.gitg"
-      # "com.github.Murmele.Gittyup"
-      # "de.philippun1.turtle"
-      # "org.kde.kommit"
+      # "com.jetpackduba.Gitnuro" # gpl3, jvm
+      # "com.github.Murmele.Gittyup" # mit
+      # "org.kde.kommit" # gpl3
+      # "de.philippun1.turtle" # gpl3, libadwaita
+      # "org.gnome.gitg" # gpl2
     ];
 
     # bindings https://github.com/wfxr/forgit 참고
@@ -43,10 +43,6 @@ in {
       forgit_stash_show=gsts
       forgit_stash_push=gstP
       . "${pkgsUnstable.zsh-forgit}/share/zsh/zsh-forgit/forgit.plugin.zsh"
-    '';
-
-    programs.fish.interactiveShellInit = ''
-      # . "${pkgsUnstable.fishPlugins.forgit}/share/fish/vendor_conf.d/forgit.plugin.fish"
     '';
   };
 }
