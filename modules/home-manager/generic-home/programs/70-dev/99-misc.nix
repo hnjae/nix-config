@@ -30,5 +30,14 @@ in {
         rust-bin.stable.latest.default
         hyperfine # command-line benchmarking tool
       ]);
+
+    services.flatpak.packages = lib.mkIf genericHomeCfg.isDesktop [
+      "me.iepure.devtoolbox" # https://flathub.org/apps/me.iepure.devtoolbox
+
+      "com.jgraph.drawio.desktop" # apache2
+      "org.gaphor.Gaphor" # UML modeling, apache 2
+
+      "com.github.marhkb.Pods" # connects to podman
+    ];
   };
 }
