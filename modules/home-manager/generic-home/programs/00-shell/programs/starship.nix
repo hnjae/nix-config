@@ -70,7 +70,7 @@
       git_status = {
         style = "cyan";
         # format = "[$renamed$staged][$conflicted][$modified$deleted$untracked][$ahead_behind$stashed] ";
-        format = "($conflicted)($renamed$staged)($modified$untracked)($deleted)($ahead_behind)($stashed) ";
+        format = "(($conflicted)($renamed$staged)($modified$untracked)($deleted)($ahead_behind)($stashed) )";
         # NOTE: $all_status == $conflicted$stashed$deleted$renamed$modified$staged$untracked
         up_to_date = "[✔](bold green)";
 
