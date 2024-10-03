@@ -25,6 +25,7 @@
     };
     nix-flatpak.url = "github:hnjae/nix-flatpak";
     nix-web-app.url = "/home/hyunjae/Projects/nix-web-app";
+    # nix-web-app.url = "github:hnjae/nix-web-app";
     impermanence.url = "github:nix-community/impermanence";
 
     rust-overlay = {

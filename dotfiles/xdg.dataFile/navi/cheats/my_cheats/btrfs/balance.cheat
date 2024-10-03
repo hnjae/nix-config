@@ -1,4 +1,0 @@
-% btrfs
-
-# btrfs balance
-btrfs balance start -dusage=50 <path-to-mountpoints>
