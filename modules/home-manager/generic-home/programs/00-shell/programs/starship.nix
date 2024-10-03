@@ -91,6 +91,8 @@
       nix_shell = {
         symbol = "󱄅 "; # nf-md-nix
         heuristic = true;
+        # impure_msg = "impure";
+        unknown_msg = "unknown";
       };
       container = {
         style = "bold red";

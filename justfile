@@ -23,6 +23,8 @@ flake-update-except-unstable:
     --update-input nix-web-app \
     --update-input cgitc
 
+open-status:
+  xdg-open "https://status.nixos.org/"
 
 test-flake:
   #!/bin/sh

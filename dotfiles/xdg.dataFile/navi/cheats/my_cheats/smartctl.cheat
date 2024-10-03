@@ -3,6 +3,9 @@
 # start long test
 smartctl -t long "/dev/<device>"
 
+# start conveyance test
+smartctl -t conveyance "/dev/<device>"
+
 # list ongoning/finished test
 smartctl -l selftest "/dev/<device>"
 
