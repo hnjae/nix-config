@@ -20,3 +20,6 @@ rmlint -D
 
 # only png in last 24 hour something
 find ~ -iname '*.png' ! -mtime 0 | rmlint -
+
+# keep "ref" and remove from "dst"
+rmlint <dst> // <ref> --keep-all-tagged --must-match-tagged
