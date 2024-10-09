@@ -1,0 +1,41 @@
+% zpool, zfs
+
+# create hdd mirror pool
+zpool create -f \
+	-o ashift=12 \
+	-o compatibility=off \
+	-o recordsize=4M \
+	-o volblocksize=16k \
+	-O acltype=posixacl \
+	-O relatime=off \
+	-O atime=off \
+	-O xattr=sa \
+	-O normalization=none \
+	-O utf8only=off \
+	-O casesensitivity=sensitive \
+	-O compression=zstd-1 \
+	-O canmount=off \
+	-O dnodesize=auto \
+	-O encryption=aes-256-gcm \
+	-O keylocation=prompt \
+	-O keyformat=passphrase \
+	-O mountpoint=none \
+	-O exec=off \
+	-O setuid=off \
+	-O acltype=off \ # or posixacl
+	-m mirror \
+	-R /mnt \
+	<pool-name> \
+	/dev/disk/by-partlabel/<part-label>
+
+# zfs zpool status
+zpool status -v
+
+# manually import a pool
+zpool import -d <block-device> -d <block-device> <zpool-name>
+
+# import all pool
+zpool import -a
+
+# create dataset (no dash in dataset name)
+zfs create -o <property>=<value> <pool-name>/<dataset-name>
