@@ -18,7 +18,8 @@
 
   xdg.desktopEntries."ww-browser" = {
     name = "ww-browser";
-    exec = "ww -pn brave -fc brave-browser -d brave-browser";
+    # exec = "ww -pn brave -fc brave-browser -d brave-browser";
+    exec = "ww -pn firefox -fc firefox -d firefox";
     type = "Application";
     noDisplay = true;
     startupNotify = false;

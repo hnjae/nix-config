@@ -1,4 +1,4 @@
-% flatpak
+% flatpak, xdg, freedesktop
 
 # to list applications and runtimes
 flatpak list

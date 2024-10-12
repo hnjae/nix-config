@@ -1,11 +1,14 @@
 % zpool, zfs
 
+; https://openzfs.github.io/
+
 # create hdd mirror pool
 zpool create -f \
 	-o ashift=12 \
 	-o compatibility=off \
 	-o recordsize=4M \
 	-o volblocksize=16k \
+	-O volmode=full \
 	-O acltype=posixacl \
 	-O relatime=off \
 	-O atime=off \
@@ -22,11 +25,14 @@ zpool create -f \
 	-O mountpoint=none \
 	-O exec=off \
 	-O setuid=off \
-	-O acltype=off \ # or posixacl
 	-m mirror \
 	-R /mnt \
 	<pool-name> \
 	/dev/disk/by-partlabel/<part-label>
+
+; -o failmode=continue (default wait)
+; -O autotrim=on
+; -O redundant_metadata=most (for db)
 
 # zfs zpool status
 zpool status -v

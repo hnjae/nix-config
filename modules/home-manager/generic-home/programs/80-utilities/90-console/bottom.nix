@@ -13,7 +13,7 @@ in {
     # settings = { };
   };
 
-  xdg.desktopEntries.btm = lib.mkIf (pkgs.stdenv.isLinux && genericHomeCfg.isDesktop) {
+  xdg.desktopEntries.bottom = lib.mkIf (pkgs.stdenv.isLinux && genericHomeCfg.isDesktop) {
     name = "Bottom (btm)";
     comment = "w. custom .desktop entry";
     # exec = "alacritty --class btm,btm --title bottom -e btm %F";

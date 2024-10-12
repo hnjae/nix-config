@@ -1,4 +1,4 @@
-_: {
+{config, ...}: {
   # NOTE: ~/.config/plasma-org.kde.plasma.desktop-appletsrc
   # /run/current-system/sw/lib/qt-6/plugins/plasma/applets
   # /run/current-system/sw/share/plasma/plasmoids
@@ -48,17 +48,26 @@ _: {
             General = {
               fill = "false";
               reverseMode = "false";
-              launchers = [
-                "applications:brave-browser.desktop"
-                "applications:org.kde.konsole.desktop"
-                "applications:com.logseq.Logseq.desktop"
-                "applications:chrome-lobe.hjae.xyz__-Default.desktop"
-                "applications:brave-ticktick.com__webapp-Default.desktop"
-                # "applications:com.ticktick.TickTick.desktop"
-                "applications:chrome-calendar.notion.so__-Default.desktop"
-                "applications:org.mozilla.Thunderbird.desktop"
-                "applications:1password.desktop"
-              ];
+              launchers =
+                (
+                  if (config.default-app.browser != null)
+                  then [
+                    "applications:${config.default-app.browser}.desktop"
+                  ]
+                  else [
+                    "applications:org.mozilla.firefox.desktop"
+                  ]
+                )
+                ++ [
+                  "applications:org.kde.konsole.desktop"
+                  "applications:com.logseq.Logseq.desktop"
+                  "applications:chrome-lobe.hjae.xyz__-Default.desktop"
+                  "applications:brave-ticktick.com__webapp-Default.desktop"
+                  # "applications:com.ticktick.TickTick.desktop"
+                  "applications:chrome-calendar.notion.so__-Default.desktop"
+                  "applications:org.mozilla.Thunderbird.desktop"
+                  "applications:1password.desktop"
+                ];
             };
           };
         }
