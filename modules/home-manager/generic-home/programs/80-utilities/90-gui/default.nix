@@ -54,6 +54,7 @@ in {
         # pkgs.dupeguru
         pkgs.qdirstat
         pkgsUnstable.resources
+        pkgsUnstable.scrcpy # display and control android
       ])
       (optionals (pkgs.stdenv.isLinux && genericHomeCfg.installTestApps)
         (with pkgs; [

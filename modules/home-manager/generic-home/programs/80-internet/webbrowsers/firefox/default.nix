@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  lib,
   ...
 }: let
   genericHomeCfg = config.generic-home;
@@ -26,6 +27,8 @@ in {
     ./sidebery.nix
   ];
 
+  # default-app.browser = lib.mkForce "org.mozilla.firefox";
+  default-app.browser = lib.mkForce "firefox";
   programs.firefox = {
     enable = genericHomeCfg.isDesktop && pkgs.stdenv.isLinux;
     package = pkgs.firefox;

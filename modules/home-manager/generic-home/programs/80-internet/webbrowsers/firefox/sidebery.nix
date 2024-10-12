@@ -19,7 +19,7 @@
       */
       #main-window #titlebar {
         overflow: hidden;
-        transition: height 0.3s 0.3s !important;
+        /* transition: height 0.3s 0.3s !important; */
       }
       /* Default state: Set initial height to enable animation */
       #main-window #titlebar { height: 3em !important; }

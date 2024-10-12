@@ -81,6 +81,9 @@ git remote add origin git@github.com:<owner>/<repository>.git
 # list remote
 git remote -v
 
+# delete (remove) remote
+git remote remove <origin>
+
 # change remote
 git remote set-url <origin> git@github.com:<owner>/<repository>.git
 
