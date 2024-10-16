@@ -17,6 +17,11 @@ _: {
       keep-failed = true;
 
       # use-xdg-base-directories = true;
+
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
     };
 
     # HELP: run `man 5 nix.conf`
