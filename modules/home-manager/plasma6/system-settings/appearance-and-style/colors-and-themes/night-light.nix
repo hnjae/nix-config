@@ -10,7 +10,7 @@
   # };
 
   programs.plasma.kwin.nightLight = {
-    enable = true;
+    enable = false;
     mode = "constant";
     temperature.night = 3500;
     time = {

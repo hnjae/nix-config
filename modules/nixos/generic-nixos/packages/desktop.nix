@@ -10,6 +10,9 @@
       # managing android
       programs.adb.enable = true;
 
+      # managing external displays <https://wiki.archlinux.org/title/Backlight>
+      services.ddccontrol.enable = true;
+
       environment.defaultPackages = with pkgs; [
         glib # for gio
 
@@ -44,10 +47,6 @@
         # webp support in various programs
         # gdk-pixbuf
         # webp-pixbuf-loader
-
-        # others
-        ddcutil
-        ddcui
 
         #
         # wlprop # xprop for wlroots

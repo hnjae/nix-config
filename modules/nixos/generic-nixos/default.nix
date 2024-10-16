@@ -8,6 +8,7 @@ in {
     role = mkOption {
       type = types.enum [
         "desktop"
+        # "laptop" # -- TODO
         "vm"
         "hypervisor"
       ];
