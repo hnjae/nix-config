@@ -1,0 +1,4 @@
+% journalctl, log
+
+# print last boot systemd log
+journalctl -b -1
