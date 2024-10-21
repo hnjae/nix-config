@@ -1,0 +1,4 @@
+% kernel
+
+# list loaded modules
+lsmod
