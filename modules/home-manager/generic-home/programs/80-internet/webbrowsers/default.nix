@@ -9,7 +9,7 @@ in {
   imports = [
     ./brave.nix
     ./google-chrome.nix
-    ./firefox
+    # ./firefox
     # ./vivaldi.nix
     # ./microsoft-edge.nix
     # ./opera.nix
@@ -27,6 +27,7 @@ in {
           nyxt
           luakit
           qutebrowser
+          firefox-bin
         ]))
     ];
   };
