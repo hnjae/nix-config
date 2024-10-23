@@ -1,7 +1,7 @@
 % sysctl, kernel runtime variables
 
-# show all available variables
-sysctl -a | bat
+# show current kernel parameter
+sudo sysctl -a | bat
 
 # show current system's variables
 sudo sysctl --system | bat
