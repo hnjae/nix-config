@@ -28,7 +28,10 @@ in {
           luakit
           qutebrowser
           firefox-bin
+          librewolf
         ]))
     ];
+
+    default-app.browser = "librewolf";
   };
 }

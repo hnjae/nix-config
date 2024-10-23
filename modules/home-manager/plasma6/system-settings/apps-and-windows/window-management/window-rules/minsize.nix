@@ -35,6 +35,7 @@ in {
           "org\\.gnome\\.TextEditor"
           "gedit"
           "firefox"
+          "librewolf"
           "google-chrome"
           "chromium-browser"
           "brave-browser"

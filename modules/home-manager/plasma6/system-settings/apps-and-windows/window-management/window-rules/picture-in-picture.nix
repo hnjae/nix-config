@@ -37,9 +37,11 @@ in {
         "title".value = "Picture-in-Picture";
         "titlematch".value = 1;
         "types".value = 1;
-        "wmclass".value = "firefox";
-        "wmclasscomplete".value = true;
-        "wmclassmatch".value = 2;
+        "wmclass".value = wmclassMaker [
+          "firefox"
+          "librewolf"
+        ];
+        "wmclassmatch".value = 3;
       };
       inherit Rule;
     }
