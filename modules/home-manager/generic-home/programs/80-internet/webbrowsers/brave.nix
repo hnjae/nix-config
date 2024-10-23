@@ -25,7 +25,7 @@ in {
   config =
     lib.mkIf
     (genericHomeCfg.isDesktop && pkgs.stdenv.isLinux && pkgs.stdenv.is64bit) {
-      default-app.browser = "brave-browser";
+      default-app.browser = lib.mkOptionDefault "brave-browser";
       # default-app.fromApps = ["brave-browser"];
 
       home.packages = [package];
