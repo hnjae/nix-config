@@ -16,11 +16,18 @@ in {
         then "base16"
         else "ansi"
       );
-    # -F: --quit-if-one-screen, -L: --no-lessopen, -R: --RAW-CONTROL-CHARS
-    BAT_PAGER = "less -iFLR";
+    /*
+    -F: --quit-if-one-screen
+    -L: --no-lessopen
+    -R: --RAW-CONTROL-CHARS
+    */
+    BAT_PAGER = "less -iLR";
     # `snip`: 여러개의 line-range 있을 때 구분선 그음.
-    BAT_STYLE = "snip,changes,grid";
+    BAT_STYLE = "snip,changes,grid,numbers";
   };
 
-  home.shellAliases = {c = "bat";};
+  home.shellAliases = {
+    bat = "bat --paging=always";
+    c = "bat --paging=never --style=plane";
+  };
 }
