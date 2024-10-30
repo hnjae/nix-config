@@ -3,7 +3,6 @@ _: {
   imports = [
     ./above-all-other-windows.nix
     ./chromium.nix
-    ./force-border.nix
     ./minsize-thunderbird.nix
     ./minsize.nix
     ./password-promt.nix

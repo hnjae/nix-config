@@ -68,7 +68,8 @@
 
   xdg.desktopEntries."ww-todo" = {
     name = "ww-todo";
-    exec = "ww -pn brave -fc brave-ticktick.com__webapp-Default -d brave-ticktick.com__webapp-Default";
+    # exec = "ww -pn brave -fc brave-ticktick.com__webapp-Default -d brave-ticktick.com__webapp-Default";
+    exec = "ww -pn ticktick -fc ticktick -d com.ticktick.TickTick";
     type = "Application";
     noDisplay = true;
     startupNotify = false;
