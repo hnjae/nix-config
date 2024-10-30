@@ -16,12 +16,12 @@
     "--exclude-from=${rsync-exclude}"
   ];
   rsyncCompressArgs = ["-z" "--zc=zstd" "--zl=4"];
+  # *.log
   rsync-exclude = pkgs.writeText "rsync-exclude" ''
     .Trash-*
     .snapshots
     .jekyll-cache
     *.tmp
-    *.log
     *.swp
     Thumbs.db
     .thumbnails

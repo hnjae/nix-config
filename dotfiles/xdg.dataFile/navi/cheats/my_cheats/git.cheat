@@ -88,4 +88,4 @@ git remote remove <origin>
 git remote set-url <origin> git@github.com:<owner>/<repository>.git
 
 # delete remote branch
-git push origin -d <branch>
+git push <origin> -d <branch>
