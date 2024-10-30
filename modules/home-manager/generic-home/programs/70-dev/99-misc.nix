@@ -20,7 +20,6 @@ in {
         man-pages-posix
 
         #
-        chromedriver
         openssl
 
         #

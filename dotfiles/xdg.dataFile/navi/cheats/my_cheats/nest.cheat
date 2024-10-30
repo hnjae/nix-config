@@ -7,7 +7,7 @@ nest new <project-name>
 nest generate --help
 
 # generate module
-nest g module
+nest g module <module-name>
 
 # generate controller
 nest g co

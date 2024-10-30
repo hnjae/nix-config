@@ -3,36 +3,32 @@
 ; https://openzfs.github.io/
 
 # create hdd mirror pool
-zpool create -f \
-	-o ashift=12 \
+sudo zpool create -f \
 	-o compatibility=off \
-	-o recordsize=4M \
-	-o volblocksize=16k \
-	-O volmode=full \
-	-O acltype=posixacl \
+	-o ashift=12 \
+	-O recordsize=4M \
+	-O acltype=off \
 	-O relatime=off \
 	-O atime=off \
+	-O dnodesize=auto \
 	-O xattr=sa \
+	-O mountpoint=none \
+	-O canmount=off \
+	-O compression=lz4 \
+	-O exec=off \
+	-O setuid=off \
+	-O devices=off \
 	-O normalization=none \
 	-O utf8only=off \
 	-O casesensitivity=sensitive \
-	-O compression=zstd-1 \
-	-O canmount=off \
-	-O dnodesize=auto \
 	-O encryption=aes-256-gcm \
 	-O keylocation=prompt \
 	-O keyformat=passphrase \
-	-O mountpoint=none \
-	-O exec=off \
-	-O setuid=off \
-	-m mirror \
-	-R /mnt \
 	<pool-name> \
-	/dev/disk/by-partlabel/<part-label>
+	mirror \
+	/dev/disk/by-partlabel/<partlabel> /dev/disk/by-partlabel/<partlabel>
 
-; -o failmode=continue (default wait)
-; -O autotrim=on
-; -O redundant_metadata=most (for db)
+; -o failmode=continue (default: wait)
 
 # zfs zpool status
 zpool status -v
@@ -45,3 +41,14 @@ zpool import -a
 
 # create dataset (no dash in dataset name)
 zfs create -o <property>=<value> <pool-name>/<dataset-name>
+; mountpoint
+; recordsize
+
+# 특정 옵션을 inherit 하게 -r 변경
+zfs inherit -rS <eg-atime> <pool>/<dataset>
+
+# load all key
+zfs load-key -a
+
+# mount all datasets
+zfs mount -a
