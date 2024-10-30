@@ -72,20 +72,6 @@ in {
       };
     }
     {
-      uuid = "fec37af0-bc3b-4e16-a96b-ca999a2bf9f7";
-      description = "minsize-ticktick";
-      Match = {
-        "wmclass".value = "ticktick";
-        "wmclassmatch".value = 1;
-      };
-      Rule = {
-        # "minsize".value = "504,608";
-        # "minsize".value = "580,608"; # pomodoro 가 정상적으로 렌더링되는 minsize
-        "minsize".value = "832,608"; # eisenhour matrix 가 정상적으로 렌더링 되는 minsize
-        "minsizerule".value = 2;
-      };
-    }
-    {
       uuid = "f9220e73-a8a1-4b12-8d34-691d34a0aea7";
       description = "minsize-kde-dolphin";
       Match = {

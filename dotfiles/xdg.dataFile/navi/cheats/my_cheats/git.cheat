@@ -7,6 +7,9 @@ $ branch: git branch | awk '{print $NF}'
 ; git-checkout 의 기능이 switch 랑 restore 로 분할됨 <from git 2.23.0>
 ; https://stackoverflow.com/questions/57265785/whats-the-difference-between-git-switch-and-git-checkout-branch
 
+# 특정 브랜치/commit의 모든 내용을 현재 working directory, stage 에 덮어쓰기
+git checkout <branch-or-commit> -- .
+
 # switch branch
 git switch <branch>
 # switch to orphan branch (branch with no commit)
@@ -48,6 +51,9 @@ git merge <commit> --allow-unrelated-histories
 # cancel merge
 git merge --abort
 
+# merge with strategy
+git merge -X <theirs|ours> <commit>
+
 ;#############################################################################
 ; rebase
 ;############################################################################
@@ -87,5 +93,11 @@ git remote remove <origin>
 # change remote
 git remote set-url <origin> git@github.com:<owner>/<repository>.git
 
+# disable push on some remotes
+git remote set-url --push <origin> <DISABLE>
+
 # delete remote branch
 git push <origin> -d <branch>
+
+# disable push on some remotes
+git remote set-url --push <origin> <DISABLE (comment?)>

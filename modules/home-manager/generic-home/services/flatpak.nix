@@ -3,12 +3,12 @@
 in {
   services.flatpak = {
     enable = genericHomeCfg.isDesktop;
-    remotes = [
-      {
-        name = "flathub";
-        location = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-      }
-    ];
+    # remotes = [
+    #   {
+    #     name = "flathub";
+    #     location = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+    #   }
+    # ];
     update = {
       onActivation = false;
       auto = {
