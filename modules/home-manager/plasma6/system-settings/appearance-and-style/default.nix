@@ -1,1 +1,6 @@
-{...}: {imports = [./colors-and-themes ./text-and-fonts.nix];}
+{...}: {
+  imports = [
+    ./colors-and-themes
+    ./text-and-fonts.nix
+  ];
+}

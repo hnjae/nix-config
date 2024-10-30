@@ -4,4 +4,9 @@
     "BorderSizeAuto" = false;
     "BorderSize" = "Tiny";
   };
+
+  programs.plasma.configFile."breezerc"."Common" = {
+    ShadowSize = "ShadowSmall";
+    # OutlineCloseButton = true;
+  };
 }
