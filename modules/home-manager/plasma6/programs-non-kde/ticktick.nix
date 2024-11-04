@@ -19,6 +19,7 @@
       };
     }
   ];
+  # TODO: make breezerc module <2024-11-04>
   programs.plasma.configFile."breezerc"."Windeco Exception 0" = {
     BorderSize = 0;
     Enabled = true;

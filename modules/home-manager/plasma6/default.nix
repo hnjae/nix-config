@@ -1,15 +1,14 @@
 {
   inputs,
-  lib,
   pkgs,
-  config,
   ...
 }: {
   # options.plasma6 ={};
   imports = [
-    ./programs
     ./common
     ./modules
+    ./programs
+    ./programs-non-kde
     ./system-settings
   ];
 
