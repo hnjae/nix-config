@@ -16,6 +16,10 @@ in {
   ];
 
   config = lib.mkIf (genericHomeCfg.isDesktop) {
+    services.flatpak.packages = lib.lists.optionals genericHomeCfg.installTestApps [
+      "io.github.zen_browser.zen"
+    ];
+
     home.packages = builtins.concatLists [
       [
         # floorp
@@ -27,7 +31,8 @@ in {
           nyxt
           luakit
           qutebrowser
-          firefox-bin
+          # firefox-bin
+          firefox-devedition-bin
           librewolf
         ]))
     ];

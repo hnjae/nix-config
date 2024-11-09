@@ -61,7 +61,7 @@ in {
         "page.codeberg.Imaginer.Imaginer" # ai image generator
         "org.gnome.design.Emblem" # generate avatar
 
-        "io.github.nyre221.kiview" # Apple's Quick Look and Gnome Sushi for kde.
+        # "io.github.nyre221.kiview" # Apple's Quick Look and Gnome Sushi for kde. # uses end-of-life library (org.kde.Platform branch 6.6)(2024-11-06)
         # requires https://github.com/Nyre221/Kiview
 
         # cutvideo

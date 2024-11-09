@@ -4,10 +4,11 @@
   };
 
   stateful.cowNodes = [
-    {
-      path = "${config.xdg.configHome}/krunnerrc";
-      mode = "644";
-      type = "file";
-    }
+    # stateless
+    # {
+    #   path = "${config.xdg.configHome}/krunnerrc";
+    #   mode = "644";
+    #   type = "file";
+    # }
   ];
 }
