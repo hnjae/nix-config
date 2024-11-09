@@ -40,9 +40,15 @@ zpool import -d <block-device> -d <block-device> <zpool-name>
 zpool import -a
 
 # create dataset (no dash in dataset name)
-zfs create -o <property>=<value> <pool-name>/<dataset-name>
+zfs create -o <property>=<value> <dataset-name>
 ; mountpoint
 ; recordsize
+
+# set quota
+zfs set quota=<이진접두어> <dataset-name>
+
+# rename dataset
+zfs rename <old-dataset> <new-dataset>
 
 # 특정 옵션을 inherit 하게 -r 변경
 zfs inherit -rS <eg-atime> <pool>/<dataset>

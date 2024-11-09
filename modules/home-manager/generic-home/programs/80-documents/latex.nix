@@ -15,7 +15,7 @@ in {
         genericHomeCfg.isDesktop && genericHomeCfg.installTestApps
       ) [
         "io.github.finefindus.Hieroglyphic" # find latex symbols
-        "fyi.zoey.TeX-Match" # find latex symbols
+        # "fyi.zoey.TeX-Match" # find latex symbols, uses end-of-life library (org.freedesktop.Platform 22.08) (2024-11-06)
       ];
   };
 }

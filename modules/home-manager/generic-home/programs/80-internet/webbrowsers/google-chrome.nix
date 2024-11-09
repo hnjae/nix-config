@@ -10,6 +10,10 @@ in {
     && pkgs.stdenv.isLinux
     && pkgs.stdenv.isx86_64
     && pkgs.config.allowUnfree) {
+    # services.flatpak.packages = [
+    #     "com.google.Chrome"
+    # ];
+
     home.packages = [
       (pkgs.google-chrome.override {
         # NOTE: gtk-version=4 flag 안먹음 <2024-06-05>

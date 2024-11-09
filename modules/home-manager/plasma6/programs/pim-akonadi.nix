@@ -8,6 +8,11 @@
   };
   stateful.cowNodes = [
     {
+      path = "${config.xdg.configHome}/kmail2rc";
+      mode = "600";
+      type = "file";
+    }
+    {
       path = "${config.xdg.configHome}/akonadi";
       mode = "755";
       type = "dir";
@@ -109,11 +114,6 @@
     }
     {
       path = "${config.xdg.configHome}/foldermailarchiverc";
-      mode = "600";
-      type = "file";
-    }
-    {
-      path = "${config.xdg.configHome}/kmail2rc";
       mode = "600";
       type = "file";
     }
