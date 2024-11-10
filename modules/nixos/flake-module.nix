@@ -1,4 +1,4 @@
-_: {
+{inputs, ...}: {
   flake.nixosModules = rec {
     generic-nixos = import ./generic-nixos;
 
@@ -19,6 +19,7 @@ _: {
         oci-container-auto-update
 
         lact
+        inputs.nix-flatpak.nixosModules.nix-flatpak
       ];
     };
   };

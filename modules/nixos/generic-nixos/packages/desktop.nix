@@ -7,6 +7,21 @@
   config =
     lib.mkIf (config.generic-nixos.role == "desktop")
     {
+      # localsend
+      networking.firewall = {
+        allowedTCPPorts = [53317];
+        allowedUDPPorts = [53317];
+      };
+      services.flatpak.packages = [
+        "org.localsend.localsend_app" # should open 53317
+      ];
+      services.flatpak.overrides."org.localsend.localsend_app" = {
+        Context = {filesystems = ["xdg-download"];};
+        Environment = {
+          "GTK_THEME" = "adw-gtk3-dark";
+        };
+      };
+
       # managing android
       programs.adb.enable = true;
 
