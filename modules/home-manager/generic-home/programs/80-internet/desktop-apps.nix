@@ -19,7 +19,6 @@ in {
         "io.github.elevenhsoft.WebApps" # cosmic de's webapp creator
         "org.ferdium.Ferdium" # apache 1
 
-        "org.localsend.localsend_app"
         "re.sonny.Tangram"
         "io.gitlab.news_flash.NewsFlash" # rss
         "org.gnome.Fractal" # matrix
@@ -30,6 +29,9 @@ in {
         # "io.github.koromelodev.mindmate" # chatgpt client,  # NOTE: uses eol library <2024-05-09>
         # "io.github.qwersyk.Newelle"
       ])
+      [
+        # "org.localsend.localsend_app" # host 에 설치 (firewall 을 열어야해서)
+      ]
     ];
 
     home.packages = builtins.concatLists [
