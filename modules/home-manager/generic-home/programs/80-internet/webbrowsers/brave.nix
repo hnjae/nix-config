@@ -14,6 +14,7 @@
         "--ozone-platform-hint=auto"
         "--enable-features=UseOzonePlatform"
         "--enable-wayland-ime"
+        "--wayland-text-input-version=3"
         # "--enable-features=WaylandWindowDecorations"
         #   "--enable-features=VaapiVideoDecoder"
         #   "--enable-features=VaapiVideoEncoder"

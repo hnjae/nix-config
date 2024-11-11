@@ -20,10 +20,11 @@ in {
         commandLineArgs =
           builtins.concatStringsSep
           " " [
+            # "--enable-features=WaylandWindowDecorations"
             "--ozone-platform-hint=auto"
             "--enable-features=UseOzonePlatform"
-            "--enable-features=WaylandWindowDecorations"
             "--enable-wayland-ime"
+            "--wayland-text-input-version=3"
             #     "--gtk-version=4"
             #     "--enable-features=VaapiVideoDecoder"
             #     "--enable-features=VaapiIgnoreDriverChecks"
