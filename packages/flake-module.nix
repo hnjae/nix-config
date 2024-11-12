@@ -25,6 +25,7 @@ in {
       fonts-dmca-sans-serif = pkgs.callPackage ./fonts/fonts-dmca-sans-serif {};
       fonts-plangothic = pkgs.callPackage ./fonts/fonts-plangothic {};
       fonts-ridibatang = pkgs.callPackage ./fonts/fonts-ridibatang {};
+      fonts-freesentation = pkgs.callPackage ./fonts/fonts-freesentation {};
 
       # unfree
       fonts-kopub-world = pkgs.callPackage ./fonts/fonts-kopub-world {};

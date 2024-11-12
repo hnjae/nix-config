@@ -15,6 +15,7 @@
       (with pkgs; [
         pretendard
         pretendard-jp
+        fonts-freesentation
 
         # noto-fonts
         noto-fonts-extra
