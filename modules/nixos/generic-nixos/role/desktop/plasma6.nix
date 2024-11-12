@@ -71,6 +71,14 @@
         # widgets
         compact-pager
         application-title-bar
+
+        # to fix problems with libadwaita application: https://bbs.archlinux.org/viewtopic.php?id=299624
+        bibata-cursors
+        quintom-cursor-theme
+        # gnome.adwaita-icon-theme
+        # phinger-cursors
+        # apple-cursor
+        # posy-cursors
       ])
 
       (with pkgs.kdePackages; [

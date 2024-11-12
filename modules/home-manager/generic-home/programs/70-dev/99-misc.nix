@@ -26,6 +26,7 @@ in {
         patchelfStable
       ])
       ++ (with pkgsUnstable; [
+        harper # grammer checker for developers
         rust-bin.stable.latest.default
         hyperfine # command-line benchmarking tool
       ]);

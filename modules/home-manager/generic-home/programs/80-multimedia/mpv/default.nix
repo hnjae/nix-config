@@ -63,7 +63,8 @@ in {
       pipewire-volume-mode = "global";
       gpu-api = "auto";
       vulkan-async-compute = true; # ! isNvidia
-      hwdec = "auto-copy";
+      # hwdec = "auto-copy";
+      hwdec = "auto";
       # hwdec-codecs = "all";
       hr-seek = "default";
       sws-scaler = "spline";

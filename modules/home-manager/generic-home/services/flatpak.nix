@@ -20,7 +20,7 @@ in {
 
     # ~/.local/share/flatpak/overrides
     overrides = {
-      "global" = {Context = {filesystems = ["/nix/store"];};};
+      "global" = {Context = {filesystems = ["/nix/store:ro"];};};
     };
   };
 }
