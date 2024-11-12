@@ -2,13 +2,14 @@
   # NOTE: ~/.config/plasma-org.kde.plasma.desktop-appletsrc
   # /run/current-system/sw/lib/qt-6/plugins/plasma/applets
   # /run/current-system/sw/share/plasma/plasmoids
+  # NOTE: screen = "all" 은 애로 사항 多. e.g. 제대로 작동 X, 한 화면에 동일 패널 뜸 <2024-11-12>
   programs.plasma.panels = [
     {
       height = 26;
       location = "top";
       alignment = "center";
       floating = false;
-      screen = "all";
+      screen = [0];
       widgets = [
         "org.kde.plasma.marginsseparator"
         (import ./widgets/kicker-dash.nix)
@@ -40,7 +41,7 @@
       lengthMode = "fit";
       floating = true;
       hiding = "dodgewindows";
-      screen = "all";
+      screen = [0];
       widgets = [
         {
           name = "org.kde.plasma.icontasks";
