@@ -16,7 +16,11 @@ in {
         "org.gnome.Logs" # systemd logs, ets
       ]
       (optionals genericHomeCfg.installTestApps [
+        "com.jeffser.Alpaca" # ollama
+
         "org.gnome.NetworkDisplays"
+        "com.github.flxzt.rnote" # https://flathub.org/apps/com.github.flxzt.rnote
+        "page.codeberg.libre_menu_editor.LibreMenuEditor"
 
         # infos
         "xyz.tytanium.DoorKnocker" # check availability of all portals provided by xdg-desktop-portal.
