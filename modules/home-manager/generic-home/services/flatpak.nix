@@ -16,7 +16,7 @@ in {
         onCalendar = "daily"; # Default value
       };
     };
-    uninstallUnmanagedPackages = true;
+    uninstallUnmanaged = true;
 
     # ~/.local/share/flatpak/overrides
     overrides = {
