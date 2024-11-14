@@ -95,13 +95,15 @@ nixvim: pkgs: let
       # extraFiles = import ./share/ftplugin.nix;
 
       plugins = {
+        web-devicons.enable = false;
+
         sleuth = {
           enable = true;
           settings = {};
         };
 
         # nvim-autopairs.enable = true;
-        surround.enable = true;
+        nvim-surround.enable = true;
 
         cmp = {
           enable = true;
@@ -156,16 +158,20 @@ nixvim: pkgs: let
 
         lualine = {
           enable = true;
-          iconsEnabled = false;
-          componentSeparators = {
-            left = "┃";
-            right = "┃";
+          settings = {
+            options = {
+              icons_enabled = false;
+              theme = "auto";
+              component_separators = {
+                left = "┃";
+                right = "┃";
+              };
+              section_separators = {
+                left = "";
+                right = "";
+              };
+            };
           };
-          sectionSeparators = {
-            left = "";
-            right = "";
-          };
-          theme = "auto";
         };
 
         telescope = {
