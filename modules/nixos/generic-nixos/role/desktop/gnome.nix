@@ -8,7 +8,7 @@
   config = lib.mkIf (config.generic-nixos.role == "desktop") {
     # IME
     i18n.inputMethod = {
-      enabled = "fcitx5";
+      type = "fcitx5";
       fcitx5 = {
         plasma6Support = true;
         addons = with pkgs; [
