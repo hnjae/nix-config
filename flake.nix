@@ -2,7 +2,9 @@
   description = "my nix-config";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    # TODO: replace this with nixos-24.11 when 24.11 released <2024-11-14>
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.follows = "nixpkgs-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -13,7 +15,9 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      # TODO: replace with release-24.11 when 24.11 released <2024-11-14>
+      # url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     plasma-manager = {
@@ -36,7 +40,9 @@
     nur.url = "github:nix-community/NUR";
 
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-24.05";
+      # TODO: replace this with 24.11 when 24.11 released <2024-11-14>
+      # url = "github:nix-community/nixvim/nixos-24.05";
+      url = "github:nix-community/nixvim/main";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
