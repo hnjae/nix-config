@@ -349,15 +349,15 @@
       "locked": {
         "lastModified": 1724058237,
         "narHash": "sha256-ip5q25GnhHZO21UZCRM7cDRntSV/U+WMFMwRX/BDpzQ=",
-        "ref": "refs/heads/main",
+        "owner": "hnjae",
+        "repo": "nix-web-app",
         "rev": "4e269d75e1a6b7b1183715e7a8cd70a34a1d9626",
-        "revCount": 11,
-        "type": "git",
-        "url": "file:///home/hyunjae/Projects/nix-web-app"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/hyunjae/Projects/nix-web-app"
+        "owner": "hnjae",
+        "repo": "nix-web-app",
+        "type": "github"
       }
     },
     "nixpkgs-mozilla": {
