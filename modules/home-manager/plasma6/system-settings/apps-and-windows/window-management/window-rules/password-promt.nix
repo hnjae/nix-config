@@ -35,7 +35,14 @@ in {
         "title".value = "1Password";
         "titlematch".value = 1; # exact match
       };
-      inherit Rule;
+      Rule =
+        Rule
+        // {
+          # xwayland 로 실행하는 경우에만 사용 가능 (noborderrule = 2)
+          "noborderrule".value = 2;
+          # initial placement - center
+          placementrule = 2;
+        };
     }
   ];
 }
