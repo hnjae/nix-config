@@ -18,7 +18,7 @@ in {
       (optionals genericHomeCfg.installTestApps [
         "com.jeffser.Alpaca" # ollama
 
-        "org.gnome.NetworkDisplays"
+        # "org.gnome.NetworkDisplays"
         "com.github.flxzt.rnote" # https://flathub.org/apps/com.github.flxzt.rnote
         "page.codeberg.libre_menu_editor.LibreMenuEditor"
 
