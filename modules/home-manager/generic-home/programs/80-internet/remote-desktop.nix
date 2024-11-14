@@ -15,7 +15,7 @@ in {
           virt-manager
           remmina
           virt-viewer
-          gnome.vinagre
+          # vinagre # removed in nixos-24.11 use, remmina or gnome-connections
         ]))
     ];
   };

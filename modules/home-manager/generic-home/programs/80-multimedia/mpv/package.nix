@@ -8,9 +8,8 @@ pkgs.mpv-unwrapped.override {
   pulseSupport = false;
   jackaudioSupport = false;
   sdl2Support = false;
-  xvSupport = false;
   vdpauSupport = false;
-  xineramaSupport = pkgs.stdenv.isLinux;
+  #
   cddaSupport = true; # default false
   sixelSupport = true; # default false
   vapoursynthSupport = pkgs.stdenv.isx86_64; # default false
