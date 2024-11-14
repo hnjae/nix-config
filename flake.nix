@@ -88,8 +88,8 @@
       follows = "git-hooks/flake-compat";
     };
     devshell = {
-      # url = "github:numtide/devshell";
-      follows = "nixvim/devshell";
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
 
