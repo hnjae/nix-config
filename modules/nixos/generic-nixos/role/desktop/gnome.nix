@@ -27,14 +27,23 @@
       enable = true;
     };
     services.gnome = {
-      core-utilities.enable = false; # install core-utilites
-      # core-shell.enable = true;
-      core-os-services.enable = true; # setup portal and etc.
+      core-utilities.enable = false; # install core-utilites e.g. nautilus, calculator
+      core-shell.enable = true;
+      core-os-services.enable = true; # setup portal, polkit, dconf, and etc.
       # tracker.enable = false;
     };
     environment.defaultPackages = with pkgs.gnomeExtensions; [
       paperwm
       run-or-raise
+    ];
+    environment.systemPackages = with pkgs; [
+      nautilus
+      dconf-editor
+    ];
+
+    environment.gnome.excludePackages = with pkgs; [
+      # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/x11/desktop-managers/gnome.nix
+      gnom-tour
     ];
   };
 }
