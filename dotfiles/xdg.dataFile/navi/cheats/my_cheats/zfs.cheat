@@ -58,3 +58,9 @@ zfs load-key -a
 
 # mount all datasets
 zfs mount -a
+
+# unload key
+zfs unload-key <filesystem>
+
+# change key
+zfs change-key -l -o keylocation=<keylocatin> <filesystem>
