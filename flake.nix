@@ -46,7 +46,11 @@
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
         flake-parts.follows = "flake-parts";
-        flake-compat.follows = "flake-compat";
+
+        nix-darwin.follows = "";
+        git-hooks.follows = "";
+        devshell.follows = "";
+        treefmt-nix.follows = "";
       };
     };
 
@@ -80,13 +84,6 @@
     };
 
     # to fix duplictae dependencies
-    git-hooks = {
-      # url = "github:cachix/git-hooks.nix";
-      follows = "nixvim/git-hooks";
-    };
-    flake-compat = {
-      follows = "git-hooks/flake-compat";
-    };
     devshell = {
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
