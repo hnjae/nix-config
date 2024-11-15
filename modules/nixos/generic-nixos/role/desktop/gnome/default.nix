@@ -6,7 +6,9 @@
 }: {
   imports = [
     ./ime.nix
+    ./tray.nix
   ];
+
   config = lib.mkIf (config.generic-nixos.role == "desktop") {
     services.xserver.enable = true;
     services.xserver.displayManager.gdm.enable = true;
