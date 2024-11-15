@@ -26,7 +26,7 @@ in {
     dconf.settings = {
       "com/raggesilver/BlackBox" =
         {
-          font = "Monospace 10.8";
+          font = "Monospace 10.5";
           cursor-blink-mode = lib.hm.gvariant.mkUint32 2;
           terminal-padding = lib.hm.gvariant.mkTuple [
             (lib.hm.gvariant.mkUint32 4)
