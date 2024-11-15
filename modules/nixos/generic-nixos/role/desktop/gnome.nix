@@ -51,6 +51,15 @@
           noDisplay = true;
         };
       }
+      {
+        # with lib.hm.gvariant;
+        dconf.settings = {
+          # gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+          "org/gnome/mutter" = {
+            experimental-features = ["scale-monitor-framebuffer"];
+          };
+        };
+      }
     ];
 
     services.gnome = {
