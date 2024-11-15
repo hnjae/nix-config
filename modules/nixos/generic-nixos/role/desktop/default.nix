@@ -22,7 +22,7 @@
     ./gnupg.nix
     ./locate.nix
     # ./plasma6.nix
-    ./gnome.nix
+    ./gnome
     ./portal-pipewire.nix
     ./printing.nix
     ./upower.nix
