@@ -2,7 +2,6 @@
   pkgs,
   config,
   lib,
-  inputs,
   ...
 }: {
   config = lib.mkIf (config.generic-nixos.role == "desktop") {
@@ -25,7 +24,16 @@
     services.xserver.displayManager.gdm.enable = true;
     services.xserver.desktopManager.gnome = {
       enable = true;
+
+      # NOTE: extraGSettingsOverrides might be deprecated in future.
+      # https://github.com/NixOS/nixpkgs/issues/321438
+      # extraGSettingsOverrides = ''
     };
+
+    home-manager.sharedModules = [
+      (import ../../../../home-manager/gnome)
+    ];
+
     services.gnome = {
       core-utilities.enable = false; # install core-utilites e.g. nautilus, calculator
       core-shell.enable = true;
