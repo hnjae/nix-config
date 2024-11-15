@@ -51,7 +51,7 @@
 
     environment.gnome.excludePackages = with pkgs; [
       # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/x11/desktop-managers/gnome.nix
-      gnom-tour
+      gnome-tour
     ];
   };
 }
