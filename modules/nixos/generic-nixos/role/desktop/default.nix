@@ -15,6 +15,7 @@
   #     ./configs/upower.nix
   #   ]));
   imports = [
+    ./1password.nix
     ./documentation.nix
     ./flatpak.nix
     ./fonts.nix
