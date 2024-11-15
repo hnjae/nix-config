@@ -2,7 +2,9 @@
   description = "my nix-config";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    # TODO: replace this with nixos-24.11 when 24.11 released <2024-11-14>
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.follows = "nixpkgs-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -13,7 +15,9 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      # TODO: replace with release-24.11 when 24.11 released <2024-11-14>
+      # url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     plasma-manager = {
@@ -24,8 +28,7 @@
       };
     };
     nix-flatpak.url = "github:hnjae/nix-flatpak";
-    nix-web-app.url = "/home/hyunjae/Projects/nix-web-app";
-    # nix-web-app.url = "github:hnjae/nix-web-app";
+    nix-web-app.url = "github:hnjae/nix-web-app";
     impermanence.url = "github:nix-community/impermanence";
 
     rust-overlay = {
@@ -36,12 +39,18 @@
     nur.url = "github:nix-community/NUR";
 
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-24.05";
+      # TODO: replace this with 24.11 when 24.11 released <2024-11-14>
+      # url = "github:nix-community/nixvim/nixos-24.05";
+      url = "github:nix-community/nixvim/main";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
         flake-parts.follows = "flake-parts";
-        flake-compat.follows = "flake-compat";
+
+        nix-darwin.follows = "";
+        git-hooks.follows = "";
+        devshell.follows = "";
+        treefmt-nix.follows = "";
       };
     };
 
@@ -75,17 +84,9 @@
     };
 
     # to fix duplictae dependencies
-    git-hooks = {
-      # url = "github:cachix/git-hooks.nix";
-      follows = "nixvim/git-hooks";
-    };
-    flake-compat = {
-      follows = "git-hooks/flake-compat";
-    };
     devshell = {
-      # url = "github:numtide/devshell";
-      follows = "nixvim/devshell";
-      inputs.flake-utils.follows = "flake-utils";
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # others

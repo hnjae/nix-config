@@ -25,9 +25,8 @@ in {
   };
 
   # sound
-  sound.enable = mkOverride 999 isDesktop;
   security.rtkit.enable = mkOverride 999 isDesktop;
-  hardware.pulseaudio.enable = false;
+  hardware.pulseaudio.enable = false; # use pipewire
 
   # bluetooth
   hardware.bluetooth.enable = mkOverride 999 isDesktop;
@@ -45,10 +44,9 @@ in {
   # };
 
   # opengl
-  hardware.opengl = {
-    enable = mkOverride 999 isDesktop; # should be enabled by other modules
-    driSupport = mkOverride 999 isDesktop;
-    driSupport32Bit = mkOverride 999 isDesktop;
+  hardware.graphics = {
+    enable = mkOverride 999 isDesktop;
+    enable32Bit = mkOverride 999 isDesktop;
   };
 
   hardware.i2c.enable = mkOverride 999 isDesktop;

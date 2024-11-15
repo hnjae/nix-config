@@ -26,5 +26,6 @@
         ./plasma6
       ];
     };
+    gnome = {imports = [./gnome];};
   };
 }

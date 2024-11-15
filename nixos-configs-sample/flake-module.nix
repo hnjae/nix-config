@@ -73,51 +73,5 @@
         }
       ];
     };
-
-    dekstop-plasma6 = nixosSystem {
-      inherit specialArgs;
-      modules = [
-        {
-          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
-          boot.loader.systemd-boot.enable = true;
-          system.stateVersion = "24.05";
-          nixpkgs = {
-            config.allowUnfree = false;
-            hostPlatform = "x86_64-linux";
-            overlays = [
-              self.overlays.default
-            ];
-          };
-        }
-        self.nixosModules.default
-        {
-          generic-nixos.role = "desktop";
-        }
-        self.nixosModules.plasma6
-      ];
-    };
-
-    dekstop-plasma6-unfree = nixosSystem {
-      inherit specialArgs;
-      modules = [
-        {
-          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
-          boot.loader.systemd-boot.enable = true;
-          system.stateVersion = "24.05";
-          nixpkgs = {
-            config.allowUnfree = true;
-            hostPlatform = "x86_64-linux";
-            overlays = [
-              self.overlays.default
-            ];
-          };
-        }
-        self.nixosModules.default
-        {
-          generic-nixos.role = "desktop";
-        }
-        self.nixosModules.plasma6
-      ];
-    };
   };
 }
