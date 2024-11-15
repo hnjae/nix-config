@@ -7,6 +7,7 @@
   config = lib.mkIf (config.generic-nixos.role == "desktop") {
     # IME
     i18n.inputMethod = {
+      enable = true;
       type = "fcitx5";
       fcitx5 = {
         plasma6Support = false;
@@ -32,6 +33,24 @@
 
     home-manager.sharedModules = [
       (import ../../../../home-manager/gnome)
+      {
+        # hide fcitx5-migrator desktop entry
+        xdg.desktopEntries."org.fcitx.fcitx5-migrator" = {
+          name = "fcitx5-migration-wizard";
+          comment = "this should not be displayed";
+          exec = ":";
+          type = "Application";
+          noDisplay = true;
+        };
+        # hide fcitx5 desktop entry
+        xdg.desktopEntries."org.fcitx.Fcitx5" = {
+          name = "fcitx5";
+          comment = "this should not be displayed";
+          exec = ":";
+          type = "Application";
+          noDisplay = true;
+        };
+      }
     ];
 
     services.gnome = {
@@ -43,7 +62,7 @@
     environment.defaultPackages = with pkgs.gnomeExtensions; [
       paperwm
       run-or-raise
-      kimpanel
+      kimpanel # to use with fcitx5
     ];
     environment.systemPackages = with pkgs; [
       nautilus
