@@ -54,9 +54,18 @@
       {
         # with lib.hm.gvariant;
         dconf.settings = {
-          # gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+          /*
+          ```
+          gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+          gsettings set org.gnome.mutter experimental-features "['variable-refresh-rate']"
+          ```
+          */
           "org/gnome/mutter" = {
-            experimental-features = ["scale-monitor-framebuffer"];
+            experimental-features = [
+              "scale-monitor-framebuffer"
+              "variable-refresh-rate"
+              "xwayland-native-scaling"
+            ];
           };
         };
       }
