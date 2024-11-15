@@ -50,9 +50,6 @@
       core-os-services.enable = true; # setup portal, polkit, dconf, and etc.
       # tracker.enable = false;
     };
-    environment.defaultPackages = with pkgs.gnomeExtensions; [
-      run-or-raise
-    ];
     environment.systemPackages = with pkgs; [
       nautilus
       dconf-editor
