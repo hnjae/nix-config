@@ -9,9 +9,13 @@
 
   home.packages = with pkgs; [
     dconf2nix
+    gnomeExtensions.run-or-raise
   ];
 
   dconf.settings = {
+    "org/gnome/shell".enabled-extensions = [
+      "run-or-raise@edvard.cz"
+    ];
     "org/gnome/desktop/peripherals/mouse" = {
       natural-scroll = true;
     };
