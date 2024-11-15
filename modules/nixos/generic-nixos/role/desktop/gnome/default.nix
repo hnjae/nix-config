@@ -49,7 +49,6 @@
       # tracker.enable = false;
     };
     environment.defaultPackages = with pkgs.gnomeExtensions; [
-      paperwm
       run-or-raise
     ];
     environment.systemPackages = with pkgs; [
