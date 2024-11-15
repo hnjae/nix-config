@@ -9,7 +9,7 @@
     i18n.inputMethod = {
       type = "fcitx5";
       fcitx5 = {
-        plasma6Support = true;
+        plasma6Support = false;
         addons = with pkgs; [
           fcitx5-gtk
           fcitx5-mozc
@@ -43,6 +43,7 @@
     environment.defaultPackages = with pkgs.gnomeExtensions; [
       paperwm
       run-or-raise
+      kimpanel
     ];
     environment.systemPackages = with pkgs; [
       nautilus
