@@ -41,7 +41,7 @@ in {
 
         # "com.lakoliu.Furtherance" # time tracking app, # NOTE: uses eol library <2024-05-09>
 
-        "im.bernard.Nostalgia" # wallpaper, gpl3
+        # "im.bernard.Nostalgia" # wallpaper, gpl3
 
         "fr.romainvigier.MetadataCleaner"
         "app.drey.KeyRack" # edit secrets

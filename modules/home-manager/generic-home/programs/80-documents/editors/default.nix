@@ -21,13 +21,13 @@ in {
     (optionals genericHomeCfg.isDesktop [])
     # --
     (optionals genericHomeCfg.installTestApps (builtins.concatLists [
-      (with pkgsUnstable; [helix])
+      # (with pkgsUnstable; [helix])
       (optionals (genericHomeCfg.isDesktop) (with pkgsUnstable; [
-        lapce
+        # lapce
         # jetbrains.idea-community
 
         # emacs related
-        emacs29-pgtk
+        # emacs29-pgtk
         # graphviz-nox
 
         zed-editor
@@ -39,7 +39,7 @@ in {
     && genericHomeCfg.isDesktop
     && genericHomeCfg.installTestApps) [
     # editors
-    "org.gnome.gitlab.cheywood.Buffer" # empty editor
+    # "org.gnome.gitlab.cheywood.Buffer" # empty editor
     "io.gitlab.liferooter.TextPieces" # Developer's scratchpad
     # "dev.pulsar_edit.Pulsar" # editor, mit
   ];
