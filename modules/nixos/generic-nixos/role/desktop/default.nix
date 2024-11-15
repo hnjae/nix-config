@@ -20,7 +20,8 @@
     ./fonts.nix
     ./gnupg.nix
     ./locate.nix
-    ./plasma6.nix
+    # ./plasma6.nix
+    ./gnome.nix
     ./portal-pipewire.nix
     ./printing.nix
     ./upower.nix

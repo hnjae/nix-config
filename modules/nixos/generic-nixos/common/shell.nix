@@ -13,7 +13,7 @@
   };
   programs.xonsh.enable = true;
   environment.shells = with pkgs; [
-    nushellFull
+    nushell
     dash
     elvish
     bashInteractive

@@ -13,21 +13,20 @@ in {
 
   programs.mpv = {
     enable = genericHomeCfg.isDesktop;
-    package =
-      pkgs.wrapMpv
-      ((import ./package.nix) {inherit config pkgs;})
-      {
-        youtubeSupport = true;
-        scripts = builtins.concatLists [
-          (lib.lists.optionals pkgs.stdenv.isLinux
-            (with pkgs.mpvScripts; [mpris]))
-          (with pkgs.mpvScripts; [
-            visualizer
-            vr-reversal
-            mpv-cheatsheet # type ? to see keybord shortcuts
-          ])
-        ];
-      };
+    package = pkgs.mpv.overrideAttrs (_: {
+      mpv = (import ./package.nix) {inherit config pkgs;};
+      youtubeSupport = true;
+      scripts = builtins.concatLists [
+        (lib.lists.optionals pkgs.stdenv.isLinux
+          (with pkgs.mpvScripts; [mpris]))
+        (with pkgs.mpvScripts; [
+          visualizer
+          vr-reversal
+          mpv-cheatsheet # type ? to see keybord shortcuts
+        ])
+      ];
+    });
+
     defaultProfiles = ["gpu-hq"];
     config = {
       # do not disable compositor
