@@ -47,6 +47,11 @@
             "org/gnome/shell".enabled-extensions = [
               "kimpanel@kde.org"
             ];
+            "org/gnome/desktop/wm/keybindings" = {
+              # disable ibus switch shortcuts
+              switch-input-source = [];
+              switch-input-source-backward = [];
+            };
           };
         }
       ];
