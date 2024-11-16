@@ -63,54 +63,46 @@
     };
     "org/gnome/shell/extensions/paperwm" = {
       # Border
-      select-border-size = 16;
+      select-border-size = 3; # default: 10
       selection-border-radius-top = 12;
       selection-border-radius-bottom = 12;
 
       # Gap
-      window-gap = 4;
-      vertical-margin = 2;
-      horizontal-margin = 4;
-      vertical-margin-bottom = 2;
+      window-gap = 5;
+      horizontal-margin = 5; # margin with screen-edge
+      vertical-margin = 5;
+      vertical-margin-bottom = 5;
+
+      # top bar
+      show-window-position-bar = false;
+      disable-topbar-styling = true;
+      use-default-background = true;
 
       #
-      show-window-position-bar = false;
+      animation-time = 0.0;
 
-      # gesture-horizontal-fingers = 3;
-      # gesture-workspace-fingers = 3;
-      # winprops=['{"wm_class":"1password","scratch_layer":true,"title":"1Password"}']
+      # gestures
+      gesture-workspace-fingers = 0; # disable
+      gesture-horizontal-fingers = 3;
+      swipe-sensitivity = [3.0 2.0];
 
-      # winprops = lib.hm.gvariant.mkArray [
-      #   (
-      #     lib.hm.gvariant.mkDictionaryEntry {
-      #       wm_class = "1password";
-      #       title = "1Password";
-      #       scratch_layer = true;
-      #     }
-      #   )
-      # ];
-
-      # winprops = [
-      #   {
-      #     wm_class = "1password";
-      #     title = "1Password";
-      #     scratch_layer = true;
-      #   }
-      # ];
+      winprops = [
+        ''{"wm_class":"1password","title":"1Password","scratch_layer":true}''
+      ];
 
       cycle-width-steps = [
         500.0
         700.0
         810.0
         1010.0
-        1500.0
+        # 1500.0
       ];
     };
     "org/gnome/shell/extensions/paperwm/keybindings" = {
-      cycle-width = ["<Super>r"];
-      cycle-width-backwards = ["<Shift><Super>r"];
-      cycle-height = ["'<Alt><Super>r'"];
-      cycle-height-backwards = ["<Shift><Alt><Super>r"];
+      # cycle-width = ["<Super>r"];
+      # cycle-width-backwards = ["<Shift><Super>r"];
+      # cycle-height = ["'<Alt><Super>r'"];
+      # cycle-height-backwards = ["<Shift><Alt><Super>r"];
       # toggle-scratch-layer=['<Shift><Super>Escape']
     };
   };
