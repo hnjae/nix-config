@@ -1,10 +1,7 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./paperwm.nix
+    ./ulauncher.nix
   ];
 
   home.packages = with pkgs; [

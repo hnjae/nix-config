@@ -6,5 +6,6 @@ result
 /dotfiles/xdg.configFile/navi/navi.log
 /dotfiles/xdg.configFile/qalculate/qalc.history
 /dotfiles/xdg.configFile/qimgv/savedState.conf
+/dotfiles/xdg.configFile/ulauncher/ext_preferences
 
 /packages/*/default.nix
