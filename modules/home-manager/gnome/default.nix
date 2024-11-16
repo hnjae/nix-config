@@ -30,7 +30,6 @@
     };
     "org/gnome/shell/keybindings" = {
       toggle-application-view = []; # @as []
-      toggle-overview = ["<Super>w"];
     };
     "org/gnome/desktop/wm/keybindings" = {
       close = ["<Shift><Super>q" "<Alt>F4"];
