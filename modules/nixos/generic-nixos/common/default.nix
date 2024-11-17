@@ -22,6 +22,7 @@ _: {
     ./samba.nix
     ./shell.nix
     ./ssh.nix
+    ./sudo.nix
     ./sysctl.nix
     ./systemd.nix
     ./time.nix
