@@ -15,13 +15,14 @@
   #     ./configs/upower.nix
   #   ]));
   imports = [
+    ./1password.nix
     ./documentation.nix
     ./flatpak.nix
     ./fonts.nix
     ./gnupg.nix
     ./locate.nix
     # ./plasma6.nix
-    ./gnome.nix
+    ./gnome
     ./portal-pipewire.nix
     ./printing.nix
     ./upower.nix
