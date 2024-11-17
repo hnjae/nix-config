@@ -21,6 +21,11 @@
     # "org/gnome/mutter" = {
     #   center-new-windows = true; # if using wayland
     # };
+    #
+    # if using wayland:
+    # "org/gnome/shell/extensions/paperwm".winprops = [
+    #   ''{"wm_class":"ulauncher","scratch_layer":true,}''
+    # ];
     "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = ["/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom-ulauncher/"];
     };
@@ -29,9 +34,5 @@
       command = "ulauncher-toggle";
       name = "run-ulauncher-toggle";
     };
-    #
-    "org/gnome/shell/extensions/paperwm".winprops = [
-      ''{"wm_class":"ulauncher","scratch_layer":true,"title":"*"}''
-    ];
   };
 }
