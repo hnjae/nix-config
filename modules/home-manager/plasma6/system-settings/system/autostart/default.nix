@@ -1,7 +1,6 @@
 {...}: {
   imports = [
     # ./fcitx.nix
-    ./1password.nix
     ./caffeine
   ];
 

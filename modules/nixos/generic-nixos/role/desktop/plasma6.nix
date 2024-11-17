@@ -9,6 +9,22 @@
     home-manager.sharedModules = [
       (import ../../../../home-manager/plasma6)
       inputs.plasma-manager.homeManagerModules.plasma-manager
+      # hide org.fcitx.fcitx5-migrator desktop entry
+      {
+        xdg.desktopEntries."org.fcitx.fcitx5-migrator" = {
+          name = "fcitx5-migration-wizard";
+          comment = "this should not be displayed";
+          exec = ":";
+          type = "Application";
+          noDisplay = true;
+        };
+      }
+      {
+        programs.plasma.configFile."kwinrc"."Wayland"."InputMethod" = {
+          shellExpand = true;
+          value = "/run/current-system/sw/share/applications/org.fcitx.Fcitx5.desktop";
+        };
+      }
     ];
 
     services.xserver.enable = true;

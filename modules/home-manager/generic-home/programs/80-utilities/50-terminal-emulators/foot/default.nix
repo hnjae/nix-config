@@ -15,7 +15,7 @@ in {
     };
 
     default-app.fromApps = [
-      "" # 언제인가부터 foot 이 아니라 empty string 으로 등록이 됨 (2024-09-18)
+      # "" # 언제인가부터 foot 이 아니라 empty string 으로 등록이 됨 (2024-09-18)
     ];
 
     xdg.configFile."foot/foot.ini" =

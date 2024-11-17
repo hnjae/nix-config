@@ -69,7 +69,7 @@ in {
         "org.gnome.gitlab.YaLTeR.VideoTrimmer"
 
         # video edting
-        "org.shotcut.Shotcut"
+        # "org.shotcut.Shotcut"
 
         "org.gnome.gitlab.YaLTeR.Identity" # compare image or video
       ])

@@ -16,7 +16,7 @@ in {
 
         # calendar
         # "org.gnome.Calendar" # NOTE: KDE 환경에서 잘 작동 안됨.  <KDE Plasma 6.0.5>
-        "org.kde.kontact"
+        # "org.kde.kontact"
       ])
     ];
   };

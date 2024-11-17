@@ -11,11 +11,13 @@ in {
     ./zathura
   ];
 
-  config = lib.mkIf genericHomeCfg.installDevPackages {
+  config = {
     services.flatpak.packages = builtins.concatLists [
       (lib.lists.optionals genericHomeCfg.installTestApps [
         "com.github.jeromerobert.pdfarranger"
         "com.github.ahrm.sioyek" # pdfviewer
+        "org.gnome.Papers"
+        "org.gnome.Evince"
       ])
     ];
 
