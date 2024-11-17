@@ -187,6 +187,12 @@
                 ];
               };
             }
+            "${self}/modules/nixos/generic-nixos/packages"
+            {
+              nixpkgs.overlays = [
+                self.overlays.default
+              ];
+            }
           ];
         };
         overlays.default = _: prev: (

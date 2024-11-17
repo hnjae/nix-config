@@ -5,7 +5,6 @@
 }: {
   imports = [
     ./busybox-alike.nix
-    ./desktop.nix
     ./editor.nix
     ./filesystem.nix
   ];
