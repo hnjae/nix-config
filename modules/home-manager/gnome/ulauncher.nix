@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   home.packages = with pkgs; [
     ulauncher
     # albert # albert does not support fuzzy finding
@@ -35,4 +39,11 @@
       name = "run-ulauncher-toggle";
     };
   };
+  stateful.nodes = [
+    {
+      path = "${config.xdg.dataHome}/ulauncher";
+      mode = "755";
+      type = "dir";
+    }
+  ];
 }
