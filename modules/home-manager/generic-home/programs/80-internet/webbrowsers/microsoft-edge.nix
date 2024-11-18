@@ -9,7 +9,7 @@ in {
   config =
     lib.mkIf
     (genericHomeCfg.isDesktop && pkgs.stdenv.isLinux && pkgs.stdenv.isx86_64) {
-      stateful.cowNodes = [
+      stateful.nodes = [
         {
           path = "${config.xdg.configHome}/microsoft-edge";
           mode = "700";

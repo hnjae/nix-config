@@ -118,7 +118,7 @@
     historySize = mkForce 0;
   };
 
-  stateful.nocowNodes = [
+  stateful.nodes = [
     {
       path = "${config.xdg.dataHome}/atuin";
       mode = "755";

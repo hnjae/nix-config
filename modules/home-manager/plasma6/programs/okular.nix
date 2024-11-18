@@ -1,5 +1,5 @@
 {config, ...}: {
-  stateful.cowNodes = [
+  stateful.nodes = [
     {
       path = "${config.xdg.configHome}/okularrc";
       mode = "600";

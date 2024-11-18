@@ -1,5 +1,5 @@
 {config, ...}: {
-  stateful.cowNodes = [
+  stateful.nodes = [
     {
       path = "${config.xdg.configHome}/plasma_calendar_astronomicalevents";
       mode = "600";
