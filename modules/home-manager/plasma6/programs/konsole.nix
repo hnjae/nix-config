@@ -64,7 +64,7 @@
         }))))
   ]);
 in {
-  stateful.cowNodes = [
+  stateful.nodes = [
     # stateful 하게 사용 안함.
     # {
     #   path = "${config.xdg.dataHome}/konsole";

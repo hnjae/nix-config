@@ -17,7 +17,7 @@ in {
           (readFile (config.scheme {templateRepo = ./base24-zathura;})))
       ];
     };
-    stateful.nocowNodes = [
+    stateful.nodes = [
       {
         path = "${config.xdg.dataHome}/zathura";
         mode = "700";

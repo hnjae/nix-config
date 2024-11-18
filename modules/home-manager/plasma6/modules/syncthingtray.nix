@@ -77,7 +77,7 @@ in {
 
     # NOTE: connections 정보를 매번 지워버리게 됨. <2024-06-13>
     # plasma-manager에서 파일 처리 과정 문제로 추정.
-    stateful.cowNodes = [
+    stateful.nodes = [
       {
         path = "${config.xdg.configHome}/syncthingtray.ini";
         mode = "600";

@@ -32,7 +32,7 @@ in {
       })
     ];
 
-    stateful.cowNodes = [
+    stateful.nodes = [
       {
         path = "${config.xdg.configHome}/google-chrome";
         mode = "700";

@@ -43,7 +43,7 @@ in {
       '';
     };
 
-    # stateful.cowNodes = [
+    # stateful.nodes = [
     #   {
     #     path = "${config.home.homeDirectory}/.pnpm-store";
     #     mode = "755";

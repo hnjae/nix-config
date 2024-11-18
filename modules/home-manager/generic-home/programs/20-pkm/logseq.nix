@@ -24,7 +24,7 @@ in {
     services.flatpak.packages = [appId];
 
     default-app.fromApps = ["com.logseq.Logseq"];
-    stateful.cowNodes = [
+    stateful.nodes = [
       {
         path = "${config.xdg.configHome}/Logseq";
         mode = "700";

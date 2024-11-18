@@ -30,7 +30,7 @@ in {
     '';
   };
 
-  stateful.nocowNodes = [
+  stateful.nodes = [
     {
       path = "${config.xdg.dataHome}/zoxide";
       mode = "755";

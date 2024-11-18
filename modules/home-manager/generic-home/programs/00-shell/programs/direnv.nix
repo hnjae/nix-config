@@ -2,7 +2,7 @@
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
 
-  stateful.cowNodes = [
+  stateful.nodes = [
     {
       path = "${config.xdg.dataHome}/direnv";
       mode = "700";

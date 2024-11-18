@@ -10,7 +10,7 @@ in {
   # NOTE: Vivaldi does not support wayland <2024-06-05; vivaldi v6.7.3329.31, NixOS 24.05>
 
   config = lib.mkIf (genericHomeCfg.isDesktop && pkgs.config.allowUnfree) {
-    stateful.cowNodes = [
+    stateful.nodes = [
       {
         path = "${config.xdg.configHome}/vivaldi";
         mode = "700";

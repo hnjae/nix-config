@@ -23,7 +23,7 @@ in {
       mimeType = ["x-scheme-handler/zotero" "text/plain"];
     };
 
-    stateful.cowNodes = [
+    stateful.nodes = [
       {
         path = "${config.home.homeDirectory}/.zotero";
         mode = "755";

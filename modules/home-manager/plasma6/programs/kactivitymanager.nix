@@ -1,5 +1,5 @@
 {config, ...}: {
-  stateful.cowNodes = [
+  stateful.nodes = [
     # {
     # kactivitymanagerdrc is being managed by plasma-manager
     #   path = "${config.xdg.configHome}/kactivitymanagerdrc";
@@ -26,7 +26,5 @@
       mode = "600";
       type = "file";
     }
-  ];
-  stateful.nocowNodes = [
   ];
 }
