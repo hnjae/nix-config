@@ -10,7 +10,7 @@
       (lib.lists.optionals pkgs.config.allowUnfree (with pkgs; [
         fonts-toss-face
         fonts-kopub-world
-        fonts-hanazono-appending
+        # fonts-hanazono-appending
       ]))
       (with pkgs; [
         pretendard
