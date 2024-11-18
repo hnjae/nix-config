@@ -11,7 +11,6 @@
 
   config = lib.mkIf (config.generic-nixos.role == "desktop") {
     services.xserver.enable = true;
-    # TODO: check if this works <2024-11-15>
     services.xserver.excludePackages = [pkgs.xterm];
     services.xserver.displayManager.gdm.enable = true;
     services.xserver.desktopManager.gnome = {
@@ -65,7 +64,7 @@
       "org.gnome.Evolution"
       "org.gnome.Geary"
     ];
-    programs.geary.enable = true;
+    # programs.geary.enable = true;
 
     environment.gnome.excludePackages = with pkgs; [
       # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/x11/desktop-managers/gnome.nix

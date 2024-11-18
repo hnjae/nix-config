@@ -31,6 +31,7 @@ in {
           nyxt
           luakit
           qutebrowser
+
           # firefox-bin
           firefox-devedition-bin
           librewolf
@@ -38,5 +39,17 @@ in {
     ];
 
     default-app.browser = "librewolf";
+    stateful.nodes = [
+      {
+        path = "${config.home.homeDirectory}/.librewolf";
+        mode = "700";
+        type = "dir";
+      }
+      {
+        path = "${config.home.homeDirectory}/.mozilla";
+        mode = "700";
+        type = "dir";
+      }
+    ];
   };
 }
