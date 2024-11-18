@@ -1,5 +1,5 @@
 {config, ...}: {
-  stateful.cowNodes = [
+  stateful.nodes = [
     {
       path = "${config.xdg.dataHome}/kwalletd";
       mode = "755";

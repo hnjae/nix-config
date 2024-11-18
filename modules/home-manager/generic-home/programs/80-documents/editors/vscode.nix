@@ -10,7 +10,7 @@ in {
   config = lib.mkIf (genericHomeCfg.isDesktop && pkgs.config.allowUnfree) {
     home.packages = [pkgsUnstable.vscode-fhs];
 
-    stateful.cowNodes = [
+    stateful.nodes = [
       {
         path = "${config.xdg.configHome}/Code";
         mode = "700";

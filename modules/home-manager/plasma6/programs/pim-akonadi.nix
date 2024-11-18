@@ -6,7 +6,7 @@
       readerWindowMode = "right"; # display mail on right
     };
   };
-  stateful.cowNodes = [
+  stateful.nodes = [
     {
       path = "${config.xdg.configHome}/kmail2rc";
       mode = "600";
@@ -187,8 +187,6 @@
       mode = "755";
       type = "dir";
     }
-  ];
-  stateful.nocowNodes = [
     {
       path = "${config.xdg.dataHome}/phishingurl";
       mode = "755";

@@ -3,7 +3,7 @@
     "General"."FreeFloating".value = true;
   };
 
-  stateful.cowNodes = [
+  stateful.nodes = [
     # stateless
     # {
     #   path = "${config.xdg.configHome}/krunnerrc";
