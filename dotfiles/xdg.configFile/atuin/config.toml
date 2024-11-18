@@ -93,8 +93,8 @@ history_filter = [
   "^OPENAI_API_KEY=.*$",
   "^atuin history prune[^-]*$", # dry-run first!
   # rsync
-  "^rcp [^(-n)]*",
-  "^rsync [^(-n)]*",
+  # "^rcp [^(-n)]*",
+  # "^rsync [^(-n)]*",
   # cd
   # "^s .*",
   # "^cd .*",

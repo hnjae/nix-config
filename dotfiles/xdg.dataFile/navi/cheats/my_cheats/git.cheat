@@ -101,3 +101,6 @@ git push <origin> -d <branch>
 
 # disable push on some remotes
 git remote set-url --push <origin> <DISABLE (comment?)>
+
+# git clone latest
+git clone --recurse-submodules --depth 1 <repository>
