@@ -5,11 +5,11 @@
   imports = [
     ./blackbox
     # ./termite
-    # ./alacritty
+    ./alacritty
     # ./kitty
     # ./foot
     # ./wezterm
-    ./warp-terminal
+    # ./warp-terminal
   ];
 
   home.packages = [
