@@ -1,0 +1,10 @@
+ZFS
+nvim
+fcitx
+nocow
+podman
+flatpak
+libvirt
+syncthing
+recordsize
+secureboot

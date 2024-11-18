@@ -28,6 +28,31 @@ sudo zpool create -f \
 	mirror \
 	/dev/disk/by-partlabel/<partlabel> /dev/disk/by-partlabel/<partlabel>
 
+# create hdd single pool
+sudo zpool create -f \
+	-o compatibility=off \
+	-o ashift=12 \
+	-O recordsize=4M \
+	-O acltype=off \
+	-O relatime=off \
+	-O atime=off \
+	-O dnodesize=auto \
+	-O xattr=sa \
+	-O mountpoint=none \
+	-O canmount=off \
+	-O compression=lz4 \
+	-O exec=off \
+	-O setuid=off \
+	-O devices=off \
+	-O normalization=none \
+	-O utf8only=off \
+	-O casesensitivity=sensitive \
+	-O encryption=aes-256-gcm \
+	-O keyformat=passphrase \
+	-O keylocation=file:///persist/@/storage-encryption-keys/default.key \
+	<pool-name> \
+	/dev/disk/by-partlabel/<partlabel>
+
 ; -o failmode=continue (default: wait)
 
 # zfs zpool status
