@@ -1,22 +1,23 @@
 {...}: {
   imports = [
+    ./99-misc.nix
     ./data-formats.nix
-    ./nodejs
-    ./markup-language.nix
-    ./lua.nix
-    ./jvm.nix
-    ./go.nix
     ./db.nix
-    ./shell.nix
-    ./ruby.nix
     ./editorconfig.nix
-    ./nix.nix
-    ./nix-tools.nix
     ./git.nix
     ./gitui
-    ./web-dev
+    ./go.nix
+    ./jvm.nix
+    ./lua.nix
+    ./markup-language.nix
+    ./nix-tools.nix
+    ./nix.nix
+    ./nodejs
     ./python.nix
+    ./ruby.nix
+    ./rust.nix
+    ./shell.nix
     ./sql.nix
-    ./99-misc.nix
+    ./web-dev
   ];
 }
