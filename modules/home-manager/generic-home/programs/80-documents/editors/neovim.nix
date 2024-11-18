@@ -50,7 +50,7 @@ in {
       package = pkgsUnstable.neovim-unwrapped;
       # package = pkgsUnstable.neovim;
     };
-    stateful.cowNodes = [
+    stateful.nodes = [
       {
         path = "${config.xdg.dataHome}/nvim";
         mode = "700";

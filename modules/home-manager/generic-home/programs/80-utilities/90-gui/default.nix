@@ -68,7 +68,7 @@ in {
           # ffmpegthumbnailer
         ]))
     ];
-    stateful.cowNodes = [
+    stateful.nodes = [
       {
         path = "${config.xdg.dataHome}/icons/distrobox";
         mode = "755";

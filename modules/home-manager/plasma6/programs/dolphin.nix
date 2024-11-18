@@ -40,7 +40,7 @@
       "ffmpegthumbs"
     ];
   };
-  stateful.cowNodes = [
+  stateful.nodes = [
     # ".config/dolphinrc" # 덮어쓰기 됨.
     {
       path = "${config.xdg.configHome}/dolphinrc";

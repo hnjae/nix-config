@@ -48,7 +48,7 @@ in {
       #   };
       # };
 
-      stateful.cowNodes = [
+      stateful.nodes = [
         {
           path = "${config.xdg.configHome}/BraveSoftware";
           mode = "700";
