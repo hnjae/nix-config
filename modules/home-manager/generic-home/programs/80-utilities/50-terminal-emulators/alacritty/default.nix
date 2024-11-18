@@ -25,9 +25,9 @@ in {
             }))
             (let
               COLORFGBG =
-                if (config.base24.variant == "light")
-                then "0;15"
-                else "15;0";
+                if (genericHomeCfg.base24.darkMode)
+                then "15;0"
+                else "0;15";
             in ''
               [env]
               COLORFGBG="${COLORFGBG}"
