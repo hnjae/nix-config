@@ -20,10 +20,10 @@
       ];
     };
 
-    plasma6 = {
+    plasma = {
       imports = [
         inputs.plasma-manager.homeManagerModules.plasma-manager
-        ./plasma6
+        ./plasma
       ];
     };
     gnome = {imports = [./gnome];};
