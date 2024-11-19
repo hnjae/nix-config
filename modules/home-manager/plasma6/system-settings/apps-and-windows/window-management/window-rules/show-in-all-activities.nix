@@ -20,5 +20,19 @@ in {
         "activityrule".value = 2; # force
       };
     }
+    {
+      uuid = "2d0fa865-3761-483f-9892-123e20dcd87c";
+      description = "syncthingtray";
+      Match = {
+        "wmclass".value = "syncthingtray";
+        "wmclassmatch".value = 2; # substring match
+      };
+      Rule = {
+        "activity".value = "00000000-0000-0000-0000-000000000000";
+        "activityrule".value = 2; # force
+        "above".value = true;
+        "aboverule".value = 2; # force
+      };
+    }
   ];
 }
