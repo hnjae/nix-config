@@ -61,7 +61,7 @@
     services.flatpak.packages = [
       "org.gnome.Calendar"
       "org.gnome.Contacts"
-      "org.gnome.Evolution"
+      # "org.gnome.Evolution" # Microsoft 의 이메일 처리가 문제 있음. Evolution 으로 타 계정에서 ms로 옮긴 이메일이 ms에서 Drafts 로 인식됨. <Gnome 47; NixOS 24.11>
       "org.gnome.Geary"
     ];
     # programs.geary.enable = true;

@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     gnomeExtensions.paperwm
     gnomeExtensions.vertical-workspaces
@@ -77,6 +73,7 @@
       show-window-position-bar = false;
       disable-topbar-styling = true;
       use-default-background = true;
+      show-workspace-indicator = false; # use gnome's native indicator
 
       #
       animation-time = 0.0;
@@ -87,15 +84,15 @@
       swipe-sensitivity = [3.0 2.0];
 
       winprops = [
-        ''{"wm_class":"1password","title":"1Password","scratch_layer":true}''
+        ''{"wm_class":"1Password","title":"Quick Access — 1Password","scratch_layer":true}''
       ];
 
       cycle-width-steps = [
-        500.0
+        # 500.0
         700.0
         810.0
         1010.0
-        # 1500.0
+        1500.0
       ];
     };
     "org/gnome/shell/extensions/paperwm/keybindings" = {
