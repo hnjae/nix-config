@@ -13,9 +13,10 @@
     backupFileExtension = "backup";
     sharedModules = [
       inputs.impermanence.nixosModules.home-manager.impermanence
-      inputs.nix-flatpak.homeManagerModules.nix-flatpak
       inputs.base16.homeManagerModule
       inputs.nix-index-database.hmModules.nix-index
+
+      inputs.nix-flatpak.homeManagerModules.nix-flatpak
       inputs.nix-web-app.homeManagerModules.default
 
       (import ../../../home-manager/default-app)

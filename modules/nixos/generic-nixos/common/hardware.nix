@@ -50,8 +50,4 @@ in {
   };
 
   hardware.i2c.enable = mkOverride 999 isDesktop;
-
-  # hardware.steam-hardware.enable = mkOverride 999 (
-  #   pkgs.config.allowUnfree && isDesktop
-  # );
 }

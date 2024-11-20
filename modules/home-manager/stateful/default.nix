@@ -1,6 +1,5 @@
 # https://github.com/nix-community/impermanence
 # Stateful 하게 관리할 파일들.
-# WIP
 {
   lib,
   config,
