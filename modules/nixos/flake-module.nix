@@ -10,6 +10,10 @@
     # programs
     lact = import ./programs/lact.nix;
 
+    #
+    gnome = import ./desktop-environments/gnome;
+    plasma = import ./desktop-environments/plasma;
+
     default = {
       imports = [
         generic-nixos

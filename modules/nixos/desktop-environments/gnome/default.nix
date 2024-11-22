@@ -23,7 +23,7 @@
     };
 
     home-manager.sharedModules = [
-      (import ../../../../../home-manager/gnome)
+      (import ../../../home-manager/gnome)
       {
         # with lib.hm.gvariant;
         dconf.settings = {

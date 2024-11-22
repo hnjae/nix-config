@@ -7,7 +7,7 @@
 }: {
   config = lib.mkIf (config.generic-nixos.role == "desktop") {
     home-manager.sharedModules = [
-      (import ../../../../home-manager/plasma6)
+      (import ../../../home-manager/plasma)
       inputs.plasma-manager.homeManagerModules.plasma-manager
       # hide org.fcitx.fcitx5-migrator desktop entry
       {
