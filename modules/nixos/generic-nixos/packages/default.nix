@@ -7,6 +7,7 @@
     ./busybox-alike.nix
     ./editor.nix
     ./filesystem.nix
+    ./shell.nix
   ];
 
   environment.systemPackages = with config.boot.kernelPackages; [
