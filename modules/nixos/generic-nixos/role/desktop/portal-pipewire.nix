@@ -11,26 +11,13 @@ in {
     hardware.pulseaudio.enable = false;
 
     services.pipewire = {
-      enable = mkOverride 999 true;
-      wireplumber.enable = mkOverride 999 true;
-      audio.enable = mkOverride 999 true;
-      alsa.enable = mkOverride 999 true;
-      alsa.support32Bit = mkOverride 999 true;
-      pulse.enable = mkOverride 999 true;
-      jack.enable = mkOverride 999 true;
-    };
-
-    environment.etc."wireplumber/bluetooth.lua.d/51-bluez-config.lua" = {
-      enable = mkOverride 999 isDesktop;
-      text = ''
-        bluez_monitor.properties = {
-          ["bluez5.a2dp.ldac.quality"] = "sq", -- 660
-        }
-      '';
-      # ["bluez5.a2dp.aac.bitratemode"] = 1,
-      # ["bluez5.enable-sbc-xq"] = true,
-      # ["bluez5.enable-msbc"] = true,
-      # ["bluez5.codecs"] = "[ aac ldac aptx aptx_hd aptx_ll aptx_ll_duplex faststream faststream_duplex ]",
+      enable = true;
+      wireplumber.enable = true;
+      audio.enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
     };
 
     xdg.portal.enable = true;
