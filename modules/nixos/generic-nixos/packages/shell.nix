@@ -5,11 +5,11 @@
     enableCompletion = false;
     enableLsColors = false;
   };
-  programs.xonsh.enable = true;
+  # programs.xonsh.enable = true;
   environment.shells = with pkgs; [
     nushell
     dash
-    elvish
+    # elvish
     bashInteractive
   ];
   # environment.systemPackages = with pkgs; [
