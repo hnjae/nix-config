@@ -27,7 +27,7 @@
     # };
     #
     "org/gnome/shell/extensions/paperwm".winprops = [
-      ''{"wm_class":"ulauncher","scratch_layer":true,"title":"Ulauncher"}''
+      ''{"wm_class":"Ulauncher","scratch_layer":true,"title":""}''
     ];
     "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = ["/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom-ulauncher/"];

@@ -89,3 +89,12 @@ zfs unload-key <filesystem>
 
 # change key
 zfs change-key -l -o keylocation=<keylocatin> <filesystem>
+
+# list zfs datasets
+zfs list
+
+# list all zfs datasets
+zfs list -t all
+
+# list zfs snapshots (datasets)
+zfs list -t snapshot

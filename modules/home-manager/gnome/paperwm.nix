@@ -85,6 +85,9 @@
 
       winprops = [
         ''{"wm_class":"1Password","title":"Quick Access — 1Password","scratch_layer":true}''
+        ''{"wm_class":"1Password","title":"/^1Password$/","scratch_layer":true}''
+        ''{"wm_class":"","title":"/.*- Wine desktop$/","scratch_layer":false,"preferredWidth":"95%"}''
+        ''{"wm_class":"mpv","title":"","scratch_layer":true}''
       ];
 
       cycle-width-steps = [
