@@ -1,10 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
-  users.defaultUserShell = lib.mkOverride 999 pkgs.bashInteractive;
-
+{pkgs, ...}: {
   programs.fish.enable = true;
   programs.zsh = {
     enable = true;

@@ -20,7 +20,6 @@ _: {
     ./pam.nix
     ./polkit.nix
     ./samba.nix
-    ./shell.nix
     ./ssh.nix
     ./sudo.nix
     ./sysctl.nix
