@@ -84,6 +84,8 @@
 
     environment.defaultPackages = builtins.concatLists [
       (with pkgs; [
+        adw-gtk3
+
         # widgets
         compact-pager
         application-title-bar
@@ -120,6 +122,37 @@
       kdePackages.xdg-desktop-portal-kde
       xdg-desktop-portal-gtk # 없으면 gtk 앱에서 antialasing+cursor theme 안됨. <NixOS 23.05 & NixOS 24.05>
     ];
+
+    services.flatpak.packages = [
+      "org.gtk.Gtk3theme.adw-gtk3-dark"
+      "org.gtk.Gtk3theme.adw-gtk3"
+    ];
+    services.flatpak.overrides = {
+      "global" = {
+        Environment = {
+          "GTK_THEME" = "adw-gtk3";
+        };
+      };
+    };
+
+    home.sharedModules = [
+      {
+        services.flatpak.packages = [
+          "org.gtk.Gtk3theme.adw-gtk3-dark"
+          "org.gtk.Gtk3theme.adw-gtk3"
+        ];
+        services.flatpak.overrides = {
+          "global" = {
+            Environment = {
+              "GTK_THEME" = "adw-gtk3";
+            };
+          };
+        };
+      }
+    ];
+    environment.variables = {
+      "GTK_THEME" = "adw-gtk3";
+    };
 
     /*
     ----

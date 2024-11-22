@@ -17,9 +17,9 @@
       ];
       services.flatpak.overrides."org.localsend.localsend_app" = {
         Context = {filesystems = ["xdg-download"];};
-        Environment = {
-          "GTK_THEME" = "adw-gtk3-dark";
-        };
+        # Environment = {
+        #   "GTK_THEME" = "adw-gtk3";
+        # };
       };
 
       # managing android
