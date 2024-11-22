@@ -1,3 +1,4 @@
+md
 ZFS
 nvim
 fcitx
@@ -6,5 +7,10 @@ podman
 flatpak
 libvirt
 syncthing
+GpChatNew
 recordsize
 secureboot
+ChatClaude
+GpChatStop
+GpChatDelete
+GpChatRespond

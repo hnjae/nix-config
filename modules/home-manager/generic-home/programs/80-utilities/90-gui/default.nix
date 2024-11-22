@@ -14,20 +14,23 @@ in {
     services.flatpak.packages = builtins.concatLists [
       [
         "org.gnome.Logs" # systemd logs, ets
-      ]
-      (optionals genericHomeCfg.installTestApps [
-        "com.jeffser.Alpaca" # ollama
+        "app.drey.KeyRack" # edit secrets
 
+        # infos
+        "xyz.tytanium.DoorKnocker" # check availability of all portals provided by xdg-desktop-portal.
+        "dev.serebit.Waycheck" # displays the list of Wayland protocols
+
+        "com.github.tchx84.Flatseal" # edit permission of wayland apps
+      ]
+
+      (optionals genericHomeCfg.installTestApps [
         # "org.gnome.NetworkDisplays"
         "com.github.flxzt.rnote" # https://flathub.org/apps/com.github.flxzt.rnote
         "page.codeberg.libre_menu_editor.LibreMenuEditor"
 
         # infos
-        "xyz.tytanium.DoorKnocker" # check availability of all portals provided by xdg-desktop-portal.
-        "dev.serebit.Waycheck" # displays the list of Wayland protocols
         # "io.missioncenter.MissionCenter" # not working <NixOS 23.11>
         # "net.nokyan.Resources" # resource monitor; flatpak's 은 프로세스를 볼수 없음. https://github.com/nokyan/resources/issues/357 2024-09-19
-        "com.github.tchx84.Flatseal"
         "org.freedesktop.Bustle" # debug dbus, gpl2
 
         #
@@ -44,7 +47,6 @@ in {
         # "im.bernard.Nostalgia" # wallpaper, gpl3
 
         "fr.romainvigier.MetadataCleaner"
-        "app.drey.KeyRack" # edit secrets
 
         "io.github.giantpinkrobots.flatsweep" # remove leftover of flatpak apps
         "io.github.flattool.Warehouse" # flatpak managing
