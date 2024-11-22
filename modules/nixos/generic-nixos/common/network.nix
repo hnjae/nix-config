@@ -6,6 +6,8 @@
 }: let
   inherit (lib) mkOverride;
 in {
+  boot.kernelModules = ["wireguard"];
+
   networking.networkmanager = {
     enable = lib.mkOverride 999 true;
     plugins = with pkgs; [

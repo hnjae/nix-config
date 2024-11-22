@@ -1,6 +1,7 @@
 {...}: {
   imports = [
     ./1password.nix
+    ./bluetooth.nix
     ./documentation.nix
     ./flatpak.nix
     ./fonts.nix
