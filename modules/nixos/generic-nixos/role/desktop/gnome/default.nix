@@ -6,6 +6,7 @@
 }: {
   imports = [
     ./ime.nix
+    ./style.nix
     ./tray.nix
   ];
 
@@ -41,6 +42,21 @@
           };
         };
       }
+      # from network-manager
+      ({config, ...}: {
+        stateful.nodes = [
+          {
+            path = "${config.home.homeDirectory}/.pki";
+            mode = "700";
+            type = "dir";
+          }
+          {
+            path = "${config.home.homeDirectory}/.cert";
+            mode = "755";
+            type = "dir";
+          }
+        ];
+      })
     ];
 
     services.gnome = {
