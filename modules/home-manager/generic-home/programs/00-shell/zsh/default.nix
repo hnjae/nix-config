@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   pkgsUnstable,
   ...
 }: let
@@ -39,6 +40,11 @@ in {
 
     # .zprofle
     # profileExtra = "";
+
+    initExtraBeforeCompInit = ''
+      # source "${pkgs.nix-zsh-completions}/share/zsh/plugins/nix/nix-zsh-completions.plugin.zsh"
+      fpath=(${pkgs.nix-zsh-completions}/share/zsh/site-functions $fpath)
+    '';
 
     # .zshrc 중간 (after zplugin, history)
     initExtra = concat [
