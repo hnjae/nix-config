@@ -125,9 +125,14 @@
       core-os-services.enable = true; # setup portal, polkit, dconf, and etc.
       # tracker.enable = false;
     };
+    xdg.portal.extraPortals = lib.mkForce [
+      pkgs.xdg-desktop-portal-gnome
+      pkgs.xdg-desktop-portal-gtk
+    ];
     environment.systemPackages = with pkgs; [
       nautilus
       dconf-editor
+      gnome-console
       #
       # services.gnome.gnome-online-accounts.enable = mkDefault true;
       #

@@ -104,3 +104,6 @@ git remote set-url --push <origin> <DISABLE (comment?)>
 
 # git clone latest
 git clone --recurse-submodules --depth 1 <repository>
+
+# git ssh clone
+git clone --recurse-submodules "git@<githubdotcom>:<owner>/<repo>"

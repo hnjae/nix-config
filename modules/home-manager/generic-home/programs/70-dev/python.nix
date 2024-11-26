@@ -21,7 +21,9 @@ in {
       enable = true;
       pythonPackages = [
         # dev tools
-        # "pip"
+        "setuptools"
+        "flit"
+        "pip"
 
         "ruff-lsp" # linter
         "python-lsp-server" # lsp
@@ -46,6 +48,7 @@ in {
 
     home.packages = [
       pkgsUnstable.ruff
+      pkgsUnstable.poetry
       # pkgs.pylyzer
       # pkgsUnstable.nodePackages.pyright
       # pkgsUnstable.pipx

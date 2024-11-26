@@ -7,7 +7,11 @@
       # else
       #   __zoxide_z "$@"
       # fi
-      __zoxide_z "$@"
+      if [ -f "$@" ]; then
+        __zoxide_z "$(dirname "$@")"
+      else
+        __zoxide_z "$@"
+      fi
     }
 
     si() {

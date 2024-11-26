@@ -1,11 +1,15 @@
 md
 ZFS
+WIP
 nvim
 fcitx
 nocow
+luvit
 podman
+neodev
 flatpak
 libvirt
+LazySpec
 syncthing
 GpChatNew
 recordsize
@@ -13,4 +17,6 @@ secureboot
 ChatClaude
 GpChatStop
 GpChatDelete
+SourceConfig
+ConfigSchema
 GpChatRespond

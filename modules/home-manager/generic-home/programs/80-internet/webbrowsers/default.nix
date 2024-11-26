@@ -12,7 +12,6 @@ in {
     # ./firefox
     # ./vivaldi.nix
     # ./microsoft-edge.nix
-    # ./opera.nix
   ];
 
   config = lib.mkIf (genericHomeCfg.isDesktop) {
