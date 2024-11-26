@@ -11,6 +11,10 @@ in {
     audio = "mpv";
   };
 
+  # home.packages = with pkgs; [
+  #   celluloid
+  # ];
+
   programs.mpv = {
     enable = genericHomeCfg.isDesktop;
     package = pkgs.mpv.overrideAttrs (_: {
@@ -27,7 +31,7 @@ in {
       ];
     });
 
-    defaultProfiles = ["gpu-hq"];
+    # defaultProfiles = ["gpu-hq"];
     config = {
       # do not disable compositor
       x11-bypass-compositor = false;
@@ -40,6 +44,7 @@ in {
 
       #
       video-sync = "display-resample";
+      framedrop = "vo";
 
       # scale = "ewa_lanczossharp";
       scale = "ewa_lanczos";
@@ -108,7 +113,6 @@ in {
       screenshot-png-compression = 9;
       screenshot-template = "%F-%P-(%t%F)";
       screenshot-directory = "${
-        # if (pkgs.stdenv.isLinux && config.xdg.userDirs.enable)
         if (config.xdg.userDirs.enable)
         then (config.xdg.userDirs.pictures)
         else "${config.home.homeDirectory}/Pictures"

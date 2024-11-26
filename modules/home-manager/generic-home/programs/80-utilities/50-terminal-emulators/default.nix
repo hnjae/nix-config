@@ -8,7 +8,7 @@
     ./alacritty
     # ./kitty
     # ./foot
-    # ./wezterm
+    ./wezterm
     # ./warp-terminal
   ];
 
