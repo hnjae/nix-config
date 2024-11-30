@@ -32,95 +32,111 @@ in {
     });
 
     # defaultProfiles = ["gpu-hq"];
+    /*
+    NOTE:
     config = {
-      # do not disable compositor
       x11-bypass-compositor = false;
+    };
 
-      ytdl-format = "bestvideo+bestaudio";
-      hidpi-window-scale = true;
-      #
-      dither-depth = "auto";
-      temporal-dither = true;
-
-      #
-      video-sync = "display-resample";
-      framedrop = "vo";
-
-      # scale = "ewa_lanczossharp";
-      scale = "ewa_lanczos";
-      dscale = "mitchell";
-      cscale = "mitchell"; # ignored by gpu-next?
-      sigmoid-upscaling = true;
-      correct-downscaling = true;
-
-      # testing options
-      error-diffusion = "burkes";
-
-      #
-      vo = "gpu-next";
-      # ao = "pulse";
+    Above config create following line. AND IT IS VALID MPV CONFIG
+    `x11-bypass-compositor=%2%no` <2024-11-28>
+    */
+    config = {
+      # Video / Audio
       ao =
         if pkgs.stdenv.isDarwin
         then "coreaudio"
         else "pipewire";
-      af = "lavfi=[loudnorm]";
-      pipewire-volume-mode = "global";
-      gpu-api = "auto";
-      vulkan-async-compute = true; # ! isNvidia
-      # hwdec = "auto-copy";
-      hwdec = "auto";
-      # hwdec-codecs = "all";
-      hr-seek = "default";
-      sws-scaler = "spline";
-
+      pipewire-volume-mode = lib.mkIf (pkgs.stdenv.isLinux) "global";
       replaygain = "track";
 
+      # Scaling
+      scale = "ewa_lanczossharp";
+      # sigmoid-upscaling = true; # enabled by defaults
+      dscale = "mitchell";
+      cscale = "mitchell"; # ignored by gpu-next?
+      # correct-downscaling = true; # enabled by defaults
+      sws-scaler = "spline";
+
       #
-      osc = true;
+      interpolation = true; # reduce stuttering
 
-      # osd
-      term-osd-bar = true;
-      osd-level = 1;
-      osd-fractions = true; # show osd times with fractions of seconds
-      osd-bar = false;
-      osd-duration = 800; # default 1000
-      osd-blur = 0.1; # default 0
-      osd-scale-by-window = false;
-      osd-font-size = 60; # default 55
-      osd-font = "monospace";
-
-      # sub
-      sub-blur = 0.11;
-      sub-font-size = 40; # default 55
-      sub-ass-line-spacing = 25; # srt 자막에도 적용됨.
-      sub-margin-x = 120; # default 25
-      sub-ass-override = true; # 위 옵션적용
-      sub-font = "KoreanCNMM";
-      sub-border-size = 2.3; # default 3
-
-      # sub-filter-sdh="yes" # remove deaf or hard-of-hearing subtitle
-      # sub-filter-sdh-harder="yes"
-
-      # behavior
-      keep-open = true;
-
-      # screenshot
-      screenshot-format = "png";
-      screenshot-tag-colorspace = true;
+      # Screenshot
+      screenshot-format = "png"; # default: jpg
+      screenshot-tag-colorspace = true; # enabled by defaults
+      screenshot-high-bit-depth = true; # enabled by defaults
+      screenshot-template = "%F-%P-(%t%F)";
+      screenshot-png-compression = 9;
       screenshot-webp-lossless = true;
       screenshot-webp-quality = 100;
-      screenshot-webp-compression = 6;
-      screenshot-png-compression = 9;
-      screenshot-template = "%F-%P-(%t%F)";
-      screenshot-directory = "${
-        if (config.xdg.userDirs.enable)
-        then (config.xdg.userDirs.pictures)
-        else "${config.home.homeDirectory}/Pictures"
-      }/mpv-screenshots";
+      screenshot-webp-compression = 6; # best compression
+      screenshot-jxl-distance = 0; # lossless
+      screenshot-jxl-effort = 9; # best compression
+      # screenshot-avif-opts = builtins.concatStringsSep "," (
+      # builtins.mapAttrs (key: name: ) {
+      #     crf = "0";
+      #   }
+      # );
+      screenshot-directory = "${config.xdg.userDirs.pictures}/mpv-screenshots";
+
+      # do not disable compositor
+      x11-bypass-compositor = false;
+      ytdl-format = "bestvideo+bestaudio";
+
+      # osd
+      osd-fractions = true; # show osd times with fractions of seconds
+      term-osd-bar = true; # default: false
+      osd-bar = false; # no osd bar when skipping time
+      osd-duration = 800; # default 1000
+      osd-blur = 0.1; # default 0
+      osd-level = 1; # osd shows up on user interaction
+      # osd-font-size = 60; # default 55
+      # osd-font = "monospace";
+
+      #   # sub
+      #   sub-blur = 0.11;
+      #   sub-font-size = 40; # default 55
+      #   sub-ass-line-spacing = 25; # srt 자막에도 적용됨.
+      #   sub-margin-x = 120; # default 25
+      #   sub-ass-override = true; # 위 옵션적용
+      #   sub-font = "KoreanCNMM";
+      #   sub-border-size = 2.3; # default 3
+      #
+      #   # sub-filter-sdh="yes" # remove deaf or hard-of-hearing subtitle
+      #   # sub-filter-sdh-harder="yes"
+
+      # default values:
+      # video-sync = "display-resample";
+      # framedrop = "vo";
+      # dither-depth = "auto";
 
       #
-      # video-align-y = -1;
+      # temporal-dither = true;
     };
+
+    #
+    #   # testing options
+    #   error-diffusion = "burkes";
+    #
+    #   #
+    #   vo = "gpu-next";
+    #   af = "lavfi=[loudnorm]";
+    #   gpu-api = "auto";
+    #   vulkan-async-compute = true; # ! isNvidia
+    #   # hwdec = "auto-copy";
+    #   hwdec = "auto";
+    #   # hwdec-codecs = "all";
+    #   hr-seek = "default";
+    #
+    #   #
+    #   osc = true;
+    #   # osd
+    #
+    #   # behavior
+    #   keep-open = true;
+    #
+    # };
+
     bindings = {
       # h = "seek -0.01 keyframes";
       # j = "seek -30 keyframes";

@@ -14,7 +14,8 @@ in {
   xdg.desktopEntries.qalc = lib.mkIf (pkgs.stdenv.isLinux && genericHomeCfg.isDesktop) {
     name = "Qalculate";
     comment = "w. custom .desktop entry";
-    exec = "footclient --app-id=qalc --title=Qalculate -e qalc";
+    # exec = "footclient --app-id=qalc --title=Qalculate -e qalc";
+    exec = "${pkgs.alacritty}/bin/alacritty --class qalc,qalc --title Qalculate -e qalc %F";
     terminal = false;
     icon = "accessories-calculator";
     type = "Application";

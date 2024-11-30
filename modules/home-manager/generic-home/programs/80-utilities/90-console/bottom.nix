@@ -16,8 +16,8 @@ in {
   xdg.desktopEntries.bottom = lib.mkIf (pkgs.stdenv.isLinux && genericHomeCfg.isDesktop) {
     name = "Bottom (btm)";
     comment = "w. custom .desktop entry";
-    # exec = "alacritty --class btm,btm --title bottom -e btm %F";
-    exec = "footclient --app-id=btm --title=bottom -e btm";
+    exec = "${pkgs.alacritty}/bin/alacritty --class btm,btm --title bottom -e btm %F";
+    # exec = "footclient --app-id=btm --title=bottom -e btm";
     terminal = false;
     icon = "utilities-system-monitor";
     type = "Application";

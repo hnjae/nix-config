@@ -40,6 +40,9 @@
               "xwayland-native-scaling"
             ];
           };
+          "system/locale" = {
+            region = "en_IE.UTF-8";
+          };
         };
       }
       # from network-manager

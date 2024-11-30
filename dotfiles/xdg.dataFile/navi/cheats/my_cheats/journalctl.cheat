@@ -2,3 +2,6 @@
 
 # print last boot systemd log
 journalctl -b -1
+
+# print
+journalctl --user -xu <systemd-units>

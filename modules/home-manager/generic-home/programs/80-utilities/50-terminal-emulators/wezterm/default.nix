@@ -13,11 +13,18 @@
   genericHomeCfg = config.generic-home;
 in {
   config = lib.mkIf (genericHomeCfg.isDesktop) {
-    home.packages = [package];
+    # home.packages = [package];
 
     default-app.fromApps = [
       "org.wezfurlong.wezterm"
     ];
+
+    services.flatpak.packages = [
+      "org.wezfurlong.wezterm"
+    ];
+    home.shellAliases = {
+      wezterm = "flatpak --user run org.wezfurlong.wezterm";
+    };
 
     # programs.bash.initExtra = shellIntgrationStr;
     # programs.zsh.initExtra = shellIntgrationStr;

@@ -11,6 +11,10 @@
     {
       dconf.settings = {
         "org/gnome/desktop/interface".gtk-theme = "adw-gtk3";
+        "org/gnome/desktop/interface".icon-theme = "MoreWaita";
+        "org/gnome/desktop/interface".font-name = "Sans 11";
+        "org/gnome/desktop/interface".document-font-name = "Sans 11";
+        "org/gnome/desktop/interface".monospace-font-name = "Monospace 10";
       };
     }
     {
@@ -23,8 +27,20 @@
 
   environment.systemPackages = with pkgs; [
     adw-gtk3
+    morewaita-icon-theme # extend adwaita
+
+    # fallback theme for generic-icons (e.g. utilities-system-monitor)
+    whitesur-icon-theme
+    # paper-icon-theme
+    # papirus-icon-theme
   ];
 
-  # https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications#GTK_themes_ported_to_Kvantum
-  qt.style = "kvantum";
+  # gsettings set org.gnome.desktop.interface icon-theme 'MoreWaita'
+
+  # https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications
+  qt = {
+    enable = true;
+    platformTheme = "qt5ct";
+    style = "adwaita";
+  };
 }
