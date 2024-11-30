@@ -49,6 +49,10 @@ in {
     # .zshrc 중간 (after zplugin, history)
     initExtra = concat [
       ''
+        # fzf-tab should be loaded before zsh-autosuggestions and zsh-fast-syntax-highlighting
+        . "${pkgsUnstable.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh"
+        # https://github.com/Aloxaf/fzf-tab/issues/477
+        zstyle ':fzf-tab:*' fzf-flags --color=fg:5
 
         # history 에서 일치하는 명령 줄 배경색으로 표기
         . "${pkgsUnstable.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
@@ -59,7 +63,6 @@ in {
         # syntax highlighting
         . "${pkgsUnstable.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
 
-        . "${pkgsUnstable.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh"
 
         # run `zhooks` to display functions and array <https://github.com/agkozak/zhooks>
         . "${pkgsUnstable.zsh-zhooks}/share/zsh/zhooks/zhooks.plugin.zsh"

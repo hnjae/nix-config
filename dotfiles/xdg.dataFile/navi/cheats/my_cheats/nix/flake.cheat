@@ -16,7 +16,7 @@ nix flake show
 nix flake show templates
 
 # update individual inputs (you can repeat --update-input)
-nix flake lock --update-input <input>
+nix flake update <input>
 
 # update inputs
 nix flake update

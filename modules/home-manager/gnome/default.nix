@@ -13,6 +13,9 @@
     "org/gnome/shell".enabled-extensions = [
       "run-or-raise@edvard.cz"
     ];
+    "org/gnome/desktop/calendar" = {
+      show-weekdate = true;
+    };
     "org/gnome/desktop/peripherals/mouse" = {
       natural-scroll = true;
     };

@@ -98,3 +98,6 @@ zfs list -t all
 
 # list zfs snapshots (datasets)
 zfs list -t snapshot
+
+; # allow user to run command in dataset/volume
+; zfs allow <subcommad> -u <user> <filesystem|volume>

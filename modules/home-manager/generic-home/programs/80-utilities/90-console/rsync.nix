@@ -4,9 +4,9 @@
   ...
 }: let
   rsyncArgs = [
-    "ionice"
-    "-c"
-    "idle"
+    # "ionice"
+    # "-c"
+    # "idle"
     "rsync"
     "--info=progress2"
     "-h"
@@ -61,9 +61,11 @@ in {
     rcp-sync = concatLists [
       (lib.lists.remove "--exclude-from=${rsync-exclude}" rsyncArgs)
       [
-        "--checksum"
-        "--cc=xxh3" # (https://github.com/Cyan4973/xxHash)
-        "--delete-delay"
+        # "--checksum"
+        # "--cc=xxh3" # (https://github.com/Cyan4973/xxHash)
+        # "--delete-delay"
+        "--fuzzy"
+        "--delete-after"
       ]
     ];
     rcp-mtp = [

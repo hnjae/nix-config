@@ -1,0 +1,16 @@
+% wezterm
+
+# ssh login using wezterm
+wezterm ssh <target>
+
+; split vertical
+; Ctrl+Shift+Alt "
+
+; split horizontal
+; Ctrl+Shift+Alt %
+
+; switch pane
+; <C-S> L/R Arrow
+
+; move tab
+; <C-S> PgUp/PgDown
