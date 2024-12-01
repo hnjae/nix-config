@@ -1,5 +1,8 @@
 % smartctl, smart
 
+# start short test
+smartctl -t short "/dev/<device>"
+
 # start long test
 smartctl -t long "/dev/<device>"
 

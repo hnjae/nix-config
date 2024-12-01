@@ -160,6 +160,21 @@
             # "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix"
             {
+              programs = {
+                geary.enable = false;
+                evolution.enable = false;
+              };
+              # environment.gnome.excludePackages = with ?; [
+              #   gnome-tour
+              #   gnome-shell-extensions
+              #   gnome-calendar
+              #   gnome-contacts
+              #   gnome-weather
+              #   gnome-clocks
+              #   gnome-font-viewer
+              # ];
+            }
+            {
               isoImage = {
                 squashfsCompression = "zstd -Xcompression-level 6";
                 makeBiosBootable = false;
