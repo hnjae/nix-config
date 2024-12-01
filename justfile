@@ -58,18 +58,6 @@ drybuild-homes-wip:
       --json \
       '.#homeConfigurations.{}.activationPackage' 2> >(sed '/^[[:space:]]*\/nix\/store\//d')"
 
-drybuild-home-plasma6:
-  nix build \
-    --dry-run \
-    --no-warn-dirty \
-    --no-print-missing \
-    --option keep-env-derivations true \
-    --option pure-eval true \
-    --option show-trace false \
-    --json \
-    --builders "" \
-    ".#homeConfigurations.desktop-plasma6-unfree-x86_64-linux.activationPackage"
-
 drybuild-homes:
   #!/bin/sh
 
@@ -105,19 +93,6 @@ drybuild-homes:
 
     echo ""
   done
-
-drybuild-home-desktop-plasma6-unfree-x86_64-linux:
-    nix build \
-      --dry-run \
-      --no-warn-dirty \
-      --no-print-missing \
-      --option keep-env-derivations true \
-      --option pure-eval true \
-      --option show-trace false \
-      --quiet \
-      --json \
-      --builders "" \
-      ".#homeConfigurations.desktop-plasma6-unfree-x86_64-linux.activationPackage"
 
 drybuild-nixos-desktop:
   nix build \
