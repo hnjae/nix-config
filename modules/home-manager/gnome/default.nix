@@ -7,6 +7,7 @@
   home.packages = with pkgs; [
     dconf2nix
     gnomeExtensions.run-or-raise
+    gnomeExtensions.caffeine
   ];
 
   dconf.settings = {
