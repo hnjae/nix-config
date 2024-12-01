@@ -118,6 +118,7 @@
 
         ./nixos-configs-sample/flake-module.nix
         ./hm-configs-sample/flake-module.nix
+        ./hm-configs/flake-module.nix
       ];
       systems = with flake-utils.lib.system; [
         x86_64-linux
