@@ -23,6 +23,22 @@ flake-update-except-unstable:
     --update-input nix-web-app \
     --update-input cgitc
 
+show-homeConfigurations:
+    nix eval \
+      --no-warn-dirty \
+      --json \
+      ".#homeConfigurations" \
+      --apply builtins.attrNames | \
+      jq '.[]'
+
+show-homeManagerModules:
+    nix eval \
+      --no-warn-dirty \
+      --json \
+      ".#homeManagerModules" \
+      --apply builtins.attrNames | \
+      jq '.[]'
+
 open-status:
   xdg-open "https://status.nixos.org/"
 
@@ -144,5 +160,34 @@ drybuild-nixoses:
 
 build-iso:
   nix build .#nixosConfigurations.iso.config.system.build.isoImage
+
+build-home:
+  #!/bin/sh
+  set -e
+  hmName="$(hostname)"
+
+  nix build \
+    --no-print-missing \
+    --option keep-env-derivations true \
+    --option pure-eval true \
+    --json \
+    --builders "" \
+    ".#homeConfigurations.${hmName}.activationPackage"
+
+switch-home:
+  #!/bin/sh
+  set -e
+  hmName="$(hostname)"
+
+  nix build \
+    --no-link \
+    --no-print-missing \
+    --option keep-env-derivations true \
+    --option pure-eval true \
+    --json \
+    --builders "" \
+    ".#homeConfigurations.${hmName}.activationPackage"
+  bash "$(nix eval --raw ".#homeConfigurations.${hmName}.activationPackage")/activate"
+
 
 test: test-flake drybuild-homes
