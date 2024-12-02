@@ -8,6 +8,7 @@
     # albert # albert does not support fuzzy finding
   ];
 
+  # NOTE: ulauncher 을 wayland 로 실행시, 화면 정중앙에 검색창이 뜨질 않는다.  <2024-12-02>
   xdg.configFile."autostart/ulauncher.desktop" = {
     enable = true;
     text = ''

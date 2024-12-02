@@ -4,4 +4,4 @@
 dconf dump /
 
 # reset
-dconf reset
+dconf reset <object>

@@ -61,6 +61,9 @@ zpool status -v
 # manually import a pool
 zpool import -d <block-device> -d <block-device> <zpool-name>
 
+# import a pool with different name (rename a pool)
+zpool import <zpool-name> <new-name>
+
 # import all pool
 zpool import -a
 
@@ -98,6 +101,9 @@ zfs list -t all
 
 # list zfs snapshots (datasets)
 zfs list -t snapshot
+
+# arc cache metadata only
+zfs set primarycache=metadata <filesystem>
 
 ; # allow user to run command in dataset/volume
 ; zfs allow <subcommad> -u <user> <filesystem|volume>

@@ -1,6 +1,5 @@
 {
   pkgs,
-  config,
   lib,
   ...
 }: {
@@ -10,7 +9,7 @@
     ./tray.nix
   ];
 
-  config = lib.mkIf (config.generic-nixos.role == "desktop") {
+  config = {
     services.xserver.enable = true;
     services.xserver.excludePackages = [pkgs.xterm];
     services.xserver.displayManager.gdm.enable = true;
@@ -27,12 +26,6 @@
       {
         # with lib.hm.gvariant;
         dconf.settings = {
-          /*
-          ```
-          gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
-          gsettings set org.gnome.mutter experimental-features "['variable-refresh-rate']"
-          ```
-          */
           "org/gnome/mutter" = {
             experimental-features = [
               "scale-monitor-framebuffer"
@@ -44,6 +37,24 @@
             region = "en_IE.UTF-8";
           };
         };
+      }
+      {
+        /*
+        NOTE: <NixOS 24.11; Gnome 47>
+        xdg-desktop-portal-gnome 의 최초 실행이 **매우** 느림. (아마 dbus 가) activate 하는 과정에서 뭐가 문제가 있는 것 같음. 근데 그냥 터미널에서 실행은 빠름. 디버깅 하다가 포기하고 아래 설정으로 임시조치.
+
+        ※ 기대한 동작되로 돌아가지 않음.
+        */
+        # xdg.configFile."autostart/start-xdg-desktop-portal-gnome.desktop" = {
+        #   enable = true;
+        #   text = ''
+        #     [Desktop Entry]
+        #     Exec=sh -c 'sleep 0.5 && systemctl --user start xdg-desktop-portal-gnome.service'
+        #     Name=start-xdg-desktop-portal-gnome
+        #     Terminal=false
+        #     Type=Application
+        #   '';
+        # };
       }
       # from network-manager
       ({config, ...}: {
@@ -120,6 +131,16 @@
           }
         ];
       })
+      {
+        # NOTE: system-wide flatpak 말고 user 사용 (라이브러리 공유)
+        services.flatpak.packages = [
+          # "org.gnome.Evolution" # Microsoft 의 이메일 처리가 문제 있음. Evolution 으로 타 계정에서 ms로 옮긴 이메일이 ms에서 Drafts 로 인식됨. <Gnome 47; NixOS 24.11>
+          "org.gnome.Calendar"
+          "org.gnome.Contacts"
+          "org.gnome.Geary"
+          "org.gnome.Calculator"
+        ];
+      }
     ];
 
     services.gnome = {
@@ -136,17 +157,6 @@
       nautilus
       dconf-editor
       gnome-console
-      #
-      # services.gnome.gnome-online-accounts.enable = mkDefault true;
-      #
-      # gnome-calendar
-      # gnome-contacts
-    ];
-    services.flatpak.packages = [
-      "org.gnome.Calendar"
-      "org.gnome.Contacts"
-      # "org.gnome.Evolution" # Microsoft 의 이메일 처리가 문제 있음. Evolution 으로 타 계정에서 ms로 옮긴 이메일이 ms에서 Drafts 로 인식됨. <Gnome 47; NixOS 24.11>
-      "org.gnome.Geary"
     ];
 
     environment.gnome.excludePackages = with pkgs; [
