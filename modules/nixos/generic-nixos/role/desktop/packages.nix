@@ -12,15 +12,21 @@
         allowedTCPPorts = [53317];
         allowedUDPPorts = [53317];
       };
-      services.flatpak.packages = [
-        "org.localsend.localsend_app" # should open 53317
+
+      home-manager.sharedModules = [
+        {
+          # NOTE: system-wide flatpak 말고 user 사용 (라이브러리 공유)
+          services.flatpak.packages = [
+            "org.localsend.localsend_app" # should open 53317
+          ];
+          services.flatpak.overrides."org.localsend.localsend_app" = {
+            Context = {filesystems = ["xdg-download"];};
+            # Environment = {
+            #   "GTK_THEME" = "adw-gtk3";
+            # };
+          };
+        }
       ];
-      services.flatpak.overrides."org.localsend.localsend_app" = {
-        Context = {filesystems = ["xdg-download"];};
-        # Environment = {
-        #   "GTK_THEME" = "adw-gtk3";
-        # };
-      };
 
       # managing android
       programs.adb.enable = true;

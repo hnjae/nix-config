@@ -11,6 +11,7 @@ in {
     home.packages = with pkgsUnstable; [
       git-open
       git-crypt
+      git-lfs
 
       #
       lazygit
