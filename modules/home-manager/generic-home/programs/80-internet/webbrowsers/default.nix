@@ -15,7 +15,9 @@ in {
   ];
 
   config = lib.mkIf (genericHomeCfg.isDesktop) {
-    services.flatpak.packages = lib.lists.optionals genericHomeCfg.installTestApps [
+    default-app.browser = "io.github.zen_browser.zen";
+
+    services.flatpak.packages = [
       "io.github.zen_browser.zen"
     ];
 
@@ -37,7 +39,6 @@ in {
         ]))
     ];
 
-    default-app.browser = "librewolf";
     stateful.nodes = [
       {
         path = "${config.home.homeDirectory}/.librewolf";
