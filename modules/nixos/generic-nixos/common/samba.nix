@@ -1,4 +1,7 @@
 _: {
+  # https://www.jeffgeerling.com/blog/2024/macos-finder-still-bad-network-file-copies
+  # vfs objects catia fruit streams_xttar
+  # fruit:nfs_aces no
   # NOTE: man 5 smb.conf
   services.samba.settings = {
     global = {

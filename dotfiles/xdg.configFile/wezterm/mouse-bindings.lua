@@ -1,9 +1,10 @@
 local M = {}
 
-M.apply = function(opts, wezterm)
+local wezterm = require("wezterm")
+M.apply_to_config = function(config)
   local act = wezterm.action
   -- run wezterm show-keys [--lua]
-  opts.mouse_bindings = {
+  config.mouse_bindings = {
     {
       event = { Up = { streak = 1, button = "Left" } },
       mods = "NONE",

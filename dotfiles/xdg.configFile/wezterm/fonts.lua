@@ -1,4 +1,7 @@
 -- NOTE: ignores fontconfig  <2024-11-28>
+
+local wezterm = require("wezterm")
+
 local M = {}
 local FONTS = {
   { family = "MesloLGM Nerd Font" },
@@ -40,7 +43,7 @@ M.get_font = function(wezterm)
   return wezterm.font_with_fallback(FONTS)
 end
 
-M.apply = function(opts, wezterm)
+M.apply_to_config = function(opts)
   opts.font = M.get_font(wezterm)
   opts.font_size = 10
   opts.warn_about_missing_glyphs = true

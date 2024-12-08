@@ -49,20 +49,24 @@ in {
     # .zshrc 중간 (after zplugin, history)
     initExtra = concat [
       ''
+        # https://github.com/Aloxaf/fzf-tab/issues/477
+        zstyle ':fzf-tab:*' default-color ""
+        zstyle ':fzf-tab:*' use-fzf-default-opts yes
+        # zstyle ':fzf-tab:*' fzf-flags --color=fg+:8
+        zstyle ':fzf-tab:*' fzf-flags --color=16
+
         # fzf-tab should be loaded before zsh-autosuggestions and zsh-fast-syntax-highlighting
         . "${pkgsUnstable.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh"
-        # https://github.com/Aloxaf/fzf-tab/issues/477
-        zstyle ':fzf-tab:*' fzf-flags --color=fg:5
+
 
         # history 에서 일치하는 명령 줄 배경색으로 표기
         . "${pkgsUnstable.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-        # alias 에 있는 커맨드와 동일하면 표기
-        . "${pkgsUnstable.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh"
-
         # syntax highlighting
         . "${pkgsUnstable.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
 
+        # alias 에 있는 커맨드와 동일하면 표기
+        . "${pkgsUnstable.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh"
 
         # run `zhooks` to display functions and array <https://github.com/agkozak/zhooks>
         . "${pkgsUnstable.zsh-zhooks}/share/zsh/zhooks/zhooks.plugin.zsh"
@@ -82,13 +86,53 @@ in {
     history = {
       path = "${config.xdg.stateHome}/zsh_history";
       ignoreDups = true;
-      ignorePatterns = config.programs.bash.historyIgnore;
+      ignorePatterns = [
+        # cd
+        "cd"
+        "s"
+
+        # files
+        "rm"
+        "trash"
+        "trash-put"
+        "trash-rm"
+        "trash-empty"
+        "trash-restore"
+        "trash-list"
+        "mv"
+
+        # ls & misc
+        # "pwd"
+
+        "pfkill"
+
+        #
+        "clear"
+        "exit"
+        "fg"
+        "bg"
+
+        # filesystems
+        "zfs destroy *"
+        "zpool destroy *"
+        "btrfs subvolume delete *"
+
+        # dangerous commands
+        "reboot"
+        "shutdown"
+        "halt"
+        "kexec"
+        "systemctl reboot"
+        "systemctl halt"
+        "systemctl poweroff"
+        "systemctl kexec"
+        "systemctl soft-reboot"
+      ];
       ignoreSpace = true;
       extended = true; # save timestamp into the history file
       save = 90000;
       size = 90000;
       share = true;
-      # use atuin as history manager
     };
   };
 }

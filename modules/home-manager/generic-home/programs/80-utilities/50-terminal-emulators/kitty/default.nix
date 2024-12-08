@@ -29,10 +29,13 @@ in {
       (readFile ./resources/configs/tab-bar/tab-bar.conf)
       (readFile ./resources/configs/window-layout.conf)
       (readFile ./resources/configs/map.conf)
+      ''
+        wayland_titlebar_color system
+      ''
 
-      ''
-        font_size ${toString genericHomeCfg.terminalFontSize}
-      ''
+      # ''
+      #   font_size ${toString genericHomeCfg.terminalFontSize}
+      # ''
     ];
   };
 

@@ -49,6 +49,11 @@
       begin-resize = ["<Super>r " "<Alt>F8"];
       begin-move = ["<Super>c" "<Alt>F7"];
       show-desktop = ["<Super>d"]; # defaults on Gnome 47: no key binding
+
+      switch-applications = [];
+      switch-applications-backward = [];
+      switch-windows = ["<Alt>Tab" "<Super>Tab"];
+      switch-windows-backward = ["<Shift><Alt>Tab" "<Shfit><Super>Tab"];
     };
     "org/gnome/settings-daemon/plugins/media-keys" = {
       calculator = ["Favorites"];

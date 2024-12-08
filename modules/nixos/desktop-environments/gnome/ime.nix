@@ -92,6 +92,17 @@
             switch-input-source = [];
             switch-input-source-backward = [];
           };
+          "org/gnome/desktop/input-sources" = {
+            # mru-sources=[('xkb', 'us+colemak_dh')];
+            # sources=[('xkb', 'us+colemak_dh')];
+            xkb-options = [
+              # "altwin:swap_lalt_lwin"
+              "shift:both_capslock_cancel"
+              "caps:backspace"
+              "korean:ralt_hangul"
+              "korean:rctrl_hanja"
+            ];
+          };
         };
       }
       ({config, ...}: {

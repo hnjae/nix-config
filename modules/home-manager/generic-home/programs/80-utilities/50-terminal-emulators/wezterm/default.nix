@@ -11,20 +11,28 @@
     . "${package}/etc/profile.d/wezterm.sh"
   '';
   genericHomeCfg = config.generic-home;
+
+  appId = "org.wezfurlong.wezterm";
 in {
   config = lib.mkIf (genericHomeCfg.isDesktop) {
     # home.packages = [package];
 
-    default-app.fromApps = [
-      "org.wezfurlong.wezterm"
-    ];
-
-    services.flatpak.packages = [
-      "org.wezfurlong.wezterm"
-    ];
+    default-app.fromApps = [appId];
+    services.flatpak.packages = [appId];
+    services.flatpak.overrides."${appId}" = {
+      # https://github.com/wez/wezterm/issues/4962
+      Context = {sockets = ["!wayland"];};
+    };
     home.shellAliases = {
       wezterm = "flatpak --user run org.wezfurlong.wezterm";
     };
+    # home.packages = [
+    #   (pkgs.writeScriptBin "wezterm" ''
+    #     #!${pkgs.dash}/bin/dash
+    #     flatpak --user run org.wezfurlong.wezterm "$@"
+    #   '')
+    # ];
+    programs.zsh.initExtra = builtins.readFile ./resources/wezterm-zsh-chpwd.zsh;
 
     # programs.bash.initExtra = shellIntgrationStr;
     # programs.zsh.initExtra = shellIntgrationStr;
