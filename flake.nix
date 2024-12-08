@@ -35,9 +35,8 @@
     nur.url = "github:nix-community/NUR";
 
     nixvim = {
-      # TODO: replace this with 24.11 when 24.11 released <2024-11-14>
-      # url = "github:nix-community/nixvim/nixos-24.05";
-      url = "github:nix-community/nixvim/main";
+      url = "github:nix-community/nixvim/nixos-24.11";
+      # url = "github:nix-community/nixvim/main";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
