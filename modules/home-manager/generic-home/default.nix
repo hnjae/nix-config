@@ -16,7 +16,7 @@ in {
     };
     terminalFontSize = mkOption {
       type = types.int;
-      default = 10;
+      default = 11;
     };
     installDevPackages = mkOption {
       type = types.bool;

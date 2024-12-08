@@ -33,9 +33,22 @@
       ''--exclude \".__pycache__\"''
     ];
   in {
+    FZF_DEFAULT_OPTS = builtins.concatStringsSep " " [
+      "--color=16"
+    ];
     FZF_ALT_C_COMMAND =
       builtins.concatStringsSep " "
-      (fzf_command ++ ["--type d" "." "2>/dev/null"]);
+      (fzf_command
+        ++ [
+          "--color=16"
+          "--type d"
+          "."
+          "2>/dev/null"
+        ]);
+
+    FZF_CTRL_R_OPTS = builtins.concatStringsSep " " [
+      "--color=16"
+    ];
 
     FZF_CTRL_T_COMMAND = builtins.concatStringsSep " " (fzf_command
       ++ [
@@ -45,6 +58,7 @@
         ''--exclude \"*.thumbsnail\"''
         "--type f --type d --type l"
         "--one-file-system"
+        "--color=16"
         "."
         "2>/dev/null"
       ]);

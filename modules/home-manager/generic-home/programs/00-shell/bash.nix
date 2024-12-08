@@ -4,7 +4,7 @@
   ...
 }: {
   programs.bash = {
-    enable = true;
+    enable = false;
 
     # NOTE: profileExtra won't be sourced while using terminal like a konsole
     # ~/.profile

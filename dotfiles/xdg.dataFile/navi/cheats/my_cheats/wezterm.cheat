@@ -3,6 +3,9 @@
 # ssh login using wezterm
 wezterm ssh <target>
 
+# set tab name
+wezterm cli set-tab-title <name>
+
 ; split vertical
 ; Ctrl+Shift+Alt "
 
