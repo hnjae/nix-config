@@ -4,11 +4,13 @@ WIP
 nvim
 PgDn
 PgUp
+tmux
 fcitx
 nocow
 luvit
 podman
 neodev
+zellij
 flatpak
 libvirt
 LazySpec

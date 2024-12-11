@@ -21,6 +21,9 @@ in {
 
       # formatter
       alejandra
+
+      # others
+      compose2nix
     ];
   };
 }

@@ -10,7 +10,8 @@ in {
     home.packages = builtins.concatLists [
       (with pkgsUnstable; [
         typst
-        typst-lsp
+        tinymist
+        # typst-lsp # deprecated 2024-11-05
         typstfmt
       ])
     ];

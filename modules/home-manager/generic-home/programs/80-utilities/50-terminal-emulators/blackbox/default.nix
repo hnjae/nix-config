@@ -26,7 +26,7 @@ in {
     dconf.settings = {
       "com/raggesilver/BlackBox" =
         {
-          font = "Monospace 10.5";
+          font = "Monospace 10.3";
           cursor-blink-mode = lib.hm.gvariant.mkUint32 2;
           terminal-padding = lib.hm.gvariant.mkTuple [
             (lib.hm.gvariant.mkUint32 4)
@@ -35,6 +35,7 @@ in {
             (lib.hm.gvariant.mkUint32 4)
           ];
           use-sixel = true;
+          terminal-bell = false;
         }
         // (lib.attrsets.optionalAttrs (genericHomeCfg.base24.enable) {
           theme-light = "base24";

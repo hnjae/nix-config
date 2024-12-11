@@ -1,4 +1,8 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   posixFunction = ''
     s() {
       # if [ -n "$1" ] && [ -f "$1" ]; then
@@ -20,9 +24,12 @@
   '';
 in {
   # cannot override z here
-  programs.zoxide.enable = true;
-  programs.zsh.initExtra = posixFunction;
-  programs.bash.initExtra = posixFunction;
+  programs.zoxide = {
+    enable = true;
+    options = ["--cmd s"];
+  };
+  # programs.zsh.initExtra = posixFunction;
+  # programs.bash.initExtra = posixFunction;
   programs.fish.functions.s = {
     body = ''
       __zoxide_z "$argv"
@@ -41,4 +48,18 @@ in {
       type = "dir";
     }
   ];
+
+  home.sessionVariables = {
+    # _ZO_FZF_OPTS = builtins.concatStringsSep " " [
+    #   ];
+    _ZO_EXCLUDE_DIRS = builtins.concatStringsSep ":" [
+      "$HOME"
+      "/nix/*"
+      "/mnt/*"
+      "/proc/*"
+      "*/.git"
+      "*/.cache"
+      "*/.direnv"
+    ];
+  };
 }
