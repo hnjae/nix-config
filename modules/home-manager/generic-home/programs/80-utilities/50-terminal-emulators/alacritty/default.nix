@@ -31,12 +31,9 @@ in {
             in ''
               [env]
               COLORFGBG="${COLORFGBG}"
+              TERM = "xterm-256color" # To use 256 color on tmux
             '')
           ]))
-        ''
-          [font]
-          size = ${toString genericHomeCfg.terminalFontSize}
-        ''
       ];
     };
   };

@@ -55,5 +55,5 @@ ns() {
   # fi
 
   sed -e '/^\$/d' -- "$file" |
-    bat -l sh --color=always --decorations=never
+    bat -l sh --color=always --decorations=never --paging=never
 }

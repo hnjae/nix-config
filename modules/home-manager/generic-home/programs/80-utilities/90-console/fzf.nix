@@ -13,7 +13,7 @@
       "-H"
       "-L"
       "--min-depth 1"
-      "--ignore-vcs"
+      # "--ignore-vcs"
       #
       ''--exclude \".cache\"''
       ''--exclude \".direnv\"''
@@ -34,21 +34,28 @@
     ];
   in {
     FZF_DEFAULT_OPTS = builtins.concatStringsSep " " [
-      "--color=16"
+      "--color=16,border:8"
+      "--layout=reverse"
+      "--height=22"
+      # "--marker=█"
+      # "--marker=▓"
+      # "--marker=▒"
+      "--marker=░"
+      # "--marker=▌"
+      # "--marker=▍"
     ];
     FZF_ALT_C_COMMAND =
       builtins.concatStringsSep " "
       (fzf_command
         ++ [
-          "--color=16"
           "--type d"
+          "--one-file-system"
           "."
           "2>/dev/null"
         ]);
 
-    FZF_CTRL_R_OPTS = builtins.concatStringsSep " " [
-      "--color=16"
-    ];
+    # FZF_CTRL_R_OPTS = builtins.concatStringsSep " " [
+    # ];
 
     FZF_CTRL_T_COMMAND = builtins.concatStringsSep " " (fzf_command
       ++ [
@@ -58,7 +65,6 @@
         ''--exclude \"*.thumbsnail\"''
         "--type f --type d --type l"
         "--one-file-system"
-        "--color=16"
         "."
         "2>/dev/null"
       ]);

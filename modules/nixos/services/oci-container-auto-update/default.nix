@@ -34,7 +34,7 @@ in {
       default = true;
       type = types.bool;
       description = ''
-        Persistent  option in the [Timer] section of the unit. See systemd.timer(5) and systemd.time(7) for details.
+        Persistent option in the [Timer] section of the unit. See systemd.timer(5) and systemd.time(7) for details.
       '';
     };
 

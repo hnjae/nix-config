@@ -15,6 +15,10 @@ in {
   #   celluloid
   # ];
 
+  services.flatpak.packages = [
+    "io.github.celluloid_player.Celluloid"
+  ];
+
   programs.mpv = {
     enable = genericHomeCfg.isDesktop;
     package = pkgs.mpv.overrideAttrs (_: {

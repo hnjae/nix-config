@@ -110,3 +110,6 @@ git clone --recurse-submodules "git@<githubdotcom>:<owner>/<repo>"
 
 # git rm only in stage area (not in working directory)
 git rm --cached <file>
+
+# show specific commit's specific file
+git show <commit>:<path>

@@ -26,6 +26,7 @@ in {
         patchelfStable
       ])
       ++ (with pkgsUnstable; [
+        sops
         harper # grammer checker for developers
         hyperfine # command-line benchmarking tool
       ]);
