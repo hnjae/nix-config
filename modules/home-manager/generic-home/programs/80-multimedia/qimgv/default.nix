@@ -12,6 +12,6 @@ in {
         mpv-unwrapped = (import ../mpv/package.nix) {inherit config pkgs;};
       })
     ];
-    default-app.image = "qimgv";
+    default-app.image = lib.mkDefault "qimgv";
   };
 }

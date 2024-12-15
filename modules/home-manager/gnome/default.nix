@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./programs.nix
     # ./paperwm.nix
     ./ulauncher.nix
   ];
