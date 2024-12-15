@@ -11,13 +11,17 @@ in {
     audio = "mpv";
   };
 
-  # home.packages = with pkgs; [
-  #   celluloid
-  # ];
-
+  # NOTE: celluloid is very slow  <2024-12-15>
   services.flatpak.packages = [
     "io.github.celluloid_player.Celluloid"
+    "info.smplayer.SMPlayer"
   ];
+  # dconf.settings."io/github/celluloid_player/Celluloid" = {
+  #   mpv-config-enable = true;
+  #   mpv-config-file = "file:///${config.xdg.configHome}/mpv/mpv.conf";
+  #   mpv-input-config-enable = true;
+  #   mpv-input-config-file = "file:///${config.xdg.configHome}/mpv/input.conf";
+  # };
 
   programs.mpv = {
     enable = genericHomeCfg.isDesktop;

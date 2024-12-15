@@ -3,6 +3,7 @@
     ./programs.nix
     # ./paperwm.nix
     ./ulauncher.nix
+    ./dash.nix
   ];
 
   home.packages = with pkgs; [
@@ -12,13 +13,12 @@
 
     gnomeExtensions.blur-my-shell
 
-    gnomeExtensions.dock-from-dash
-    gnomeExtensions.dash-to-dock
-    gnomeExtensions.dash-to-panel
     gnomeExtensions.removable-drive-menu
 
     gnomeExtensions.tiling-shell
   ];
+
+  default-app.fileManager = "org.gnome.Nautilus";
 
   dconf.settings = {
     "org/gnome/shell".enabled-extensions = [
@@ -55,6 +55,16 @@
       switch-applications-backward = [];
       switch-windows = ["<Alt>Tab" "<Super>Tab"];
       switch-windows-backward = ["<Shift><Alt>Tab" "<Shfit><Super>Tab"];
+
+      # Worskpace
+      switch-to-workspace-1 = ["<Super>Home" "<Super>F1"];
+      switch-to-workspace-2 = ["<Super>F2"];
+      switch-to-workspace-3 = ["<Super>F3"];
+      switch-to-workspace-4 = ["<Super>F4"];
+      move-to-workspace-1 = ["<Shift><Super>Home" "<Shift><Super>F1"];
+      move-to-workspace-2 = ["<Shift><Super>F2"];
+      move-to-workspace-3 = ["<Shift><Super>F3"];
+      move-to-workspace-4 = ["<Shift><Super>F4"];
     };
     "org/gnome/settings-daemon/plugins/media-keys" = {
       calculator = ["Favorites"];

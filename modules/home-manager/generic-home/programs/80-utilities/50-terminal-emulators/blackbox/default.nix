@@ -28,11 +28,12 @@ in {
         {
           font = "Monospace 10.3";
           cursor-blink-mode = lib.hm.gvariant.mkUint32 2;
+          # NOTE: round-corner 때문에 패딩을 더 여유롭게 할당 <2024-12-12>
           terminal-padding = lib.hm.gvariant.mkTuple [
-            (lib.hm.gvariant.mkUint32 4)
-            (lib.hm.gvariant.mkUint32 4)
-            (lib.hm.gvariant.mkUint32 4)
-            (lib.hm.gvariant.mkUint32 4)
+            (lib.hm.gvariant.mkUint32 6)
+            (lib.hm.gvariant.mkUint32 6)
+            (lib.hm.gvariant.mkUint32 6)
+            (lib.hm.gvariant.mkUint32 6)
           ];
           use-sixel = true;
           terminal-bell = false;

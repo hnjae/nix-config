@@ -38,10 +38,11 @@ in {
     dnsovertls = mkOverride 999 "true";
     dnssec = mkOverride 999 "allow-downgrade";
     fallbackDns = mkOverride 999 [
-      "9.9.9.9"
-      "149.112.112.112"
-      "2620:fe::9"
-      "2620:fe::fe"
+      # "9.9.9.9"
+      # "149.112.112.112"
+      # "2620:fe::9"
+      # "2620:fe::fe"
+
       # "8.8.8.8"
       # "8.8.4.4"
       # "2001:4860:4860::8888"

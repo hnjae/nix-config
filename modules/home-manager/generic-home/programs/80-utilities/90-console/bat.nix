@@ -27,7 +27,7 @@ in {
   };
 
   home.shellAliases = {
-    bat = "bat --paging=always";
+    # bat = "bat --paging=never";
     c = "bat --paging=never --style=plane";
   };
 }

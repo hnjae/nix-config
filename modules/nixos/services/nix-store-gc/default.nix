@@ -16,12 +16,13 @@ NOTE:
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   serviceName = "nix-store-gc";
   documentation = ["man:nix-store-gc(1)"];
   description = "run nix-store --gc";
-  binPath = "/run/current-system/sw/bin/nix-store";
+  # binPath = "/run/current-system/sw/bin/nix-store";
   cfg = config.services.${serviceName};
 
   inherit (lib) mkEnableOption mkOption mkIf types;
@@ -31,7 +32,7 @@ in {
 
     onCalendar = mkOption {
       type = types.str;
-      default = "Tue,Fri *-*-* 04:00:00";
+      default = "Sat *-*-* 04:00:00";
       description = '''';
     };
   };
@@ -46,7 +47,7 @@ in {
         CPUSchedulingPolicy = "idle";
         IOSchedulingClass = "idle";
         Nice = 19;
-        ExecStart = "${binPath} --gc";
+        ExecStart = "${pkgs.nix}/bin/nix-store --gc";
       };
     };
 
@@ -56,7 +57,7 @@ in {
 
       timerConfig = {
         OnCalendar = cfg.onCalendar;
-        RandomizedDelaySec = "90m";
+        RandomizedDelaySec = "75m";
         Persistent = true;
       };
 

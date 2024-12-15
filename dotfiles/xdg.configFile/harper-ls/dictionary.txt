@@ -1,6 +1,7 @@
 md
 ZFS
 WIP
+XDG
 nvim
 PgDn
 PgUp
@@ -8,6 +9,8 @@ tmux
 fcitx
 nocow
 luvit
+NixOS
+netrw
 podman
 neodev
 zellij
@@ -16,6 +19,7 @@ libvirt
 LazySpec
 syncthing
 GpChatNew
+AllMyToes
 recordsize
 secureboot
 ChatClaude

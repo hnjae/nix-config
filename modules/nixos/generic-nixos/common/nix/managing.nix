@@ -26,8 +26,7 @@ in {
   };
 
   services.nix-store-gc = {
-    enable = mkOverride 999 true;
-    # onCalendar = mkOverride 999 "Tue,Fri";
+    enable = mkOverride 999 config.generic-nixos.role == "desktop";
   };
 
   nix.gc = {

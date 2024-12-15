@@ -1,4 +1,4 @@
-_: {
+{lib, ...}: {
   imports = [
     ./managing.nix
     ./registry.nix
@@ -11,15 +11,14 @@ _: {
       experimental-features = ["nix-command" "flakes"];
 
       # make builders to use cache
-      builders-use-substitutes = true;
+      builders-use-substitutes = lib.mkOverride 999 true;
 
-      auto-optimise-store = false;
-      keep-failed = true;
+      auto-optimise-store = lib.mkOverride 999 false;
+      keep-failed = lib.mkOverride 999 true;
 
       # use-xdg-base-directories = true;
 
       trusted-users = [
-        "root"
         "@wheel"
       ];
     };
