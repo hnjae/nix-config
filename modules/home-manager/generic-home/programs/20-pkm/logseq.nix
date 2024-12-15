@@ -44,24 +44,25 @@ in {
         # ];
       };
     };
-    # xdg.dataFile."applications/com.logseq.Logseq.desktop" = let
-    #   flags = builtins.concatStringsSep " " electronFlags;
-    # in {
-    #   enable = true;
-    #   text = ''
-    #     [Desktop Entry]
-    #     Name=Logseq Desktop
-    #     Exec=flatpak run --branch=stable --arch=x86_64 --command=run.sh --file-forwarding com.logseq.Logseq @@u %U @@ ${flags}
-    #     Terminal=false
-    #     Type=Application
-    #     Icon=com.logseq.Logseq
-    #     StartupWMClass=Logseq
-    #     Comment=Custom desktop entries.
-    #     MimeType=x-scheme-handler/logseq;
-    #     Categories=Utility;Office;
-    #     NoDisplay=false
-    #     X-Flatpak=com.logseq.Logseq
-    #   '';
-    # };
+    xdg.dataFile."applications/com.logseq.Logseq.desktop" = let
+      # flags = builtins.concatStringsSep " " electronFlags;
+      # Exec=flatpak run --branch=stable --arch=x86_64 --command=run.sh --file-forwarding com.logseq.Logseq @@u %U @@ ${flags}
+    in {
+      enable = true;
+      text = ''
+        [Desktop Entry]
+        Name=Logseq Desktop
+        Exec=env GTK_IM_MODULE=xim flatpak run --branch=stable --command=run.sh --file-forwarding com.logseq.Logseq @@u %U @@
+        Terminal=false
+        Type=Application
+        Icon=com.logseq.Logseq
+        StartupWMClass=Logseq
+        Comment=A privacy-first, open-source platform for knowledge management and collaboration.
+        MimeType=x-scheme-handler/logseq;
+        Categories=Utility;Office;
+        NoDisplay=false
+        X-Flatpak=com.logseq.Logseq
+      '';
+    };
   };
 }
