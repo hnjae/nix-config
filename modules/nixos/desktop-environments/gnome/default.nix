@@ -153,6 +153,23 @@
       pkgs.xdg-desktop-portal-gnome
       pkgs.xdg-desktop-portal-gtk
     ];
+
+    # https://wiki.nixos.org/w/index.php?title=Nautilus&mobileaction=toggle_view_desktop#Gstreamer
+    nixpkgs.overlays = [
+      (final: prev: {
+        nautilus = prev.nautilus.overrideAttrs (oldAttrs: {
+          buildInputs = builtins.concatLists [
+            oldAttrs.buildInputs
+            (with final.gst_all_1; [
+              gst-plugins-good
+              gst-plugins-bad
+              gst-plugins-ugly
+            ])
+          ];
+        });
+      })
+    ];
+
     environment.systemPackages = with pkgs; [
       nautilus
       dconf-editor
