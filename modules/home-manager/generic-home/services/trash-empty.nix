@@ -24,7 +24,7 @@ in {
     Unit = {inherit Description;};
 
     Timer = {
-      OnCalendar = "daily";
+      OnCalendar = "*-*-* 04:00:00";
       RandomizedDelaySec = "30m";
       Persistent = true;
     };

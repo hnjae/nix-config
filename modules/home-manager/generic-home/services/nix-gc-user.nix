@@ -23,7 +23,12 @@ in {
     Unit = {inherit Description;};
 
     Timer = {
-      OnCalendar = builtins.concatStringsSep "," ["Tue" "Fri"];
+      # OnCalendar = builtins.concatStringsSep "," ["Tue" "Fri"];
+      OnCalendar = [
+        "Tue *-*-* 04:00:00"
+        "Fri *-*-* 04:00:00"
+      ];
+
       RandomizedDelaySec = "24h";
       Persistent = true;
     };

@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{config, ...}: let
   posixFunction = ''
     s() {
       # if [ -n "$1" ] && [ -f "$1" ]; then
@@ -27,19 +23,20 @@ in {
   programs.zoxide = {
     enable = true;
     options = ["--cmd s"];
+    # options = ["--nocmd"];
   };
   # programs.zsh.initExtra = posixFunction;
   # programs.bash.initExtra = posixFunction;
-  programs.fish.functions.s = {
-    body = ''
-      __zoxide_z "$argv"
-    '';
-  };
-  programs.fish.functions.si = {
-    body = ''
-      __zoxide_zi "$argv"
-    '';
-  };
+  # programs.fish.functions.s = {
+  #   body = ''
+  #     __zoxide_z "$argv"
+  #   '';
+  # };
+  # programs.fish.functions.si = {
+  #   body = ''
+  #     __zoxide_zi "$argv"
+  #   '';
+  # };
 
   stateful.nodes = [
     {

@@ -14,7 +14,8 @@ in {
   ];
 
   services.nix-gc-system-generations = {
-    enable = config.services.nix-store-gc.enable;
+    # enable = config.services.nix-store-gc.enable;
+    enable = lib.mkForce true;
     delThreshold =
       mkOverride 999
       {

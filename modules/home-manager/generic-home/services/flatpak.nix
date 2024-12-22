@@ -13,14 +13,9 @@ in {
       onActivation = false;
       auto = {
         enable = true;
-        onCalendar = "daily"; # Default value
+        onCalendar = "*-*-* 04:00:00";
       };
     };
     uninstallUnmanaged = true;
-
-    # ~/.local/share/flatpak/overrides
-    overrides = {
-      "global" = {Context = {filesystems = ["/nix/store:ro"];};};
-    };
   };
 }

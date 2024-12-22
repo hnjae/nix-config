@@ -7,8 +7,8 @@
   genericHomeCfg = config.generic-home;
 in {
   default-app = {
-    video = "mpv";
-    audio = "mpv";
+    video = "umpv";
+    audio = "umpv";
   };
 
   # NOTE: celluloid is very slow  <2024-12-15>
