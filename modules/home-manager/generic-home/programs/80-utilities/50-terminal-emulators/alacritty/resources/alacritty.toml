@@ -1,8 +1,9 @@
 # [terminal.shell]
-# program = "zellij"
+# program = "tmux"
 
 [font]
 size = 10.3
+builtin_box_drawing = true
 
 [font.bold]
 family = "MesloLGM Nerd Font"
@@ -28,6 +29,7 @@ y = 4
 dynamic_padding = false
 decorations = "full"
 dynamic_title = true
+blur = true
 
 [window.dimensions]
 columns = 90

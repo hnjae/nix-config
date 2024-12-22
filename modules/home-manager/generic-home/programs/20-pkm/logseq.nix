@@ -48,7 +48,7 @@ in {
       # flags = builtins.concatStringsSep " " electronFlags;
       # Exec=flatpak run --branch=stable --arch=x86_64 --command=run.sh --file-forwarding com.logseq.Logseq @@u %U @@ ${flags}
     in {
-      enable = true;
+      enable = false;
       text = ''
         [Desktop Entry]
         Name=Logseq Desktop

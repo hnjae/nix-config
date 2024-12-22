@@ -29,12 +29,8 @@
       # panel-lengths = ''
       #   {"0":100,"1":100,"2":100}
       # '';
-      panel-positions = ''
-        {"0":"TOP","1":"TOP","2":"TOP"}
-      '';
-      panel-sizes = ''
-        {"0":32,"1":32,"2":32}
-      '';
+      panel-positions = ''{"0":"TOP","1":"TOP","2":"TOP"}'';
+      panel-sizes = ''{"0":32,"1":32,"2":32}'';
 
       # workspace & monitors
       isolate-monitors = false;

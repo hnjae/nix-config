@@ -13,6 +13,9 @@
     services.xserver.enable = true;
     services.xserver.excludePackages = [pkgs.xterm];
     services.xserver.displayManager.gdm.enable = true;
+
+    security.pam.services.login.enableGnomeKeyring = true;
+
     services.xserver.desktopManager.gnome = {
       enable = true;
 
@@ -35,6 +38,10 @@
           };
           "system/locale" = {
             region = "en_IE.UTF-8";
+          };
+          "org/gnome/settings-daemon/plugins/power" = {
+            sleep-inactive-ac-timeout = 5400;
+            sleep-inactive-ac-type = "suspend";
           };
         };
       }
@@ -166,12 +173,70 @@
               gst-plugins-ugly
             ])
           ];
+          preFixup = lib.strings.concatLines [
+            oldAttrs.preFixup
+            ''
+              gappsWrapperArgs+=(
+                --prefix XDG_DATA_DIRS : "${final.evince}/share"
+                --prefix XDG_DATA_DIRS : "${final.ffmpegthumbnailer}/share"
+                --prefix XDG_DATA_DIRS : "${final.libavif}/share"
+                --prefix XDG_DATA_DIRS : "${final.gnome-epub-thumbnailer}/share"
+                --prefix XDG_DATA_DIRS : "${final.gnome-font-viewer}/share"
+              )
+            ''
+          ];
         });
       })
     ];
+    # --prefix XDG_DATA_DIRS : "${final.libheif.out}/share" # not working
+    # NOTE: papers: can-not-handle webp in archive <2024-12-15>
+    #   --prefix XDG_DATA_DIRS : "${
+    #   (prev.papers.override {
+    #     supportNautilus = false;
+    #     withLibsecret = false;
+    #   })
+    #   .overrideAttrs (po: {
+    #     buildInputs = builtins.concatLists [
+    #       po.buildInputs
+    #       (with final; [
+    #         libavif
+    #         libjxl
+    #         libwebp
+    #         # libheif
+    #       ])
+    #     ];
+    #   })
+    # }/share"
 
     environment.systemPackages = with pkgs; [
+      #
       nautilus
+      ((pkgs.papers.override {
+          supportNautilus = true;
+          withLibsecret = false;
+        })
+        .overrideAttrs
+        (po: {
+          buildInputs = builtins.concatLists [
+            po.buildInputs
+            (with pkgs; [
+              libavif
+              libjxl
+              libwebp
+              # libheif
+            ])
+          ];
+        }))
+
+      # THUMBNAILS
+      /*
+      NOTE: <NixOS 24.11>
+        folloing packages does not use absolute nix path in `.thumbnailer`. It requires executables to be in `$PATH`
+      */
+      libheif
+      gnome-font-viewer
+      evince
+
       dconf-editor
       gnome-console
     ];

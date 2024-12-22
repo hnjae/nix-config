@@ -61,6 +61,7 @@
         symbol = "󰪌 "; # nf-md-account_supervisor_circle
         disabled = true;
       };
+      battery.disabled = true;
       git_branch = {
         symbol = " "; # nf-oct-git_branch
       };

@@ -23,7 +23,7 @@ in {
 
     onCalendar = mkOption {
       type = types.str;
-      default = "*-*-* 12:00:00";
+      default = "*-*-* 04:00:00";
       description = "See systemd.time(7)";
     };
   };
@@ -46,8 +46,8 @@ in {
     systemd.user.timers.empty-trash = {
       Unit = {};
       Timer = {
-        OnCalendar = "daily";
-        RandomizedDelaySec = "10m";
+        OnCalendar = cfg.onCalendar;
+        RandomizedDelaySec = "12m";
         Persistent = true;
       };
 

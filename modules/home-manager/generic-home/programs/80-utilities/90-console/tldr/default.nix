@@ -67,7 +67,7 @@ in {
     Unit = {inherit Description;};
 
     Timer = {
-      OnCalendar = "daily";
+      OnCalendar = "*-*-* 04:00:00";
       AccuracySec = "1h";
       Persistent = true;
     };

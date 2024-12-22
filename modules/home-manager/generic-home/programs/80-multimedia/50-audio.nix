@@ -12,6 +12,9 @@ in {
       [
         "org.strawberrymusicplayer.strawberry" # NOTE: uses eol library <2024-11-15>
         "org.gnome.SoundRecorder"
+
+        # puddletag
+        "net.puddletag.puddletag"
       ]
       (optionals (genericHomeCfg.installTestApps) [
         "com.rafaelmardojai.Blanket" # white noise

@@ -17,7 +17,8 @@ in {
     # exec = "footclient --app-id=qalc --title=Qalculate -e qalc";
     exec = "${pkgs.alacritty}/bin/alacritty --class qalc,qalc --title Qalculate -e qalc %F";
     terminal = false;
-    icon = "accessories-calculator";
+    # icon = "accessories-calculator";
+    icon = "${pkgs.colloid-icon-theme}/share/icons/Colloid/apps/scalable/io.github.Qalculate.svg";
     type = "Application";
     startupNotify = false;
     categories = ["Utility" "Calculator"];

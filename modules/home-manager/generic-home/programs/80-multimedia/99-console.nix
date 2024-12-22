@@ -4,12 +4,11 @@
   ...
 }: {
   home.packages = with pkgsUnstable; [
-    realesrgan-ncnn-vulkan
+    gpac
+
     libheif
     libavif
     libjxl
-
-    openai-whisper
 
     zopfli
     libvmaf
@@ -21,5 +20,9 @@
     pandoc
 
     librsvg
+
+    # ai
+    realesrgan-ncnn-vulkan
+    openai-whisper
   ];
 }

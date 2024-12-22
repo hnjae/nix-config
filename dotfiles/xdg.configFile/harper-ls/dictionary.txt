@@ -2,6 +2,7 @@ md
 ZFS
 WIP
 XDG
+env
 nvim
 PgDn
 PgUp
