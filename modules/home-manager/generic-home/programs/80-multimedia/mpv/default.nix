@@ -25,19 +25,32 @@ in {
 
   programs.mpv = {
     enable = genericHomeCfg.isDesktop;
-    package = pkgs.mpv.overrideAttrs (_: {
-      mpv = (import ./package.nix) {inherit config pkgs;};
+    package = pkgs.mpv-unwrapped.wrapper {
+      mpv = pkgs.mpv-unwrapped.override {
+        alsaSupport = false;
+        pulseSupport = false;
+        jackaudioSupport = false;
+        sdl2Support = false;
+        vdpauSupport = false;
+        x11Support = false;
+        #
+        cddaSupport = true; # default false
+        sixelSupport = true; # default false
+        vapoursynthSupport = pkgs.stdenv.isx86_64; # default false
+      };
       youtubeSupport = true;
       scripts = builtins.concatLists [
         (lib.lists.optionals pkgs.stdenv.isLinux
-          (with pkgs.mpvScripts; [mpris]))
+          (with pkgs.mpvScripts; [
+            mpris
+          ]))
         (with pkgs.mpvScripts; [
           visualizer
           vr-reversal
           mpv-cheatsheet # type ? to see keybord shortcuts
         ])
       ];
-    });
+    };
 
     # defaultProfiles = ["gpu-hq"];
     /*
