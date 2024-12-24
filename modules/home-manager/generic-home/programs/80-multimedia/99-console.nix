@@ -4,7 +4,11 @@
   ...
 }: {
   home.packages = with pkgsUnstable; [
-    gpac
+    gpac # modify mp4
+    opusTools
+    vorbis-tools
+    flac
+    rsgain # Calculates ReplayGain
 
     libheif
     libavif

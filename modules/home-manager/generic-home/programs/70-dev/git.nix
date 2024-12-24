@@ -30,19 +30,15 @@ in {
 
     # bindings https://github.com/wfxr/forgit 참고
     home.shellAliases = {
-      # gcl = "git clone --depth 1";
-      # gclr = "git clone --depth 1 --recurse-submodules --shallow-submodules";
       lg = "lazygit";
     };
     home.sessionVariables = {
-      forgit_log = "glof";
     };
 
     programs.zsh.initExtra = ''
+      # cgitc configures forgit aliases
       . "${inputs.cgitc}/init.zsh"
 
-      forgit_stash_show=gsts
-      forgit_stash_push=gstP
       . "${pkgsUnstable.zsh-forgit}/share/zsh/zsh-forgit/forgit.plugin.zsh"
     '';
   };

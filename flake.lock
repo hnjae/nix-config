@@ -101,11 +101,11 @@
     "cgitc": {
       "flake": false,
       "locked": {
-        "lastModified": 1734061253,
-        "narHash": "sha256-npscGOk85MRcv96j6cdFg7Mr3ODJsA6TGd9RsJ2eF2E=",
+        "lastModified": 1735022107,
+        "narHash": "sha256-+KYBndg5qYSOp9UzD2HN+kl2mlF6cGN9IhGUkBLLvBA=",
         "owner": "hnjae",
         "repo": "cgitc",
-        "rev": "b62e3703903102ba33bf0b2f61976e04159132ea",
+        "rev": "10c6583a062898d1b1ef1229b472997c064f3740",
         "type": "github"
       },
       "original": {
