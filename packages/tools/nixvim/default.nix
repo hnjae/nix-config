@@ -152,14 +152,13 @@ nixvim: pkgs: let
         cmp-buffer.enable = true;
         cmp-cmdline.enable = true;
 
-        treesitter.enable = false; # 큰 파일 수정할때 매우 느려짐.
-
         marks = {enable = true;};
 
         lualine = {
           enable = true;
           settings = {
             options = {
+              always_show_tabline = true;
               icons_enabled = false;
               theme = "auto";
               component_separators = {
@@ -182,6 +181,7 @@ nixvim: pkgs: let
           };
         };
 
+        treesitter.enable = false; # 큰 파일 수정할때 매우 느려짐.
         lsp.enable = false;
         # sleuth.enable = true;
       };

@@ -13,9 +13,10 @@ in {
 
   # NOTE: celluloid is very slow  <2024-12-15>
   services.flatpak.packages = [
-    "io.github.celluloid_player.Celluloid"
+    # "io.github.celluloid_player.Celluloid"
     "info.smplayer.SMPlayer"
   ];
+
   # dconf.settings."io/github/celluloid_player/Celluloid" = {
   #   mpv-config-enable = true;
   #   mpv-config-file = "file:///${config.xdg.configHome}/mpv/mpv.conf";
@@ -34,7 +35,7 @@ in {
         vdpauSupport = false;
         x11Support = false;
         #
-        cddaSupport = true; # default false
+        cddaSupport = true; # default false; play CD
         sixelSupport = true; # default false
         vapoursynthSupport = pkgs.stdenv.isx86_64; # default false
       };
@@ -45,7 +46,7 @@ in {
             mpris
           ]))
         (with pkgs.mpvScripts; [
-          visualizer
+          # visualizer # visualize audio; CPU 자원 꽤 소모
           vr-reversal
           mpv-cheatsheet # type ? to see keybord shortcuts
         ])
@@ -72,12 +73,19 @@ in {
       replaygain = "track";
 
       # Scaling
-      scale = "ewa_lanczossharp";
+      # HELP;
+      # https://avisynthplus.readthedocs.io/en/latest/avisynthdoc/corefilters/resize.html
+      # lanczos 는 ringing 현상이 좀 거슬리는듯.
+      # scale = "ewa_lanczossharp";
+      scale = "spline64";
       # sigmoid-upscaling = true; # enabled by defaults
-      dscale = "mitchell";
-      cscale = "mitchell"; # ignored by gpu-next?
+      # dscale = "mitchell";
+      # cscale = "mitchell"; # ignored by gpu-next?
+      dscale = "spline64";
+      cscale = "spline64"; # ignored by gpu-next?
       # correct-downscaling = true; # enabled by defaults
       sws-scaler = "spline";
+      zimg-scaler = "spline36"; # default: lanczos
 
       #
       interpolation = true; # reduce stuttering
@@ -101,7 +109,6 @@ in {
       screenshot-directory = "${config.xdg.userDirs.pictures}/mpv-screenshots";
 
       # do not disable compositor
-      x11-bypass-compositor = false;
       ytdl-format = "bestvideo+bestaudio";
 
       # osd
@@ -127,7 +134,7 @@ in {
       #   # sub-filter-sdh-harder="yes"
 
       # default values:
-      # video-sync = "display-resample";
+      video-sync = "display-resample";
       # framedrop = "vo";
       # dither-depth = "auto";
 
@@ -199,25 +206,46 @@ in {
       "F12" = "add video-pan-x -.05";
       # ";" = "set video-pan-x 0; set video-pan-y 0; set video-zoom 0";
     };
-  };
-  xdg.configFile."mpv/script-opts/mpv_thumbnail_script.conf" = {
-    text = ''
-      autogenerate=yes
-      autogenerate_max_duration=0
 
-      thumbnail_width=400
-      thumbnail_height=225
-      thumbnail_count=100
+    profiles = {
+      fast2 = {
+        correct-downscaling = false;
+        # scale = "nearest";
+        # dscale = "nearest";
+        # cscale = "nearest";
+        # sws-scaler = "fast-bilinear";
+        scale = "bicubic_fast";
+        dscale = "bicubic_fast";
+        cscale = "bicubic_fast";
+        sws-scaler = "fast-bilinear";
+        zimg-scaler = "bicubic";
+        vo = "gpu-next";
+        hwdec = "vaapi";
+        framedrop = "decoder";
+        sws-fast = true;
+      };
+      audio = {
+        replaygain = "track";
+        audio-display = false;
+      };
+    };
 
-      min_delta=1
-      max_delta=99999
-
-      mpv_no_sub=yes
-      mpv_hwdec=yes
-      mpv_hr_seek=no
-
-      hide_progress=no
-    '';
+    scriptOpts = {
+      # xdg.configFile."mpv/script-opts/mpv_thumbnail_script.conf"
+      "mpv_thumbnail_script" = {
+        autogenerate = true;
+        autogenerate_max_duration = 0;
+        thumbnail_width = 400;
+        thumbnail_height = 225;
+        thumbnail_count = 100;
+        min_delta = 1;
+        max_delta = 99999;
+        mpv_no_sub = true;
+        mpv_hwdec = true;
+        mpv_hr_seek = false;
+        hide_progress = false;
+      };
+    };
   };
 
   # NOTE: https://github.com/NixOS/nixpkgs/issues/64344 <2023-05-08>
