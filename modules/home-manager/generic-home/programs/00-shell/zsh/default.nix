@@ -11,6 +11,7 @@ in {
   imports = [
     # ./zsh-vi-mode.nix
     ./profile.nix
+    ./zsh-abbr.nix
   ];
 
   home.packages = [
