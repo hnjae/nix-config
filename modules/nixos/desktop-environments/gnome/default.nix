@@ -156,15 +156,63 @@
       core-os-services.enable = true; # setup portal, polkit, dconf, and etc.
       # tracker.enable = false;
     };
+
     xdg.portal.extraPortals = lib.mkForce [
       pkgs.xdg-desktop-portal-gnome
       pkgs.xdg-desktop-portal-gtk
     ];
 
-    # https://wiki.nixos.org/w/index.php?title=Nautilus&mobileaction=toggle_view_desktop#Gstreamer
+    environment.gnome.excludePackages = with pkgs; [
+      # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/x11/desktop-managers/gnome.nix
+      gnome-tour
+      gnome-shell-extensions
+    ];
+
+    environment.systemPackages = with pkgs; [
+      dconf-editor
+      gnome-console
+
+      nautilus
+
+      # THUMBNAILS
+      /*
+      NOTE: <NixOS 24.11>
+        folloing packages does not use absolute nix path in `.thumbnailer`. It requires executables to be in `$PATH`
+      */
+      gnome-font-viewer
+    ];
+
     nixpkgs.overlays = [
       (final: prev: {
+        papers =
+          (prev.papers.override {
+            supportNautilus = false;
+            withLibsecret = false;
+          })
+          .overrideAttrs (oldAttrs: {
+            postInstall = lib.strings.concatLines [
+              # NOTE: 아래 이미지는 기본패키징에서는 지원되지 않음을 확인. <Gnome 47; NixOS 24.11>
+              # gdk-pixbuf 를 전역에서 바꾸기에는 리컴파일이 너무 잦음
+              oldAttrs.postInstall
+              ''
+                # Pull in various support of images
+                # In postInstall to run before gappsWrapperArgsHook.
+                export GDK_PIXBUF_MODULE_FILE="${
+                  prev.gnome._gdkPixbufCacheBuilder_DO_NOT_USE {
+                    extraLoaders = with final; [
+                      libopenraw
+                      libavif
+                      libjxl
+                      webp-pixbuf-loader
+                      libheif.out
+                    ];
+                  }
+                }"
+              ''
+            ];
+          });
         nautilus = prev.nautilus.overrideAttrs (oldAttrs: {
+          # https://wiki.nixos.org/w/index.php?title=Nautilus&mobileaction=toggle_view_desktop#Gstreamer
           buildInputs = builtins.concatLists [
             oldAttrs.buildInputs
             (with final.gst_all_1; [
@@ -173,78 +221,20 @@
               gst-plugins-ugly
             ])
           ];
+
           preFixup = lib.strings.concatLines [
             oldAttrs.preFixup
             ''
               gappsWrapperArgs+=(
-                --prefix XDG_DATA_DIRS : "${final.evince}/share"
-                --prefix XDG_DATA_DIRS : "${final.ffmpegthumbnailer}/share"
-                --prefix XDG_DATA_DIRS : "${final.libavif}/share"
                 --prefix XDG_DATA_DIRS : "${final.gnome-epub-thumbnailer}/share"
                 --prefix XDG_DATA_DIRS : "${final.gnome-font-viewer}/share"
+                --prefix XDG_DATA_DIRS : "${final.papers}/share"
+                --prefix XDG_DATA_DIRS : "${final.totem}/share"
               )
             ''
           ];
         });
       })
-    ];
-    # --prefix XDG_DATA_DIRS : "${final.libheif.out}/share" # not working
-    # NOTE: papers: can-not-handle webp in archive <2024-12-15>
-    #   --prefix XDG_DATA_DIRS : "${
-    #   (prev.papers.override {
-    #     supportNautilus = false;
-    #     withLibsecret = false;
-    #   })
-    #   .overrideAttrs (po: {
-    #     buildInputs = builtins.concatLists [
-    #       po.buildInputs
-    #       (with final; [
-    #         libavif
-    #         libjxl
-    #         libwebp
-    #         # libheif
-    #       ])
-    #     ];
-    #   })
-    # }/share"
-
-    environment.systemPackages = with pkgs; [
-      #
-      nautilus
-      ((pkgs.papers.override {
-          supportNautilus = true;
-          withLibsecret = false;
-        })
-        .overrideAttrs
-        (po: {
-          buildInputs = builtins.concatLists [
-            po.buildInputs
-            (with pkgs; [
-              libavif
-              libjxl
-              libwebp
-              # libheif
-            ])
-          ];
-        }))
-
-      # THUMBNAILS
-      /*
-      NOTE: <NixOS 24.11>
-        folloing packages does not use absolute nix path in `.thumbnailer`. It requires executables to be in `$PATH`
-      */
-      libheif
-      gnome-font-viewer
-      evince
-
-      dconf-editor
-      gnome-console
-    ];
-
-    environment.gnome.excludePackages = with pkgs; [
-      # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/x11/desktop-managers/gnome.nix
-      gnome-tour
-      gnome-shell-extensions
     ];
   };
 }
