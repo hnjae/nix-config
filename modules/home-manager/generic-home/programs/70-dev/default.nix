@@ -13,6 +13,7 @@
     ./nix-tools.nix
     ./nix.nix
     ./nodejs
+    ./pueue.nix
     ./python.nix
     ./ruby.nix
     ./rust.nix
