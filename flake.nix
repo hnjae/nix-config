@@ -61,6 +61,14 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    # ghostty
+    ghostty = {
+      url = "github:ghostty-org/ghostty";
+      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
+      inputs.nixpkgs-stable.follows = "nixpkgs";
+      inputs.zig.follows = "";
+    };
+
     # base16
     base16.url = "github:SenchoPens/base16.nix";
     base16-schemes = {
