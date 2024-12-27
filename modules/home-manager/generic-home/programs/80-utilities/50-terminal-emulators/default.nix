@@ -4,17 +4,16 @@
 {
   inputs,
   pkgs,
-  pkgsUnstable,
   ...
 }: {
   imports = [
+    # ./blackbox
     # ./foot
     # ./kitty
     # ./termite
     # ./warp-terminal
+    # ./wezterm
     ./alacritty
-    ./blackbox
-    ./wezterm
   ];
 
   home.packages = [
@@ -32,3 +31,4 @@ NOTE: cosmic-term  <2024-11-11>
   * wl_drm#48: error 0: wl_drm.create_prime_buffer is not implemented
   * It seems plasma6 wayland session uses linux-dmabuf(wayland protocol), but AMDVLK/AMDGPU-PRO driver only support wl_drm
 */
+
