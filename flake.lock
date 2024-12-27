@@ -220,6 +220,30 @@
         "type": "github"
       }
     },
+    "ghostty": {
+      "inputs": {
+        "nixpkgs-stable": [
+          "nixpkgs"
+        ],
+        "nixpkgs-unstable": [
+          "nixpkgs-unstable"
+        ],
+        "zig": []
+      },
+      "locked": {
+        "lastModified": 1735255310,
+        "narHash": "sha256-iAKNXAEfX+f+ETIgNPxCoNtmFpQsdEG3YYGhEPvohHI=",
+        "owner": "ghostty-org",
+        "repo": "ghostty",
+        "rev": "35b9ceee2116331b83c0c86269394e2545070b0f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ghostty-org",
+        "repo": "ghostty",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -497,6 +521,7 @@
         "devshell": "devshell",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
+        "ghostty": "ghostty",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
         "nix-flatpak": "nix-flatpak",
