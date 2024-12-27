@@ -67,7 +67,8 @@ in {
         . "${pkgsUnstable.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
 
         # alias 에 있는 커맨드와 동일하면 표기
-        . "${pkgsUnstable.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh"
+        # zsh-abbr 를 사용하므로 사용하지 말자.
+        # . "${pkgsUnstable.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh"
 
         # run `zhooks` to display functions and array <https://github.com/agkozak/zhooks>
         . "${pkgsUnstable.zsh-zhooks}/share/zsh/zhooks/zhooks.plugin.zsh"

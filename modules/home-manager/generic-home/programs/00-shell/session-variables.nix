@@ -5,6 +5,7 @@
   ...
 }: {
   # zsh, bash, fish 공통사용
+  # .zshenv 에서 source 함
   home.sessionVariables = lib.attrsets.mergeAttrsList [
     {
       # PAGER = "less -i";
@@ -13,6 +14,8 @@
       NIXPKGS_ALLOW_UNFREE = 1;
     })
     (lib.attrsets.optionalAttrs pkgs.stdenv.isLinux {
+      # to use other locale in gui and use en_IE in shell.
+      # NOTE: sessionVariables were being ignored by KDE's value (NixOS 22.11)
       LC_TIME = "en_IE.UTF-8";
     })
     {
@@ -20,14 +23,13 @@
     }
   ];
 
+  programs.zsh.sessionVariables = {
+    inherit (config.home.sessionVariables) EDITOR;
+  };
+
   # .zshenv 말미
   programs.zsh.envExtra = lib.concatLines [
-    ''
-      EDITOR="${config.home.sessionVariables.EDITOR}"
-    ''
     (lib.strings.optionalString pkgs.stdenv.isLinux ''
-      # to use other locale in gui and use en_IE in shell.
-      # NOTE: sessionVariables were being ignored by KDE's value (NixOS 22.11)
       LC_TIME="${config.home.sessionVariables.LC_TIME}"
     '')
   ];

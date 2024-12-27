@@ -9,6 +9,7 @@ in {
   config = lib.mkIf genericHomeCfg.installDevPackages {
     home.packages = with pkgsUnstable; [
       # rnix-lsp -- dead 2024-03-16
+      sops # edit secrets
 
       # lsp
       nixd
