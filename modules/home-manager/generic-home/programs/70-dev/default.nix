@@ -4,7 +4,7 @@
     ./data-formats.nix
     ./db.nix
     ./editorconfig.nix
-    ./git.nix
+    ./git
     ./gitui
     ./go.nix
     ./jvm.nix
