@@ -14,10 +14,13 @@
   `abbr import-aliases` 를 실행해서 `$XDG_CONFG_HOME/zsh-abbr/user-abbrevations` 에 필요한 파일을 생성하는 작업이 필요.
 
   */
-  # TODO: abbr import-aliases 를 system activation 할때 실행 할 수 있을까?  <2024-12-24>
+  # TODO: home.shellAliases 를 바탕으로 $XDG_CONFG_HOME/zsh-abbr/user-abbrevations 파일 생성 <2024-12-26>
 
   programs.zsh = {
-    initExtra = lib.mkAfter ''
+    sessionVariables = {
+      ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY = 1;
+    };
+    initExtra = lib.mkBefore ''
       . "${pkgsUnstable.zsh-abbr}/share/zsh/zsh-abbr/zsh-abbr.zsh"
     '';
   };
