@@ -8,16 +8,17 @@
   genericHomeCfg = config.generic-home;
   # TODO: make user-abbreviations using nix <2024-12-27>
 in {
+  imports = [
+    # ./gitui
+  ];
+
   config = lib.mkIf genericHomeCfg.installDevPackages {
     home.packages = with pkgsUnstable; [
       git-open
       git-crypt
       git-lfs
 
-      #
-      lazygit
-
-      # tig
+      gitu
     ];
 
     services.flatpak.packages = lib.mkIf (genericHomeCfg.isDesktop && genericHomeCfg.installTestApps) [
@@ -31,7 +32,7 @@ in {
 
     # bindings https://github.com/wfxr/forgit 참고
     home.shellAliases = {
-      lg = "lazygit";
+      gu = "gitu";
     };
 
     programs.zsh.localVariables = {
@@ -39,8 +40,8 @@ in {
       forgit_branch_delete = "gbD";
       forgit_blame = "gbl"; # defaults
       forgit_cherry_pick = "gcp"; # defaults
-      forgit_diff = "gdf";
-      forgit_log = "glf";
+      forgit_diff = "gdz";
+      forgit_log = "glz";
       forgit_rebase = "grb"; # defaults
       forgit_revert_commit = "grev";
       forgit_reset_head = "grhd";
@@ -58,6 +59,10 @@ in {
 
     programs.zsh.initExtra = ''
       git-branch-delete-merged () {
+        # TODO: fix this <2024-12-31>
+        # this does not deletes remote branch
+        # https://gist.github.com/schacon/942899
+        # https://gist.github.com/ryanc414/f7686d2c97808b41ed8518a5840e2d78
         git branch --no-color --merged | command grep -vE "^(\+|\*|\s*(master|main|develop|dev)\s*$)" | command xargs -n 1 git branch -d
       }
 

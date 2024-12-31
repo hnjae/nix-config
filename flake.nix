@@ -63,10 +63,12 @@
 
     # ghostty
     ghostty = {
-      url = "github:ghostty-org/ghostty";
+      url = "github:ghostty-org/ghostty/refs/tags/tip";
+      # url = "github:ghostty-org/ghostty";
       inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
       inputs.nixpkgs-stable.follows = "nixpkgs";
       inputs.zig.follows = "";
+      inputs.flake-compats.follows = "";
     };
 
     # base16

@@ -4,14 +4,28 @@
 
 # run `ghostty +list-fonts` to get a list of available fonts
 font-family = "MesloLGM Nerd Font"
-font-size = 10
+font-family = "Pretendard"
+font-family = "Noto Sans Mono CJK JP"
 
+# font-family = "D2Coding"
+# font-family-bold = "MesloLGM Nerd Font Bold"
+# font-family-bold = "D2Coding Bold"
+# font-family-bold = "Noto Sans Mono CJK JP Bold"
+
+font-size = 10.1
+
+# default: xterm-ghostty
+# ssh server 가 ghostty.terminfo 를 지원하지 않는 경우에 대응
+term = "xterm-256color"
 
 ###############################################################################
 # Style
 ###############################################################################
 # run `ghostty + list-themes` to get a list of available themes
 theme = GruvboxLight
+
+# default: 0.7 <version 1.0.1>
+unfocused-split-opacity=0.85
 
 cursor-style = block
 cursor-style-blink = false

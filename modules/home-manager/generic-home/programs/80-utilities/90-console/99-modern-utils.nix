@@ -27,7 +27,8 @@
       viddy # replace watch
 
       # renamer
-      massren
+      vimv-rs # cyclic-renaming 지원, 엣지 케이스 대응 잘함.
+      # massren # 설정 파일이 존재하며, 심지어 plain text 가 아니라 sqlite 파일
 
       # sed for json/yaml
       yq
@@ -35,7 +36,7 @@
       gping # gping(ping)
       doggo # doqqg(dig)
 
-      just # make alike
+      just
     ])
     [
       # (pkgs.writeScriptBin "duf" ''

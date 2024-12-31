@@ -6,6 +6,7 @@ gui:
   showFileTree: true
   nerdFontsVersion: "3"
   expandFocusedSidePanel: false
+  showIcons: true
 git:
   branchLogCmd: git log --graph --color=always --decorate --date=iso --oneline {{branchName}} --
   # merging:

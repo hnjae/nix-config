@@ -89,7 +89,15 @@ nixvim: pkgs: let
       ];
 
       colorschemes = {
-        gruvbox.enable = true;
+        # colorschemes that have light and dark version
+        gruvbox.enable = false;
+        modus.enable = false;
+        melange.enable = false; # gray background
+        nightfox.enable = false;
+        one.enable = false; # whitish background
+        rose-pine.enable = true;
+        everforest.enable = false; # yellowish background
+        vscode.enable = false; # whitish background
       };
 
       # extraFiles = import ./share/ftplugin.nix;
@@ -198,3 +206,4 @@ in
 #   #!${pkgs.dash}/bin/dash
 #    ${package}/bin/nvim "$@"
 # ''
+

@@ -135,6 +135,22 @@
       }
     },
     "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1696426674,
+        "narHash": "sha256-kvjfFW7WAETZlt09AgDn1MrtKzP7t90Vf7vypd3OL1U=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "0f9255e01c2351cc7d116c072cb317785dd33b33",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "flake-compat_2": {
       "locked": {
         "lastModified": 1696426674,
         "narHash": "sha256-kvjfFW7WAETZlt09AgDn1MrtKzP7t90Vf7vypd3OL1U=",
@@ -222,6 +238,7 @@
     },
     "ghostty": {
       "inputs": {
+        "flake-compat": "flake-compat",
         "nixpkgs-stable": [
           "nixpkgs"
         ],
@@ -231,15 +248,16 @@
         "zig": []
       },
       "locked": {
-        "lastModified": 1735255310,
-        "narHash": "sha256-iAKNXAEfX+f+ETIgNPxCoNtmFpQsdEG3YYGhEPvohHI=",
+        "lastModified": 1735509915,
+        "narHash": "sha256-9CzFZKleAOX4yMiba1QDLDZT3tyD88ZF2e/S4pRbnWc=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "35b9ceee2116331b83c0c86269394e2545070b0f",
+        "rev": "d5703a57e7d7bcf8dd9bd5711d9f351e5a43446b",
         "type": "github"
       },
       "original": {
         "owner": "ghostty-org",
+        "ref": "refs/tags/tip",
         "repo": "ghostty",
         "type": "github"
       }
@@ -408,7 +426,7 @@
     "nixvim": {
       "inputs": {
         "devshell": [],
-        "flake-compat": "flake-compat",
+        "flake-compat": "flake-compat_2",
         "flake-parts": [
           "flake-parts"
         ],

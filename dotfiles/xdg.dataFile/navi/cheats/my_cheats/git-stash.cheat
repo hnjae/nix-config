@@ -1,7 +1,0 @@
-% git
-
-# git stash list
-git stash list
-
-# pop
-git stash pop

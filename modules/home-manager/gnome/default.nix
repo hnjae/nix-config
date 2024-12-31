@@ -65,6 +65,13 @@
       move-to-workspace-2 = ["<Shift><Super>F2"];
       move-to-workspace-3 = ["<Shift><Super>F3"];
       move-to-workspace-4 = ["<Shift><Super>F4"];
+
+      # NOTE: 기본 값으로 `<C-A>` 조합키랑 `<Super>` 조합 키 두 종류가 셋팅 되어 있음 <Gnome 47>
+      # 여기서 `<C-A>` 조합키를 비활성화 시키고 `<Super>` 조합키만 활성화 시킴
+      switch-to-workspace-left = ["<Super>Page_Up"];
+      switch-to-workspace-right = ["<Super>Page_Down"];
+      move-to-workspace-left = ["<Shift><Super>Page_Up"];
+      move-to-workspace-right = ["<Shift><Super>Page_Down"];
     };
     "org/gnome/settings-daemon/plugins/media-keys" = {
       calculator = ["Favorites"];

@@ -1,7 +1,0 @@
-% git
-
-# git add file
-git add <path>
-
-# git add part of file interactively
-git add --patch <path>

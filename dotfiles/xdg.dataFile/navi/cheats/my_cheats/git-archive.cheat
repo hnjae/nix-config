@@ -1,5 +1,0 @@
-% git, git-archive
-
-; run `zstd -b3 -e19 <target-file>` to benchmark zstd
-# archive
-git archive --format=tgz <commit-or-branch> | zstd -6 -o <commit-or-branch>.tar.zst

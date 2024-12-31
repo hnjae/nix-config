@@ -169,9 +169,9 @@
     ];
 
     environment.systemPackages = with pkgs; [
-      dconf-editor
+      seahorse # gui of gnome-keyring
       gnome-console
-
+      dconf-editor
       nautilus
 
       # THUMBNAILS
