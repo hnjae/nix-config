@@ -8,8 +8,8 @@
         plasma6Support = false;
         addons = with pkgs; [
           fcitx5-gtk
-          # fcitx5-mozc-ut
-          fcitx5-anthy
+          fcitx5-mozc-ut
+          # fcitx5-anthy
           fcitx5-hangul
           # fcitx5-m17n
           fcitx5-lua

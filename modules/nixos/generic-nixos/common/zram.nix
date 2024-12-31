@@ -10,7 +10,7 @@ in {
     enable = mkOverride 999 true;
     algorithm = mkOverride 999 "lz4";
     memoryPercent = mkOverride 999 50;
-    memoryMax = mkOverride 999 (1024 * 1024 * 1024 * 8);
+    memoryMax = mkOverride 999 (1024 * 1024 * 1024 * 12);
     priority = mkOverride 999 32766;
   };
 

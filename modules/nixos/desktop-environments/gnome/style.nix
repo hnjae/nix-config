@@ -55,8 +55,6 @@
     # papirus-icon-theme
   ];
 
-  # gsettings set org.gnome.desktop.interface icon-theme 'MoreWaita'
-
   # https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications
   qt = {
     enable = true;

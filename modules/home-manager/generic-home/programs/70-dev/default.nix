@@ -5,7 +5,6 @@
     ./db.nix
     ./editorconfig.nix
     ./git
-    ./gitui
     ./go.nix
     ./jvm.nix
     ./lua.nix

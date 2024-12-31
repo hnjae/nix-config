@@ -34,6 +34,7 @@ neodev
 zellij
 vscode
 nixfmt
+ghostty
 flatpak
 libvirt
 nixpkgs

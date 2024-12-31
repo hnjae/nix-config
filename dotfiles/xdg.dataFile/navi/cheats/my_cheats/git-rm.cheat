@@ -1,4 +1,0 @@
-% git
-
-# git rm stage
-git rm --cached <path>

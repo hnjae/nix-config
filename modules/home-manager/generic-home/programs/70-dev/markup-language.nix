@@ -13,7 +13,7 @@ in {
       markdownlint-cli
       markdownlint-cli2
       cbfmt # format codeblocks inside markdown and org
-      glow # markdown preview in cli
+      mdcat # markdown preview in cli; better than glow as it uses ANSI colors
 
       # tex/markdown ..
       ltex-ls
