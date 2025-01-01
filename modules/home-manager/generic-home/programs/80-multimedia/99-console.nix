@@ -27,6 +27,6 @@
 
     # ai
     realesrgan-ncnn-vulkan
-    openai-whisper
+    # openai-whisper
   ];
 }

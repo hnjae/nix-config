@@ -12,7 +12,6 @@ in {
 
   programs.zsh.initExtra = cdPosix;
   programs.bash.initExtra = cdPosix;
-
   programs.fish.functions.yazicd = {
     body = builtins.readFile ./resources/yazi-cd.fish;
     description = "yazi wrapper";
