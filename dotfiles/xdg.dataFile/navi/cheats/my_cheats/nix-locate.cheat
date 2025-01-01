@@ -1,4 +1,4 @@
 % nix
 
-# ?
-nix-locate
+# find specific binray/library from nixpkgs
+nix-locate <name>
