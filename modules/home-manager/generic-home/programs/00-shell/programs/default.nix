@@ -3,7 +3,7 @@
   imports = [
     ./any-nix-shell.nix
     # ./atuin.nix
-    ./base24
+    # ./base24
     ./chpwd.nix
     ./dircolors.nix
     ./direnv.nix

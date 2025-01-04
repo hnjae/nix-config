@@ -6,10 +6,11 @@ _: {
     options = builtins.concatStringsSep "," [
       # "altwin:swap_lalt_lwin"
       # "shift:both_capslock_cancel"
+      # "korean:rctrl_hanja"
+      # "ctrl:nocaps"
       "caps:backspace"
       "korean:ralt_hangul"
-      "korean:rctrl_hanja"
+      "ctrl:swap_rwin_rctl"
     ];
-    # "ctrl:nocaps"
   };
 }

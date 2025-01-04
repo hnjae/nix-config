@@ -19,6 +19,7 @@
     // (lib.attrsets.optionalAttrs pkgs.stdenv.isLinux {
       sys = "systemctl";
       sysu = "systemctl --user";
+      fp = "flatpak --user";
 
       # home.packages 에 bashInteractive 추가하는 걸로 안됨. <NixOS 23.11>
       # bash = "${pkgs.bashInteractive}/bin/bash";
