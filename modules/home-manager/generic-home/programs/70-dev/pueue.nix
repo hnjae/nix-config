@@ -1,10 +1,10 @@
-{pkgsUnstable, ...}: let
+{
+  pkgsUnstable,
+  lib,
+  ...
+}: let
   package = pkgsUnstable.pueue;
-in {
-  # https://github.com/Nukesor/pueue
-  home.packages = [package];
-
-  home.shellAliases = {
+  aliases = {
     p = "pueue";
     prm = "pueue remove";
     psw = "pueue switch";
@@ -25,11 +25,21 @@ in {
     pa = "pueue add";
     ph = "pueue help";
   };
+in {
+  # https://github.com/Nukesor/pueue
+  home.packages = [package];
 
-  # programs.zsh.initExtra = ''
-  #   abbr -S p="pueue"
-  #   abbr -S pst="pueue status"
-  # '';
+  home.shellAliases = aliases;
+
+  xdg.configFile."zsh-abbr/user-abbreviations".text = (
+    lib.concatLines (
+      lib.mapAttrsToList
+      (
+        key: value: ''abbr "${key}"="${value}"''
+      )
+      aliases
+    )
+  );
 
   systemd.user.services.pueued = {
     Unit = {
