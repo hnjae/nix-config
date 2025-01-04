@@ -102,11 +102,6 @@
     };
 
     # others
-    cgitc = {
-      url = "github:hnjae/cgitc";
-      flake = false;
-    };
-
     ww-run-raise = {
       url = "github:hnjae/ww-run-raise";
       inputs = {
