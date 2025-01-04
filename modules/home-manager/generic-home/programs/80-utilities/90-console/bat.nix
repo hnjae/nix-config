@@ -3,18 +3,26 @@
   lib,
   ...
 }: let
-  genericHomeCfg = config.generic-home;
+  base24Cfg = config.generic-home.base24;
 in {
   programs.bat = {enable = true;};
 
   home.sessionVariables = {
     # NOTE: can not override nixos's environment.variables or kde locale settings here
+
+    # NOTE: BAT_THEME의 ansi 는 comment 로 회색을 사용하지 않는다.
     BAT_THEME =
       lib.mkDefault
       (
-        if (genericHomeCfg.base24.enable)
-        then "base16"
-        else "ansi"
+        if (!base24Cfg.enable)
+        then "ansi"
+        else if (base24Cfg.scheme == "gruvbox")
+        then "gruvbox-${
+          if base24Cfg.darkMode
+          then "dark"
+          else "light"
+        }"
+        else "base16"
       );
     /*
     -F: --quit-if-one-screen

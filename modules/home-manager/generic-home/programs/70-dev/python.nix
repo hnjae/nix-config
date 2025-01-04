@@ -49,6 +49,8 @@ in {
     home.packages = [
       pkgsUnstable.ruff
       pkgsUnstable.poetry
+      pkgsUnstable.uv # Python package and project manager
+
       # pkgs.pylyzer
       # pkgsUnstable.nodePackages.pyright
       # pkgsUnstable.pipx

@@ -1,4 +1,6 @@
 # NOTE: Currently, only Podman is supported. <2024-08-04>
+# TODO: podman-pod 으로 묶어 실행하는 경우 대응 (컨테이너간 의존 관계가 있으니, 전부 pull 하고 한번에 시작 해결) <2025-01-02>
+# TODO: 각 container 별로 onCalendar 설정 가능하게 하기 <2025-01-02>
 {
   pkgs,
   config,

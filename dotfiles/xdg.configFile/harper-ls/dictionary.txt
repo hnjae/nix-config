@@ -14,6 +14,7 @@ api
 fmt
 cmp
 zsh
+oct
 json
 nvim
 PgDn
@@ -29,6 +30,8 @@ nocow
 luvit
 NixOS
 netrw
+param
+utils
 podman
 neodev
 zellij
@@ -60,6 +63,7 @@ GpChatStop
 formatters
 startswith
 TabLineSel
+treesitter
 langservers
 GpChatDelete
 SourceConfig

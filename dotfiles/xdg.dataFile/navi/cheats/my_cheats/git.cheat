@@ -141,15 +141,6 @@ git clone --recurse-submodules --depth 1 <repository>
 git clone --recurse-submodules "git@<githubdotcom>:<owner>/<repo>"
 
 ;#############################################################################
-; git-stash
-;#############################################################################
-# git stash list
-git stash list
-
-# pop
-git stash pop
-
-;#############################################################################
 ; misc
 ;#############################################################################
 ; run `zstd -b3 -e19 <target-file>` to benchmark zstd
