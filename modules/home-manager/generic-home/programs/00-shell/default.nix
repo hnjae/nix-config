@@ -7,7 +7,7 @@
 
     ./programs
 
-    ./shell-aliases.nix
+    ./shell-aliases
     ./session-variables.nix
   ];
 }
