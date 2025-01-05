@@ -1,4 +1,5 @@
 {
+  pkgs,
   pkgsUnstable,
   lib,
   ...
@@ -41,7 +42,7 @@ in {
     )
   );
 
-  systemd.user.services.pueued = {
+  systemd.user.services.pueued = lib.mkIf (pkgs.stdenv.isLinux) {
     Unit = {
       Description = "pueue daemon";
       Documentation = ["pueue --help"];

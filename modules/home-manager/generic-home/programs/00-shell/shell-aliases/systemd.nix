@@ -7,8 +7,8 @@
     sc = "systemctl";
     scu = "systemctl --user";
 
-    scst = "systemctl status";
-    scust = "systemctl --user status";
+    scs = "systemctl status";
+    scus = "systemctl --user status";
 
     sclst = "systemctl list-timers";
     sculst = "systemctl --user list-timers";
