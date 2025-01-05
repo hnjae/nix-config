@@ -50,4 +50,7 @@
     (with pkgsUnstable; [yt-dlp cheat])
     (lib.lists.optionals pkgs.stdenv.isLinux [pkgs.convmv])
   ];
+  home.shellAliases = {
+    t = "tmux";
+  };
 }

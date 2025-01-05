@@ -60,9 +60,7 @@
     # gbl (forgit)
 
     # git-status
-    "gst" = "git status -s";
-    "gstt" = "git status";
-    "gstb" = "git status -sb";
+    "gs" = "git status -sb";
 
     # gshw: git-show
     "gshw" = "git show";
@@ -131,9 +129,9 @@
     ############################################################################
     # git-switch
     # gsw                git switch
+    # gsw (forgit)
     "gswc" = "git switch -c";
     # gsw                  git branch | sed 's/^[[:space:]*]*//' | fzf --header="current: $(git branch --show-current)" --preview='git log --oneline --color=always {}' | xargs git switch
-    # gsw (forgit)
     # gswt (forgit)
     # gswco (forgit)
 
@@ -243,7 +241,7 @@
   };
 in {
   imports = [
-    # ./gitui
+    ./gitui
   ];
 
   config = lib.mkIf genericHomeCfg.installDevPackages {
