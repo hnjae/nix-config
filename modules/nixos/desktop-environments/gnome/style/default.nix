@@ -1,5 +1,8 @@
-# TODO: launch flatpak apps with kvantum enabled  <2024-12-17>
 {pkgs, ...}: {
+  imports = [
+    ./kvantum.nix
+  ];
+
   home-manager.sharedModules = [
     {
       dconf.settings = {
@@ -18,31 +21,6 @@
         "org.gtk.Gtk3theme.adw-gtk3"
       ];
     }
-    {
-      # ~/.local/share/flatpak/overrides
-      services.flatpak.overrides = {
-        "global" = {Context = {filesystems = ["xdg-config/Kvantum:ro"];};};
-      };
-    }
-    ({config, ...}: {
-      stateful.nodes = [
-        {
-          path = "${config.xdg.configHome}/kvantum";
-          mode = "755";
-          type = "dir";
-        }
-        {
-          path = "${config.xdg.configHome}/qt5ct";
-          mode = "755";
-          type = "dir";
-        }
-        {
-          path = "${config.xdg.configHome}/qt6ct";
-          mode = "755";
-          type = "dir";
-        }
-      ];
-    })
   ];
 
   environment.systemPackages = with pkgs; [
@@ -54,11 +32,4 @@
     # paper-icon-theme
     # papirus-icon-theme
   ];
-
-  # https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications
-  qt = {
-    enable = true;
-    style = "kvantum";
-    # platformTheme = "qt5ct";
-  };
 }
