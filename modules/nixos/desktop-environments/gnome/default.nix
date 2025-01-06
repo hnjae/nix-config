@@ -1,3 +1,7 @@
+/*
+Module Dependency:
+  * home-manager
+*/
 {
   pkgs,
   lib,

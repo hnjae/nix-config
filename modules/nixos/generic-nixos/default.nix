@@ -17,6 +17,7 @@ in {
   };
 
   imports = [
+    ./core
     ./common
     ./packages
     ./role
