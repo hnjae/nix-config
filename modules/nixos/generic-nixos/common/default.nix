@@ -1,10 +1,8 @@
 _: {
   imports = [
     ./chrony.nix
-    ./console.nix
     ./containers.nix
     ./davfs2.nix
-    ./dbus.nix
     ./env.nix
     ./firewall.nix
     ./fstrim.nix
@@ -14,13 +12,10 @@ _: {
     ./libvirtd.nix
     ./locale.nix
     ./login-defs.nix
-    ./network.nix
     ./nix
     ./nixpkgs.nix
     ./polkit.nix
     ./samba.nix
-    ./ssh.nix
-    ./sudo.nix
     ./sysctl.nix
     ./systemd.nix
     ./time.nix
