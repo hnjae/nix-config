@@ -9,7 +9,7 @@ Module Dependency:
 }: {
   imports = [
     ./ime.nix
-    ./style.nix
+    ./style
     ./tray.nix
   ];
 

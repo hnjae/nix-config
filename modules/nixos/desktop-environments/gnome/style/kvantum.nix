@@ -1,0 +1,61 @@
+# TODO: Make <https://github.com/GabePoel/KvLibadwaita> as package <2025-01-06>
+/*
+NOTE: 현재로서는 다음의 작업이 필요.
+  * KvLibadwaita 를 직접 설치.
+  * 일부 flatpak 앱 (e.g. dolphin) 에서는 kvantum 사용 불가능 <NixOS 24.11>
+*/
+{
+  lib,
+  pkgs,
+  ...
+}: {
+  # https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications
+  qt = {
+    enable = true;
+    style = "kvantum";
+    # platformTheme = "qt5ct";
+  };
+
+  home-manager.sharedModules = [
+    ({config, ...}: {
+      xdg.configFile."Kvantum/kvantum.kvconfig".text = lib.generators.toINI {} {
+        General.theme = "KvLibadwaita";
+      };
+
+      services.flatpak.packages = [
+        # NOTE: 2025-01-06 checked
+        "org.kde.KStyle.Kvantum/${pkgs.stdenv.targetPlatform.ubootArch}/5.15"
+        "org.kde.KStyle.Kvantum/${pkgs.stdenv.targetPlatform.ubootArch}/5.15-21.08"
+        "org.kde.KStyle.Kvantum/${pkgs.stdenv.targetPlatform.ubootArch}/5.15-22.08"
+        "org.kde.KStyle.Kvantum/${pkgs.stdenv.targetPlatform.ubootArch}/5.15-23.08"
+        "org.kde.KStyle.Kvantum/${pkgs.stdenv.targetPlatform.ubootArch}/6.5"
+        "org.kde.KStyle.Kvantum/${pkgs.stdenv.targetPlatform.ubootArch}/6.6"
+      ];
+
+      # ~/.local/share/flatpak/overrides
+      services.flatpak.overrides = {
+        "global" = {
+          Context = {filesystems = ["xdg-config/Kvantum:ro"];};
+          Environment = {QT_STYLE_OVERRIDE = "kvantum";};
+        };
+      };
+      stateful.nodes = [
+        {
+          path = "${config.xdg.configHome}/kvantum";
+          mode = "755";
+          type = "dir";
+        }
+        # {
+        #   path = "${config.xdg.configHome}/qt5ct";
+        #   mode = "755";
+        #   type = "dir";
+        # }
+        # {
+        #   path = "${config.xdg.configHome}/qt6ct";
+        #   mode = "755";
+        #   type = "dir";
+        # }
+      ];
+    })
+  ];
+}
