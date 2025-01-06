@@ -280,6 +280,7 @@ in {
     );
 
     programs.zsh.localVariables = {
+      FORGIT_PAGER = "cat"; # delta 는 forgit 에서 사용하면 번잡스럽다.
       forgit_add = "ga"; # defaults
       forgit_branch_delete = "gbd"; # defaults
       forgit_blame = "gbl"; # defaults
