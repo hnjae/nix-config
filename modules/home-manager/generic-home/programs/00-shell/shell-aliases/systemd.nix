@@ -16,8 +16,14 @@
     sc-failed = "systemctl --failed";
     sc-ufailed = "systemctl --user --failed";
 
-    sc-restart = "systemctl --restart";
-    scu-restart = "systemctl --user --restart";
+    scstart = "sudo systemctl start";
+    scustart = "systemctl --user start";
+
+    scst = "systemctl status";
+    scust = "systemctl --user status";
+
+    screstart = "sudo systemctl restart";
+    scurestart = "systemctl --user restart";
 
     jc = "journalctl";
     jcu = "journalctl --user";

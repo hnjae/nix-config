@@ -46,8 +46,8 @@
     "glcount" = "git shortlog -sn";
 
     # git-diff
-    # gd: forgit
-    # "gd" = "git diff";
+    "gd" = "git diff";
+    # gdz: forgit
     "gdw" = "git diff --word-diff";
     "gds" = "git diff --staged";
     "gdst" = "git diff --stat";
@@ -284,7 +284,7 @@ in {
       forgit_branch_delete = "gbd"; # defaults
       forgit_blame = "gbl"; # defaults
       forgit_cherry_pick = "gcp"; # defaults
-      forgit_diff = "gd"; # defaults:
+      forgit_diff = "gdz"; # defaults: gd
       forgit_log = "glz";
       forgit_rebase = "grb"; # defaults
       forgit_revert_commit = "grev";

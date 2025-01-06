@@ -21,12 +21,14 @@ in {
     };
 
     xdg.portal.enable = true;
-    xdg.portal.xdgOpenUsePortal = mkOverride 999 true;
 
-    environment.sessionVariables =
-      lib.attrsets.optionalAttrs
-      config.xdg.portal.xdgOpenUsePortal {
-        GTK_USE_PORTAL = "1";
-      };
+    # DE 관련 모듈에서 설정할 것.
+    # xdg.portal.xdgOpenUsePortal = mkOverride 999 true;
+    #
+    # environment.sessionVariables =
+    #   lib.attrsets.optionalAttrs
+    #   config.xdg.portal.xdgOpenUsePortal {
+    #     GTK_USE_PORTAL = "1";
+    #   };
   };
 }

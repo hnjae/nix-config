@@ -68,7 +68,7 @@
       inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
       inputs.nixpkgs-stable.follows = "nixpkgs";
       inputs.zig.follows = "";
-      inputs.flake-compats.follows = "";
+      inputs.flake-compat.follows = "";
     };
 
     # base16

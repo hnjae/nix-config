@@ -17,7 +17,6 @@ _: {
     ./network.nix
     ./nix
     ./nixpkgs.nix
-    ./pam.nix
     ./polkit.nix
     ./samba.nix
     ./ssh.nix
