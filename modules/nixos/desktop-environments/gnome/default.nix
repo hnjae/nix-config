@@ -157,10 +157,13 @@
       # tracker.enable = false;
     };
 
-    xdg.portal.extraPortals = lib.mkForce [
-      pkgs.xdg-desktop-portal-gnome
-      pkgs.xdg-desktop-portal-gtk
-    ];
+    # portal 에 geolocation 을 제공하지 않음.
+    # services.geoclue2 = {
+    #   enable = true;
+    #   enable3G = lib.mkOverride 999 false;
+    #   enableCDMA = lib.mkOverride 999 false;
+    #   enableModemGPS = lib.mkOverride 999 false;
+    # };
 
     environment.gnome.excludePackages = with pkgs; [
       # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/x11/desktop-managers/gnome.nix
