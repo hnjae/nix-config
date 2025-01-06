@@ -6,9 +6,7 @@ _: {
     ./env.nix
     ./firewall.nix
     ./fstrim.nix
-    ./hardware.nix
     ./home-manager.nix
-    ./keyboard.nix
     ./libvirtd.nix
     ./locale.nix
     ./login-defs.nix
