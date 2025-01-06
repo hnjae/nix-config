@@ -1,10 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}: let
-  isDesktop = config.generic-nixos.role == "desktop";
-in {
+{...}: {
   i18n = let
     metricLocale = "en_IE.UTF-8";
   in {
@@ -39,10 +33,6 @@ in {
         "en_IE.UTF-8/UTF-8"
         "en_CA.UTF-8/UTF-8"
       ]
-      (lib.lists.optionals isDesktop [
-        "ko_KR.UTF-8/UTF-8"
-        "ja_JP.UTF-8/UTF-8"
-      ])
     ];
   };
 }

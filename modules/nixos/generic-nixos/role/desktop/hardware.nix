@@ -1,11 +1,13 @@
 {
   config,
+  pkgs,
   lib,
   ...
 }: let
   isDesktop = config.generic-nixos.role == "desktop";
 in {
   config = lib.mkIf (config.generic-nixos.role == "desktop") {
+    boot.kernelPackages = lib.mkOverride 950 pkgs.linuxPackages_zen;
     services.libinput = {
       enable = lib.mkOverride 999 true;
       # mouse.accelProfile = "flat";

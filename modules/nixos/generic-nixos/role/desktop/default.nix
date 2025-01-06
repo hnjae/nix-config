@@ -37,5 +37,22 @@
     programs.gnupg.agent.enable = lib.mkOverride 999 true;
 
     documentation.dev.enable = lib.mkOverride 999 true;
+
+    i18n.supportedLocales = [
+      # add more locales to system
+      "ko_KR.UTF-8/UTF-8"
+      "ja_JP.UTF-8/UTF-8"
+    ];
+
+    boot.kernel.sysctl = {
+      # NOTE: 강제 재부팅을 위해서는 1 이 되어야 함. <NixOS 24.05>
+      # https://docs.kernel.org/admin-guide/sysrq.html
+      # defaults: 16 ? / 64: enable signalling of process
+      sysrq = 1;
+
+      # 메모리 맵 파일의 최대 개수. (kernel 6.6 default: 65530) { NixOS 23.11 default 1048576 }
+      # SteamOS/Fedora default
+      "vm.max_map_count" = lib.mkOverride 999 2147483642;
+    };
   };
 }
