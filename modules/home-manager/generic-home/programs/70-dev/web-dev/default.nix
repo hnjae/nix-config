@@ -15,21 +15,19 @@ in {
       xh #  friendly and fast tool for sending HTTP requests.
     ];
 
-    services.flatpak.packages = lib.lists.concatLists [
-      (lib.lists.optionals (genericHomeCfg.isDesktop)
+    services.flatpak.packages = builtins.concatLists [
+      [
+        "com.usebruno.Bruno" # Proprietary in flathub but MIT license in repo <https://github.com/usebruno/bruno>
+      ]
+      (lib.lists.optionals (genericHomeCfg.installTestApps)
         [
-          "com.usebruno.Bruno" # Proprietary # https://github.com/usebruno/bruno mit
-        ])
-      (lib.lists.optionals (genericHomeCfg.isDesktop && genericHomeCfg.installTestApps)
-        [
-          "com.usebruno.Bruno" # Proprietary # https://github.com/usebruno/bruno mit
           "io.httpie.Httpie" # Proprietary
           # "rest.insomnia.Insomnia" # mit
           # "com.getpostman.Postman" # Proprietary
         ])
     ];
 
-    # # NOTE: use xwayland <2024-12-11>
+    # NOTE: use xwayland <2024-12-11>
     services.flatpak.overrides."com.usebruno.Bruno" = lib.mkIf (genericHomeCfg.isDesktop) {
       Context = {
         sockets = ["!wayland"];

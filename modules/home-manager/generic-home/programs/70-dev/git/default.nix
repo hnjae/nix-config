@@ -253,7 +253,7 @@ in {
       gitu
     ];
 
-    services.flatpak.packages = lib.mkIf (genericHomeCfg.isDesktop && genericHomeCfg.installTestApps) [
+    services.flatpak.packages = lib.mkIf (genericHomeCfg.installTestApps) [
       # opensource git client
       # "com.jetpackduba.Gitnuro" # gpl3, jvm
       # "com.github.Murmele.Gittyup" # mit
