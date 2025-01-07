@@ -14,7 +14,7 @@ in {
   # NOTE: celluloid is very slow  <2024-12-15>
   services.flatpak.packages = [
     # "io.github.celluloid_player.Celluloid"
-    "info.smplayer.SMPlayer"
+    # "info.smplayer.SMPlayer"
   ];
 
   # dconf.settings."io/github/celluloid_player/Celluloid" = {
@@ -224,6 +224,7 @@ in {
         framedrop = "decoder";
         sws-fast = true;
       };
+
       audio = {
         replaygain = "track";
         audio-display = false;

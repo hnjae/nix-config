@@ -49,6 +49,7 @@ LazySpec
 endswith
 jumpable
 printenv
+ItemType
 syncthing
 GpChatNew
 AllMyToes
@@ -56,6 +57,7 @@ autopairs
 UltiSnips
 localhost
 formState
+className
 recordsize
 secureboot
 ChatClaude

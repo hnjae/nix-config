@@ -1,7 +1,8 @@
-{...}: {
+{pkgs, ...}: {
   services.flatpak.packages = [
     "io.github.seadve.Kooha" # screen recorder
-    "org.freedesktop.Platform.GStreamer.gstreamer-vaapi/x86_64/23.08" # for kooha
+    # NOTE: 2025-01-06 checked
+    "org.freedesktop.Platform.GStreamer.gstreamer-vaapi/${pkgs.stdenv.targetPlatform.ubootArch}/23.08" # for kooha
   ];
 
   services.flatpak.overrides."io.github.seadve.Kooha" = {
