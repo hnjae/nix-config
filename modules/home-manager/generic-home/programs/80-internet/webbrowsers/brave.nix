@@ -27,26 +27,28 @@ in {
     lib.mkIf
     (genericHomeCfg.isDesktop && pkgs.stdenv.isLinux && pkgs.stdenv.is64bit) {
       default-app.browser = lib.mkOptionDefault "brave-browser";
-      # default-app.fromApps = ["brave-browser"];
 
       home.packages = [package];
-      xdg.mimeApps.associations.removed = {
-        "image/webp" = "brave-browser.desktop";
-        "image/png" = "brave-browser.desktop";
-        "image/jpeg" = "brave-browser.desktop";
-        "image/gif" = "brave-browser.desktop";
-      };
 
-      # xdg.desktopEntries."webapp-apple-music" = {
-      #   name = "Apple Music";
-      #   genericName = "Music Streaming Service";
-      #   terminal = false;
-      #   exec = "${package}/bin/brave --profile-directory=Default --app-id=apple-music";
-      #   icon = "apple-music";
-      #   settings = {
-      #     StartupWMClass = "crx_apple-music";
-      #   };
-      # };
+      xdg.mimeApps.associations.removed = let
+        desktopName = "brave-browser.desktop";
+        mimeTypes = [
+          "application/pdf"
+          "application/rdf+xml"
+          "application/rss+xml"
+          "image/gif"
+          "image/jpeg"
+          "image/png"
+          "image/webp"
+          "text/xml"
+        ];
+      in (
+        builtins.listToAttrs (builtins.map (mimeType: {
+            name = mimeType;
+            value = desktopName;
+          })
+          mimeTypes)
+      );
 
       stateful.nodes = [
         {
