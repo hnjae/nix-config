@@ -13,9 +13,6 @@ in {
         # toml
         taplo # lsp for toml written in rust
 
-        # editorconfig
-        editorconfig-checker
-
         # yaml
         yaml-language-server
         yamlfmt

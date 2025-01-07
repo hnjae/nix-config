@@ -1,9 +1,15 @@
-{...}: {
+{
+  config,
+  lib,
+  pkgs,
+  pkgsUnstable,
+  ...
+}: let
+  genericHomeCfg = config.generic-home;
+in {
   imports = [
-    ./99-misc.nix
-    ./data-formats.nix
+    ./data-interchange-formats.nix
     ./db.nix
-    ./editorconfig.nix
     ./git
     ./go.nix
     ./jvm.nix
@@ -17,7 +23,43 @@
     ./ruby.nix
     ./rust.nix
     ./shell.nix
-    ./sql.nix
     ./web-dev
   ];
+
+  config = lib.mkIf genericHomeCfg.installDevPackages {
+    home.packages = builtins.concatLists [
+      (with pkgs; [
+        gcc
+        gnumake
+        cmake
+        universal-ctags
+
+        # man pages
+        man-pages
+        man-pages-posix
+
+        #
+        openssl
+
+        #
+        patchelfStable
+      ])
+      (with pkgsUnstable; [
+        # editorconfig
+        editorconfig-checker
+
+        harper # grammer checker for developers
+        hyperfine # command-line benchmarking tool
+      ])
+    ];
+
+    services.flatpak.packages = [
+      "me.iepure.devtoolbox" # https://flathub.org/apps/me.iepure.devtoolbox
+
+      "com.jgraph.drawio.desktop" # apache2
+      "org.gaphor.Gaphor" # UML modeling, apache 2
+
+      "com.github.marhkb.Pods" # connects to podman
+    ];
+  };
 }
