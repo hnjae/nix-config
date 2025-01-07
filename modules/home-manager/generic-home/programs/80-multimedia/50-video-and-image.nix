@@ -54,6 +54,14 @@ in {
         "org.gnome.Snapshot" # camera
       ]
       (optionals genericHomeCfg.installTestApps [
+        "com.github.coslyk.MoonPlayer"
+        "org.kde.haruna"
+
+        # gstreamer based
+        "com.github.rafostar.Clapper"
+        "net.base_art.Glide"
+        "org.gnome.Showtime"
+
         "com.github.maoschanz.drawing"
         "com.github.PintaProject.Pinta"
 

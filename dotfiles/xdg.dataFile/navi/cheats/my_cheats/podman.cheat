@@ -6,7 +6,7 @@ podman run -it "<image-name>" --mount=
 # podman device mount example
 sudo podman run --mount=type=bind,source=./centos-7_x86_64,destination=/mnt --device=/dev/<>:/dev/xvda:rwm -it "centos:7"
 
-# run podman
+# run bash in container (-it: interactive tty)
 podman exec -it <Container ID> /bin/bash
 
 # podman pod list (ls)
