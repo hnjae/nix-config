@@ -1,8 +1,4 @@
-{
-  pkgsUnstable,
-  lib,
-  ...
-}: {
+{pkgsUnstable, ...}: {
   # Prevent of modifying `$XDG_CONFG_HOME/zsh-abbr/user-abbrevations` by `abbr` command
   # home.packages = [pkgsUnstable.zsh-abbr];
 
@@ -16,8 +12,12 @@
     sessionVariables = {
       ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY = 1;
     };
-    initExtra = lib.mkBefore ''
-      . "${pkgsUnstable.zsh-abbr}/share/zsh/zsh-abbr/zsh-abbr.zsh"
-    '';
+    # initExtra = lib.mkBefore ''
+    #   . "${pkgsUnstable.zsh-abbr}/share/zsh/zsh-abbr/zsh-abbr.zsh"
+    # '';
+    zsh-abbr = {
+      enable = true;
+      # package = pkgsUnstable.zsh-abbr;
+    };
   };
 }
