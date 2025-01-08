@@ -12,6 +12,16 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
 
+    ############################################################################
+    # nixosModules / homeManagerModule
+    ############################################################################
+    microvm = {
+      url = "github:astro/microvm.nix/refs/tags/v0.5.0";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -23,22 +33,24 @@
         home-manager.follows = "home-manager";
       };
     };
-    microvm = {
-      url = "github:astro/microvm.nix/refs/tags/v0.5.0";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nix-flatpak.url = "github:hnjae/nix-flatpak";
     nix-web-app.url = "github:hnjae/nix-web-app";
     impermanence.url = "github:nix-community/impermanence";
 
+    ############################################################################
+    # Overlays / Packages
+    ############################################################################
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
+
     nur = {
       url = "github:nix-community/NUR";
       inputs = {
@@ -63,12 +75,6 @@
       };
     };
 
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
-    # ghostty
     ghostty = {
       url = "github:ghostty-org/ghostty/refs/tags/tip";
       # url = "github:ghostty-org/ghostty";
@@ -78,7 +84,18 @@
       inputs.flake-compat.follows = "";
     };
 
-    # base16
+    ww-run-raise = {
+      url = "github:hnjae/ww-run-raise";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        devshell.follows = "devshell";
+      };
+    };
+
+    ############################################################################
+    # Base16
+    ############################################################################
     base16.url = "github:SenchoPens/base16.nix";
     base16-schemes = {
       url = "github:tinted-theming/schemes";
@@ -102,20 +119,12 @@
       flake = false;
     };
 
+    ############################################################################
     # to fix duplictae dependencies
+    ############################################################################
     devshell = {
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # others
-    ww-run-raise = {
-      url = "github:hnjae/ww-run-raise";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        devshell.follows = "devshell";
-      };
     };
   };
 
