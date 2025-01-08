@@ -16,6 +16,21 @@ in {
     };
   };
 
+  # options.${moduleName} = {
+  #   type = mkOption {
+  #     type = types.enum [
+  #       "vm"
+  #       "baremetal"
+  #     ];
+  #     default = "vm";
+  #   };
+  #   role = mkOption {
+  #     type = types.enum [
+  #       "desktop"
+  #     ];
+  #   };
+  # };
+
   imports = [
     ./core
     ./common

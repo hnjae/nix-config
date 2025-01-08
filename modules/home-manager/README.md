@@ -1,0 +1,3 @@
+## 알아두어야 할 것.
+
+패키지가 제공하는 desktop entry 를 override 하기 위해 `xdg.desktopEntries` 를 사용하는 것은, KDE 에서는 작동이 되나, Gnome 에서는 작동되질 않는다. 우선 순위가 다른 것 같다.
