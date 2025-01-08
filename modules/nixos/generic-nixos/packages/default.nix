@@ -96,6 +96,7 @@
       show_cpu_frequency = true;
       show_cpu_usage = true;
       header_layout = "three_33_34_33";
+
       # column_meters_0 = "LeftCPUs2 Memory Zram";
       # column_meter_modes_0 = "1 1 1";
       # column_meters_1 = "RightCPUs2 CPU Swap";
