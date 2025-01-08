@@ -23,6 +23,13 @@
         home-manager.follows = "home-manager";
       };
     };
+    microvm = {
+      url = "github:astro/microvm.nix/refs/tags/v0.5.0";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
     nix-flatpak.url = "github:hnjae/nix-flatpak";
     nix-web-app.url = "github:hnjae/nix-web-app";
     impermanence.url = "github:nix-community/impermanence";
