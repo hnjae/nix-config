@@ -68,10 +68,12 @@
         home-manager.follows = "home-manager";
         flake-parts.follows = "flake-parts";
 
+        # Unused dependencies
         nix-darwin.follows = "";
         git-hooks.follows = "";
         devshell.follows = "";
         treefmt-nix.follows = "";
+        nuschtosSearch.follows = "";
       };
     };
 
@@ -95,13 +97,13 @@
 
     ############################################################################
     # Base16
+    # https://github.com/chriskempson/base16-templates-source/blob/master/list.yaml
     ############################################################################
     base16.url = "github:SenchoPens/base16.nix";
     base16-schemes = {
       url = "github:tinted-theming/schemes";
       flake = false;
     };
-    # https://github.com/chriskempson/base16-templates-source/blob/master/list.yaml
     base24-konsole = {
       url = "github:Base24/base24-konsole";
       flake = false;
