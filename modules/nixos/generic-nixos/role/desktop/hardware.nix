@@ -16,6 +16,11 @@ in {
     # bluetooth
     hardware.bluetooth = {
       enable = isDesktop;
+      # settings = {
+      #   General = {
+      #     Experimental = true;
+      #   };
+      # };
     };
 
     # sound

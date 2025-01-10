@@ -15,7 +15,15 @@
     "--numeric-ids"
     "--exclude-from=${rsync-exclude}"
   ];
-  rsyncCompressArgs = ["-z" "--zc=zstd" "--zl=4"];
+  rsyncSshArgs = [
+    "-z"
+    "--zc=zstd"
+    "--zl=3"
+    # "--skip-compress=mp3,mp4,avi,mov,flac,zip,gz,tar"
+    "-e"
+    ''"ssh -T -c aes128-gcm@openssh.com -o Compression=no -x"''
+  ];
+
   # *.log
   rsync-exclude = pkgs.writeText "rsync-exclude" ''
     .Trash-*
@@ -47,10 +55,7 @@
 in {
   home.shellAliases = mapAttrs (_: args: concatStringsSep " " args) {
     rcp = rsyncArgs;
-    rcpz = concatLists [rsyncArgs rsyncCompressArgs];
     rmv = concatLists [rsyncArgs ["--remove-source-files"]];
-    rmvz =
-      concatLists [rsyncArgs ["--remove-source-files"] rsyncCompressArgs];
     rcp-paranoid = concatLists [
       rsyncArgs
       [
@@ -58,6 +63,17 @@ in {
         "--cc=xxh3" # (https://github.com/Cyan4973/xxHash)
       ]
     ];
+
+    rcp-remote = concatLists [
+      rsyncArgs
+      rsyncSshArgs
+    ];
+    rmv-remote = concatLists [
+      rsyncArgs
+      ["--remove-source-files"]
+      rsyncSshArgs
+    ];
+
     rcp-sync = concatLists [
       (lib.lists.remove "--exclude-from=${rsync-exclude}" rsyncArgs)
       [
@@ -68,6 +84,7 @@ in {
         "--delete-after"
       ]
     ];
+
     rcp-mtp = [
       "rsync"
       "--info=progress2"

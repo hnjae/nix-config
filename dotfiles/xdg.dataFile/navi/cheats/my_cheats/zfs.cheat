@@ -107,3 +107,5 @@ zfs set primarycache=metadata <filesystem>
 
 ; # allow user to run command in dataset/volume
 ; zfs allow <subcommad> -u <user> <filesystem|volume>
+# create zvol
+zfs create -b <blocksize> -V <size> <zpool>/<zvol-name>
