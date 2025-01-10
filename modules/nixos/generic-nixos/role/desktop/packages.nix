@@ -28,6 +28,9 @@
         }
       ];
 
+      # Run unpatched dynamic binaries
+      programs.nix-ld.enable = true;
+
       # managing android
       programs.adb.enable = true;
 
@@ -35,6 +38,14 @@
       services.ddccontrol.enable = true;
 
       environment.defaultPackages = with pkgs; [
+        (appimage-run.override {
+          extraPkgs = pkgs:
+            with pkgs; [
+              libthai
+              # libsecret
+            ];
+        })
+
         glib # for gio
 
         # xev
@@ -71,14 +82,6 @@
 
         #
         # wlprop # xprop for wlroots
-
-        (appimage-run.override {
-          extraPkgs = pkgs:
-            with pkgs; [
-              libthai
-              # libsecret
-            ];
-        })
       ];
     };
 }

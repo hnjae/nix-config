@@ -13,7 +13,7 @@
     ############################################################################
     # ga: git-add
     # ga (forgit)        interactive `git add` selector
-    "gaA" = "git add --all";
+    "gaa" = "git add --all";
     "gapa" = "git add --patch";
     "gau" = "git add --update";
     "gav" = "git add --verbose";
@@ -249,6 +249,9 @@ in {
       git-open
       git-crypt
       git-lfs
+
+      # git-annex
+      # bup
 
       gitu
     ];

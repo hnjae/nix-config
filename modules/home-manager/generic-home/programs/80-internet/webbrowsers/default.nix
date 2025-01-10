@@ -7,11 +7,7 @@
   genericHomeCfg = config.generic-home;
 in {
   imports = [
-    ./brave.nix
     ./google-chrome.nix
-    # ./firefox
-    # ./vivaldi.nix
-    # ./microsoft-edge.nix
   ];
 
   config = lib.mkIf (genericHomeCfg.isDesktop) {
@@ -22,20 +18,26 @@ in {
     ];
 
     home.packages = builtins.concatLists [
-      [
-        # floorp
-        # vieb
-        # vimb
-      ]
       (lib.lists.optionals (pkgs.stdenv.isLinux)
         (with pkgs; [
-          nyxt
-          luakit
-          qutebrowser
-
-          # firefox-bin
-          firefox-devedition-bin
           librewolf
+          firefox-devedition-bin
+          (let
+            flags = builtins.concatStringsSep " " [
+              # enable Wayland
+              "--ozone-platform-hint=auto"
+              "--enable-features=UseOzonePlatform"
+              # enable text-input-v3
+              "--enable-wayland-ime"
+              "--wayland-text-input-version=3"
+              # enable VA-API
+              "--enable-features=AcceleratedVideoDecodeLinuxGL"
+              "--enable-features=VaapiIgnoreDriverChecks"
+            ];
+          in (pkgs.writeScriptBin "chromium" ''
+            #!${pkgs.dash}/bin/dash
+            ${pkgs.ungoogled-chromium}/bin/chromium ${flags} "$@"
+          ''))
         ]))
     ];
 
@@ -47,6 +49,11 @@ in {
       }
       {
         path = "${config.home.homeDirectory}/.mozilla";
+        mode = "700";
+        type = "dir";
+      }
+      {
+        path = "${config.xdg.configHome}/chromium";
         mode = "700";
         type = "dir";
       }
