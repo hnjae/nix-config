@@ -26,13 +26,6 @@
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    plasma-manager = {
-      url = "github:pjones/plasma-manager/trunk";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-      };
-    };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -104,20 +97,8 @@
       url = "github:tinted-theming/schemes";
       flake = false;
     };
-    base24-konsole = {
-      url = "github:Base24/base24-konsole";
-      flake = false;
-    };
-    base24-kdeplasma = {
-      url = "github:Base24/base24-kdeplasma";
-      flake = false;
-    };
     base24-vscode-terminal = {
       url = "github:Base24/base24-vscode-terminal";
-      flake = false;
-    };
-    base24-kate = {
-      url = "github:Base24/base24-kate";
       flake = false;
     };
 

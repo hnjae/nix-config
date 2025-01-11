@@ -34,54 +34,6 @@
         "type": "github"
       }
     },
-    "base24-kate": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1591727705,
-        "narHash": "sha256-yKHFnxEoapwXRbbyykFytiuBumoab7pO5BXXXAI5GK0=",
-        "owner": "Base24",
-        "repo": "base24-kate",
-        "rev": "992cfcabf53da19f00a4d5a90809a03bde09fd55",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Base24",
-        "repo": "base24-kate",
-        "type": "github"
-      }
-    },
-    "base24-kdeplasma": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1585773527,
-        "narHash": "sha256-FdU/e7Q4XORjQ0yeuHxcCirXoM7BiJwYsUjfC9OFWbs=",
-        "owner": "Base24",
-        "repo": "base24-kdeplasma",
-        "rev": "80a630cb18f47d45abb7ced6089a5a58972f26ae",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Base24",
-        "repo": "base24-kdeplasma",
-        "type": "github"
-      }
-    },
-    "base24-konsole": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1585773126,
-        "narHash": "sha256-HKx+hoxw+WXtQF2sVGw0Fwfpp0q87g6b4zXfSKxvDO4=",
-        "owner": "Base24",
-        "repo": "base24-konsole",
-        "rev": "c25b59f759b842c458f2f3de2d2ecb49ef80843a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Base24",
-        "repo": "base24-konsole",
-        "type": "github"
-      }
-    },
     "base24-vscode-terminal": {
       "flake": false,
       "locked": {
@@ -427,37 +379,10 @@
         "type": "github"
       }
     },
-    "plasma-manager": {
-      "inputs": {
-        "home-manager": [
-          "home-manager"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1735049224,
-        "narHash": "sha256-fWUd9kyXdepphJ7cCzOsuSo7l0kbFCkUqfgKqZyFZzE=",
-        "owner": "pjones",
-        "repo": "plasma-manager",
-        "rev": "d16bbded0ae452bc088489e7dca3ef58d8d1830b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pjones",
-        "ref": "trunk",
-        "repo": "plasma-manager",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "base16": "base16",
         "base16-schemes": "base16-schemes",
-        "base24-kate": "base24-kate",
-        "base24-kdeplasma": "base24-kdeplasma",
-        "base24-konsole": "base24-konsole",
         "base24-vscode-terminal": "base24-vscode-terminal",
         "devshell": "devshell",
         "flake-parts": "flake-parts",
@@ -474,7 +399,6 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nur": "nur",
-        "plasma-manager": "plasma-manager",
         "rust-overlay": "rust-overlay",
         "ww-run-raise": "ww-run-raise"
       }
