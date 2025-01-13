@@ -153,6 +153,7 @@ Module Dependency:
         ];
       }
     ];
+    programs.file-roller.enable = true; # flatpak's version is unofficial
 
     services.gnome = {
       core-utilities.enable = false; # install core-utilites e.g. nautilus, calculator

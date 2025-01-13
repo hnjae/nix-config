@@ -4,24 +4,31 @@ alias fmt := format
 format:
   nix fmt --no-warn-dirty
 
-flake-update-except-unstable:
-  nix flake lock \
-    --update-input nixpkgs \
-    --update-input flake-parts \
-    --update-input flake-utils \
-    --update-input home-manager \
-    --update-input plasma-manager \
-    --update-input impermanence \
-    --update-input rust-overlay \
-    --update-input nixpkgs-mozilla \
-    --update-input nixvim \
-    --update-input nix-index-database \
-    --update-input base16-schemes \
-    --update-input base24-konsole \
-    --update-input base24-kdeplasma \
-    --update-input nix-flatpak \
-    --update-input nix-web-app \
-    --update-input cgitc
+open-status:
+  xdg-open "https://status.nixos.org/"
+
+update-except-unstable:
+  nix flake update \
+    nixpkgs \
+    flake-parts \
+    flake-utils \
+    home-manager \
+    impermanence \
+    microvm \
+    nix-flatpak \
+    nix-index-database \
+    nix-web-app \
+    ghostty \
+    nixpkgs-mozilla \
+    nixvim \
+    nur \
+    rust-overlay \
+    base16 \
+    base16-schemes \
+    base24-vscode-terminal
+
+update:
+  nix flake update
 
 show-homeConfigurations:
     nix eval \
@@ -38,9 +45,6 @@ show-homeManagerModules:
       ".#homeManagerModules" \
       --apply builtins.attrNames | \
       jq '.[]'
-
-open-status:
-  xdg-open "https://status.nixos.org/"
 
 test-flake:
   #!/bin/sh

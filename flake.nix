@@ -6,15 +6,18 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
-      inputs = {
-        nixpkgs-lib.follows = "nixpkgs";
-      };
+      inputs = {nixpkgs-lib.follows = "nixpkgs";};
     };
     flake-utils.url = "github:numtide/flake-utils";
 
     ############################################################################
     # nixosModules / homeManagerModule
     ############################################################################
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    impermanence.url = "github:nix-community/impermanence";
     microvm = {
       url = "github:astro/microvm.nix/refs/tags/v0.5.0";
       inputs = {
@@ -22,46 +25,30 @@
         flake-utils.follows = "flake-utils";
       };
     };
-    home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nix-flatpak.url = "github:hnjae/nix-flatpak";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    nix-flatpak.url = "github:hnjae/nix-flatpak";
     nix-web-app.url = "github:hnjae/nix-web-app";
-    impermanence.url = "github:nix-community/impermanence";
 
     ############################################################################
     # Overlays / Packages
     ############################################################################
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
+    ghostty = {
+      url = "github:ghostty-org/ghostty/refs/tags/tip";
+      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
+      inputs.nixpkgs-stable.follows = "nixpkgs";
+      inputs.zig.follows = "";
+      inputs.flake-compat.follows = "";
     };
-
     nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
-
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs = {
-        flake-parts.follows = "flake-parts";
-        nixpkgs.follows = "nixpkgs";
-        # treefmt-nix.follows = "";
-      };
-    };
-
     nixvim = {
       url = "github:nix-community/nixvim/nixos-24.11";
-      # url = "github:nix-community/nixvim/main";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
         flake-parts.follows = "flake-parts";
-
-        # Unused dependencies
         nix-darwin.follows = "";
         git-hooks.follows = "";
         devshell.follows = "";
@@ -69,23 +56,16 @@
         nuschtosSearch.follows = "";
       };
     };
-
-    ghostty = {
-      url = "github:ghostty-org/ghostty/refs/tags/tip";
-      # url = "github:ghostty-org/ghostty";
-      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
-      inputs.nixpkgs-stable.follows = "nixpkgs";
-      inputs.zig.follows = "";
-      inputs.flake-compat.follows = "";
-    };
-
-    ww-run-raise = {
-      url = "github:hnjae/ww-run-raise";
+    nur = {
+      url = "github:nix-community/NUR";
       inputs = {
-        nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-        devshell.follows = "devshell";
+        nixpkgs.follows = "nixpkgs";
       };
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     ############################################################################
@@ -103,7 +83,7 @@
     };
 
     ############################################################################
-    # to fix duplictae dependencies
+    # to fix duplicate dependencies
     ############################################################################
     devshell = {
       url = "github:numtide/devshell";

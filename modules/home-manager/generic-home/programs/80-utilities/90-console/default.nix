@@ -47,7 +47,11 @@
 
       speedtest-rs
     ])
-    (with pkgsUnstable; [yt-dlp cheat])
+    (with pkgsUnstable; [
+      yt-dlp
+      cheat
+      ouch
+    ])
     (lib.lists.optionals pkgs.stdenv.isLinux [pkgs.convmv])
   ];
   home.shellAliases = {
