@@ -64,6 +64,7 @@
 
         # tops
         bottom
+        unrar
       ]
     )
 

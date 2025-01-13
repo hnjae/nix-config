@@ -1,3 +1,4 @@
+TiB
 bg
 fg
 XDG
@@ -5,6 +6,8 @@ ZFS
 WIP
 VBR
 AAC
+usr
+env
 navi
 nixd
 rnix
