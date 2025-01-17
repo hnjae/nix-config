@@ -30,8 +30,8 @@
         inherit (pkgs.stdenv) system;
         config.allowUnfree = pkgs.config.allowUnfree;
         overlays = [
-          inputs.nur.overlay
-          inputs.rust-overlay.overlays.default
+          # inputs.nur.overlays.default
+          # inputs.rust-overlay.overlays.default
         ];
       };
     };

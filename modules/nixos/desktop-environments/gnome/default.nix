@@ -9,6 +9,7 @@ Module Dependency:
 }: {
   imports = [
     ./ime.nix
+    ./kdeconnect.nix
     ./style
     ./tray.nix
   ];
@@ -36,7 +37,7 @@ Module Dependency:
           "org/gnome/mutter" = {
             experimental-features = [
               "scale-monitor-framebuffer"
-              "variable-refresh-rate"
+              # "variable-refresh-rate" # NOTE: <Gnome 47; NixOS 24.11> not working
               "xwayland-native-scaling"
             ];
           };
@@ -185,7 +186,7 @@ Module Dependency:
       # THUMBNAILS
       /*
       NOTE: <NixOS 24.11>
-        folloing packages does not use absolute nix path in `.thumbnailer`. It requires executables to be in `$PATH`
+        following packages does not use absolute nix path in `.thumbnailer`. It requires executables to be in `$PATH`
       */
       gnome-font-viewer
     ];

@@ -148,9 +148,9 @@
     # git-stash
     ############################################################################
     # git-stash
-    "gsh" = "git stash";
+    "gsh" = "git stash -u"; # -u: --include-untracked
     "gshl" = "git stash list";
-    "gshp" = "git stash pop";
+    "gsho" = "git stash pop";
     # gshs forgit -- show
     # gshp forgit -- push
 

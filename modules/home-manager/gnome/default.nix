@@ -1,8 +1,6 @@
 {pkgs, ...}: {
   imports = [
     ./programs.nix
-    # ./paperwm.nix
-    ./ulauncher.nix
     ./dash.nix
   ];
 
@@ -10,12 +8,14 @@
     dconf2nix
     # gnomeExtensions.run-or-raise
     gnomeExtensions.caffeine
-
-    gnomeExtensions.blur-my-shell
-
+    # gnomeExtensions.blur-my-shell
     gnomeExtensions.removable-drive-menu
-
+    #
+    # gnomeExtensions.gtile
     gnomeExtensions.tiling-shell
+    gnomeExtensions.windownavigator
+    gnomeExtensions.useless-gaps
+    gnomeExtensions.screenshot-window-sizer
   ];
 
   default-app.fileManager = "org.gnome.Nautilus";
