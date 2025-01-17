@@ -63,7 +63,6 @@ in {
         outPath =
           builtins.toString (lib.path.append (/. + savePath)
             (lib.path.removePrefix (/. + homeDirectory) (/. + node.path)));
-        # outPath = "${savePath}/${(getRelPathFromHome node.path)}";
 
         tmpfileType =
           if (node.type == "dir")
