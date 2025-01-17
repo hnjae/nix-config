@@ -11,10 +11,10 @@ in {
   ];
 
   config = lib.mkIf (genericHomeCfg.isDesktop) {
-    default-app.browser = "io.github.zen_browser.zen";
+    default-app.browser = "app.zen_browser.zen";
 
     services.flatpak.packages = [
-      "io.github.zen_browser.zen"
+      "app.zen_browser.zen"
     ];
 
     home.packages = builtins.concatLists [
