@@ -7,5 +7,6 @@ result
 /dotfiles/xdg.configFile/qalculate/qalc.history
 /dotfiles/xdg.configFile/qimgv/savedState.conf
 /dotfiles/xdg.configFile/ulauncher/ext_preferences
+/dotfiles/xdg.configFile/alacritty/base16.toml
 
 /packages/*/default.nix

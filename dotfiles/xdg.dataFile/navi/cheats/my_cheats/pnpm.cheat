@@ -41,3 +41,6 @@ pnpm add -w -D eslint eslint-config-prettier eslint-plugin-react typescript-esli
 
 # install prettier related packages
 pnpm add -w -D prettier
+
+# run specific packages' package in workspace
+pnpm -F <package-name> exec <name>

@@ -1,15 +1,13 @@
 {
   config,
   lib,
-  pkgsUnstable,
+  pkgs,
   ...
 }: let
   genericHomeCfg = config.generic-home;
 in {
   config = lib.mkIf genericHomeCfg.installDevPackages {
-    home.packages = with pkgsUnstable; [
-      rust-bin.stable.latest.default
-    ];
+    # home.packages = [pkgs.rust-bin.stable.latest.default];
 
     home.sessionVariables = {
       # a local cache of the registry index and of git checkouts of crates

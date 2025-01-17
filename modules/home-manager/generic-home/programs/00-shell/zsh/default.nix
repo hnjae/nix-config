@@ -90,17 +90,18 @@ in {
       ignoreDups = true;
       ignorePatterns = [
         # cd
-        "cd"
-        "s"
+        "cd *"
+        "s *"
 
         # files
-        "rm"
-        "trash"
-        "trash-put"
-        "trash-rm"
+        "rm *"
+        "sudo rm *"
+        "trash *"
+        "trash-put *"
+        "trash-rm *"
         "trash-empty"
-        "trash-restore"
-        "trash-list"
+        # "trash-restore"
+        # "trash-list"
         "mv"
 
         # ls & misc
@@ -118,6 +119,9 @@ in {
         "zfs destroy *"
         "zpool destroy *"
         "btrfs subvolume delete *"
+        "sudo zfs destroy *"
+        "sudo zpool destroy *"
+        "sudo btrfs subvolume delete *"
 
         # dangerous commands
         "reboot"
@@ -132,8 +136,10 @@ in {
       ];
       ignoreSpace = true;
       extended = true; # save timestamp into the history file
-      save = 90000;
-      size = 90000;
+      expireDuplicatesFirst = true;
+      ignoreAllDups = true;
+      save = 99999;
+      size = 99999;
       share = true;
     };
   };
