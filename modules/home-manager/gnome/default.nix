@@ -6,24 +6,23 @@
 
   home.packages = with pkgs; [
     dconf2nix
+    # gnomeExtensions.blur-my-shell
+    # gnomeExtensions.gtile
     # gnomeExtensions.run-or-raise
     gnomeExtensions.caffeine
-    # gnomeExtensions.blur-my-shell
     gnomeExtensions.removable-drive-menu
-    #
-    # gnomeExtensions.gtile
-    gnomeExtensions.tiling-shell
-    gnomeExtensions.windownavigator
-    gnomeExtensions.useless-gaps
     gnomeExtensions.screenshot-window-sizer
+    gnomeExtensions.tiling-shell
+    gnomeExtensions.useless-gaps
+    gnomeExtensions.windownavigator
   ];
 
   default-app.fileManager = "org.gnome.Nautilus";
 
   dconf.settings = {
     "org/gnome/shell".enabled-extensions = [
-      # "run-or-raise@edvard.cz"
       "caffeine@patapon.info"
+      "windowsNavigator@gnome-shell-extensions.gcampax.github.com"
     ];
     "org/gnome/desktop/calendar" = {
       show-weekdate = true;
@@ -80,5 +79,10 @@
     # "org/gnome/settings-daemon/plugins/media-keys" = {
     #   calculator = lib.hm.gvariant.mkArray ["Favorites"];
     # };
+
+    "org/gnome/shell/extensions/caffeine" = {
+      screen-blank = "always";
+      show-notifications = false;
+    };
   };
 }

@@ -29,7 +29,7 @@ in {
         "Fri *-*-* 04:00:00"
       ];
 
-      RandomizedDelaySec = "24h";
+      RandomizedDelaySec = "45m";
       Persistent = true;
     };
 
