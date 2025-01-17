@@ -1,9 +1,0 @@
---- a/theme.conf
-+++ b/theme.conf
-@@ -1,5 +1,5 @@
- [General]
--font=Roboto
-+font=Pretendard
- background=
- bg_mode=aspect
- parallax_bg_shift=20
