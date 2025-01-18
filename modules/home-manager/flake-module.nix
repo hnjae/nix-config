@@ -19,7 +19,5 @@
         generic-home
       ];
     };
-
-    gnome = {imports = [./gnome];};
   };
 }
