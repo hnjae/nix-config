@@ -57,6 +57,19 @@ test-flake:
     --all-systems \
     --impure # to check unfree packages
 
+pre-home-manager-switch:
+  #!/bin/sh
+  set -eu
+
+  file="${XDG_CONFIG_HOME:-$HOME/.config}/mimeapps.list.backup"
+  if [ -f "$file" ]; then
+    if command -v trash >/dev/null 2>&1; then
+      trash -- "$file"
+    else
+      rm -- "$file"
+    fi
+  fi
+
 drybuild-homes-wip:
   #!/bin/sh
 
@@ -193,5 +206,39 @@ switch-home:
     ".#homeConfigurations.${hmName}.activationPackage"
   bash "$(nix eval --raw ".#homeConfigurations.${hmName}.activationPackage")/activate"
 
-
 test: test-flake drybuild-homes
+
+################################################################################
+# nixos-rebuild
+################################################################################
+switch-nixos: pre-home-manager-switch
+  @echo "Switch .#{{hostname}}"
+  sudo nixos-rebuild switch \
+    --flake ".#{{hostname}}" \
+    --keep-failed
+
+boot-nixos:
+  @echo "Build .#{{hostname}} and register to bootloader"
+  sudo nixos-rebuild boot \
+    --flake ".#{{hostname}}" \
+    --option eval-cache false \
+    --keep-failed
+
+drybuild-nixos:
+  @echo "Dry building NixOS .#{{hostname}}"
+  nixos-rebuild \
+    dry-build \
+    --option warn-dirty false \
+    --option eval-cache false \
+    --show-trace \
+    --impure \
+    --flake ".#{{hostname}}"
+
+build-nixos:
+  @echo "Building .#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
+  nix build \
+    --no-link \
+    --option eval-cache false \
+    --show-trace \
+    --keep-failed \
+    ".#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
