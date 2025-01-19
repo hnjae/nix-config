@@ -103,8 +103,9 @@
         ./apps/flake-module.nix
         ./packages/flake-module.nix
 
-        ./modules/nixos/flake-module.nix
-        ./modules/home-manager/flake-module.nix
+        ./modules/gnome/flake-module.nix
+        ./modules/generic/flake-module.nix
+        ./modules/nixosModules/flake-module.nix
 
         ./nixos-configs-sample/flake-module.nix
         ./hm-configs/flake-module.nix
