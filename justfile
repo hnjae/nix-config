@@ -118,28 +118,6 @@ drybuild-homes:
     echo ""
   done
 
-drybuild-nixos-desktop:
-  nix build \
-    --dry-run \
-    --no-warn-dirty \
-    --option eval-cache false \
-    --no-print-missing \
-    --quiet \
-    --json \
-    --builders "" \
-    ".#nixosConfigurations.dekstop.config.system.build.toplevel"
-
-drybuild-nixos-desktop-plasma6:
-  nix build \
-    --dry-run \
-    --no-warn-dirty \
-    --option eval-cache false \
-    --no-print-missing \
-    --quiet \
-    --json \
-    --builders "" \
-    ".#nixosConfigurations.dekstop-plasma6-unfree.config.system.build.toplevel"
-
 # slower than nix flake check
 drybuild-nixoses:
   #!/bin/sh
@@ -168,34 +146,6 @@ drybuild-nixoses:
 
 build-iso:
   nix build .#nixosConfigurations.iso.config.system.build.isoImage
-
-build-home:
-  #!/bin/sh
-  set -e
-  hmName="$(hostname)"
-
-  nix build \
-    --no-print-missing \
-    --option keep-env-derivations true \
-    --option pure-eval true \
-    --json \
-    --builders "" \
-    ".#homeConfigurations.${hmName}.activationPackage"
-
-switch-home:
-  #!/bin/sh
-  set -e
-  hmName="$(hostname)"
-
-  nix build \
-    --no-link \
-    --no-print-missing \
-    --option keep-env-derivations true \
-    --option pure-eval true \
-    --json \
-    --builders "" \
-    ".#homeConfigurations.${hmName}.activationPackage"
-  bash "$(nix eval --raw ".#homeConfigurations.${hmName}.activationPackage")/activate"
 
 test: test-flake drybuild-homes
 
@@ -256,3 +206,29 @@ build-nixos:
     --show-trace \
     --keep-failed \
     ".#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
+
+################################################################################
+# home-manager build/switch
+################################################################################
+build-home:
+  @echo "Switch home-manager .#{{hostname}}"
+  nix build \
+    --no-print-missing \
+    --option keep-env-derivations true \
+    --option pure-eval true \
+    --json \
+    ".#homeConfigurations.{{hostname}}.activationPackage"
+
+switch-home:
+  #!/bin/sh
+  set -eu
+
+  nix build \
+    --no-link \
+    --no-print-missing \
+    --option keep-env-derivations true \
+    --option pure-eval true \
+    --json \
+    ".#homeConfigurations.{{hostname}}.activationPackage"
+
+  bash "$(nix eval --raw ".#homeConfigurations.{{hostname}}.activationPackage")/activate"
