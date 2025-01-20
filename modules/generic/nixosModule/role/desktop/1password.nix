@@ -8,7 +8,6 @@
     programs._1password.enable = true;
     programs._1password-gui = {
       enable = config.generic-nixos.role == "desktop";
-      polkitPolicyOwners = [config.users.users.${self.val.home.username}.name];
     };
 
     environment.etc."1password/custom_allowed_browsers" = {

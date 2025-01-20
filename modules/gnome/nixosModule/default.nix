@@ -1,7 +1,3 @@
-/*
-Module Dependency:
-  * home-manager
-*/
 {
   pkgs,
   lib,
@@ -30,7 +26,7 @@ Module Dependency:
     };
 
     home-manager.sharedModules = [
-      (import ../../../home-manager/gnome)
+      (import ../homeManagerModule)
       {
         # with lib.hm.gvariant;
         dconf.settings = {

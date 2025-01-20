@@ -5,9 +5,6 @@ _: {
     ./davfs2.nix
     ./env.nix
     ./firewall.nix
-    ./fstrim.nix
-    ./home-manager.nix
-    ./libvirtd.nix
     ./locale.nix
     ./login-defs.nix
     ./nix
