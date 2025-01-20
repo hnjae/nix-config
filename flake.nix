@@ -100,6 +100,8 @@
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
+        ./flake-output-attributes
+
         ./apps/flake-module.nix
         ./packages/flake-module.nix
 
