@@ -7,9 +7,9 @@
   inherit (lib) mkOverride;
   cfg = config.generic-nixos;
 in {
-  config = lib.mkIf (cfg.role != "vm") {
+  config = lib.mkIf (cfg.role == "desktop") {
     virtualisation.libvirtd = {
-      enable = mkOverride 999 (cfg.role != "vm");
+      enable = mkOverride 999 true;
       qemu.swtpm.enable = true;
       qemu.ovmf.packages = with pkgs; [OVMFFull.fd];
     };
@@ -23,6 +23,5 @@ in {
         };
       }
     ];
-    # virtualisation.libvirtd.onShutdown = "shutdown";
   };
 }
