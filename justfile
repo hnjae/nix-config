@@ -1,6 +1,13 @@
 alias t := test
 alias fmt := format
 
+# check: https://nixos.org/manual/nix/stable/command-ref/new-cli/nix
+
+hostname := `hostname`
+
+default:
+    @just --list
+
 format:
   nix fmt --no-warn-dirty
 
@@ -29,22 +36,6 @@ update-except-unstable:
 
 update:
   nix flake update
-
-show-homeConfigurations:
-    nix eval \
-      --no-warn-dirty \
-      --json \
-      ".#homeConfigurations" \
-      --apply builtins.attrNames | \
-      jq '.[]'
-
-show-homeManagerModules:
-    nix eval \
-      --no-warn-dirty \
-      --json \
-      ".#homeManagerModules" \
-      --apply builtins.attrNames | \
-      jq '.[]'
 
 test-flake:
   #!/bin/sh
@@ -207,6 +198,29 @@ switch-home:
   bash "$(nix eval --raw ".#homeConfigurations.${hmName}.activationPackage")/activate"
 
 test: test-flake drybuild-homes
+
+################################################################################
+# show flake.outputs
+################################################################################
+
+show:
+  nix flake show 2>/dev/null
+
+show-hm-modules:
+  nix eval \
+    --no-warn-dirty \
+    --json \
+    ".#homeManagerModules" \
+    --apply builtins.attrNames | \
+    jq '.[]'
+
+show-hm-configurations:
+    nix eval \
+      --no-warn-dirty \
+      --json \
+      ".#homeConfigurations" \
+      --apply builtins.attrNames | \
+      jq '.[]'
 
 ################################################################################
 # nixos-rebuild
