@@ -18,6 +18,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence.url = "github:nix-community/impermanence";
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        pre-commit-hooks-nix.follows = "";
+        # flake-compat.follows = "nix-config/flake-compat";
+        rust-overlay.follows = "rust-overlay";
+      };
+    };
     microvm = {
       url = "github:astro/microvm.nix/refs/tags/v0.5.0";
       inputs = {
@@ -26,11 +36,23 @@
       };
     };
     nix-flatpak.url = "github:hnjae/nix-flatpak";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    nix-modules-private = {
+      # url = "git+ssh://git@github.com/hnjae/nix-modules-private";
+      url = "/home/hnjae/Projects/nix-modules-private";
+    };
     nix-web-app.url = "github:hnjae/nix-web-app";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs";
+      };
+    };
 
     ############################################################################
     # Overlays / Packages
@@ -41,6 +63,14 @@
       inputs.nixpkgs-stable.follows = "nixpkgs";
       inputs.zig.follows = "";
       inputs.flake-compat.follows = "";
+    };
+    my-python-utils = {
+      url = "git+ssh://git@github.com/hnjae/my-python-utils";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        # devshell.follows = "devshell";
+      };
     };
     nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
     nixvim = {
