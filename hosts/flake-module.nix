@@ -11,6 +11,24 @@
       # extraConfig = {};
     };
   in {
+    sample = nixosSystem {
+      inherit specialArgs;
+      modules = [
+        {
+          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
+          boot.loader.systemd-boot.enable = true;
+          system.stateVersion = "24.05";
+          nixpkgs = {
+            config.allowUnfree = true;
+            hostPlatform = "x86_64-linux";
+            overlays = [
+              self.overlays.default
+            ];
+          };
+        }
+      ];
+    };
+
     isis = nixosSystem {
       modules = [
         ./isis

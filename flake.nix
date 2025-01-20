@@ -140,7 +140,6 @@
         ./modules/generic/flake-module.nix
         ./modules/nixosModules/flake-module.nix
 
-        ./nixos-configs-sample/flake-module.nix
         ./hm-configs/flake-module.nix
       ];
       systems = with flake-utils.lib.system; [
