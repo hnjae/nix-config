@@ -1,10 +1,7 @@
 {...}: {
   imports = [
-    # ./joshuto
-    # ./ranger
+    ./ranger
     ./lf
-    ./nnn
     ./yazi
-    ./misc.nix
   ];
 }
