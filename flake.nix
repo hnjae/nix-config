@@ -135,6 +135,8 @@
         ./apps/flake-module.nix
         ./packages/flake-module.nix
 
+        ./hosts/flake-module.nix
+
         ./modules/gnome/flake-module.nix
         ./modules/generic/flake-module.nix
         ./modules/nixosModules/flake-module.nix
