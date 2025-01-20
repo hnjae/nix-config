@@ -139,8 +139,6 @@
         ./modules/gnome/flake-module.nix
         ./modules/generic/flake-module.nix
         ./modules/nixosModules/flake-module.nix
-
-        ./hm-configs/flake-module.nix
       ];
       systems = with flake-utils.lib.system; [
         x86_64-linux
