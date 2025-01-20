@@ -2,7 +2,6 @@
   imports = [
     ./mpv
     ./ffmpeg
-    ./qimgv
 
     ./kooha.nix
     ./obs-studio.nix

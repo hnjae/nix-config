@@ -9,7 +9,6 @@
   concat = builtins.concatStringsSep "\n";
 in {
   imports = [
-    # ./zsh-vi-mode.nix
     ./profile.nix
     ./zsh-abbr.nix
   ];

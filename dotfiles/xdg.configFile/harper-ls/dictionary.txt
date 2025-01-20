@@ -45,6 +45,7 @@ lualine
 nixpkgs
 keyring
 printenv
+stateful
 AllMyToes
 Syncthing
 UltiSnips
@@ -54,3 +55,4 @@ formatters
 recordsize
 secureboot
 geolocation
+nixosModules
