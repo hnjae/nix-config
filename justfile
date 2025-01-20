@@ -1,6 +1,13 @@
 alias t := test
 alias fmt := format
 
+# check: https://nixos.org/manual/nix/stable/command-ref/new-cli/nix
+
+hostname := `hostname`
+
+default:
+    @just --list
+
 format:
   nix fmt --no-warn-dirty
 
@@ -30,22 +37,6 @@ update-except-unstable:
 update:
   nix flake update
 
-show-homeConfigurations:
-    nix eval \
-      --no-warn-dirty \
-      --json \
-      ".#homeConfigurations" \
-      --apply builtins.attrNames | \
-      jq '.[]'
-
-show-homeManagerModules:
-    nix eval \
-      --no-warn-dirty \
-      --json \
-      ".#homeManagerModules" \
-      --apply builtins.attrNames | \
-      jq '.[]'
-
 test-flake:
   #!/bin/sh
   set -e
@@ -56,6 +47,19 @@ test-flake:
     --no-warn-dirty \
     --all-systems \
     --impure # to check unfree packages
+
+pre-home-manager-switch:
+  #!/bin/sh
+  set -eu
+
+  file="${XDG_CONFIG_HOME:-$HOME/.config}/mimeapps.list.backup"
+  if [ -f "$file" ]; then
+    if command -v trash >/dev/null 2>&1; then
+      trash -- "$file"
+    else
+      rm -- "$file"
+    fi
+  fi
 
 drybuild-homes-wip:
   #!/bin/sh
@@ -193,5 +197,62 @@ switch-home:
     ".#homeConfigurations.${hmName}.activationPackage"
   bash "$(nix eval --raw ".#homeConfigurations.${hmName}.activationPackage")/activate"
 
-
 test: test-flake drybuild-homes
+
+################################################################################
+# show flake.outputs
+################################################################################
+
+show:
+  nix flake show 2>/dev/null
+
+show-hm-modules:
+  nix eval \
+    --no-warn-dirty \
+    --json \
+    ".#homeManagerModules" \
+    --apply builtins.attrNames | \
+    jq '.[]'
+
+show-hm-configurations:
+    nix eval \
+      --no-warn-dirty \
+      --json \
+      ".#homeConfigurations" \
+      --apply builtins.attrNames | \
+      jq '.[]'
+
+################################################################################
+# nixos-rebuild
+################################################################################
+switch-nixos: pre-home-manager-switch
+  @echo "Switch .#{{hostname}}"
+  sudo nixos-rebuild switch \
+    --flake ".#{{hostname}}" \
+    --keep-failed
+
+boot-nixos:
+  @echo "Build .#{{hostname}} and register to bootloader"
+  sudo nixos-rebuild boot \
+    --flake ".#{{hostname}}" \
+    --option eval-cache false \
+    --keep-failed
+
+drybuild-nixos:
+  @echo "Dry building NixOS .#{{hostname}}"
+  nixos-rebuild \
+    dry-build \
+    --option warn-dirty false \
+    --option eval-cache false \
+    --show-trace \
+    --impure \
+    --flake ".#{{hostname}}"
+
+build-nixos:
+  @echo "Building .#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
+  nix build \
+    --no-link \
+    --option eval-cache false \
+    --show-trace \
+    --keep-failed \
+    ".#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
