@@ -5,9 +5,10 @@
 }: {
   imports = [
     ./1password.nix
-    ./hardware.nix
     ./flatpak.nix
     ./fonts.nix
+    ./hardware.nix
+    ./libvirtd.nix
     ./locate.nix
     ./packages.nix
     ./portal-pipewire.nix
