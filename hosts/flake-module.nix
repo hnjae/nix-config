@@ -96,6 +96,7 @@ in {
 
         self.nixosModules.gnome
 
+        self.nixosModules.syncthing-for-desktop
         inputs.lanzaboote.nixosModules.lanzaboote
         inputs.nix-modules-private.nixosModules.generic-nixos-extend
         self.nixosModules.rollback-zfs-root
