@@ -1,10 +1,7 @@
-{
-  inputs,
-  self,
-  ...
-}: {
+{self, ...}: {
   nixpkgs.overlays = [
-    inputs.nur.overlays.default
     self.overlays.default
   ];
+
+  nixpkgs.config.allowUnfree = true;
 }
