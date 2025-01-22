@@ -91,15 +91,13 @@ in {
         ./isis
 
         self.nixosModules.generic-nixos
-        self.nixosModules._generic-nixos-deps
-        self.nixosModules._configure-generic-home-for-nixos
-
         self.nixosModules.gnome
 
         self.nixosModules.syncthing-for-desktop
+        self.nixosModules.rollback-zfs-root
+
         inputs.lanzaboote.nixosModules.lanzaboote
         inputs.nix-modules-private.nixosModules.generic-nixos-extend
-        self.nixosModules.rollback-zfs-root
 
         inputs.sops-nix.nixosModules.sops
         inputs.nix-modules-private.nixosModules.configure-sops
