@@ -32,5 +32,10 @@ in {
     };
   };
 
-  imports = [./modules ./services ./programs ./options];
+  imports = [
+    ./modules
+    ./services
+    ./programs
+    ./options
+  ];
 }

@@ -36,7 +36,7 @@ in {
   flake.packages =
     eachSystem (with inputs.flake-utils.lib.system; [
       x86_64-linux
-      aarch64-linux
+      # aarch64-linux
     ])
     ({
       pkgs,
