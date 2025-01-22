@@ -125,9 +125,13 @@
     nixpkgs,
     flake-parts,
     flake-utils,
+    base16,
     ...
   }:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+    flake-parts.lib.mkFlake {
+      inherit inputs;
+      # inherit base16;
+    } {
       imports = [
         ./flake-output-attributes
 
@@ -143,7 +147,6 @@
       systems = with flake-utils.lib.system; [
         x86_64-linux
         aarch64-darwin
-        # aarch64-linux
       ];
       perSystem = {pkgs, ...}: {
         # Utilized by `nix develop`

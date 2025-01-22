@@ -118,32 +118,6 @@ drybuild-homes:
     echo ""
   done
 
-# slower than nix flake check
-drybuild-nixoses:
-  #!/bin/sh
-  set -e
-
-  for os in $(
-    nix flake show --json 2>/dev/null |
-      jq '.nixosConfigurations | to_entries[] | .key' |
-      sed 's/"//g'
-  ); do
-    target=".#nixosConfigurations.${os}.config.system.build.toplevel"
-    echo "Dry building ${target}"
-
-    nix build \
-      --dry-run \
-      --no-warn-dirty \
-      --option eval-cache false \
-      --no-print-missing \
-      --quiet \
-      --json \
-      --builders "" \
-      "${target}"
-
-    echo ""
-  done
-
 build-iso:
   nix build .#nixosConfigurations.iso.config.system.build.isoImage
 
@@ -181,7 +155,7 @@ switch-nixos: pre-home-manager-switch
     --flake ".#{{hostname}}" \
     --keep-failed
 
-boot-nixos:
+boot-nixos: pre-home-manager-switch
   @echo "Build .#{{hostname}} and register to bootloader"
   sudo nixos-rebuild boot \
     --flake ".#{{hostname}}" \
@@ -189,14 +163,12 @@ boot-nixos:
     --keep-failed
 
 drybuild-nixos:
-  @echo "Dry building NixOS .#{{hostname}}"
-  nixos-rebuild \
-    dry-build \
-    --option warn-dirty false \
+  @echo "Dry-building .#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
+  nix build \
+    --dry-run \
     --option eval-cache false \
     --show-trace \
-    --impure \
-    --flake ".#{{hostname}}"
+    ".#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
 
 build-nixos:
   @echo "Building .#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
@@ -206,6 +178,32 @@ build-nixos:
     --show-trace \
     --keep-failed \
     ".#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
+
+# slower than nix flake check
+drybuild-nixoses:
+  #!/bin/sh
+  set -eu
+
+  for os in $(
+    nix flake show --json 2>/dev/null |
+      jq '.nixosConfigurations | to_entries[] | .key' |
+      sed 's/"//g'
+  ); do
+    target=".#nixosConfigurations.${os}.config.system.build.toplevel"
+    echo "Dry building ${target}"
+
+    nix build \
+      --dry-run \
+      --no-warn-dirty \
+      --option eval-cache false \
+      --no-print-missing \
+      --quiet \
+      --json \
+      "${target}"
+
+    echo ""
+  done
+
 
 ################################################################################
 # home-manager build/switch
