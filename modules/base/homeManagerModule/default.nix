@@ -23,6 +23,10 @@ in
         default = false;
         description = "Should I install development tools?";
       };
+      isHome = mkOption {
+        type = types.bool;
+        default = false;
+      };
     };
 
   imports = [
