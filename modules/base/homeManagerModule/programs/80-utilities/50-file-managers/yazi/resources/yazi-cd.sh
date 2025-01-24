@@ -1,4 +1,6 @@
 #!/bin/sh
+# shellcheck disable=3028
+# In POSIX sh, UID is undefined.
 
 if command -v yazi >/dev/null 2>&1; then
   yazicd() {
