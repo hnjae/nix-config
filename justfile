@@ -122,7 +122,7 @@ drybuild-homes:
   done
 
 build-iso:
-  nix build .#nixosConfigurations.iso.config.system.build.isoImage
+  nix build .#nixosConfigurations.nixos-iso.config.system.build.isoImage
 
 test: test-flake drybuild-homes
 

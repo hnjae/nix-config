@@ -223,60 +223,6 @@
             };
           };
         flake = {
-          # https://nix.dev/tutorials/nixos/building-bootable-iso-image
-          # https://wiki.nixos.org/wiki/Creating_a_NixOS_live_CD
-          nixosConfigurations.iso = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = [
-              # "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-              "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix"
-              {
-                programs = {
-                  geary.enable = false;
-                  evolution.enable = false;
-                };
-                # environment.gnome.excludePackages = with ?; [
-                #   gnome-tour
-                #   gnome-shell-extensions
-                #   gnome-calendar
-                #   gnome-contacts
-                #   gnome-weather
-                #   gnome-clocks
-                #   gnome-font-viewer
-                # ];
-              }
-              {
-                isoImage = {
-                  squashfsCompression = "zstd -Xcompression-level 6";
-                  makeBiosBootable = false;
-                };
-              }
-              {
-                systemd.services.sshd.wantedBy = nixpkgs.lib.mkForce [ "multi-user.target" ];
-                users.users.root.openssh.authorizedKeys.keys = [
-                  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMJzpwZFnwPxTF4TU7IX5AI+Nwpu9VvjI4A9Jlh3P0pu"
-                ];
-              }
-              {
-                services.xserver.xkb = {
-                  layout = "us";
-                  variant = "colemak_dh";
-                  options = builtins.concatStringsSep "," [
-                    # "shift:both_capslock_cancel"
-                    "altwin:swap_lalt_lwin"
-                    "korean:ralt_hangul"
-                    "caps:backspace"
-                  ];
-                };
-              }
-              "${self}/modules/nixos/generic-nixos/packages"
-              {
-                nixpkgs.overlays = [
-                  self.overlays.default
-                ];
-              }
-            ];
-          };
           overlays.default =
             _: prev:
             (
