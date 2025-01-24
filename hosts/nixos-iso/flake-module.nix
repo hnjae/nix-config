@@ -23,7 +23,7 @@
         {
           systemd.services.sshd.wantedBy = lib.mkForce [ "multi-user.target" ];
           users.users.root.openssh.authorizedKeys.keys = [
-            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMJzpwZFnwPxTF4TU7IX5AI+Nwpu9VvjI4A9Jlh3P0pu"
+            self.constants.homeSshPublic
           ];
         }
       )

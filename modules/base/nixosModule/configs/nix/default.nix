@@ -33,8 +33,8 @@
       in
       ''
         # keep-env-derivations = true
-        min-free = ${fromGiBtoB 16}
-        max-free = ${fromGiBtoB 128}
+        min-free = ${fromGiBtoB 8}
+        max-free = ${fromGiBtoB 64}
       '';
   };
 }
