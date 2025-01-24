@@ -4,15 +4,6 @@
   ...
 }: let
   inherit (inputs.nixpkgs.lib) nixosSystem;
-  getPkgsUnstable = system: allowUnfree:
-    import inputs.nixpkgs-unstable {
-      inherit system;
-      config.allowUnfree = allowUnfree;
-      overlays = [
-        inputs.rust-overlay.overlays.default
-      ];
-    };
-
   getPkgs = system: allowUnfree:
     import inputs.nixpkgs {
       inherit system;
@@ -21,11 +12,6 @@
         self.overlays.default
       ];
     };
-
-  getExtraSpecialArgs = system: allowUnfree: {
-    inherit self inputs;
-    pkgsUnstable = getPkgsUnstable system allowUnfree;
-  };
 
   inherit (inputs.home-manager.lib) homeManagerConfiguration;
 in {
@@ -57,7 +43,7 @@ in {
           stateful.enable = false;
         }
       ];
-      extraSpecialArgs = getExtraSpecialArgs system pkgs.config.allowUnfree;
+      extraSpecialArgs = {};
     };
 
   flake.nixosConfigurations.sample = nixosSystem {
