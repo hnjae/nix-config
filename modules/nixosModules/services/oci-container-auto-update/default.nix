@@ -80,8 +80,7 @@ in
         let
           checkSingleContainer = containerName: opts: {
             assertion =
-              !(opts.enable)
-              || (builtins.hasAttr "${backend}-${containerName}" config.systemd.services);
+              !(opts.enable) || (builtins.hasAttr "${backend}-${containerName}" config.systemd.services);
             message = "Systemd units ${backend}-${containerName}.service does not exists";
           };
         in

@@ -276,9 +276,7 @@ in
     } // gitAliases;
 
     xdg.configFile."zsh-abbr/user-abbreviations".text = (
-      lib.concatLines (
-        lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') gitAliases
-      )
+      lib.concatLines (lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') gitAliases)
     );
 
     programs.zsh.sessionVariables = {
