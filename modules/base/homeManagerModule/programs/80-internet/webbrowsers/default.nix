@@ -10,6 +10,7 @@ in
 {
   imports = [
     ./google-chrome.nix
+    ./opera.nix
   ];
 
   config = lib.mkIf (baseHomeCfg.isDesktop) {

@@ -1,0 +1,44 @@
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+let
+  baseHomeCfg =
+    config.base-home;
+in
+{
+  config =
+    lib.mkIf
+      (
+        baseHomeCfg.isDesktop
+        && baseHomeCfg.isHome
+      )
+      {
+        home.packages = [
+          pkgs.cider-2
+        ];
+
+        xdg.dataFile."applications/cider-2.desktop" =
+          {
+            enable =
+              true;
+            text = ''
+              [Desktop Entry]
+              Name=Cider
+              Exec=cider-2 --ozone-platform-hint=auto --enable-features=UseOzonePlatform --enable-wayland-ime --wayland-text-input-version=3 %U
+              Terminal=false
+              Type=Application
+              Icon=cider
+              StartupWMClass=Cider
+              X-AppImage-Version=1.0.0
+              StartupNotify=false
+              Encoding=UTF-8
+              MimeType=x-scheme-handler/cider;
+              Comment=A cross-platform Apple Music experience built on Vue.js and written from the ground up with performance in mind.
+              Categories=AudioVideo;
+            '';
+          };
+      };
+}
