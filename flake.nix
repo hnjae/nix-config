@@ -117,7 +117,6 @@
     nixpkgs,
     flake-parts,
     flake-utils,
-    base16,
     ...
   }:
     flake-parts.lib.mkFlake {
@@ -128,9 +127,9 @@
         ./flake-output-attributes
 
         ./apps/flake-module.nix
-        ./packages/flake-module.nix
-
         ./hosts/flake-module.nix
+        ./packages/flake-module.nix
+        ./templates/flake-module.nix
 
         ./modules/base/flake-module.nix
         ./modules/gnome/flake-module.nix
