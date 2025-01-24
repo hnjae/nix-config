@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   flake.templates = {
     home-configuration = {
       path = ./nixos-configuration;

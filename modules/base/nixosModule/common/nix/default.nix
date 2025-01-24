@@ -1,4 +1,5 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   imports = [
     ./managing.nix
   ];
@@ -7,7 +8,10 @@
     daemonCPUSchedPolicy = "idle";
     daemonIOSchedClass = "idle";
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
 
       # make builders to use cache
       builders-use-substitutes = lib.mkOverride 999 true;
@@ -23,12 +27,14 @@
     };
 
     # HELP: run `man 5 nix.conf`
-    extraOptions = let
-      fromGiBtoB = num: toString (num * 1024 * 1024 * 1024);
-    in ''
-      # keep-env-derivations = true
-      min-free = ${fromGiBtoB 16}
-      max-free = ${fromGiBtoB 128}
-    '';
+    extraOptions =
+      let
+        fromGiBtoB = num: toString (num * 1024 * 1024 * 1024);
+      in
+      ''
+        # keep-env-derivations = true
+        min-free = ${fromGiBtoB 16}
+        max-free = ${fromGiBtoB 128}
+      '';
   };
 }

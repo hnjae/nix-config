@@ -4,9 +4,11 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
     home.packages = lib.lists.concatLists [
       (with pkgsUnstable; [
@@ -23,21 +25,22 @@ in {
     ];
 
     xdg.desktopEntries."nvim" =
-      lib.mkIf (
-        baseHomeCfg.isDesktop && pkgs.stdenv.isLinux
-      ) {
-        type = "Application";
-        name = "Neovim";
-        comment = "this should not be displayed";
-        exec = ":";
-        noDisplay = true;
-      };
+      lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux)
+        {
+          type = "Application";
+          name = "Neovim";
+          comment = "this should not be displayed";
+          exec = ":";
+          noDisplay = true;
+        };
 
     home.sessionVariables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
     };
-    home.shellAliases = {vi = "nvim";};
+    home.shellAliases = {
+      vi = "nvim";
+    };
 
     # treesitter 을 시스템 단위로 관리하고 싶지 않으니, home-manager 모듈은 사용하지 말 것.
     programs.neovim = {

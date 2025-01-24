@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   services.flatpak.packages = [
     "io.github.seadve.Kooha" # screen recorder
     # NOTE: 2025-01-06 checked

@@ -2,14 +2,16 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) optionalAttrs;
   inherit (pkgs.stdenv) isLinux;
   serviceName = "nix-gc-user";
   Description = "Run nix-collect-garbarge";
-in {
+in
+{
   systemd.user.services."${serviceName}" = lib.mkIf isLinux {
-    Unit = {inherit Description;};
+    Unit = { inherit Description; };
 
     Service = {
       Type = "oneshot";
@@ -20,7 +22,7 @@ in {
     };
   };
   systemd.user.timers."${serviceName}" = optionalAttrs isLinux {
-    Unit = {inherit Description;};
+    Unit = { inherit Description; };
 
     Timer = {
       OnCalendar = [
@@ -34,6 +36,8 @@ in {
       Persistent = true;
     };
 
-    Install = {WantedBy = ["timers.target"];};
+    Install = {
+      WantedBy = [ "timers.target" ];
+    };
   };
 }

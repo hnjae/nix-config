@@ -1,8 +1,10 @@
 # WIP
 # https://github.com/TabbyML/tabby
-{config, ...}: let
+{ config, ... }:
+let
   serviceName = "tabby";
-in {
+in
+{
   virtualisation.oci-containers.containers."${serviceName}" = {
     image = "ghcr.io/tabbyml/tabby-rocm";
     autoStart = true;

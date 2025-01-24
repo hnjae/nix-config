@@ -2,7 +2,8 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   programs.zsh = {
     # .zprofle
     profileExtra = lib.mkOrder 1 ''

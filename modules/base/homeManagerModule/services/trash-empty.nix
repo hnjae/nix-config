@@ -2,14 +2,16 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) optionalAttrs;
   inherit (pkgs.stdenv) isLinux;
   serviceName = "trash-empty";
   Description = "trash-empty";
-in {
+in
+{
   systemd.user.services."${serviceName}" = lib.mkIf isLinux {
-    Unit = {inherit Description;};
+    Unit = { inherit Description; };
 
     Service = {
       Type = "oneshot";
@@ -21,7 +23,7 @@ in {
     };
   };
   systemd.user.timers."${serviceName}" = optionalAttrs isLinux {
-    Unit = {inherit Description;};
+    Unit = { inherit Description; };
 
     Timer = {
       OnCalendar = "*-*-* 04:00:00";
@@ -29,6 +31,8 @@ in {
       Persistent = true;
     };
 
-    Install = {WantedBy = ["timers.target"];};
+    Install = {
+      WantedBy = [ "timers.target" ];
+    };
   };
 }

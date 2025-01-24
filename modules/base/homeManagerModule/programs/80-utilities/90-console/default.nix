@@ -3,7 +3,8 @@
   lib,
   pkgsUnstable,
   ...
-}: {
+}:
+{
   imports = [
     ./99-fancy.nix
     ./99-modern-utils.nix
@@ -52,7 +53,7 @@
       cheat
       ouch
     ])
-    (lib.lists.optionals pkgs.stdenv.isLinux [pkgs.convmv])
+    (lib.lists.optionals pkgs.stdenv.isLinux [ pkgs.convmv ])
   ];
   home.shellAliases = {
     t = "tmux";

@@ -1,11 +1,10 @@
-{config, ...}: let
+{ config, ... }:
+let
   isDesktop = config.base-nixos.role == "desktop";
 
-  timeoutPeriod =
-    if isDesktop
-    then "20"
-    else "90"; # default
-in {
+  timeoutPeriod = if isDesktop then "20" else "90"; # default
+in
+{
   # NOTE: man 5 systemd.conf.d <2023-10-06>
   systemd.extraConfig = ''
     DefaultTimeoutStartSec=${timeoutPeriod}s

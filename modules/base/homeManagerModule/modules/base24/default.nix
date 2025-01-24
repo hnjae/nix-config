@@ -3,7 +3,8 @@
   config,
   inputs,
   ...
-}: let
+}:
+let
   cfg = config.base-home.base24;
   inherit (lib) mkOption types;
   inherit (lib.attrsets) mergeAttrsList;
@@ -18,20 +19,33 @@
   schemes = mergeAttrsList [
     (builtins.mapAttrs
       # https://github.com/tinted-theming/base24/?tab=readme-ov-file#scheme-repositories
-      (_: colorVariant: (builtins.mapAttrs
-        (_: schemeName: "${inputs.base16-schemes}/base24/${schemeName}.yaml")
-        colorVariant)) {
-        dracula = {dark = "dracula";};
-        framer = {dark = "framer";};
-        github = {light = "github";};
+      (
+        _: colorVariant:
+        (builtins.mapAttrs (
+          _: schemeName: "${inputs.base16-schemes}/base24/${schemeName}.yaml"
+        ) colorVariant)
+      )
+      {
+        dracula = {
+          dark = "dracula";
+        };
+        framer = {
+          dark = "framer";
+        };
+        github = {
+          light = "github";
+        };
         one = {
           dark = "one-dark";
           black = "one-black";
           light = "one-light";
         };
-      })
+      }
+    )
     {
-      dimidium = {dark = ./schemes/dimidium.yaml;};
+      dimidium = {
+        dark = ./schemes/dimidium.yaml;
+      };
       adwaita = {
         dark = ./schemes/adwaita-dark.yaml;
         darker = ./schemes/adwaita-darker.yaml;
@@ -47,7 +61,8 @@
       };
     }
   ];
-in {
+in
+{
   options.base-home.base24 = {
     enable = lib.mkEnableOption "Enable base24 colorscheme";
     variant = mkOption {

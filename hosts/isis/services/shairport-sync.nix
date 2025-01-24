@@ -4,9 +4,11 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   serviceName = "shairport";
-in {
+in
+{
   # virtualisation.oci-containers.containers."${serviceName}" = {
   #   image = "docker.io/mikebrady/shairport-sync:latest";
   #   autoStart = true;
@@ -40,7 +42,11 @@ in {
     openFirewall = true;
     # user = "hnjae";
     # group = "users";
-    arguments = builtins.concatStringsSep " " ["-v" "-o" "pw"];
+    arguments = builtins.concatStringsSep " " [
+      "-v"
+      "-o"
+      "pw"
+    ];
     package = pkgs.shairport-sync-airplay2;
     # package = pkgs.shairport-sync.override {
     #   enableAirplay2 = true;

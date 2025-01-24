@@ -3,9 +3,11 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   isDesktop = config.base-nixos.role == "desktop";
-in {
+in
+{
   config = lib.mkIf (config.base-nixos.role == "desktop") {
     boot.kernelPackages = lib.mkOverride 950 pkgs.linuxPackages_zen;
     services.libinput = {

@@ -3,11 +3,13 @@
   pkgs,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   # inherit (config.home) shellAliases;
   # inherit (lib.strings) optionalString;
   concat = builtins.concatStringsSep "\n";
-in {
+in
+{
   imports = [
     ./profile.nix
     ./zsh-abbr.nix

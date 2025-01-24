@@ -2,10 +2,12 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
   appId = "org.libreoffice.LibreOffice";
-in {
+in
+{
   config = lib.mkIf (baseHomeCfg.isDesktop) {
     services.flatpak.packages = [
       appId
@@ -19,7 +21,10 @@ in {
       };
       Context = {
         # INFO: 기본으로 host 파일을 전부 읽을 수 있게 설정되어 있음.  <2024-08-10>
-        filesystems = ["home" "!host"];
+        filesystems = [
+          "home"
+          "!host"
+        ];
       };
       Environment = {
         "GTK_THEME" = "adw-gtk3";

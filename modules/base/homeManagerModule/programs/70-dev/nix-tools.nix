@@ -3,9 +3,11 @@
   lib,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
     # locate the package providing a certain files in `nixpkgs`
     # use hm's module for shell integration

@@ -3,7 +3,8 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   home.packages = with pkgs; [
     gnomeExtensions.dash-to-panel
     # gnomeExtensions.dash-to-dock

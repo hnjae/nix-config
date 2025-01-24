@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./pim
     ./remote-desktop.nix

@@ -1,32 +1,39 @@
 /*
-NOTE:
-#### nix-collect-garbage -d vs nix-store --gc
-<https://discourse.nixos.org/t/what-is-the-difference-if-any-between-nix-collect-garbage-and-nix-store-gc/45078/2>
+  NOTE:
+  #### nix-collect-garbage -d vs nix-store --gc
+  <https://discourse.nixos.org/t/what-is-the-difference-if-any-between-nix-collect-garbage-and-nix-store-gc/45078/2>
 
-`nix.gc` (`nix-collect-garbage`) 는 old profiles 도 추가로 지우는 차이가 있다.
+  `nix.gc` (`nix-collect-garbage`) 는 old profiles 도 추가로 지우는 차이가 있다.
 
-#### from man:nix-collect-garbage(1)
+  #### from man:nix-collect-garbage(1)
 
-> •  --delete-old / -d
->    Delete all old generations of profiles.
->
->    This  is  the equivalent of invoking nix-env --delete-generations old
->    on each found profile.
+  > •  --delete-old / -d
+  >    Delete all old generations of profiles.
+  >
+  >    This  is  the equivalent of invoking nix-env --delete-generations old
+  >    on each found profile.
 */
 {
   config,
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   serviceName = "nix-store-gc";
-  documentation = ["man:nix-store-gc(1)"];
+  documentation = [ "man:nix-store-gc(1)" ];
   description = "run nix-store --gc";
   # binPath = "/run/current-system/sw/bin/nix-store";
   cfg = config.services.${serviceName};
 
-  inherit (lib) mkEnableOption mkOption mkIf types;
-in {
+  inherit (lib)
+    mkEnableOption
+    mkOption
+    mkIf
+    types
+    ;
+in
+{
   options.services.${serviceName} = {
     enable = mkEnableOption (lib.mDoc "");
 
@@ -61,7 +68,7 @@ in {
         Persistent = true;
       };
 
-      wantedBy = ["timers.target"];
+      wantedBy = [ "timers.target" ];
     };
   };
 }

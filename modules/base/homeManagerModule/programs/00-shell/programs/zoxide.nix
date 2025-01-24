@@ -1,4 +1,5 @@
-{config, ...}: let
+{ config, ... }:
+let
   posixFunction = ''
     s() {
       # if [ -n "$1" ] && [ -f "$1" ]; then
@@ -18,11 +19,12 @@
       __zoxide_zi "$@"
     }
   '';
-in {
+in
+{
   # cannot override z here
   programs.zoxide = {
     enable = true;
-    options = ["--cmd s"];
+    options = [ "--cmd s" ];
     # options = ["--nocmd"];
   };
   # programs.zsh.initExtra = posixFunction;

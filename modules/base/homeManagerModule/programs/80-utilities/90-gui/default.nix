@@ -4,11 +4,13 @@
   pkgs,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
   inherit (lib.lists) optionals;
-in {
-  imports = [./bottles.nix];
+in
+{
+  imports = [ ./bottles.nix ];
 
   config = lib.mkIf (baseHomeCfg.isDesktop) {
     services.flatpak.packages = builtins.concatLists [
@@ -62,13 +64,15 @@ in {
         pkgsUnstable.resources
         pkgsUnstable.scrcpy # display and control android
       ])
-      (optionals (pkgs.stdenv.isLinux && baseHomeCfg.installTestApps)
-        (with pkgs; [
+      (optionals (pkgs.stdenv.isLinux && baseHomeCfg.installTestApps) (
+        with pkgs;
+        [
           clipboard-jh
           distrobox
           poppler_utils # pdftotext
           # ffmpegthumbnailer
-        ]))
+        ]
+      ))
     ];
     stateful.nodes = [
       {

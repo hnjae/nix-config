@@ -3,10 +3,12 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   inherit (lib) mkOverride;
   isDesktop = config.base-nixos.role == "desktop";
-in {
+in
+{
   config = lib.mkIf isDesktop {
     hardware.pulseaudio.enable = false;
 

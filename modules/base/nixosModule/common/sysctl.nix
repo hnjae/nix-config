@@ -1,6 +1,8 @@
-{lib, ...}: let
+{ lib, ... }:
+let
   inherit (lib) mkOverride;
-in {
+in
+{
   # https://www.kernel.org/doc/Documentation/sysctl/vm.txt
 
   boot.kernel.sysctl = lib.attrsets.mergeAttrsList [

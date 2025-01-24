@@ -2,13 +2,15 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   inherit (lib) mkOverride;
   cfg = config.base-nixos;
-in {
+in
+{
   assertions = [
     {
-      assertion = ! (config.services.nix-store-gc.enable && config.nix.gc.automatic);
+      assertion = !(config.services.nix-store-gc.enable && config.nix.gc.automatic);
       message = "Use only one of theses";
     }
   ];
@@ -18,11 +20,11 @@ in {
     enable = lib.mkForce true;
     delThreshold =
       mkOverride 999
-      {
-        desktop = 3;
-        none = 14;
-      }
-      ."${cfg.role}";
+        {
+          desktop = 3;
+          none = 14;
+        }
+        ."${cfg.role}";
   };
 
   services.nix-store-gc = {

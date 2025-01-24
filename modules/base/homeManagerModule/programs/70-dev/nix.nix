@@ -3,12 +3,14 @@
   lib,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
   aliases = {
     se = "sops edit";
   };
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
     home.packages = with pkgsUnstable; [
       sops # edit secrets
@@ -34,11 +36,7 @@ in {
 
     xdg.configFile."zsh-abbr/user-abbreviations".text = (
       lib.concatLines (
-        lib.mapAttrsToList
-        (
-          key: value: ''abbr "${key}"="${value}"''
-        )
-        aliases
+        lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') aliases
       )
     );
   };

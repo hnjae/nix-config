@@ -8,7 +8,8 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   inherit (builtins) listToAttrs;
 
   end_path = "/sys/class/power_supply/BAT0/charge_control_end_threshold";
@@ -40,51 +41,61 @@
   };
 
   # NOTE: final.target 은 작동하지 않음. <2024-01-27>
-  restoreServices = listToAttrs (map
-    (unit: let
-      stem = builtins.replaceStrings [".target"] [""] unit;
-    in {
-      name = "restore-battery-thresold-${stem}";
-      value = {
-        description = "restore battery threshold";
-        before = [unit];
-        wantedBy = [unit];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = "${pkgsRestore}";
+  restoreServices = listToAttrs (
+    map (
+      unit:
+      let
+        stem = builtins.replaceStrings [ ".target" ] [ "" ] unit;
+      in
+      {
+        name = "restore-battery-thresold-${stem}";
+        value = {
+          description = "restore battery threshold";
+          before = [ unit ];
+          wantedBy = [ unit ];
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = "${pkgsRestore}";
+          };
         };
-      };
-    })
-    ["sleep.target"]);
+      }
+    ) [ "sleep.target" ]
+  );
 
   # NOTE: After=suspend.target 이면 resume 후 잘 켜짐 <NixOS 23.11>
   # TODO: hibernate.target 같은거 필요할까? suspend.target 으로 잘 작동하지
   # 않을까 싶음데.. <2024-01-24>
   # => `suspend.target` 만으로 hibernate 시에도 잘 작동 된다.
-  limitServices = listToAttrs (map
-    (unit: let
-      stem = builtins.replaceStrings [".target"] [""] unit;
-    in {
-      name = "limit-battery-thresold-${stem}";
-      value = {
-        description = "limit battery threshold";
-        after = [unit];
-        wantedBy = [unit];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = "${pkgsLimit}";
-        };
-      };
-    })
-    # "hibernate.target"
-    # "hybrid-sleep.target"
-    # "suspend-then-hibernate.target"
-    ["suspend.target"]);
+  limitServices = listToAttrs (
+    map
+      (
+        unit:
+        let
+          stem = builtins.replaceStrings [ ".target" ] [ "" ] unit;
+        in
+        {
+          name = "limit-battery-thresold-${stem}";
+          value = {
+            description = "limit battery threshold";
+            after = [ unit ];
+            wantedBy = [ unit ];
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart = "${pkgsLimit}";
+            };
+          };
+        }
+      )
+      # "hibernate.target"
+      # "hybrid-sleep.target"
+      # "suspend-then-hibernate.target"
+      [ "suspend.target" ]
+  );
 
   multiUserService = {
     "control-battery-thresold" = {
       description = "limit/restore battery threshold";
-      wantedBy = ["multi-user.target"];
+      wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
@@ -93,7 +104,8 @@
       };
     };
   };
-in {
+in
+{
   systemd.services = lib.attrsets.mergeAttrsList [
     limitServices
     restoreServices

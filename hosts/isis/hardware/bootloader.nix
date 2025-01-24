@@ -2,9 +2,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   enableSecrueboot = true;
-in {
+in
+{
   boot = {
     lanzaboote = {
       enable = enableSecrueboot;
@@ -14,7 +16,7 @@ in {
     loader = {
       # NOTE: lanzaboote replace the systemd-boot module
       systemd-boot = {
-        enable = lib.mkForce (! enableSecrueboot);
+        enable = lib.mkForce (!enableSecrueboot);
         memtest86.enable = true;
       };
       efi = {

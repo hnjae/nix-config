@@ -3,15 +3,17 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   inherit (lib) mkOverride;
   cfg = config.base-nixos;
-in {
+in
+{
   config = lib.mkIf (cfg.role == "desktop") {
     virtualisation.libvirtd = {
       enable = mkOverride 999 true;
       qemu.swtpm.enable = true;
-      qemu.ovmf.packages = with pkgs; [OVMFFull.fd];
+      qemu.ovmf.packages = with pkgs; [ OVMFFull.fd ];
     };
 
     home-manager.sharedModules = [

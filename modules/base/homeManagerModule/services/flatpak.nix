@@ -1,6 +1,8 @@
-{config, ...}: let
+{ config, ... }:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   services.flatpak = {
     enable = baseHomeCfg.isDesktop;
     # remotes = [

@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   home.packages = [
     # fm
     (pkgs.ranger.override {
@@ -7,5 +8,7 @@
       neoVimSupport = false;
     })
   ];
-  home.shellAliases = {ra = "ranger";};
+  home.shellAliases = {
+    ra = "ranger";
+  };
 }

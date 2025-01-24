@@ -3,11 +3,13 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib) mkOverride;
   cfg = config.base-nixos;
-in {
-  boot.kernelModules = ["wireguard"];
+in
+{
+  boot.kernelModules = [ "wireguard" ];
 
   networking.networkmanager = {
     enable = lib.mkOverride 999 true;
@@ -16,10 +18,7 @@ in {
     ];
   };
 
-  services.dbus.packages =
-    lib.lists.optional
-    config.networking.networkmanager.enable
-    pkgs.strongswanNM;
+  services.dbus.packages = lib.lists.optional config.networking.networkmanager.enable pkgs.strongswanNM;
 
   # TODO: use host's dns in vm <2024-08-20>
   networking.nameservers = mkOverride 999 [

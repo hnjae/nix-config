@@ -4,9 +4,11 @@
   pkgs,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
     home.packages = builtins.concatLists [
       (with pkgsUnstable; [
@@ -18,7 +20,7 @@ in {
         yamlfmt
       ])
       [
-        (pkgs.runCommandLocal "vscode-json-language-server" {} ''
+        (pkgs.runCommandLocal "vscode-json-language-server" { } ''
           mkdir -p $out/bin
           ln -s "${pkgsUnstable.vscode-langservers-extracted}/bin/vscode-json-language-server" "$out/bin/vscode-json-language-server"
         '')

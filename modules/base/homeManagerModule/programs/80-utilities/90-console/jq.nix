@@ -1,5 +1,6 @@
-{pkgsUnstable, ...}: {
-  home.packages = [pkgsUnstable.jq];
+{ pkgsUnstable, ... }:
+{
+  home.packages = [ pkgsUnstable.jq ];
 
   home.sessionVariables = {
     # NOTE: https://gist.github.com/rene-d/9e584a7dd2935d0f461904b9f2950007

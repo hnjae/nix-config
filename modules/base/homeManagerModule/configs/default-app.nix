@@ -2,6 +2,10 @@
   pkgs,
   config,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {default-app.enable = baseHomeCfg.isDesktop && pkgs.stdenv.isLinux;}
+in
+{
+  default-app.enable = baseHomeCfg.isDesktop && pkgs.stdenv.isLinux;
+}

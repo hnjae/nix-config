@@ -2,9 +2,11 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   inherit (lib) mkOverride;
-in {
+in
+{
   # disable zswap and use zram
   zramSwap = {
     enable = mkOverride 999 true;

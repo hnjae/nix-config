@@ -1,4 +1,5 @@
-{inputs, ...}: {
+{ inputs, ... }:
+{
   flake.nixosModules = {
     # services
     nix-gc-system-generations = import ./services/nix-gc-system-generations;

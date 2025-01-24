@@ -3,15 +3,19 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   config.fonts = lib.mkIf (config.base-nixos.role == "desktop") {
     fontDir.enable = lib.mkOverride 999 true;
     packages = builtins.concatLists [
-      (lib.lists.optionals pkgs.config.allowUnfree (with pkgs; [
-        fonts-toss-face
-        fonts-kopub-world
-        # fonts-hanazono-appending
-      ]))
+      (lib.lists.optionals pkgs.config.allowUnfree (
+        with pkgs;
+        [
+          fonts-toss-face
+          fonts-kopub-world
+          # fonts-hanazono-appending
+        ]
+      ))
       (with pkgs; [
         pretendard
         pretendard-jp

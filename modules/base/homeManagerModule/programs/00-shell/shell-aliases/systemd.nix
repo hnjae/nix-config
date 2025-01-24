@@ -2,7 +2,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   aliases = {
     sc = "systemctl";
     scu = "systemctl --user";
@@ -31,17 +32,14 @@
     jcunit = "journalctl -xeu";
     jcuunit = "journalctl --user -xeu";
   };
-in {
+in
+{
   config = lib.mkIf (pkgs.stdenv.isLinux) {
     home.shellAliases = aliases;
 
     xdg.configFile."zsh-abbr/user-abbreviations".text = (
       lib.concatLines (
-        lib.mapAttrsToList
-        (
-          key: value: ''abbr "${key}"="${value}"''
-        )
-        aliases
+        lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') aliases
       )
     );
   };

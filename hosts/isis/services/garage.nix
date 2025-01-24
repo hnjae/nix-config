@@ -1,5 +1,6 @@
 # WIP - testing
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   services.garage = {
     enable = true;
     package = pkgs.garage_1_0_1;
@@ -48,8 +49,8 @@
       what = "/dev/zvol/isis/test1";
       type = "ext4";
       where = "/garage/data1";
-      wantedBy = ["local-fs.target"];
-      before = ["local-fs.target"];
+      wantedBy = [ "local-fs.target" ];
+      before = [ "local-fs.target" ];
       mountConfig = {
         Options = builtins.concatStringsSep "," [
           "noatime"
@@ -62,8 +63,8 @@
       what = "/dev/zvol/isis/test2";
       type = "ext4";
       where = "/garage/data2";
-      wantedBy = ["local-fs.target"];
-      before = ["local-fs.target"];
+      wantedBy = [ "local-fs.target" ];
+      before = [ "local-fs.target" ];
       mountConfig = {
         Options = builtins.concatStringsSep "," [
           "noatime"

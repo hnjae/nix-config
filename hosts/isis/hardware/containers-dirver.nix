@@ -1,6 +1,8 @@
-{...}: let
+{ ... }:
+let
   stDriver = "zfs";
-in {
+in
+{
   virtualisation.docker = {
     storageDriver = stDriver;
   };
@@ -11,9 +13,9 @@ in {
   home-manager.sharedModules = [
     {
       /*
-      NOTE: <2024-11-28>
-        zfs is not supported in rooltless podman
-        https://github.com/containers/storage/blob/main/docs/containers-storage.conf.5.md
+        NOTE: <2024-11-28>
+          zfs is not supported in rooltless podman
+          https://github.com/containers/storage/blob/main/docs/containers-storage.conf.5.md
       */
       xdg.configFile."containers/storage.conf" = {
         # podman config

@@ -3,12 +3,14 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   isDesktop = config.base-nixos.role == "desktop";
 
   isDocker = config.virtualisation.oci-containers.backend == "docker";
   isPodman = config.virtualisation.oci-containers.backend == "podman";
-in {
+in
+{
   virtualisation.oci-containers.backend = lib.mkOverride 999 "podman";
 
   virtualisation.docker = {
@@ -25,12 +27,10 @@ in {
   };
 
   environment.systemPackages = builtins.concatLists [
-    (
-      lib.lists.optional isPodman pkgs.podman-compose
-    )
-    (
-      lib.lists.optional (isDocker || config.virtualisation.podman.dockerCompat) pkgs.docker-compose
-    )
+    (lib.lists.optional isPodman pkgs.podman-compose)
+    (lib.lists.optional (
+      isDocker || config.virtualisation.podman.dockerCompat
+    ) pkgs.docker-compose)
   ];
 
   virtualisation.containers.storage.settings.storage = lib.mkIf isPodman {

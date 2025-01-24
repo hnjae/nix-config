@@ -2,9 +2,11 @@
   config,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   # stateful vscode
 
   programs.vscode = {

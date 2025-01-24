@@ -4,43 +4,43 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
   inherit (lib.lists) optionals;
-in {
-  home.packages = let
-    inherit (lib.lists) optionals;
-  in (builtins.concatLists [
-    # (lib.lists.optionals pkgs.stdenv.isLinux (with pkgs.kdePackages; [
-    #   okular # flathub's build lacks rar support
-    #   gwenview # flathub's build lacks heif support
-    # ]))
+in
+{
+  home.packages =
+    let
+      inherit (lib.lists) optionals;
+    in
+    (builtins.concatLists [
+      # (lib.lists.optionals pkgs.stdenv.isLinux (with pkgs.kdePackages; [
+      #   okular # flathub's build lacks rar support
+      #   gwenview # flathub's build lacks heif support
+      # ]))
 
-    (optionals baseHomeCfg.isDesktop
-      (with pkgsUnstable; [inkscape-with-extensions]))
-    [
-      (
-        if baseHomeCfg.isDesktop
-        then pkgs.mkvtoolnix
-        else pkgs.mkvtoolnix-cli
-      )
-    ]
+      (optionals baseHomeCfg.isDesktop (
+        with pkgsUnstable; [ inkscape-with-extensions ]
+      ))
+      [
+        (if baseHomeCfg.isDesktop then pkgs.mkvtoolnix else pkgs.mkvtoolnix-cli)
+      ]
 
-    # QT
-    # qview # flathub's build lacks heif support
-    # qimgv
-    # mpc-qt
-    # smplayer
-  ]);
+      # QT
+      # qview # flathub's build lacks heif support
+      # qimgv
+      # mpc-qt
+      # smplayer
+    ]);
 
   default-app.mime = {
     "image/x-xcf" = "org.gimp.GIMP"; # {'*.xcf'}
     "image/vnd.adobe.photoshop" = "org.gimp.GIMP"; # {'*.psd'}
   };
 
-  services.flatpak.packages =
-    lib.lists.optionals baseHomeCfg.isDesktop
-    (builtins.concatLists [
+  services.flatpak.packages = lib.lists.optionals baseHomeCfg.isDesktop (
+    builtins.concatLists [
       [
         "org.gimp.GIMP"
         "org.kde.kolourpaint" # basic painting
@@ -81,5 +81,6 @@ in {
 
         "org.gnome.gitlab.YaLTeR.Identity" # compare image or video
       ])
-    ]);
+    ]
+  );
 }

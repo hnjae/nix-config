@@ -3,7 +3,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   # zsh, bash, fish 공통사용
   # .zshenv 에서 source 함
   home.sessionVariables = lib.attrsets.mergeAttrsList [

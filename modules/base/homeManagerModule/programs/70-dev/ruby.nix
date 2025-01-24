@@ -3,11 +3,13 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
-    home.packages = with pkgs; [ruby];
+    home.packages = with pkgs; [ ruby ];
 
     stateful.nodes = [
       {

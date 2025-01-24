@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   rsyncArgs = [
     # "ionice"
     # "-c"
@@ -52,10 +53,14 @@
   '';
 
   inherit (builtins) mapAttrs concatStringsSep concatLists;
-in {
+in
+{
   home.shellAliases = mapAttrs (_: args: concatStringsSep " " args) {
     rcp = rsyncArgs;
-    rmv = concatLists [rsyncArgs ["--remove-source-files"]];
+    rmv = concatLists [
+      rsyncArgs
+      [ "--remove-source-files" ]
+    ];
     rcp-paranoid = concatLists [
       rsyncArgs
       [
@@ -70,7 +75,7 @@ in {
     ];
     rmv-remote = concatLists [
       rsyncArgs
-      ["--remove-source-files"]
+      [ "--remove-source-files" ]
       rsyncSshArgs
     ];
 

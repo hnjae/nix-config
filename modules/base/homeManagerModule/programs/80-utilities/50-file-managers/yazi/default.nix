@@ -1,6 +1,8 @@
-{pkgsUnstable, ...}: let
+{ pkgsUnstable, ... }:
+let
   cdPosix = builtins.readFile ./resources/yazi-cd.sh;
-in {
+in
+{
   programs.yazi = {
     enable = true;
     package = pkgsUnstable.yazi;

@@ -7,13 +7,15 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.services.oci-container-auto-update;
   cfgOciContainers = config.virtualisation.oci-containers.containers;
   inherit (config.virtualisation.oci-containers) backend;
 
   inherit (lib) mkEnableOption mkOption types;
-in {
+in
+{
   options.services.oci-container-auto-update = {
     enable = mkEnableOption "";
 
@@ -42,7 +44,7 @@ in {
     };
 
     containers = mkOption {
-      default = {};
+      default = { };
       example = ''
         {
           traefik.enable = true;
@@ -60,31 +62,31 @@ in {
 
   config = lib.mkIf cfg.enable {
     assertions = builtins.concatLists [
-      (let
-        checkSingleContainer = containerName: opts: {
-          assertion =
-            !(opts.enable)
-            || (
-              builtins.hasAttr containerName cfgOciContainers
-              && cfgOciContainers.${containerName}.imageFile == null
-            );
-          message = "${containerName} is not valid";
-        };
-      in (
-        lib.mapAttrsToList checkSingleContainer cfg.containers
-      ))
-      (let
-        checkSingleContainer = containerName: opts: {
-          assertion =
-            !(opts.enable)
-            || (
-              builtins.hasAttr "${backend}-${containerName}" config.systemd.services
-            );
-          message = "Systemd units ${backend}-${containerName}.service does not exists";
-        };
-      in (
-        lib.mapAttrsToList checkSingleContainer cfg.containers
-      ))
+      (
+        let
+          checkSingleContainer = containerName: opts: {
+            assertion =
+              !(opts.enable)
+              || (
+                builtins.hasAttr containerName cfgOciContainers
+                && cfgOciContainers.${containerName}.imageFile == null
+              );
+            message = "${containerName} is not valid";
+          };
+        in
+        (lib.mapAttrsToList checkSingleContainer cfg.containers)
+      )
+      (
+        let
+          checkSingleContainer = containerName: opts: {
+            assertion =
+              !(opts.enable)
+              || (builtins.hasAttr "${backend}-${containerName}" config.systemd.services);
+            message = "Systemd units ${backend}-${containerName}.service does not exists";
+          };
+        in
+        (lib.mapAttrsToList checkSingleContainer cfg.containers)
+      )
       [
         {
           assertion = backend == "podman";
@@ -93,43 +95,46 @@ in {
       ]
     ];
 
-    systemd = let
-      genSingleUnit = containerName: opts: let
-        name = "${backend}-${containerName}-update";
-        targetService = "${backend}-${containerName}.service";
-        package = import ./package {
-          inherit pkgs name targetService containerName;
-          inherit (cfgOciContainers."${containerName}") image;
-        };
-        description = "Update ${containerName}";
+    systemd =
+      let
+        genSingleUnit =
+          containerName: opts:
+          let
+            name = "${backend}-${containerName}-update";
+            targetService = "${backend}-${containerName}.service";
+            package = import ./package {
+              inherit
+                pkgs
+                name
+                targetService
+                containerName
+                ;
+              inherit (cfgOciContainers."${containerName}") image;
+            };
+            description = "Update ${containerName}";
+          in
+          lib.attrsets.optionalAttrs opts.enable {
+            services."${name}" = {
+              inherit description;
+
+              serviceConfig = {
+                Type = "oneshot";
+                ExecStart = "${package}/bin/${name}";
+              };
+            };
+            timers."${name}" = {
+              inherit description;
+
+              wantedBy = [ "timers.target" ];
+
+              timerConfig = {
+                OnCalendar = cfg.onCalendar;
+                RandomizedDelaySec = cfg.randomizedDelaySec;
+                Persistent = cfg.persistent;
+              };
+            };
+          };
       in
-        lib.attrsets.optionalAttrs opts.enable {
-          services."${name}" = {
-            inherit description;
-
-            serviceConfig = {
-              Type = "oneshot";
-              ExecStart = "${package}/bin/${name}";
-            };
-          };
-          timers."${name}" = {
-            inherit description;
-
-            wantedBy = ["timers.target"];
-
-            timerConfig = {
-              OnCalendar = cfg.onCalendar;
-              RandomizedDelaySec = cfg.randomizedDelaySec;
-              Persistent = cfg.persistent;
-            };
-          };
-        };
-    in
-      lib.mkMerge
-      (
-        lib.mapAttrsToList
-        genSingleUnit
-        cfg.containers
-      );
+      lib.mkMerge (lib.mapAttrsToList genSingleUnit cfg.containers);
   };
 }

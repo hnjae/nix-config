@@ -1,6 +1,8 @@
-{config, ...}: let
+{ config, ... }:
+let
   cmd = ''timeout 0.05s ${config.home.shellAliases.l} || echo "ls timeout"'';
-in {
+in
+{
   programs.zsh.initExtra = ''
     function chpwd_ls() {
       ${cmd}

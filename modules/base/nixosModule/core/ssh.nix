@@ -1,6 +1,8 @@
-{lib, ...}: let
+{ lib, ... }:
+let
   inherit (lib) mkOverride;
-in {
+in
+{
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = mkOverride 999 true;

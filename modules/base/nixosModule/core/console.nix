@@ -3,7 +3,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   console = {
     # Enable setting virtual console options in initrd.
     earlySetup = lib.mkOverride 999 true;
@@ -24,7 +25,7 @@
 
   services.kmscon = {
     # NOTE: kmscon 쓰면 greetd 호출이 늦어짐.<NixOS 23.05>
-    enable = false && ! config.services.greetd.enable;
+    enable = false && !config.services.greetd.enable;
 
     hwRender = true;
     extraConfig = ''

@@ -2,7 +2,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     # https://github.com/NixOS/nixos-hardware/blob/master/common/gpu/amd/default.nix
     # 하는 것 <2024-08-02>

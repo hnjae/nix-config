@@ -3,9 +3,11 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   inherit (lib) mkOverride;
-in {
+in
+{
   services.locate = {
     enable = mkOverride 999 (config.base-nixos.role == "desktop");
     package = pkgs.plocate;

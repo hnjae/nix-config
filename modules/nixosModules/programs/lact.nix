@@ -4,12 +4,14 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.programs.lact;
-in {
+in
+{
   options.programs.lact = {
     enable = lib.mkEnableOption '''';
-    package = lib.mkPackageOption pkgs "lact" {};
+    package = lib.mkPackageOption pkgs "lact" { };
     ppfeaturemask = lib.mkOption {
       type = lib.types.str;
       default = "0xfffd7fff";
@@ -30,20 +32,20 @@ in {
     };
   };
   config = lib.mkIf cfg.enable {
-    environment.defaultPackages = [cfg.package];
-    boot.kernelParams = ["amdgpu.ppfeaturemask=${cfg.ppfeaturemask}"];
+    environment.defaultPackages = [ cfg.package ];
+    boot.kernelParams = [ "amdgpu.ppfeaturemask=${cfg.ppfeaturemask}" ];
 
     /*
-    [Unit]
-    Description=AMDGPU Control Daemon
-    After=multi-user.target
+      [Unit]
+      Description=AMDGPU Control Daemon
+      After=multi-user.target
 
-    [Service]
-    ExecStart=/nix/store/mnxlbcb3ciys8d7ag38h29ifg50y2ln4-lact-0.5.4/bin/lact daemon
-    Nice=-10
+      [Service]
+      ExecStart=/nix/store/mnxlbcb3ciys8d7ag38h29ifg50y2ln4-lact-0.5.4/bin/lact daemon
+      Nice=-10
 
-    [Install]
-    WantedBy=multi-user.target
+      [Install]
+      WantedBy=multi-user.target
     */
 
     # uses package's systemd unit
@@ -52,7 +54,7 @@ in {
 
       # Unit
       description = "AMDGPU Control Daemon";
-      after = ["multi-user.target"];
+      after = [ "multi-user.target" ];
 
       # Service
       serviceConfig = {
@@ -61,7 +63,7 @@ in {
       };
 
       # Install
-      wantedBy = ["multi-user.target"];
+      wantedBy = [ "multi-user.target" ];
     };
   };
 }

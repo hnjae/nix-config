@@ -2,7 +2,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   aliases = {
     fl = "flatpak --user";
     flr = "flatpak --user run";
@@ -13,17 +14,14 @@
     flp = "flatpak ps";
     flK = "flatpak kill";
   };
-in {
+in
+{
   config = lib.mkIf (pkgs.stdenv.isLinux) {
     home.shellAliases = aliases;
 
     xdg.configFile."zsh-abbr/user-abbreviations".text = (
       lib.concatLines (
-        lib.mapAttrsToList
-        (
-          key: value: ''abbr "${key}"="${value}"''
-        )
-        aliases
+        lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') aliases
       )
     );
   };

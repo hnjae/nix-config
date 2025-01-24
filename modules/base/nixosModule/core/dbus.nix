@@ -1,4 +1,5 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   # NOTE:
   # Fedora uses brocker since Fedora 29
   # Ubuntu 23.10 might switch to dbus-brocker
