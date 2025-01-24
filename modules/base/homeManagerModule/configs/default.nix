@@ -1,10 +1,11 @@
 { ... }:
 {
   imports = [
-    ./xdg.nix
-    ./home.nix
-    ./systemd.nix
     ./default-app.nix
     ./desktop-entries.nix
+    ./home.nix
+    ./systemd.nix
+    ./tmpfiles.nix
+    ./xdg.nix
   ];
 }
