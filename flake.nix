@@ -133,6 +133,8 @@
           treefmt-nix.flakeModule
           ./flake-output-attributes
 
+          ./constants/flake-module.nix
+
           ./apps/flake-module.nix
           ./hosts/flake-module.nix
           ./packages/flake-module.nix
