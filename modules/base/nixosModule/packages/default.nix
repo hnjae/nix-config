@@ -68,6 +68,15 @@
         # tops
         bottom
         unrar
+
+        (
+          wezterm.overrideAttrs (_: {
+            passthru.cargoBuildFlags = [
+              "--package"
+              "wezterm-mux-server"
+            ];
+          })
+        )
       ]
     )
 
