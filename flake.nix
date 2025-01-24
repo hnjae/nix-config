@@ -125,7 +125,6 @@
   outputs =
     inputs@{
       self,
-      nixpkgs,
       flake-parts,
       flake-utils,
       treefmt-nix,
@@ -185,10 +184,12 @@
                   package = pkgs.nixfmt-rfc-style;
                 };
                 fish_indent.enable = true;
+                just.enable = true;
                 mdformat.enable = true;
                 ruff-format.enable = true;
                 taplo.enable = true;
                 yamlfmt.enable = true;
+                shellcheck.enable = true;
                 shfmt = {
                   enable = true;
                   indent_size = 2;
@@ -203,6 +204,8 @@
                 };
               };
               settings = {
+                formatter.shellcheck.priority = 1;
+                formatter.shfmt.priority = 2;
                 formatter.nixfmt.options = [
                   "-w"
                   "80"
@@ -211,17 +214,18 @@
                   ".editorconfig"
                   "LICENSE"
                   "dotfiles/*"
-                  "justfile"
                   "*/LICENSE"
                   "*/justfile"
                   "*.adoc"
                   "*.kdl"
                   "*.mustache"
                   "*.zsh"
+                  "*rc"
                 ];
               };
             };
           };
+
         flake = {
           overlays.default =
             _: prev:
