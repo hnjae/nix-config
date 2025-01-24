@@ -28,8 +28,7 @@ in
             ))
             (
               let
-                COLORFGBG =
-                  if (config.base-home.base24.variant == "light") then "0;15" else "15;0";
+                COLORFGBG = if (config.base-home.base24.variant == "light") then "0;15" else "15;0";
               in
               ''
                 [env]
