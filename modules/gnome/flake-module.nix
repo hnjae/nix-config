@@ -4,7 +4,7 @@ _: {
     /*
     Module Dependency:
       * home-manager
-      * generic-home
+      * base-home
     */
     homeManagerModules.gnome = import ./homeManagerModule;
   };

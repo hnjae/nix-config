@@ -43,10 +43,9 @@ in {
             stateVersion = "24.11";
           };
         }
-        self.homeManagerModules.generic-home
-        self.homeManagerModules._generic-home-deps
+        self.homeManagerModules.base-home
         {
-          generic-home = {
+          base-home = {
             isDesktop = true;
             base24 = {
               enable = true;
@@ -80,15 +79,16 @@ in {
 
   flake.nixosConfigurations.isis = nixosSystem {
     modules = [
-      ./isis
-
-      inputs.lanzaboote.nixosModules.lanzaboote
-      inputs.nix-modules-private.nixosModules.configure-sops
-      inputs.nix-modules-private.nixosModules.generic-nixos-extend
-      self.nixosModules.configure-impermanence
-      self.nixosModules.generic-nixos
+      self.nixosModules.base-nixos
+      inputs.nix-modules-private.nixosModules.base-nixos-extend
       self.nixosModules.gnome
+
+      ./isis
+      inputs.lanzaboote.nixosModules.lanzaboote
       self.nixosModules.rollback-zfs-root
+
+      inputs.nix-modules-private.nixosModules.configure-sops
+      self.nixosModules.configure-impermanence
       self.nixosModules.syncthing-for-desktop
     ];
     specialArgs = {inherit inputs;};

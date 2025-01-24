@@ -6,7 +6,7 @@
   ];
 
   system.stateVersion = "24.11";
-  generic-nixos.role = "desktop";
+  base-nixos.role = "desktop";
 
   persist = {
     enable = true;
