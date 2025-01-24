@@ -33,9 +33,9 @@ in {
   };
 
   imports = [
+    ./configs
     ./modules
-    ./services
     ./programs
-    ./options
+    ./services
   ];
 }
