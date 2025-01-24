@@ -9,26 +9,11 @@
   inherit (lib.attrsets) mergeAttrsList;
   inherit (builtins) getAttr;
 
-  # base16 = mergeAttrsList [
-  #   (builtins.mapAttrs (_: val: "${inputs.base16-schemes}/base16/${val}.yaml")
-  #     {
-  #       # NOTE: comment out 된 scheme 은 내 취향 아님. <2024-01-15>
-  #       # ashes = "ashes";
-  #       # phd = "phd";
-  #       # tomorrow-night = "tomorrow-night";
-  #       # windows-95 = "windows-95";
-  #       classic-dark = "classic-dark";
-  #       default-dark = "default-dark";
-  #       harmonic16-dark = "harmonic16-dark";
-  #       ia-dark = "ia-dark";
-  #       kanagawa = "kanagawa";
-  #       macintosh = "macintosh";
-  #       material-darker = "material-darker";
-  #       tokyo-night-dark = "tokyo-night-dark";
-  #       tokyodark = "tokyodark";
-  #       windows-10 = "windows-10";
-  #     })
-  # ];
+  # NOTE: comment out 된 scheme 은 내 취향 아님. <2024-01-15>
+  # ashes = "ashes";
+  # phd = "phd";
+  # tomorrow-night = "tomorrow-night";
+  # windows-95 = "windows-95";
 
   schemes = mergeAttrsList [
     (builtins.mapAttrs
@@ -65,22 +50,22 @@
 in {
   options.base-home.base24 = {
     enable = lib.mkEnableOption "Enable base24 colorscheme";
-    darkMode = mkOption {
-      type = types.bool;
-      default = true;
+    variant = mkOption {
+      type = types.enum [
+        "light"
+        "dark"
+        "darker"
+      ];
+      default = "light";
     };
     scheme = mkOption {
-      type = types.str;
+      type = types.enum (builtins.attrNames schemes);
       default = "gruvbox";
     };
   };
 
   config = lib.mkIf cfg.enable {
     home.sessionVariables.BASE16_THEME = cfg.scheme;
-    scheme = getAttr (
-      if cfg.darkMode
-      then "dark"
-      else "light"
-    ) (getAttr cfg.scheme schemes);
+    scheme = getAttr (cfg.variant) (getAttr cfg.scheme schemes);
   };
 }
