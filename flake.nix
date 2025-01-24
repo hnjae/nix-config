@@ -179,9 +179,46 @@
             # Utilized by `nix fmt` (formatter)
             treefmt.config = {
               projectRootFile = "flake.nix";
-              programs.nixfmt = {
-                enable = true;
-                package = pkgs.nixfmt-rfc-style;
+              programs = {
+                nixfmt = {
+                  enable = true;
+                  package = pkgs.nixfmt-rfc-style;
+                };
+                fish_indent.enable = true;
+                mdformat.enable = true;
+                ruff-format.enable = true;
+                taplo.enable = true;
+                yamlfmt.enable = true;
+                shfmt = {
+                  enable = true;
+                  indent_size = 2;
+                };
+                stylua = {
+                  enable = true;
+                  settings = {
+                    column_width = 80;
+                    indent_type = "Spaces";
+                    indent_width = 2;
+                  };
+                };
+              };
+              settings = {
+                formatter.nixfmt.options = [
+                  "-w"
+                  "80"
+                ];
+                global.excludes = [
+                  ".editorconfig"
+                  "LICENSE"
+                  "dotfiles/*"
+                  "justfile"
+                  "*/LICENSE"
+                  "*/justfile"
+                  "*.adoc"
+                  "*.kdl"
+                  "*.mustache"
+                  "*.zsh"
+                ];
               };
             };
           };
