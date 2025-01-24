@@ -1,7 +1,8 @@
 {pkgs, ...}: {
   imports = [
-    ./programs.nix
     ./dash.nix
+    ./programs.nix
+    ./rectangle.nix
   ];
 
   home.packages = with pkgs; [
