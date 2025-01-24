@@ -5,48 +5,32 @@
   ...
 }:
 let
-  inherit
-    (lib.lists
-    )
+  inherit (lib.lists)
     optionals
     ;
-  baseHomeCfg =
-    config.base-home;
+  baseHomeCfg = config.base-home;
 in
 {
-  config =
-    lib.mkIf
-      (
-        baseHomeCfg.isDesktop
-        && baseHomeCfg.isHome
-      )
-      {
-        services.flatpak.packages = [
-          "com.valvesoftware.Steam"
+  config = lib.mkIf (baseHomeCfg.isDesktop && baseHomeCfg.isHome) {
+    services.flatpak.packages = [
+      "com.valvesoftware.Steam"
+    ];
+    services.flatpak.overrides."com.valvesoftware.Steam" = {
+      Context = {
+        filesystems = [
+          "/steam"
         ];
-        services.flatpak.overrides."com.valvesoftware.Steam" =
-          {
-            Context = {
-              filesystems = [
-                "/steam"
-              ];
-            };
-          };
-
-        home.packages =
-          builtins.concatLists
-            [
-              (
-                optionals
-                pkgs.stdenv.isLinux
-                (
-                  with pkgs;
-                  [
-                    # others
-                    gamescope
-                  ]
-                )
-              )
-            ];
       };
+    };
+
+    home.packages = builtins.concatLists [
+      (optionals pkgs.stdenv.isLinux (
+        with pkgs;
+        [
+          # others
+          gamescope
+        ]
+      ))
+    ];
+  };
 }

@@ -126,7 +126,9 @@
     }:
     flake-parts.lib.mkFlake
       {
-        inherit inputs;
+        inherit
+          inputs
+          ;
       }
       {
         imports = [
@@ -149,7 +151,10 @@
           aarch64-darwin
         ];
         perSystem =
-          { pkgs, ... }:
+          {
+            pkgs,
+            ...
+          }:
           {
             # Utilized by `nix develop`
             devShells.default = pkgs.mkShell {
@@ -203,8 +208,7 @@
                 formatter.shellcheck.priority = 1;
                 formatter.shfmt.priority = 2;
                 formatter.nixfmt.options = [
-                  "-w"
-                  "80"
+                  "--width=100"
                 ];
                 global.excludes = [
                   ".editorconfig"

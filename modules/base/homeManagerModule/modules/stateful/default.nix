@@ -57,9 +57,7 @@ in
 
       nodes2filePersistence =
         nodes:
-        (map (node: (getPersistencePath node)) (
-          builtins.filter (node: (node.type == "file")) nodes
-        ));
+        (map (node: (getPersistencePath node)) (builtins.filter (node: (node.type == "file")) nodes));
       nodes2dirPersistence =
         nodes:
         (map (node: {
@@ -82,13 +80,10 @@ in
             (
               let
                 outPath = builtins.toString (
-                  lib.path.append (/. + savePath) (
-                    lib.path.removePrefix (/. + homeDirectory) (/. + node.path)
-                  )
+                  lib.path.append (/. + savePath) (lib.path.removePrefix (/. + homeDirectory) (/. + node.path))
                 );
 
-                tmpfileType =
-                  if (node.type == "dir") then "d" else (throw "${node.path} is not directory");
+                tmpfileType = if (node.type == "dir") then "d" else (throw "${node.path} is not directory");
               in
               ''${tmpfileType} "${outPath}" ${node.mode} ${username} users''
             );

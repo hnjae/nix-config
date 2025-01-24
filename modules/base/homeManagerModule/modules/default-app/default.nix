@@ -26,8 +26,7 @@
 let
   inherit (lib) mkOption types;
   cfg = config.default-app;
-  genericToMimes =
-    mimes: app: (if (app == null) then { } else (lib.genAttrs mimes (_: app)));
+  genericToMimes = mimes: app: (if (app == null) then { } else (lib.genAttrs mimes (_: app)));
 in
 {
   options.default-app = {

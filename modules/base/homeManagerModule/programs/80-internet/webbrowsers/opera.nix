@@ -5,18 +5,12 @@
   ...
 }:
 let
-  baseHomeCfg =
-    config.base-home;
+  baseHomeCfg = config.base-home;
 in
 {
   config =
     lib.mkIf
-      (
-        baseHomeCfg.isDesktop
-        && baseHomeCfg.isHome
-        && pkgs.stdenv.isLinux
-        && pkgs.config.allowUnfree
-      )
+      (baseHomeCfg.isDesktop && baseHomeCfg.isHome && pkgs.stdenv.isLinux && pkgs.config.allowUnfree)
       {
         services.flatpak.packages = [
           # NOTE: opera is only browser that suport netflix 1080p on linux <2024-11-24>
@@ -46,19 +40,11 @@ in
               "x-scheme-handler/ipns"
             ];
           in
-          (
-            builtins.listToAttrs
-            (
-              builtins.map
-                (
-                  mimeType: {
-                    name =
-                      mimeType;
-                    value =
-                      desktopName;
-                  })
-                mimeTypes
-            )
-          );
+          (builtins.listToAttrs (
+            builtins.map (mimeType: {
+              name = mimeType;
+              value = desktopName;
+            }) mimeTypes
+          ));
       };
 }
