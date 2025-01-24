@@ -30,6 +30,6 @@
     la = "l -a";
     lt = "l --tree";
     lla = "l -la";
-    tree = "eza --tree";
+    etr = "eza --tree --git-ignore";
   };
 }

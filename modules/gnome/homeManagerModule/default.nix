@@ -7,23 +7,54 @@
 
   home.packages = with pkgs; [
     dconf2nix
-    # gnomeExtensions.blur-my-shell
-    # gnomeExtensions.gtile
-    # gnomeExtensions.run-or-raise
+    gnomeExtensions.blur-my-shell
     gnomeExtensions.caffeine
-    gnomeExtensions.removable-drive-menu
-    gnomeExtensions.screenshot-window-sizer
-    gnomeExtensions.tiling-shell
-    gnomeExtensions.useless-gaps
+    gnomeExtensions.fuzzy-app-search
+    gnomeExtensions.reboottouefi
     gnomeExtensions.windownavigator
+    gnomeExtensions.xwayland-indicator
+
+    # Not in use
+    # gnomeExtensions.arcmenu
+    # gnomeExtensions.containers
+    # gnomeExtensions.dev-container-manager
+    # gnomeExtensions.dnd-on-time
+    # gnomeExtensions.gtile
+    # gnomeExtensions.just-perfection
+    # gnomeExtensions.removable-drive-menu
+    # gnomeExtensions.rounded-corners
+    # gnomeExtensions.run-or-raise
+    # gnomeExtensions.useless-gaps
+
+    #
+    # gnomeExtensions.cronomix # various timers
+    # gnomeExtensions.github-actions
+    # gnomeExtensions.shu-zhi # wallpaper engine
+    # gnomeExtensions.space-bar # workspace indicator
+    # gnomeExtensions.systemd-manager
+
+    # window-management
+    # gnomeExtensions.awesome-tiles
+    # gnomeExtensions.tiling-shell
+    # gnomeExtensions.forge
+    gnomeExtensions.screenshot-window-sizer
+    #
   ];
 
   default-app.fileManager = "org.gnome.Nautilus";
 
   dconf.settings = {
+    "org/gnome/shell/app-switcher" = {
+      current-workspace-only = true;
+    };
+
     "org/gnome/shell".enabled-extensions = [
+      "blur-my-shell@aunetx"
       "caffeine@patapon.info"
+      "gnome-fuzzy-app-search@gnome-shell-extensions.Czarlie.gitlab.com"
+      "reboottouefi@ubaygd.com"
       "windowsNavigator@gnome-shell-extensions.gcampax.github.com"
+      "xwayland-indicator@swsnr.de"
     ];
     "org/gnome/desktop/calendar" = {
       show-weekdate = true;
