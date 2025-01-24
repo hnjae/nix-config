@@ -8,7 +8,6 @@ _: {
     ./locale.nix
     ./login-defs.nix
     ./nix
-    ./nixpkgs.nix
     ./polkit.nix
     ./samba.nix
     ./sysctl.nix

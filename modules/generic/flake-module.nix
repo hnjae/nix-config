@@ -1,11 +1,15 @@
 /*
 NOTE: nixosModules/homeManagerModules 에서 self, inputs 를 쓰면, 외부 리포지토리에서는 이 모듈을 정상적으로 사용할 수 없지만 flake-module.nix 에서는 다르다. eval 하는 시점이 다르기 때문.
 */
-{inputs, ...}: {
+flakeArgs @ {
+  inputs,
+  self,
+  ...
+}: {
   flake = rec {
     homeManagerModules.generic-home = {
       imports = [
-        (import ./homeManagerModule)
+        ./homeManagerModule
         inputs.base16.homeManagerModule
         inputs.impermanence.nixosModules.home-manager.impermanence
         inputs.nix-flatpak.homeManagerModules.nix-flatpak
@@ -16,10 +20,48 @@ NOTE: nixosModules/homeManagerModules 에서 self, inputs 를 쓰면, 외부 리
 
     nixosModules.generic-nixos = {
       imports = [
-        (import ./nixosModule)
-        (import ../nixosModules/services/nix-gc-system-generations)
-        (import ../nixosModules/services/nix-store-gc)
+        ./nixosModule
+        self.nixosModules.nix-gc-system-generations
+        self.nixosModules.nix-store-gc
         inputs.home-manager.nixosModules.home-manager
+        ({
+          lib,
+          config,
+          ...
+        }: {
+          nixpkgs.overlays = [
+            flakeArgs.self.overlays.default
+          ];
+          nixpkgs.config.allowUnfree = true;
+          nix = {
+            # for nix shell nixpkgs#foo
+            # run `nix registry list` to list current registry
+            registry = {
+              nixpkgs-unstable = {
+                flake = flakeArgs.inputs.nixpkgs-unstable;
+                to = {
+                  path = "${flakeArgs.inputs.nixpkgs-unstable}";
+                  type = "path";
+                };
+              };
+              nixpkgs = {
+                flake = flakeArgs.inputs.nixpkgs;
+                to = {
+                  path = "${flakeArgs.inputs.nixpkgs}";
+                  type = "path";
+                };
+              };
+            };
+
+            # to use nix-shell, run `nix repl :l <nixpkgs>`
+            channel.enable = true;
+            nixPath = lib.lists.optionals config.nix.channel.enable [
+              "nixpkgs=${flakeArgs.inputs.nixpkgs}"
+              "nixpkgs-unstable=${flakeArgs.inputs.nixpkgs-unstable}"
+              # "/nix/var/nix/profiles/per-user/root/channels"
+            ];
+          };
+        })
         (
           {
             pkgs,
@@ -36,7 +78,7 @@ NOTE: nixosModules/homeManagerModules 에서 self, inputs 를 쓰면, 외부 리
                 sharedModules = [
                   homeManagerModules.generic-home
                   {
-                    nixpkgs.overlays = [self.overlays.default];
+                    nixpkgs.overlays = [flakeArgs.self.overlays.default];
                   }
                 ];
 
