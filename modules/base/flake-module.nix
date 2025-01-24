@@ -26,6 +26,9 @@ flakeArgs @ {
             };
           };
         })
+        {
+          nixpkgs.overlays = [self.overlays.default];
+        }
       ];
     };
 
@@ -35,66 +38,55 @@ flakeArgs @ {
         self.nixosModules.nix-gc-system-generations
         self.nixosModules.nix-store-gc
         inputs.home-manager.nixosModules.home-manager
+        {
+          nixpkgs.overlays = [
+            flakeArgs.self.overlays.default
+          ];
+          nixpkgs.config.allowUnfree = true;
+        }
         ({
           lib,
           config,
           ...
         }: {
-          nixpkgs.overlays = [
-            flakeArgs.self.overlays.default
-          ];
-          nixpkgs.config.allowUnfree = true;
-          nix = {
-            # for nix shell nixpkgs#foo
-            # run `nix registry list` to list current registry
-            registry = {
-              nixpkgs-unstable = {
-                flake = flakeArgs.inputs.nixpkgs-unstable;
-                to = {
-                  path = "${flakeArgs.inputs.nixpkgs-unstable}";
-                  type = "path";
-                };
-              };
-              nixpkgs = {
-                flake = flakeArgs.inputs.nixpkgs;
-                to = {
-                  path = "${flakeArgs.inputs.nixpkgs}";
-                  type = "path";
-                };
+          # for nix shell nixpkgs#foo
+          # run `nix registry list` to list current registry
+          nix.registry = {
+            nixpkgs-unstable = {
+              flake = flakeArgs.inputs.nixpkgs-unstable;
+              to = {
+                path = "${flakeArgs.inputs.nixpkgs-unstable}";
+                type = "path";
               };
             };
-
-            # to use nix-shell, run `nix repl :l <nixpkgs>`
-            channel.enable = true;
-            nixPath = lib.lists.optionals config.nix.channel.enable [
-              "nixpkgs=${flakeArgs.inputs.nixpkgs}"
-              "nixpkgs-unstable=${flakeArgs.inputs.nixpkgs-unstable}"
-              # "/nix/var/nix/profiles/per-user/root/channels"
-            ];
+            nixpkgs = {
+              flake = flakeArgs.inputs.nixpkgs;
+              to = {
+                path = "${flakeArgs.inputs.nixpkgs}";
+                type = "path";
+              };
+            };
           };
+
+          # to use nix-shell, run `nix repl :l <nixpkgs>`
+          nix.channel.enable = true;
+          nix.nixPath = lib.lists.optionals config.nix.channel.enable [
+            "nixpkgs=${flakeArgs.inputs.nixpkgs}"
+            "nixpkgs-unstable=${flakeArgs.inputs.nixpkgs-unstable}"
+            # "/nix/var/nix/profiles/per-user/root/channels"
+          ];
         })
-        (
-          {
-            self,
-            config,
-            ...
-          }: {
-            config = {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = false;
-                backupFileExtension = "backup";
-                sharedModules = [
-                  flakeArgs.self.homeManagerModules.base-home
-                  {
-                    nixpkgs.overlays = [flakeArgs.self.overlays.default];
-                  }
-                ];
-                extraSpecialArgs = {};
-              };
-            };
-          }
-        )
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = false;
+            backupFileExtension = "backup";
+            sharedModules = [
+              self.homeManagerModules.base-home
+            ];
+            extraSpecialArgs = {};
+          };
+        }
       ];
     };
   };
