@@ -25,9 +25,9 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-        pre-commit-hooks-nix.follows = "";
-        # flake-compat.follows = "nix-config/flake-compat";
         rust-overlay.follows = "rust-overlay";
+        flake-compat.follows = "";
+        pre-commit-hooks-nix.follows = "";
       };
     };
     microvm = {
@@ -72,18 +72,20 @@
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
         flake-parts.follows = "flake-parts";
-        nix-darwin.follows = "";
-        git-hooks.follows = "";
         devshell.follows = "";
-        treefmt-nix.follows = "";
+        flake-compat.follows = "";
+        git-hooks.follows = "";
+        nix-darwin.follows = "";
         nuschtosSearch.follows = "";
+        treefmt-nix.follows = "";
       };
     };
     nur = {
       url = "github:nix-community/NUR";
       inputs = {
-        flake-parts.follows = "flake-parts";
         nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        treefmt-nix.follows = "";
       };
     };
     rust-overlay = {
@@ -110,14 +112,6 @@
     ############################################################################
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    ############################################################################
-    # to fix duplicate dependencies
-    ############################################################################
-    devshell = {
-      url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
