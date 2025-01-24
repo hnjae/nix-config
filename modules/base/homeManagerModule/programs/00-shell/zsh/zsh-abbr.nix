@@ -1,4 +1,4 @@
-{pkgsUnstable, ...}: {
+{...}: {
   # Prevent of modifying `$XDG_CONFG_HOME/zsh-abbr/user-abbrevations` by `abbr` command
   # home.packages = [pkgsUnstable.zsh-abbr];
 

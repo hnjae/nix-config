@@ -191,32 +191,6 @@
         "type": "github"
       }
     },
-    "ghostty": {
-      "inputs": {
-        "flake-compat": [],
-        "nixpkgs-stable": [
-          "nixpkgs"
-        ],
-        "nixpkgs-unstable": [
-          "nixpkgs-unstable"
-        ],
-        "zig": []
-      },
-      "locked": {
-        "lastModified": 1737085478,
-        "narHash": "sha256-EzdUQf1ljtGIWMmscVzoW3rUxxN3UKyNXOXbzUvz3BQ=",
-        "owner": "ghostty-org",
-        "repo": "ghostty",
-        "rev": "72d085525b22d66468c5969a4d507a0fa68d4a04",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ghostty-org",
-        "ref": "refs/tags/tip",
-        "repo": "ghostty",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -385,8 +359,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1737703744,
-        "narHash": "sha256-vyYVv5jN3UHf+IrgZWW0yExGRzjvMCVpUUXURcdM6kA=",
+        "lastModified": 1737712875,
+        "narHash": "sha256-Z+NwUfrsyL2sDhQeclD1KPEEVGA+taOSbPWSG3t8Hfc=",
         "path": "/home/hnjae/Projects/nix-modules-private",
         "type": "path"
       },
@@ -538,7 +512,6 @@
         "devshell": "devshell",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
-        "ghostty": "ghostty",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
         "lanzaboote": "lanzaboote",

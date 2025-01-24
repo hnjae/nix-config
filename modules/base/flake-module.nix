@@ -15,6 +15,17 @@ flakeArgs @ {
         inputs.nix-flatpak.homeManagerModules.nix-flatpak
         inputs.nix-index-database.hmModules.nix-index
         inputs.nix-web-app.homeManagerModules.default
+        ({pkgs, ...}: {
+          _module.args = {
+            pkgsUnstable = import flakeArgs.inputs.nixpkgs-unstable {
+              inherit (pkgs.stdenv) system;
+              config = {
+                inherit (pkgs.config) allowUnfree;
+              };
+              overlays = [];
+            };
+          };
+        })
       ];
     };
 
@@ -64,9 +75,7 @@ flakeArgs @ {
         })
         (
           {
-            pkgs,
             self,
-            inputs,
             config,
             ...
           }: {
@@ -81,15 +90,7 @@ flakeArgs @ {
                     nixpkgs.overlays = [flakeArgs.self.overlays.default];
                   }
                 ];
-
-                extraSpecialArgs = {
-                  inherit inputs self;
-                  pkgsUnstable = import inputs.nixpkgs-unstable {
-                    inherit (pkgs.stdenv) system;
-                    config.allowUnfree = pkgs.config.allowUnfree;
-                    overlays = [];
-                  };
-                };
+                extraSpecialArgs = {};
               };
             };
           }
