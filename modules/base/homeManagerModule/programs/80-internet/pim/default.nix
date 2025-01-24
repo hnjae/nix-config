@@ -11,7 +11,7 @@ in
   imports = [ ./thunderbird.nix ];
 
   config = lib.mkIf (baseHomeCfg.isDesktop) {
-    services.flatpak.packages = builtins.concatLists [
+    services.flatpak.packages = [
       # email
       "com.getmailspring.Mailspring" # gpl3
     ];
