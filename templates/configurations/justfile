@@ -6,40 +6,40 @@ default:
     @just --list
 
 format:
-  nix fmt --no-warn-dirty
+    nix fmt --no-warn-dirty
 
 open-status:
-  xdg-open "https://status.nixos.org/"
+    xdg-open "https://status.nixos.org/"
 
 update:
-  nix flake update
+    nix flake update
 
 update-nix-config:
-  nix flake update nix-config
+    nix flake update nix-config
 
 test-flake:
-  #!/bin/sh
-  set -eu
+    #!/bin/sh
+    set -eu
 
-  NIXPKGS_ALLOW_UNFREE=1
-  nix flake archive --no-warn-dirty
-  nix flake check \
-    --no-warn-dirty \
-    --all-systems \
-    --impure # to check unfree packages
+    NIXPKGS_ALLOW_UNFREE=1
+    nix flake archive --no-warn-dirty
+    nix flake check \
+        --no-warn-dirty \
+        --all-systems \
+        --impure # to check unfree packages
 
 drybuild-nixos: update-nix-config
-  nix build \
-    --dry-run \
-    --option eval-cache false \
-    --show-trace \
-    --json \
-    ".#nixosConfigurations.my-nixos.config.system.build.toplevel"
+    nix build \
+        --dry-run \
+        --option eval-cache false \
+        --show-trace \
+        --json \
+        ".#nixosConfigurations.my-nixos.config.system.build.toplevel"
 
 drybuild-home: update-nix-config
-  nix build \
-    --dry-run \
-    --option eval-cache false \
-    --show-trace \
-    --json \
-    ".#homeConfigurations.my-home.activationPackage"
+    nix build \
+        --dry-run \
+        --option eval-cache false \
+        --show-trace \
+        --json \
+        ".#homeConfigurations.my-home.activationPackage"

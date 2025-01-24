@@ -13,12 +13,13 @@
     };
   };
 
-  outputs = inputs @ {
-    flake-parts,
-    devshell,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs =
+    inputs@{
+      flake-parts,
+      devshell,
+      ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         devshell.flakeModule
       ];
@@ -28,26 +29,28 @@
         "aarch64-darwin"
         "x86_64-darwin"
       ];
-      perSystem = {pkgs, ...}: {
-        # or use `devShells.default = pkgs.mkShell`
-        devshells.default = {
-          env = [
-            {
-              name = "HTTP_PORT";
-              value = 8080;
-            }
-          ];
-          commands = [
-            {
-              help = "print hello";
-              name = "hello";
-              command = "echo hello";
-            }
-          ];
-          packages = [
-            pkgs.cowsay
-          ];
+      perSystem =
+        { pkgs, ... }:
+        {
+          # or use `devShells.default = pkgs.mkShell`
+          devshells.default = {
+            env = [
+              {
+                name = "HTTP_PORT";
+                value = 8080;
+              }
+            ];
+            commands = [
+              {
+                help = "print hello";
+                name = "hello";
+                command = "echo hello";
+              }
+            ];
+            packages = [
+              pkgs.cowsay
+            ];
+          };
         };
-      };
     };
 }
