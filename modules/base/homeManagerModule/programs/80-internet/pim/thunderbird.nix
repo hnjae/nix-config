@@ -2,14 +2,18 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   appId = "org.mozilla.Thunderbird";
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.isDesktop {
-    services.flatpak.packages = [appId];
+    services.flatpak.packages = [ appId ];
     services.flatpak.overrides."${appId}" = {
-      Context = {sockets = ["!x11"];};
+      Context = {
+        sockets = [ "!x11" ];
+      };
     };
 
     # NOTE: pref.js 파일 수정은 안된다. Identity 설정 같은 건 불가능 <NixOS 23.11>

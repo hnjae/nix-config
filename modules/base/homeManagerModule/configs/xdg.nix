@@ -2,9 +2,11 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   xdg = {
     enable = true;
     userDirs = {

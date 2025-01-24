@@ -2,12 +2,15 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
-  services.flatpak.packages = lib.mkIf (baseHomeCfg.isDesktop) (let
-    inherit (lib.lists) optionals;
-  in
+in
+{
+  services.flatpak.packages = lib.mkIf (baseHomeCfg.isDesktop) (
+    let
+      inherit (lib.lists) optionals;
+    in
     builtins.concatLists [
       [
         "org.strawberrymusicplayer.strawberry" # NOTE: uses eol library <2024-11-15>
@@ -20,5 +23,6 @@ in {
         "com.rafaelmardojai.Blanket" # white noise
         "org.kde.vvave" # music
       ])
-    ]);
+    ]
+  );
 }

@@ -5,9 +5,11 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   cfg = config.persist;
-in {
+in
+{
   options.persist = {
     enable = lib.mkEnableOption (lib.mDoc "");
     path = lib.mkOption {
@@ -30,8 +32,8 @@ in {
         ]
         (
           # 644
-          lib.lists.optional
-          (config.services.displayManager.sddm.enable) "/var/lib/sddm/state.conf"
+          lib.lists.optional (config.services.displayManager.sddm.enable
+          ) "/var/lib/sddm/state.conf"
         )
         # "/var/.updated"
       ];
@@ -56,42 +58,28 @@ in {
             mode = "755";
           }
         ]
-        (
-          lib.lists.optionals config.persist.isDesktop [
-            {
-              directory = "/var/lib/systemd/backlight";
-              mode = "0755";
-            }
-          ]
-        )
-        (
-          lib.lists.optional (config.services.accounts-daemon.enable)
+        (lib.lists.optionals config.persist.isDesktop [
           {
-            directory = "/var/lib/AccountsService";
+            directory = "/var/lib/systemd/backlight";
             mode = "0755";
           }
-        )
-        (
-          lib.lists.optional (config.networking.networkmanager.enable)
-          {
-            directory = "/etc/NetworkManager/system-connections";
-            mode = "0700";
-          }
-        )
-        (
-          lib.lists.optional (config.services.fprintd.enable)
-          {
-            directory = "/var/lib/fprint";
-            mode = "0700";
-          }
-        )
-        (
-          lib.lists.optional (config.virtualisation.waydroid.enable)
-          {
-            directory = "/var/lib/waydroid";
-            mode = "0755";
-          }
-        )
+        ])
+        (lib.lists.optional (config.services.accounts-daemon.enable) {
+          directory = "/var/lib/AccountsService";
+          mode = "0755";
+        })
+        (lib.lists.optional (config.networking.networkmanager.enable) {
+          directory = "/etc/NetworkManager/system-connections";
+          mode = "0700";
+        })
+        (lib.lists.optional (config.services.fprintd.enable) {
+          directory = "/var/lib/fprint";
+          mode = "0700";
+        })
+        (lib.lists.optional (config.virtualisation.waydroid.enable) {
+          directory = "/var/lib/waydroid";
+          mode = "0755";
+        })
         (
           # lib.lists.optional ((builtins.hasAttr "lanzaboote" config.boot) && config.boot.lanzaboote.enable)
           # 그냥 항상 유효화 <2024-11-19>
@@ -100,22 +88,18 @@ in {
               directory = "/etc/secureboot";
               mode = "0755"; # checked sbctl's default <NixOS 23.11>
             }
-          ]
-        )
-        (
-          lib.lists.optional ((builtins.hasAttr "lact" config.programs) && config.programs.lact.enable)
+          ])
+        (lib.lists.optional
+          ((builtins.hasAttr "lact" config.programs) && config.programs.lact.enable)
           {
             directory = "/etc/lact";
             mode = "0755"; # checked lact's default <NixOS 24.05>
           }
         )
-        (
-          lib.lists.optional (config.hardware.bluetooth.enable)
-          {
-            directory = "/var/lib/bluetooth";
-            mode = "0700";
-          }
-        )
+        (lib.lists.optional (config.hardware.bluetooth.enable) {
+          directory = "/var/lib/bluetooth";
+          mode = "0700";
+        })
         # use zfs datasets for these
         # (
         #   lib.lists.optional (config.virtualisation.docker.enable)

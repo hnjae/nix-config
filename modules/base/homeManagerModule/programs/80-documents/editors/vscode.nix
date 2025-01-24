@@ -4,11 +4,13 @@
   pkgs,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.config.allowUnfree) {
-    home.packages = [pkgsUnstable.vscode-fhs];
+    home.packages = [ pkgsUnstable.vscode-fhs ];
 
     stateful.nodes = [
       {

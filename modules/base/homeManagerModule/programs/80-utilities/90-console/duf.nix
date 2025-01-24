@@ -1,6 +1,9 @@
-{pkgsUnstable, ...}: {
+{ pkgsUnstable, ... }:
+{
   home.packages = [
     pkgsUnstable.duf # duf(du)
   ];
-  home.shellAliases = {duf = "duf -theme ansi";};
+  home.shellAliases = {
+    duf = "duf -theme ansi";
+  };
 }

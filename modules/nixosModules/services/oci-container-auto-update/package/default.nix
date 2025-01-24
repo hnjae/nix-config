@@ -1,9 +1,9 @@
 /*
-NOTE: <NixOS 24.05>
-  The `oci-containers` in nixpkgs are declared to run images with the `--rm`
-  flag, meaning they are disposable containers.
-  This means that restarting the service will create a new container that uses
-  a new image downloaded.
+  NOTE: <NixOS 24.05>
+    The `oci-containers` in nixpkgs are declared to run images with the `--rm`
+    flag, meaning they are disposable containers.
+    This means that restarting the service will create a new container that uses
+    a new image downloaded.
 */
 {
   pkgs,

@@ -3,10 +3,10 @@
   stdenv,
   fetchurl,
   appimageTools,
-  # writeScript,
-  # curl,
-  # jq,
-  # common-updater-scripts,
+# writeScript,
+# curl,
+# jq,
+# common-updater-scripts,
 }:
 # The raw package that fetches and extracts the Plex RPM. Override the source
 # and version of this derivation if you want to use a Plex Pass version of the
@@ -25,7 +25,7 @@ appimageTools.wrapType2 rec {
     homepage = "https://github.com/Martichou/rquickshare";
     # sourceProvenance = with sourceTypes; [binaryNativeCode];
     license = licenses.gpl3;
-    platforms = ["x86_64-linux"];
+    platforms = [ "x86_64-linux" ];
     description = "Rust implementation of NearbyShare/QuickShare from Android for Linux.";
   };
 }

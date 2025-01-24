@@ -3,7 +3,8 @@
   pkgs,
   pkgsUnstable,
   ...
-}: {
+}:
+{
   # https://github.com/ibraheemdev/modern-unix
 
   home.packages = builtins.concatLists [

@@ -4,7 +4,8 @@
   pkgs,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   # package = pkgsUnstable.wezterm;
   package = pkgs.wezterm;
   shellIntgrationStr = ''
@@ -13,15 +14,18 @@
   baseHomeCfg = config.base-home;
 
   appId = "org.wezfurlong.wezterm";
-in {
+in
+{
   config = lib.mkIf (baseHomeCfg.isDesktop) {
     # home.packages = [package];
 
-    default-app.fromApps = [appId];
-    services.flatpak.packages = [appId];
+    default-app.fromApps = [ appId ];
+    services.flatpak.packages = [ appId ];
     services.flatpak.overrides."${appId}" = {
       # https://github.com/wez/wezterm/issues/4962
-      Context = {sockets = ["!wayland"];};
+      Context = {
+        sockets = [ "!wayland" ];
+      };
     };
     home.shellAliases = {
       wezterm = "flatpak --user run org.wezfurlong.wezterm";

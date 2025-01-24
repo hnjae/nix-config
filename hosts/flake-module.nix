@@ -2,9 +2,11 @@
   self,
   inputs,
   ...
-}: let
+}:
+let
   inherit (inputs.nixpkgs.lib) nixosSystem;
-  getPkgs = system: allowUnfree:
+  getPkgs =
+    system: allowUnfree:
     import inputs.nixpkgs {
       inherit system;
       config.allowUnfree = allowUnfree;
@@ -14,11 +16,13 @@
     };
 
   inherit (inputs.home-manager.lib) homeManagerConfiguration;
-in {
-  flake.homeConfigurations.osiris = let
-    system = inputs.flake-utils.lib.system.x86_64-linux;
-    allowUnfree = true;
-  in
+in
+{
+  flake.homeConfigurations.osiris =
+    let
+      system = inputs.flake-utils.lib.system.x86_64-linux;
+      allowUnfree = true;
+    in
     homeManagerConfiguration rec {
       pkgs = getPkgs system allowUnfree;
       modules = [
@@ -43,7 +47,7 @@ in {
           stateful.enable = false;
         }
       ];
-      extraSpecialArgs = {};
+      extraSpecialArgs = { };
     };
 
   flake.nixosConfigurations.sample = nixosSystem {
@@ -77,7 +81,7 @@ in {
       self.nixosModules.configure-impermanence
       self.nixosModules.syncthing-for-desktop
     ];
-    specialArgs = {inherit inputs;};
+    specialArgs = { inherit inputs; };
   };
 
   # flake.deploy.nodes.isis = {

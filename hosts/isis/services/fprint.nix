@@ -1,4 +1,5 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   # pam services will be enabled by default <NixOS 23.11>
   services.fprintd = {
     enable = true;

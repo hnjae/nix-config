@@ -1,24 +1,26 @@
 /*
-NOTE:
+  NOTE:
 
-# NOTE: konsole 두 탭, neovim 만 킬 경우 7W <2024-11-11>
+  # NOTE: konsole 두 탭, neovim 만 킬 경우 7W <2024-11-11>
 
-run
-  sudo tlp-stat -p
-  sudo cpupower frequency-info
-  cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference
+  run
+    sudo tlp-stat -p
+    sudo cpupower frequency-info
+    cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference
 */
 {
   # config,
   # lib,
   ...
-}: let
+}:
+let
   # kver = config.boot.kernelPackages.kernel.version;
   cpuScalingGovernor = {
     performance = "performance";
     powersave = "powersave";
   };
-in {
+in
+{
   imports = [
     ./systemd-set-epp.nix
   ];

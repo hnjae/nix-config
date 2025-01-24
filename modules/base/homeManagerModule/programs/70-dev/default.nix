@@ -4,9 +4,11 @@
   pkgs,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   imports = [
     ./data-interchange-formats.nix
     ./db.nix

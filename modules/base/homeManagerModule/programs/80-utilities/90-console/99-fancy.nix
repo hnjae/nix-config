@@ -4,7 +4,8 @@
   pkgsUnstable,
   lib,
   ...
-}: {
+}:
+{
   home.packages = builtins.concatLists [
     (with pkgsUnstable; [
       # ## SYSTEM Fetch:
@@ -25,6 +26,6 @@
       onefetch # git
       # neo
     ])
-    (lib.lists.optionals pkgs.stdenv.isLinux [pkgsUnstable.ramfetch])
+    (lib.lists.optionals pkgs.stdenv.isLinux [ pkgsUnstable.ramfetch ])
   ];
 }

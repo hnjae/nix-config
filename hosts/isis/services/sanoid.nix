@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   services.sanoid = {
     enable = true;
     interval = "hourly";
@@ -21,7 +22,7 @@
         monthly = 0;
       };
       "isis/safe/home/hnjae/.cache" = {
-        useTemplate = ["ignore"];
+        useTemplate = [ "ignore" ];
       };
     };
   };

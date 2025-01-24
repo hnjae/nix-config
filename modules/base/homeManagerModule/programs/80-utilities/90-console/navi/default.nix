@@ -2,15 +2,18 @@
   pkgsUnstable,
   pkgs,
   ...
-}: let
+}:
+let
   # cheatPath = "${config.xdg.dataHome}/navi/cheats/my_cheats";
   posixSh = builtins.readFile ./resources/navi.sh;
 
-  babelfishTranslate = path: name:
+  babelfishTranslate =
+    path: name:
     pkgs.runCommandLocal "${name}.fish" {
-      nativeBuildInputs = [pkgs.babelfish];
+      nativeBuildInputs = [ pkgs.babelfish ];
     } "babelfish < ${path} > $out;";
-in {
+in
+{
   programs.navi = {
     enable = true;
     package = pkgsUnstable.navi;

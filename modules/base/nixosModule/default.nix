@@ -1,8 +1,10 @@
 # Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{lib, ...}: let
+{ lib, ... }:
+let
   inherit (lib) types mkOption;
-in {
+in
+{
   options.base-nixos = {
     hostType = mkOption {
       type = types.enum [

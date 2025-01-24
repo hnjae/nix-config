@@ -2,13 +2,13 @@
   writeScriptBin,
   alacritty,
   dash,
-}: let
+}:
+let
   terminal = "${alacritty}/bin/alacritty";
 in
-  writeScriptBin "xdg-terminal-exec"
-  ''
-    #!${dash}/bin/dash
+writeScriptBin "xdg-terminal-exec" ''
+  #!${dash}/bin/dash
 
-    [ -z "$@" ] && exec "${terminal}" </dev/null ||
-      exec ${terminal} --class "$1" --title "$1" -e "$@" </dev/null
-  ''
+  [ -z "$@" ] && exec "${terminal}" </dev/null ||
+    exec ${terminal} --class "$1" --title "$1" -e "$@" </dev/null
+''

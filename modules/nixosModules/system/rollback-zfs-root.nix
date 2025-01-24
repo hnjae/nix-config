@@ -1,17 +1,19 @@
 # NOTE: ${cfg.zfsRootPoolName}@blank 이 있어야 함.
 /*
-NOTE:
-  * <https://www.freedesktop.org/software/systemd/man/latest/bootup.html>
-  * <https://discourse.nixos.org/t/impermanence-vs-systemd-initrd-w-tpm-unlocking/25167/6>
+  NOTE:
+    * <https://www.freedesktop.org/software/systemd/man/latest/bootup.html>
+    * <https://discourse.nixos.org/t/impermanence-vs-systemd-initrd-w-tpm-unlocking/25167/6>
 */
 {
   config,
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.rollback-zfs-root;
-in {
+in
+{
   options.rollback-zfs-root = {
     enable = lib.mkEnableOption "";
 

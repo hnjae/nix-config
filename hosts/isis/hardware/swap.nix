@@ -1,6 +1,8 @@
-{lib, ...}: let
+{ lib, ... }:
+let
   swapDevice = "/dev/disk/by-partlabel/ISIS_SWAP";
-in {
+in
+{
   swapDevices = [
     {
       # https://access.redhat.com/ko/solutions/744483
@@ -8,7 +10,7 @@ in {
       priority = 1;
       # discardPolicy = "once"; # whole swapspace is discarded
       discardPolicy = "pages";
-      options = ["nofail"];
+      options = [ "nofail" ];
       randomEncryption = false; # isis uses opal nvme
     }
   ];

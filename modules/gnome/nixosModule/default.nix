@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   imports = [
     ./ime.nix
     ./kdeconnect.nix
@@ -12,7 +13,7 @@
 
   config = {
     services.xserver.enable = true;
-    services.xserver.excludePackages = [pkgs.xterm];
+    services.xserver.excludePackages = [ pkgs.xterm ];
     services.xserver.displayManager.gdm.enable = true;
 
     security.pam.services.login.enableGnomeKeyring = true;
@@ -48,10 +49,10 @@
       }
       {
         /*
-        NOTE: <NixOS 24.11; Gnome 47>
-        xdg-desktop-portal-gnome 의 최초 실행이 **매우** 느림. (아마 dbus 가) activate 하는 과정에서 뭐가 문제가 있는 것 같음. 근데 그냥 터미널에서 실행은 빠름. 디버깅 하다가 포기하고 아래 설정으로 임시조치.
+          NOTE: <NixOS 24.11; Gnome 47>
+          xdg-desktop-portal-gnome 의 최초 실행이 **매우** 느림. (아마 dbus 가) activate 하는 과정에서 뭐가 문제가 있는 것 같음. 근데 그냥 터미널에서 실행은 빠름. 디버깅 하다가 포기하고 아래 설정으로 임시조치.
 
-        ※ 기대한 동작되로 돌아가지 않음.
+          ※ 기대한 동작되로 돌아가지 않음.
         */
         # xdg.configFile."autostart/start-xdg-desktop-portal-gnome.desktop" = {
         #   enable = true;
@@ -65,80 +66,83 @@
         # };
       }
       # from network-manager
-      ({config, ...}: {
-        stateful.nodes = [
-          {
-            path = "${config.home.homeDirectory}/.pki";
-            mode = "700";
-            type = "dir";
-          }
-          {
-            path = "${config.home.homeDirectory}/.cert";
-            mode = "755";
-            type = "dir";
-          }
-          # {
-          #   path = "${config.xdg.configHome}/gnome-initial-setup-done";
-          #   mode = "644";
-          #   type = "file";
-          # }
-          {
-            path = "${config.xdg.configHome}/gnome-session";
-            mode = "700";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.configHome}/goa-1.0";
-            mode = "755";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.configHome}/gtk-3.0";
-            mode = "700";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.dataHome}/nautilus";
-            mode = "755";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.configHome}/evolution";
-            mode = "700";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.dataHome}/evolution";
-            mode = "700";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.dataHome}/gnome-settings-daemon";
-            mode = "755";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.dataHome}/gnome-shell";
-            mode = "700";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.dataHome}/gvfs-metadata";
-            mode = "700";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.dataHome}/keyrings";
-            mode = "700";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.dataHome}/icc";
-            mode = "755";
-            type = "dir";
-          }
-        ];
-      })
+      (
+        { config, ... }:
+        {
+          stateful.nodes = [
+            {
+              path = "${config.home.homeDirectory}/.pki";
+              mode = "700";
+              type = "dir";
+            }
+            {
+              path = "${config.home.homeDirectory}/.cert";
+              mode = "755";
+              type = "dir";
+            }
+            # {
+            #   path = "${config.xdg.configHome}/gnome-initial-setup-done";
+            #   mode = "644";
+            #   type = "file";
+            # }
+            {
+              path = "${config.xdg.configHome}/gnome-session";
+              mode = "700";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.configHome}/goa-1.0";
+              mode = "755";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.configHome}/gtk-3.0";
+              mode = "700";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.dataHome}/nautilus";
+              mode = "755";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.configHome}/evolution";
+              mode = "700";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.dataHome}/evolution";
+              mode = "700";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.dataHome}/gnome-settings-daemon";
+              mode = "755";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.dataHome}/gnome-shell";
+              mode = "700";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.dataHome}/gvfs-metadata";
+              mode = "700";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.dataHome}/keyrings";
+              mode = "700";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.dataHome}/icc";
+              mode = "755";
+              type = "dir";
+            }
+          ];
+        }
+      )
       {
         # NOTE: system-wide flatpak 말고 user 사용 (라이브러리 공유)
         services.flatpak.packages = [
@@ -181,8 +185,8 @@
 
       # THUMBNAILS
       /*
-      NOTE: <NixOS 24.11>
-        following packages does not use absolute nix path in `.thumbnailer`. It requires executables to be in `$PATH`
+        NOTE: <NixOS 24.11>
+          following packages does not use absolute nix path in `.thumbnailer`. It requires executables to be in `$PATH`
       */
       gnome-font-viewer
     ];
@@ -193,29 +197,29 @@
           (prev.papers.override {
             supportNautilus = false;
             withLibsecret = false;
-          })
-          .overrideAttrs (oldAttrs: {
-            postInstall = lib.strings.concatLines [
-              # NOTE: 아래 이미지는 기본패키징에서는 지원되지 않음을 확인. <Gnome 47; NixOS 24.11>
-              # gdk-pixbuf 를 전역에서 바꾸기에는 리컴파일이 너무 잦음
-              oldAttrs.postInstall
-              ''
-                # Pull in various support of images
-                # In postInstall to run before gappsWrapperArgsHook.
-                export GDK_PIXBUF_MODULE_FILE="${
-                  prev.gnome._gdkPixbufCacheBuilder_DO_NOT_USE {
-                    extraLoaders = with final; [
-                      libopenraw
-                      libavif
-                      libjxl
-                      webp-pixbuf-loader
-                      libheif.out
-                    ];
-                  }
-                }"
-              ''
-            ];
-          });
+          }).overrideAttrs
+            (oldAttrs: {
+              postInstall = lib.strings.concatLines [
+                # NOTE: 아래 이미지는 기본패키징에서는 지원되지 않음을 확인. <Gnome 47; NixOS 24.11>
+                # gdk-pixbuf 를 전역에서 바꾸기에는 리컴파일이 너무 잦음
+                oldAttrs.postInstall
+                ''
+                  # Pull in various support of images
+                  # In postInstall to run before gappsWrapperArgsHook.
+                  export GDK_PIXBUF_MODULE_FILE="${
+                    prev.gnome._gdkPixbufCacheBuilder_DO_NOT_USE {
+                      extraLoaders = with final; [
+                        libopenraw
+                        libavif
+                        libjxl
+                        webp-pixbuf-loader
+                        libheif.out
+                      ];
+                    }
+                  }"
+                ''
+              ];
+            });
         nautilus = prev.nautilus.overrideAttrs (oldAttrs: {
           # https://wiki.nixos.org/w/index.php?title=Nautilus&mobileaction=toggle_view_desktop#Gstreamer
           buildInputs = builtins.concatLists [

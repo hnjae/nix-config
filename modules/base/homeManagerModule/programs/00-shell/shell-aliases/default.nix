@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./systemd.nix
     ./linux-related.nix

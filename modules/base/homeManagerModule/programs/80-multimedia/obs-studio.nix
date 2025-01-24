@@ -3,9 +3,11 @@
   pkgsUnstable,
   config,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   programs.obs-studio = {
     enable = baseHomeCfg.isDesktop && pkgs.stdenv.isLinux;
     package = pkgsUnstable.obs-studio;

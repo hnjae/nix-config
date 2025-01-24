@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   # Set of default packages that aren't strictly necessary for a running system
   environment.defaultPackages = with pkgs; [
     # basic features

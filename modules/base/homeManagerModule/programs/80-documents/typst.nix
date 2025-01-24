@@ -3,9 +3,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
     home.packages = builtins.concatLists [
       (with pkgsUnstable; [

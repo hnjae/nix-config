@@ -3,9 +3,11 @@
   pkgsUnstable,
   lib,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
     home.packages = with pkgsUnstable; [
       biome # linters, formatters

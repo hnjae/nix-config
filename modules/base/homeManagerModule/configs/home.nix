@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   home.preferXdgDirectories = true;
   # https://github.com/nix-community/home-manager/blob/master/modules/home-environment.nix#L528
 

@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./bootloader.nix
     ./containers-dirver.nix

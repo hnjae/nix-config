@@ -3,14 +3,16 @@
   mountPoint,
   emptyDays,
   onCalendar,
-}: let
+}:
+let
   # TODO: mountPath name change (/ to -)
   serviceName = "trash-empty-${mountPoint}";
   Unit = {
     Description = "Empty trash of '${mountPoint}'";
-    Documentation = ["man:trash-empty(1)"];
+    Documentation = [ "man:trash-empty(1)" ];
   };
-in {
+in
+{
   systemd.user.services."${serviceName}" = {
     inherit Unit;
     Service = {
@@ -19,9 +21,7 @@ in {
       IOSchedulingClass = "idle";
       Nice = 19;
       # TODO: .Trash-1000 식의 접두어 붙이기 <2024-07-10>
-      ExecStart = "${trash-cli}/bin/trash-empty -f --trash-dir '${mountPoint}' ${
-        toString emptyDays
-      }";
+      ExecStart = "${trash-cli}/bin/trash-empty -f --trash-dir '${mountPoint}' ${toString emptyDays}";
     };
   };
   systemd.user.timers.${serviceName} = {
@@ -32,6 +32,8 @@ in {
       Persistent = true;
     };
 
-    Install = {WantedBy = ["timers.target"];};
+    Install = {
+      WantedBy = [ "timers.target" ];
+    };
   };
 }

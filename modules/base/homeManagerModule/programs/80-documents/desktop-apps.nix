@@ -2,10 +2,12 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
   inherit (lib.lists) optionals;
-in {
+in
+{
   config = lib.mkIf (baseHomeCfg.isDesktop) {
     services.flatpak.packages = builtins.concatLists [
       (optionals baseHomeCfg.installTestApps [

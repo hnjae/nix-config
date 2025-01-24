@@ -4,9 +4,11 @@
   pkgsUnstable,
   pkgs,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   imports = [
     ./zathura
   ];
@@ -22,16 +24,14 @@ in {
     ];
 
     home.packages = builtins.concatLists [
-      (
-        lib.lists.optionals (baseHomeCfg.installDevPackages) (
-          with pkgsUnstable; [ocrmypdf img2pdf]
-        )
-      )
-      (
-        lib.lists.optionals (
-          baseHomeCfg.installTestApps && pkgs.stdenv.isLinux
-        ) []
-      )
+      (lib.lists.optionals (baseHomeCfg.installDevPackages) (
+        with pkgsUnstable;
+        [
+          ocrmypdf
+          img2pdf
+        ]
+      ))
+      (lib.lists.optionals (baseHomeCfg.installTestApps && pkgs.stdenv.isLinux) [ ])
     ];
   };
 }

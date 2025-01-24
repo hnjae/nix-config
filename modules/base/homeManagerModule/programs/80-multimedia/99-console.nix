@@ -2,7 +2,8 @@
   pkgs,
   pkgsUnstable,
   ...
-}: {
+}:
+{
   home.packages = with pkgsUnstable; [
     gpac # modify mp4
     opusTools

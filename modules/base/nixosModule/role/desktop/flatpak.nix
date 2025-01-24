@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   config = lib.mkIf (config.base-nixos.role == "desktop") {
     services.flatpak.enable = lib.mkOverride 999 true;
 
@@ -21,7 +22,11 @@
       {
         # ~/.local/share/flatpak/overrides
         services.flatpak.overrides = {
-          "global" = {Context = {filesystems = ["/nix/store:ro"];};};
+          "global" = {
+            Context = {
+              filesystems = [ "/nix/store:ro" ];
+            };
+          };
         };
       }
     ];

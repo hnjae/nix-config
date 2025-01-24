@@ -3,9 +3,11 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   default-app = {
     video = "umpv";
     audio = "umpv";
@@ -41,10 +43,12 @@ in {
       };
       youtubeSupport = true;
       scripts = builtins.concatLists [
-        (lib.lists.optionals pkgs.stdenv.isLinux
-          (with pkgs.mpvScripts; [
+        (lib.lists.optionals pkgs.stdenv.isLinux (
+          with pkgs.mpvScripts;
+          [
             mpris
-          ]))
+          ]
+        ))
         (with pkgs.mpvScripts; [
           # visualizer # visualize audio; CPU 자원 꽤 소모
           vr-reversal
@@ -55,20 +59,17 @@ in {
 
     # defaultProfiles = ["gpu-hq"];
     /*
-    NOTE:
-    config = {
-      x11-bypass-compositor = false;
-    };
+      NOTE:
+      config = {
+        x11-bypass-compositor = false;
+      };
 
-    Above config create following line. AND IT IS VALID MPV CONFIG
-    `x11-bypass-compositor=%2%no` <2024-11-28>
+      Above config create following line. AND IT IS VALID MPV CONFIG
+      `x11-bypass-compositor=%2%no` <2024-11-28>
     */
     config = {
       # Video / Audio
-      ao =
-        if pkgs.stdenv.isDarwin
-        then "coreaudio"
-        else "pipewire";
+      ao = if pkgs.stdenv.isDarwin then "coreaudio" else "pipewire";
       pipewire-volume-mode = lib.mkIf (pkgs.stdenv.isLinux) "global";
       replaygain = "track";
 

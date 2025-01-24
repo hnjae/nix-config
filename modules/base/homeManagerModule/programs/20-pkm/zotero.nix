@@ -4,11 +4,13 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
-    home.packages = [pkgsUnstable.zotero_7];
+    home.packages = [ pkgsUnstable.zotero_7 ];
 
     xdg.desktopEntries."zotero" = {
       # GenericName=Reference Management
@@ -19,8 +21,14 @@ in {
       icon = "zotero";
       type = "Application";
       startupNotify = true;
-      categories = ["Office" "Database"];
-      mimeType = ["x-scheme-handler/zotero" "text/plain"];
+      categories = [
+        "Office"
+        "Database"
+      ];
+      mimeType = [
+        "x-scheme-handler/zotero"
+        "text/plain"
+      ];
     };
 
     stateful.nodes = [

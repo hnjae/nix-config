@@ -2,7 +2,8 @@
   pkgs,
   config,
   ...
-}: {
+}:
+{
   imports = [
     ./busybox-alike.nix
     ./editor.nix
@@ -17,81 +18,78 @@
 
   # Set of default packages that aren't strictly necessary for a running system
   environment.defaultPackages = builtins.concatLists [
-    (
-      with pkgs; [
-        dash
+    (with pkgs; [
+      dash
 
-        # nix CLI wrapper
-        nh
+      # nix CLI wrapper
+      nh
 
-        # nix-shell -c, nix-index wrapper
-        comma
+      # nix-shell -c, nix-index wrapper
+      comma
 
-        # for NixOS/nix
-        perl
-        rsync
-        strace
+      # for NixOS/nix
+      perl
+      rsync
+      strace
 
-        # for flake.nix
-        git
+      # for flake.nix
+      git
 
-        file
-        sysstat # iostat
-        lsof
-        beep
-        wget
+      file
+      sysstat # iostat
+      lsof
+      beep
+      wget
 
-        # Get hardware info
-        pciutils # lspci
-        lshw
-        usbutils # lsusb
-        dmidecode
-        lm_sensors
+      # Get hardware info
+      pciutils # lspci
+      lshw
+      usbutils # lsusb
+      dmidecode
+      lm_sensors
 
-        # some basic utils
-        dig
-        curl
-        lsb-release
+      # some basic utils
+      dig
+      curl
+      lsb-release
 
-        # some "modern" utils
-        fd
-        ripgrep
-        eza
-        hexyl # replace od
-        procs # replace ps
-        viddy # replace watch
+      # some "modern" utils
+      fd
+      ripgrep
+      eza
+      hexyl # replace od
+      procs # replace ps
+      viddy # replace watch
 
-        # misc
-        pwgen
-        wireguard-tools
+      # misc
+      pwgen
+      wireguard-tools
 
-        # tops
-        bottom
-        unrar
+      # tops
+      bottom
+      unrar
 
-        (
-          wezterm.overrideAttrs (_: {
-            passthru.cargoBuildFlags = [
-              "--package"
-              "wezterm-mux-server"
-            ];
-          })
-        )
-      ]
-    )
+      (wezterm.overrideAttrs (_: {
+        passthru.cargoBuildFlags = [
+          "--package"
+          "wezterm-mux-server"
+        ];
+      }))
+    ])
 
     # archives
-    (let
-      package7z = pkgs._7zz.override {enableUnfree = pkgs.config.allowUnfree;};
-    in [
-      package7z
-      (
-        pkgs.runCommandLocal "p7zip" {} ''
+    (
+      let
+        package7z = pkgs._7zz.override { enableUnfree = pkgs.config.allowUnfree; };
+      in
+      [
+        package7z
+        (pkgs.runCommandLocal "p7zip" { } ''
           mkdir -p "$out/bin"
           ln -s "${package7z}/bin/7zz" "$out/bin/7z"
-        ''
-      )
-    ])
+        '')
+      ]
+    )
   ];
 
   programs.htop = {

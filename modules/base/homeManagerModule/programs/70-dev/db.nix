@@ -3,9 +3,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
     home.packages = with pkgs; [
       mongosh
@@ -20,7 +22,9 @@ in {
 
     services.flatpak.overrides = {
       "com.github.alecaddd.sequeler" = {
-        Context = {shared = ["!network"];};
+        Context = {
+          shared = [ "!network" ];
+        };
       };
     };
   };

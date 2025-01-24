@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
     # home.packages = [pkgs.rust-bin.stable.latest.default];
 

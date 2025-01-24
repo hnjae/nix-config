@@ -4,16 +4,18 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   inherit (lib) mkOption types;
   cfg = config.trash;
-in {
+in
+{
   options.trash = {
     enable = lib.mkEnableOption (lib.mdDoc "trash");
 
     mountPoints = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = [ ];
     };
 
     emptyDays = mkOption {
@@ -32,7 +34,7 @@ in {
     systemd.user.services.empty-trash = {
       Unit = {
         Description = "Empty trash";
-        Documentation = ["man:trash-empty(1)"];
+        Documentation = [ "man:trash-empty(1)" ];
       };
       Service = {
         Type = "oneshot";
@@ -44,14 +46,16 @@ in {
       };
     };
     systemd.user.timers.empty-trash = {
-      Unit = {};
+      Unit = { };
       Timer = {
         OnCalendar = cfg.onCalendar;
         RandomizedDelaySec = "12m";
         Persistent = true;
       };
 
-      Install = {WantedBy = ["timers.target"];};
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
     };
   };
 }

@@ -4,7 +4,8 @@
   pkgsUnstable,
   lib,
   ...
-}: let
+}:
+let
   # baseHomeCfg = config.base-home;
   inherit (pkgs.stdenv) isLinux;
 
@@ -38,8 +39,9 @@
 
     ${package}/bin/tldr --update
   '';
-in {
-  home.packages = [package];
+in
+{
+  home.packages = [ package ];
 
   systemd.user.services."${serviceName}" = lib.mkIf isLinux {
     Unit = {
@@ -64,7 +66,7 @@ in {
   };
 
   systemd.user.timers."${serviceName}" = lib.mkIf isLinux {
-    Unit = {inherit Description;};
+    Unit = { inherit Description; };
 
     Timer = {
       OnCalendar = "*-*-* 04:00:00";
@@ -72,6 +74,8 @@ in {
       Persistent = true;
     };
 
-    Install = {WantedBy = ["timers.target"];};
+    Install = {
+      WantedBy = [ "timers.target" ];
+    };
   };
 }

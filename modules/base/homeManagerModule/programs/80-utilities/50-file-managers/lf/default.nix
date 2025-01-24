@@ -1,6 +1,8 @@
-{pkgsUnstable, ...}: let
+{ pkgsUnstable, ... }:
+let
   lfcdPosix = builtins.readFile ./resources/lfcd.sh;
-in {
+in
+{
   home.packages = with pkgsUnstable; [
     lf
 

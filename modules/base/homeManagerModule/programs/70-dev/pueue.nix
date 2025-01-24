@@ -3,7 +3,8 @@
   pkgsUnstable,
   lib,
   ...
-}: let
+}:
+let
   package = pkgsUnstable.pueue;
   aliases = {
     p = "pueue";
@@ -26,33 +27,30 @@
     pa = "pueue add";
     ph = "pueue help";
   };
-in {
+in
+{
   # https://github.com/Nukesor/pueue
-  home.packages = [package];
+  home.packages = [ package ];
 
   home.shellAliases = aliases;
 
   xdg.configFile."zsh-abbr/user-abbreviations".text = (
     lib.concatLines (
-      lib.mapAttrsToList
-      (
-        key: value: ''abbr "${key}"="${value}"''
-      )
-      aliases
+      lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') aliases
     )
   );
 
   systemd.user.services.pueued = lib.mkIf (pkgs.stdenv.isLinux) {
     Unit = {
       Description = "pueue daemon";
-      Documentation = ["pueue --help"];
+      Documentation = [ "pueue --help" ];
     };
     Service = {
       Type = "simple";
       ExecStart = "${package}/bin/pueued";
     };
     Install = {
-      WantedBy = ["default.target"];
+      WantedBy = [ "default.target" ];
     };
   };
 }

@@ -1,7 +1,8 @@
 # https://wiki.archlinux.org/title/CPU_frequency_scaling#Intel_performance_and_energy_bias_hint
 # amd-pstate 가 active 일때만 사용 가능.
 # NOTE: cpuScalingGovernor 가 powersave 일 경에만 EPP 가 적용 가능 <Kernel 6.8.6; amd-pstate-epp>
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   cpuEnergyPerfPolicy = {
     performance = "performance";
     balancePerformance = "balance_performance";
@@ -17,7 +18,8 @@
 
   serviceName = "set-epp";
   description = "Set EPP policy";
-in {
+in
+{
   systemd.services.${serviceName} = {
     inherit description;
 
@@ -35,8 +37,8 @@ in {
       '';
     };
 
-    wantedBy = ["multi-user.target"];
+    wantedBy = [ "multi-user.target" ];
     # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/tasks/cpu-freq.nix
-    after = ["systemd-modules-load.service"];
+    after = [ "systemd-modules-load.service" ];
   };
 }

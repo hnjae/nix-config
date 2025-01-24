@@ -3,9 +3,11 @@
 # 8b-instruct # instruct 가 훈련 모델이라 이걸 써야한다고.
 # https://github.com/ggerganov/llama.cpp/discussions/2094#discussioncomment-6351796
 # run `sudo podman exec -it ollama ollama pull llama3.2` to pull image
-{config, ...}: let
+{ config, ... }:
+let
   serviceName = "ollama";
-in {
+in
+{
   virtualisation.oci-containers.containers."${serviceName}" = {
     image = "docker.io/ollama/ollama:rocm";
     autoStart = true;

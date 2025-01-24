@@ -3,7 +3,8 @@
   lib,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
   gitAliases = {
     "g" = "git";
@@ -38,9 +39,12 @@
     "glgg" = "git log --oneline --decorate --graph";
     "glgf" = "git log --graph --decorate";
     "glgp" = "git log --graph --decorate --oneline --show-pulls --";
-    "gld" = "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short";
-    "glda" = "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short --all";
-    "glds" = "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short --stat";
+    "gld" =
+      "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short";
+    "glda" =
+      "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short --all";
+    "glds" =
+      "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short --stat";
     "gls" = "git log --stat | bat --style=plain";
     "glsp" = "git log --stat -p";
     "glcount" = "git shortlog -sn";
@@ -239,7 +243,8 @@
     "gunwip" = "git-unwip";
     "gtodo" = "git-todo";
   };
-in {
+in
+{
   imports = [
     ./gitui
   ];
@@ -266,19 +271,13 @@ in {
     ];
 
     # bindings https://github.com/wfxr/forgit 참고
-    home.shellAliases =
-      {
-        gu = "gitu";
-      }
-      // gitAliases;
+    home.shellAliases = {
+      gu = "gitu";
+    } // gitAliases;
 
     xdg.configFile."zsh-abbr/user-abbreviations".text = (
       lib.concatLines (
-        lib.mapAttrsToList
-        (
-          key: value: ''abbr "${key}"="${value}"''
-        )
-        gitAliases
+        lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') gitAliases
       )
     );
 

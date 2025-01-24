@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   config = {
     # IME
     i18n.inputMethod = {
@@ -90,8 +91,8 @@
           ];
           "org/gnome/desktop/wm/keybindings" = {
             # disable ibus switch shortcuts
-            switch-input-source = [];
-            switch-input-source-backward = [];
+            switch-input-source = [ ];
+            switch-input-source-backward = [ ];
           };
           "org/gnome/desktop/input-sources" = {
             # mru-sources=[('xkb', 'us+colemak_dh')];
@@ -104,20 +105,23 @@
           };
         };
       }
-      ({config, ...}: {
-        stateful.nodes = [
-          {
-            path = "${config.xdg.configHome}/mozc";
-            mode = "700";
-            type = "dir";
-          }
-          {
-            path = "${config.xdg.configHome}/fcitx5";
-            mode = "700";
-            type = "dir";
-          }
-        ];
-      })
+      (
+        { config, ... }:
+        {
+          stateful.nodes = [
+            {
+              path = "${config.xdg.configHome}/mozc";
+              mode = "700";
+              type = "dir";
+            }
+            {
+              path = "${config.xdg.configHome}/fcitx5";
+              mode = "700";
+              type = "dir";
+            }
+          ];
+        }
+      )
     ];
     environment.systemPackages = with pkgs.gnomeExtensions; [
       kimpanel # to use with fcitx5

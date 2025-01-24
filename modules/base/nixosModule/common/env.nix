@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   environment.localBinInPath = true;
   environment.enableAllTerminfo = true;
 

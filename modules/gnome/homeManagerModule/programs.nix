@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   services.flatpak.packages = [
     "org.gnome.Boxes"
     "org.gnome.Loupe"

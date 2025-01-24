@@ -3,13 +3,15 @@
   # config,
   # lib,
   ...
-}: let
+}:
+let
   # kver = config.boot.kernelPackages.kernel.version;
   cpuScalingGovernor = {
     performance = "performance";
     schedutil = "schedutil";
   };
-in {
+in
+{
   boot.kernelParams = [
     "amd_pstate=passive"
   ];

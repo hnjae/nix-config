@@ -1,8 +1,9 @@
 /*
-ZFS 에 의해 마운트 되는 경로:
-  /home
+  ZFS 에 의해 마운트 되는 경로:
+    /home
 */
-{lib, ...}: {
+{ lib, ... }:
+{
   boot.supportedFilesystems.zfs = lib.mkForce true;
 
   boot.tmp.useTmpfs = false; # for large build
@@ -25,7 +26,14 @@ ZFS 에 의해 마운트 되는 경로:
     "/boot" = {
       device = "/dev/disk/by-partlabel/ISIS_EFISYS";
       fsType = "vfat";
-      options = ["noatime" "nodev" "nosuid" "noexec" "fmask=0077" "dmask=0077"];
+      options = [
+        "noatime"
+        "nodev"
+        "nosuid"
+        "noexec"
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
     "/persist" = {
       device = "isis/safe/persist";
@@ -45,8 +53,8 @@ ZFS 에 의해 마운트 되는 경로:
       what = "/dev/disk/by-partuuid/0d0c92ae-52da-422a-b8be-487a713d7aa3";
       type = "ntfs";
       where = "/run/media/windows";
-      wantedBy = ["local-fs.target"];
-      before = ["local-fs.target"];
+      wantedBy = [ "local-fs.target" ];
+      before = [ "local-fs.target" ];
       mountConfig = {
         Options = builtins.concatStringsSep "," [
           # https://docs.kernel.org/filesystems/ntfs3.html

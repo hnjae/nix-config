@@ -3,9 +3,11 @@
   lib,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   baseHomeCfg = config.base-home;
-in {
+in
+{
   config = lib.mkIf baseHomeCfg.installDevPackages {
     home.packages = with pkgsUnstable; [
       jre17_minimal

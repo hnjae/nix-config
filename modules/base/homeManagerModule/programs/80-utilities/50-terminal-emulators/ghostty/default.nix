@@ -1,5 +1,6 @@
-{pkgsUnstable, ...}: {
-  home.packages = [pkgsUnstable.ghostty];
+{ pkgsUnstable, ... }:
+{
+  home.packages = [ pkgsUnstable.ghostty ];
 
   # NOTE: <2024-12-30>
   # https://github.com/ghostty-org/ghostty/discussions/3628

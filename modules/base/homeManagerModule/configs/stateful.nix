@@ -1,4 +1,5 @@
-{config, ...}: {
+{ config, ... }:
+{
   stateful.nodes = [
     {
       path = "${config.xdg.dataHome}/nix";
