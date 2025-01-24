@@ -18,9 +18,9 @@ in {
         then "ansi"
         else if (base24Cfg.scheme == "gruvbox")
         then "gruvbox-${
-          if base24Cfg.darkMode
-          then "dark"
-          else "light"
+          if base24Cfg.variant == "light"
+          then "light"
+          else "dark"
         }"
         else "base16"
       );

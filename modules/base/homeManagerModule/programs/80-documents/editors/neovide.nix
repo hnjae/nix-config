@@ -9,9 +9,9 @@
   inherit (builtins) concatStringsSep;
 
   COLORFGBG =
-    if (config.base-home.base24.darkMode)
-    then "15;0"
-    else "0;15";
+    if (config.base-home.base24.variant == "light")
+    then "0;15"
+    else "15;0";
 in {
   config = lib.mkIf baseHomeCfg.isDesktop {
     home.packages = [pkgsUnstable.neovide];
