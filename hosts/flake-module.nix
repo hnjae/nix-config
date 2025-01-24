@@ -99,10 +99,7 @@ in {
         inputs.lanzaboote.nixosModules.lanzaboote
         inputs.nix-modules-private.nixosModules.generic-nixos-extend
 
-        inputs.sops-nix.nixosModules.sops
         inputs.nix-modules-private.nixosModules.configure-sops
-
-        inputs.impermanence.nixosModules.impermanence
         self.nixosModules.configure-impermanence
       ];
       inherit specialArgs;

@@ -45,6 +45,12 @@
       # url = "git+ssh://git@github.com/hnjae/nix-modules-private";
       # url = "git:/home/hnjae/Projects/nix-modules-private";
       url = "path:/home/hnjae/Projects/nix-modules-private";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+        flake-parts.follows = "flake-parts";
+        sops-nix.follows = "sops-nix";
+      };
     };
     nix-web-app.url = "github:hnjae/nix-web-app";
     sops-nix = {
