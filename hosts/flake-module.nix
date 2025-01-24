@@ -3,6 +3,7 @@
   inputs,
   ...
 }: let
+  inherit (inputs.nixpkgs.lib) nixosSystem;
   getPkgsUnstable = system: allowUnfree:
     import inputs.nixpkgs-unstable {
       inherit system;
@@ -60,50 +61,37 @@ in {
       extraSpecialArgs = getExtraSpecialArgs system pkgs.config.allowUnfree;
     };
 
-  flake.nixosConfigurations = let
-    inherit (inputs.nixpkgs.lib) nixosSystem;
+  flake.nixosConfigurations.sample = nixosSystem {
+    modules = [
+      {
+        fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
+        boot.loader.systemd-boot.enable = true;
+        system.stateVersion = "24.05";
+        nixpkgs = {
+          config.allowUnfree = true;
+          hostPlatform = "x86_64-linux";
+          overlays = [
+            self.overlays.default
+          ];
+        };
+      }
+    ];
+  };
 
-    specialArgs = {
-      inherit inputs self;
-      # extraConfig = {};
-    };
-  in {
-    sample = nixosSystem {
-      inherit specialArgs;
-      modules = [
-        {
-          fileSystems."/".label = "random-tpgoH82DRzMqEqAUZ5bGxXtcOId0zvT6";
-          boot.loader.systemd-boot.enable = true;
-          system.stateVersion = "24.05";
-          nixpkgs = {
-            config.allowUnfree = true;
-            hostPlatform = "x86_64-linux";
-            overlays = [
-              self.overlays.default
-            ];
-          };
-        }
-      ];
-    };
+  flake.nixosConfigurations.isis = nixosSystem {
+    modules = [
+      ./isis
 
-    isis = nixosSystem {
-      modules = [
-        ./isis
-
-        self.nixosModules.generic-nixos
-        self.nixosModules.gnome
-
-        self.nixosModules.syncthing-for-desktop
-        self.nixosModules.rollback-zfs-root
-
-        inputs.lanzaboote.nixosModules.lanzaboote
-        inputs.nix-modules-private.nixosModules.generic-nixos-extend
-
-        inputs.nix-modules-private.nixosModules.configure-sops
-        self.nixosModules.configure-impermanence
-      ];
-      inherit specialArgs;
-    };
+      inputs.lanzaboote.nixosModules.lanzaboote
+      inputs.nix-modules-private.nixosModules.configure-sops
+      inputs.nix-modules-private.nixosModules.generic-nixos-extend
+      self.nixosModules.configure-impermanence
+      self.nixosModules.generic-nixos
+      self.nixosModules.gnome
+      self.nixosModules.rollback-zfs-root
+      self.nixosModules.syncthing-for-desktop
+    ];
+    specialArgs = {inherit inputs;};
   };
 
   # flake.deploy.nodes.isis = {
