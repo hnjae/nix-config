@@ -8,7 +8,7 @@ let
   baseHomeCfg = config.base-home;
 in
 {
-  config = lib.mkIf baseHomeCfg.installDevPackages {
+  config = lib.mkIf baseHomeCfg.isDev {
     # home.packages = [pkgs.rust-bin.stable.latest.default];
 
     home.sessionVariables = {

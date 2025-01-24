@@ -11,7 +11,7 @@ in
 {
   config = lib.mkIf (baseHomeCfg.isDesktop) {
     home.packages = builtins.concatLists [
-      (optionals (pkgs.stdenv.isLinux && baseHomeCfg.installTestApps) (
+      (optionals (pkgs.stdenv.isLinux) (
         with pkgs;
         [
           # rustdesk

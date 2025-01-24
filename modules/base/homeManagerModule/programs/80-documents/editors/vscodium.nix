@@ -10,7 +10,7 @@ in
   # stateful vscode
 
   programs.vscode = {
-    enable = baseHomeCfg.isDesktop && baseHomeCfg.installTestApps;
+    enable = baseHomeCfg.isDesktop;
     package = pkgsUnstable.vscodium;
     # extensions = pkgsUnstable; [
     #

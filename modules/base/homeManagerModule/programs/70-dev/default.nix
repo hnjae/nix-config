@@ -28,7 +28,7 @@ in
     ./web-dev
   ];
 
-  config = lib.mkIf baseHomeCfg.installDevPackages {
+  config = lib.mkIf baseHomeCfg.isDev {
     home.packages = builtins.concatLists [
       (with pkgs; [
         gcc

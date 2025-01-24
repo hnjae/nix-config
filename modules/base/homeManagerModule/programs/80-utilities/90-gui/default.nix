@@ -25,7 +25,7 @@ in
         "com.github.tchx84.Flatseal" # edit permission of wayland apps
       ]
 
-      (optionals baseHomeCfg.installTestApps [
+      ([
         # "org.gnome.NetworkDisplays"
         "com.github.flxzt.rnote" # https://flathub.org/apps/com.github.flxzt.rnote
         "page.codeberg.libre_menu_editor.LibreMenuEditor"
@@ -63,14 +63,13 @@ in
         pkgs.qdirstat
         pkgsUnstable.resources
         pkgsUnstable.scrcpy # display and control android
+        pkgs.distrobox
       ])
-      (optionals (pkgs.stdenv.isLinux && baseHomeCfg.installTestApps) (
+      (optionals (pkgs.stdenv.isLinux) (
         with pkgs;
         [
           clipboard-jh
-          distrobox
           poppler_utils # pdftotext
-          # ffmpegthumbnailer
         ]
       ))
     ];

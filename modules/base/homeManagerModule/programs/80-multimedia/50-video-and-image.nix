@@ -20,9 +20,7 @@ in
       #   gwenview # flathub's build lacks heif support
       # ]))
 
-      (optionals baseHomeCfg.isDesktop (
-        with pkgsUnstable; [ inkscape-with-extensions ]
-      ))
+      (optionals baseHomeCfg.isDesktop (with pkgsUnstable; [ inkscape-with-extensions ]))
       [
         (if baseHomeCfg.isDesktop then pkgs.mkvtoolnix else pkgs.mkvtoolnix-cli)
       ]
@@ -52,11 +50,9 @@ in
         "org.kde.digikam"
 
         "org.gnome.Snapshot" # camera
+        "io.github.nokse22.asciidraw" # asciidraw, gpl3
       ]
-      (optionals baseHomeCfg.installTestApps [
-        "com.github.coslyk.MoonPlayer"
-        "org.kde.haruna"
-
+      ([
         # gstreamer based
         "com.github.rafostar.Clapper"
         "net.base_art.Glide"
@@ -65,19 +61,11 @@ in
         "com.github.maoschanz.drawing"
         "com.github.PintaProject.Pinta"
 
-        "io.github.nokse22.asciidraw" # asciidraw, gpl3
         "page.codeberg.Imaginer.Imaginer" # ai image generator
         "org.gnome.design.Emblem" # generate avatar
 
-        # "io.github.nyre221.kiview" # Apple's Quick Look and Gnome Sushi for kde. # uses end-of-life library (org.kde.Platform branch 6.6)(2024-11-06)
-        # requires https://github.com/Nyre221/Kiview
-
         # cutvideo
-        "com.ozmartians.VidCutter"
         "org.gnome.gitlab.YaLTeR.VideoTrimmer"
-
-        # video edting
-        # "org.shotcut.Shotcut"
 
         "org.gnome.gitlab.YaLTeR.Identity" # compare image or video
       ])
