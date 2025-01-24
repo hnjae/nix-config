@@ -106,6 +106,14 @@
     };
 
     ############################################################################
+    # formatters
+    ############################################################################
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    ############################################################################
     # to fix duplicate dependencies
     ############################################################################
     devshell = {
@@ -120,15 +128,16 @@
       nixpkgs,
       flake-parts,
       flake-utils,
+      treefmt-nix,
       ...
     }:
     flake-parts.lib.mkFlake
       {
         inherit inputs;
-        # inherit base16;
       }
       {
         imports = [
+          treefmt-nix.flakeModule
           ./flake-output-attributes
 
           ./apps/flake-module.nix
@@ -160,10 +169,6 @@
                 statix
                 deadnix
 
-                # formatters
-                # alejandra
-                nixfmt-rfc-style
-
                 # just
                 just
                 parallel
@@ -171,8 +176,14 @@
               ];
             };
 
-            # Utilized by `nix fmt`
-            formatter = pkgs.nixfmt-rfc-style;
+            # Utilized by `nix fmt` (formatter)
+            treefmt.config = {
+              projectRootFile = "flake.nix";
+              programs.nixfmt = {
+                enable = true;
+                package = pkgs.nixfmt-rfc-style;
+              };
+            };
           };
         flake = {
           # https://nix.dev/tutorials/nixos/building-bootable-iso-image
