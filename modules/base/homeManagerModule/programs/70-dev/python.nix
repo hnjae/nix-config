@@ -8,7 +8,7 @@ let
   baseHomeCfg = config.base-home;
 in
 {
-  config = lib.mkIf baseHomeCfg.installDevPackages {
+  config = lib.mkIf baseHomeCfg.isDev {
     home.shellAliases = {
       python = "ipython3";
       python3 = "ipython3";

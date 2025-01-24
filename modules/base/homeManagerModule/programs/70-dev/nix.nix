@@ -11,7 +11,7 @@ let
   };
 in
 {
-  config = lib.mkIf baseHomeCfg.installDevPackages {
+  config = lib.mkIf baseHomeCfg.isDev {
     home.packages = with pkgsUnstable; [
       sops # edit secrets
 

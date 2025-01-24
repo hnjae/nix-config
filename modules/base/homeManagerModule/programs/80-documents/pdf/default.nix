@@ -15,23 +15,21 @@ in
 
   config = {
     services.flatpak.packages = builtins.concatLists [
-      (lib.lists.optionals baseHomeCfg.installTestApps [
+      [
         "com.github.jeromerobert.pdfarranger"
         "com.github.ahrm.sioyek" # pdfviewer
         "org.gnome.Papers"
-        "org.gnome.Evince"
-      ])
+      ]
     ];
 
     home.packages = builtins.concatLists [
-      (lib.lists.optionals (baseHomeCfg.installDevPackages) (
+      (lib.lists.optionals (baseHomeCfg.isDev) (
         with pkgsUnstable;
         [
           ocrmypdf
           img2pdf
         ]
       ))
-      (lib.lists.optionals (baseHomeCfg.installTestApps && pkgs.stdenv.isLinux) [ ])
     ];
   };
 }

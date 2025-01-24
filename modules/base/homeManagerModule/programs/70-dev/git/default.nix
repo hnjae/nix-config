@@ -249,7 +249,7 @@ in
     ./gitui
   ];
 
-  config = lib.mkIf baseHomeCfg.installDevPackages {
+  config = lib.mkIf baseHomeCfg.isDev {
     home.packages = with pkgsUnstable; [
       git-open
       git-crypt
@@ -261,7 +261,7 @@ in
       gitu
     ];
 
-    services.flatpak.packages = lib.mkIf (baseHomeCfg.installTestApps) [
+    services.flatpak.packages = [
       # opensource git client
       # "com.jetpackduba.Gitnuro" # gpl3, jvm
       # "com.github.Murmele.Gittyup" # mit
@@ -276,9 +276,7 @@ in
     } // gitAliases;
 
     xdg.configFile."zsh-abbr/user-abbreviations".text = (
-      lib.concatLines (
-        lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') gitAliases
-      )
+      lib.concatLines (lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') gitAliases)
     );
 
     programs.zsh.sessionVariables = {
