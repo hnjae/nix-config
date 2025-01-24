@@ -26,7 +26,7 @@ in
       deadnix
 
       # formatter
-      alejandra
+      nixfmt-rfc-style
 
       # others
       compose2nix

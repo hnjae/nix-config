@@ -12,6 +12,7 @@
       fd
       ripgrep
       ripgrep-all # ripgrep & PDF E-Books & Office documents & etc.
+      sd # modern sed
       git
 
       mprocs
