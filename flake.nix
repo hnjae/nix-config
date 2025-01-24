@@ -63,13 +63,6 @@
     ############################################################################
     # Overlays / Packages
     ############################################################################
-    ghostty = {
-      url = "github:ghostty-org/ghostty/refs/tags/tip";
-      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
-      inputs.nixpkgs-stable.follows = "nixpkgs";
-      inputs.zig.follows = "";
-      inputs.flake-compat.follows = "";
-    };
     nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
     nixvim = {
       url = "github:nix-community/nixvim/nixos-24.11";

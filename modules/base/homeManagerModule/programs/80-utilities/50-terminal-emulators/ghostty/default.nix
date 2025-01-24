@@ -1,13 +1,7 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
-  home.packages = [
-    inputs.ghostty.packages.${pkgs.stdenv.system}.default
-  ];
+{pkgsUnstable, ...}: {
+  home.packages = [pkgsUnstable.ghostty];
 
-  # NOTE:  <2024-12-30>
+  # NOTE: <2024-12-30>
   # https://github.com/ghostty-org/ghostty/discussions/3628
   xdg.dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
     [Desktop Entry]
