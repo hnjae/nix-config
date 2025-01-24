@@ -28,6 +28,14 @@ test-flake:
     --all-systems \
     --impure # to check unfree packages
 
+drybuild-nixos: update-nix-config
+  nix build \
+    --dry-run \
+    --option eval-cache false \
+    --show-trace \
+    --json \
+    ".#nixosConfigurations.my-nixos.config.system.build.toplevel"
+
 drybuild-home: update-nix-config
   nix build \
     --dry-run \
