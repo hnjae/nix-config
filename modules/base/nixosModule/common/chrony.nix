@@ -4,10 +4,11 @@
   lib,
   ...
 }: let
-  isDesktop = config.base-nixos.role == "desktop";
+  cfg = config.base-nixos;
+  isDesktop = cfg.role == "desktop";
   inherit (lib) mkOverride;
 in {
-  config = lib.mkIf (! config.boot.isContainer) {
+  config = lib.mkIf (cfg.hostType == "baremetal") {
     # NOTE: NTPD vs chronyd <2023-12-20>
     # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-configuring_ntp_using_the_chrony_suite#sect-differences_between_ntpd_and_chronyd
 
