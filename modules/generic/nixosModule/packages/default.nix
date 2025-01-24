@@ -21,10 +21,13 @@
       with pkgs; [
         dash
 
+        # nix CLI wrapper
+        nh
+
         # nix-shell -c, nix-index wrapper
         comma
 
-        # for nixos/nix
+        # for NixOS/nix
         perl
         rsync
         strace

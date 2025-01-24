@@ -13,6 +13,7 @@ GPL
 JWT
 FSD
 zod
+CLI
 navi
 nixd
 rnix
@@ -36,6 +37,7 @@ nixfmt
 README
 vscode
 codecs
+NestJS
 Flatpak
 Ghostty
 LuaSnip

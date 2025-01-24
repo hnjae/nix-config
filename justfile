@@ -37,6 +37,9 @@ update-except-unstable:
 update:
   nix flake update
 
+update-local-repo:
+  nix flake update nix-modules-private
+
 test-flake:
   #!/bin/sh
   set -e
@@ -149,20 +152,20 @@ show-hm-configurations:
 ################################################################################
 # nixos-rebuild
 ################################################################################
-switch-nixos: pre-home-manager-switch
+switch-nixos: pre-home-manager-switch update-local-repo
   @echo "Switch .#{{hostname}}"
   sudo nixos-rebuild switch \
     --flake ".#{{hostname}}" \
     --keep-failed
 
-boot-nixos: pre-home-manager-switch
+boot-nixos: pre-home-manager-switch update-local-repo
   @echo "Build .#{{hostname}} and register to bootloader"
   sudo nixos-rebuild boot \
     --flake ".#{{hostname}}" \
     --option eval-cache false \
     --keep-failed
 
-drybuild-nixos:
+drybuild-nixos: update-local-repo
   @echo "Dry-building .#nixosConfigurations.{{hostname}}.config.system.build.toplevel"
   nix build \
     --dry-run \
@@ -230,3 +233,9 @@ switch-home:
     ".#homeConfigurations.{{hostname}}.activationPackage"
 
   bash "$(nix eval --raw ".#homeConfigurations.{{hostname}}.activationPackage")/activate"
+
+################################################################################
+# nh
+################################################################################
+switch-os-nh:
+  nh os switch -a .

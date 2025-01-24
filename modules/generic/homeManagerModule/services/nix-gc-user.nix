@@ -13,7 +13,7 @@ in {
 
     Service = {
       Type = "oneshot";
-      ExecStart = "${pkgs.nix}/bin/nix-collect-garbage -d";
+      ExecStart = "${pkgs.nix}/bin/nix-collect-garbage --delete-older-than 3d";
       CPUSchedulingPolicy = "idle";
       IOSchedulingClass = "idle";
       PrivateNetwork = "yes";
@@ -23,13 +23,14 @@ in {
     Unit = {inherit Description;};
 
     Timer = {
-      # OnCalendar = builtins.concatStringsSep "," ["Tue" "Fri"];
       OnCalendar = [
         "Tue *-*-* 04:00:00"
         "Fri *-*-* 04:00:00"
+        # "Thu *-*-* 04:00:00"
+        # "Sat *-*-* 04:00:00"
       ];
 
-      RandomizedDelaySec = "45m";
+      RandomizedDelaySec = "50m";
       Persistent = true;
     };
 

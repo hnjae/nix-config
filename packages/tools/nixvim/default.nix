@@ -1,7 +1,10 @@
 # fallback editor using nixvim
 # treesitter 사용이 힘든 매우 큰 파일이나, formatter 를 쓰지 않고 파일을 편집할
 # 용도
-nixvim: pkgs: let
+{
+  nixvim,
+  pkgs,
+}: let
   package =
     nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim
     {
@@ -202,8 +205,3 @@ in
     ln -s "${package}/bin/nvim" "$out/bin/vi"
     ln -s "${package}/bin/nvim" "$out/bin/nano"
   ''
-# pkgs.writeScriptBin "vim" ''
-#   #!${pkgs.dash}/bin/dash
-#    ${package}/bin/nvim "$@"
-# ''
-

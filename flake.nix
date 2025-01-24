@@ -43,7 +43,8 @@
     };
     nix-modules-private = {
       # url = "git+ssh://git@github.com/hnjae/nix-modules-private";
-      url = "/home/hnjae/Projects/nix-modules-private";
+      # url = "git:/home/hnjae/Projects/nix-modules-private";
+      url = "path:/home/hnjae/Projects/nix-modules-private";
     };
     nix-web-app.url = "github:hnjae/nix-web-app";
     sops-nix = {
@@ -62,14 +63,6 @@
       inputs.nixpkgs-stable.follows = "nixpkgs";
       inputs.zig.follows = "";
       inputs.flake-compat.follows = "";
-    };
-    my-python-utils = {
-      url = "git+ssh://git@github.com/hnjae/my-python-utils";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        # devshell.follows = "devshell";
-      };
     };
     nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
     nixvim = {
