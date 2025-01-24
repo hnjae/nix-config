@@ -20,8 +20,7 @@ in {
       mkOverride 999
       {
         desktop = 3;
-        vm = 1;
-        hypervisor = 7;
+        none = 14;
       }
       ."${cfg.role}";
   };
