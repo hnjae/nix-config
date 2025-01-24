@@ -28,7 +28,9 @@ in
 
   environment.systemPackages = builtins.concatLists [
     (lib.lists.optional isPodman pkgs.podman-compose)
-    (lib.lists.optional (isDocker || config.virtualisation.podman.dockerCompat) pkgs.docker-compose)
+    (lib.lists.optional (
+      isDocker || config.virtualisation.podman.dockerCompat
+    ) pkgs.docker-compose)
   ];
 
   virtualisation.containers.storage.settings.storage = lib.mkIf isPodman {

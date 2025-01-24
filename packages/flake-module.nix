@@ -6,7 +6,9 @@
 let
   eachSystem =
     systems: module:
-    (inputs.nixpkgs.lib.attrsets.mergeAttrsList (map (system: withSystem system module) systems));
+    (inputs.nixpkgs.lib.attrsets.mergeAttrsList (
+      map (system: withSystem system module) systems
+    ));
 in
 {
   perSystem =
@@ -36,7 +38,9 @@ in
         # unfree
         fonts-kopub-world = pkgs.callPackage ./fonts/fonts-kopub-world { };
         fonts-toss-face = pkgs.callPackage ./fonts/fonts-toss-face { };
-        fonts-hanazono-appending = pkgs.callPackage ./fonts/fonts-hanazono-appending { };
+        fonts-hanazono-appending =
+          pkgs.callPackage ./fonts/fonts-hanazono-appending
+            { };
       };
     };
 

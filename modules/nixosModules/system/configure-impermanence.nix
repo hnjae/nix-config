@@ -32,7 +32,8 @@ in
         ]
         (
           # 644
-          lib.lists.optional (config.services.displayManager.sddm.enable) "/var/lib/sddm/state.conf"
+          lib.lists.optional (config.services.displayManager.sddm.enable
+          ) "/var/lib/sddm/state.conf"
         )
         # "/var/.updated"
       ];
@@ -88,10 +89,13 @@ in
               mode = "0755"; # checked sbctl's default <NixOS 23.11>
             }
           ])
-        (lib.lists.optional ((builtins.hasAttr "lact" config.programs) && config.programs.lact.enable) {
-          directory = "/etc/lact";
-          mode = "0755"; # checked lact's default <NixOS 24.05>
-        })
+        (lib.lists.optional
+          ((builtins.hasAttr "lact" config.programs) && config.programs.lact.enable)
+          {
+            directory = "/etc/lact";
+            mode = "0755"; # checked lact's default <NixOS 24.05>
+          }
+        )
         (lib.lists.optional (config.hardware.bluetooth.enable) {
           directory = "/var/lib/bluetooth";
           mode = "0700";

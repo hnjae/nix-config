@@ -1,7 +1,6 @@
 default:
-    extension: .config
-    output: colors
-
+  extension: .config
+  output: colors
 recolor:
-    extension: .config
-    output: recolors
+  extension: .config
+  output: recolors

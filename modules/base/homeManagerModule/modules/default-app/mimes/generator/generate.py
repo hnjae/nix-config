@@ -8,7 +8,9 @@ from pathlib import Path
 
 import defusedxml.ElementTree as ET
 
-FREEDESKTOP_FILE = "/run/current-system/sw/share/mime/packages/freedesktop.org.xml"
+FREEDESKTOP_FILE = (
+    "/run/current-system/sw/share/mime/packages/freedesktop.org.xml"
+)
 
 
 @dataclass
@@ -85,7 +87,6 @@ def update_mimes():
 
 
 if __name__ == "__main__":
-
     text: set[str] = set()
     image: set[str] = set()
     audio: set[str] = set()

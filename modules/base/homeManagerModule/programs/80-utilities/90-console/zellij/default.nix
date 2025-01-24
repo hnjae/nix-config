@@ -24,7 +24,8 @@ in
   ];
 
   xdg.configFile."zellij/layouts".source = ./resources/configs/layouts;
-  xdg.configFile."zellij/themes/ansi.kdl".source = ./resources/configs/themes/ansi.kdl;
+  xdg.configFile."zellij/themes/ansi.kdl".source =
+    ./resources/configs/themes/ansi.kdl;
   xdg.configFile."zellij/themes/base24.kdl" = lib.mkIf baseHomeCfg.base24.enable {
     source = config.scheme {
       templateRepo = ./resources/base24-zellij;
