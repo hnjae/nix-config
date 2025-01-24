@@ -10,12 +10,7 @@ in
 {
   config =
     lib.mkIf
-      (
-        baseHomeCfg.isDesktop
-        && pkgs.stdenv.isLinux
-        && pkgs.stdenv.isx86_64
-        && pkgs.config.allowUnfree
-      )
+      (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux && pkgs.stdenv.isx86_64 && pkgs.config.allowUnfree)
       {
         home.packages = [
           # (pkgs.google-chrome.override {
