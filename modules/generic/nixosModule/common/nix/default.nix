@@ -1,7 +1,6 @@
 {lib, ...}: {
   imports = [
     ./managing.nix
-    ./registry.nix
   ];
 
   nix = {
