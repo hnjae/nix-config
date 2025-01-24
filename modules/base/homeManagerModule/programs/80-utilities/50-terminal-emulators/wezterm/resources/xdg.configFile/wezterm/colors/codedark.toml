@@ -3,24 +3,24 @@
 
 [colors]
 ansi = [
-	'#1e1e1e',
-	'#d16969',
-	'#608b4e',
-	'#d7ba7d',
-	'#569cd6',
-	'#c586c0',
-	'#9cdcfe',
-	'#d4d4d4',
+  '#1e1e1e',
+  '#d16969',
+  '#608b4e',
+  '#d7ba7d',
+  '#569cd6',
+  '#c586c0',
+  '#9cdcfe',
+  '#d4d4d4',
 ]
 brights = [
-	'#3c3c3c',
-	'#da6969',
-	'#608b4e',
-	'#d7ba7d',
-	'#569cd6',
-	'#c586c0',
-	'#9cdcfe',
-	'#ffffff',
+  '#3c3c3c',
+  '#da6969',
+  '#608b4e',
+  '#d7ba7d',
+  '#569cd6',
+  '#c586c0',
+  '#9cdcfe',
+  '#ffffff',
 ]
 background = '#1e1e1e'
 foreground = '#d4d4d4'

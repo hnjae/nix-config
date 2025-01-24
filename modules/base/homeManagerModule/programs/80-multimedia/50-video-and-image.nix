@@ -20,7 +20,9 @@ in
       #   gwenview # flathub's build lacks heif support
       # ]))
 
-      (optionals baseHomeCfg.isDesktop (with pkgsUnstable; [ inkscape-with-extensions ]))
+      (optionals baseHomeCfg.isDesktop (
+        with pkgsUnstable; [ inkscape-with-extensions ]
+      ))
       [
         (if baseHomeCfg.isDesktop then pkgs.mkvtoolnix else pkgs.mkvtoolnix-cli)
       ]

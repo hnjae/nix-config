@@ -30,7 +30,8 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [
       (cfg.package.withPackages (
-        python-pkgs: (builtins.map (x: (builtins.getAttr x python-pkgs)) cfg.pythonPackages)
+        python-pkgs:
+        (builtins.map (x: (builtins.getAttr x python-pkgs)) cfg.pythonPackages)
       ))
     ];
   };

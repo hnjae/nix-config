@@ -24,13 +24,15 @@ in
       # ]))
     ];
 
-    xdg.desktopEntries."nvim" = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
-      type = "Application";
-      name = "Neovim";
-      comment = "this should not be displayed";
-      exec = ":";
-      noDisplay = true;
-    };
+    xdg.desktopEntries."nvim" =
+      lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux)
+        {
+          type = "Application";
+          name = "Neovim";
+          comment = "this should not be displayed";
+          exec = ":";
+          noDisplay = true;
+        };
 
     home.sessionVariables = {
       EDITOR = "nvim";

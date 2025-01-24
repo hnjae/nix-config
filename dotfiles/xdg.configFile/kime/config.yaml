@@ -78,7 +78,6 @@ engine:
       Tab:
         behavior: Commit
         result: ConsumeIfProcessed
-
   xim_preedit_font:
     - Monospace
     - 15.0

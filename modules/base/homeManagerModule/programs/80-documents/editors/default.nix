@@ -45,7 +45,8 @@ in
     ]);
 
   services.flatpak.packages =
-    lib.lists.optionals (pkgs.stdenv.isLinux && baseHomeCfg.isDesktop && baseHomeCfg.installTestApps)
+    lib.lists.optionals
+      (pkgs.stdenv.isLinux && baseHomeCfg.isDesktop && baseHomeCfg.installTestApps)
       [
         # editors
         # "org.gnome.gitlab.cheywood.Buffer" # empty editor

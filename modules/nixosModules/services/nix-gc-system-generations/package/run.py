@@ -29,7 +29,9 @@ CURRENT_SYS_NIX_PATH: Final[Path] = Path("/run/current-system").readlink()
 
 
 class NixGeneration:
-    def __init__(self, number: int, datetime_: datetime, *, is_current_profile: bool):
+    def __init__(
+        self, number: int, datetime_: datetime, *, is_current_profile: bool
+    ):
         self.number = number
         self.profile_path = Path(PROFILE_PATH, f"system-{number}-link")
 
@@ -62,7 +64,9 @@ class NixGeneration:
 
     def remove_boot_entry(self, *, run: bool = False):
         if not self.entry_path.is_file():
-            msg = f"WARNING: {self.entry_name} does not exists or is not a file"
+            msg = (
+                f"WARNING: {self.entry_name} does not exists or is not a file"
+            )
             print(msg)
             return
 
@@ -78,12 +82,14 @@ class NixGeneration:
             return
 
 
-def get_generations() -> tuple[
-    NixGeneration,
-    Optional[NixGeneration],
-    Optional[NixGeneration],
-    Mapping[date, set[NixGeneration]],
-]:
+def get_generations() -> (
+    tuple[
+        NixGeneration,
+        Optional[NixGeneration],
+        Optional[NixGeneration],
+        Mapping[date, set[NixGeneration]],
+    ]
+):
     """
     Return (current_profile_gen, booted_sys_gen, current_sys_gen generation_map[key: date, list[generations]])
     """
@@ -151,7 +157,12 @@ def get_generations() -> tuple[
         msg = "ERROR: No current generation in output"
         raise Exception(msg)
 
-    return current_profile_gen, booted_sys_gen, current_sys_gen, generations_by_date
+    return (
+        current_profile_gen,
+        booted_sys_gen,
+        current_sys_gen,
+        generations_by_date,
+    )
 
 
 def remove_boot_entries(
@@ -164,7 +175,9 @@ def remove_boot_entries(
         g.remove_boot_entry(run=run)
 
 
-def remove_profile(generations: Iterable[NixGeneration], *, run: bool = False) -> bool:
+def remove_profile(
+    generations: Iterable[NixGeneration], *, run: bool = False
+) -> bool:
     """Return true if success."""
     if not generations:
         msg = "INFO: No generations to delete."
@@ -199,7 +212,9 @@ def main() -> int:
     args = get_args()
     generations_to_remove: set[NixGeneration] = set()
 
-    current_profile_gen, booted_sys_gen, current_sys_gen, map_ = get_generations()
+    current_profile_gen, booted_sys_gen, current_sys_gen, map_ = (
+        get_generations()
+    )
     current_profile_date = current_profile_gen.datetime_.date()
 
     today = datetime.now(timezone.utc).astimezone().date()
