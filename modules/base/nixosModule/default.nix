@@ -25,8 +25,8 @@ in
   };
 
   imports = [
+    ./configs
     ./core
-    ./common
     ./packages
     ./role
   ];
