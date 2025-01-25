@@ -9,4 +9,7 @@ result
 /dotfiles/xdg.configFile/ulauncher/ext_preferences
 /dotfiles/xdg.configFile/alacritty/base16.toml
 
+# https://github.com/cheat/cheatsheets
+/dotfiles/xdg.configFile/cheat/cheatsheets/community
+
 /packages/*/default.nix
