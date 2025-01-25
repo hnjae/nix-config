@@ -6,6 +6,9 @@
 }:
 let
   baseHomeCfg = config.base-home;
+  aliases = {
+    se = "sops edit";
+  };
 in
 {
   config = lib.mkIf baseHomeCfg.isDev {
@@ -16,6 +19,8 @@ in
     };
 
     home.packages = with pkgsUnstable; [
+      sops # edit secrets
+
       # make shell.nix, flake.nix based on nix-shell
       shellify
 
@@ -26,9 +31,17 @@ in
       nix-init
 
       # run nixpkgs' pkg with , (comma)
-      # comma
+      comma
+
+      # docker-compose to nix
+      compose2nix
     ];
 
     programs.nix-index-database.comma.enable = true;
+
+    home.shellAliases = aliases;
+    xdg.configFile."zsh-abbr/user-abbreviations".text = (
+      lib.concatLines (lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') aliases)
+    );
   };
 }

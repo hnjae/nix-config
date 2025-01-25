@@ -63,22 +63,7 @@ in
         pkgs.qdirstat
         pkgsUnstable.resources
         pkgsUnstable.scrcpy # display and control android
-        pkgs.distrobox
       ])
-      (optionals (pkgs.stdenv.isLinux) (
-        with pkgs;
-        [
-          clipboard-jh
-          poppler_utils # pdftotext
-        ]
-      ))
-    ];
-    stateful.nodes = [
-      {
-        path = "${config.xdg.dataHome}/icons/distrobox";
-        mode = "755";
-        type = "dir";
-      }
     ];
   };
 }

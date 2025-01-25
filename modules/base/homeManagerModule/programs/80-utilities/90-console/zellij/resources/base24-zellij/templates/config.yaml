@@ -1,3 +1,0 @@
-default:
-  extension: .kdl
-  output: colors
