@@ -29,7 +29,6 @@
       inputs.lanzaboote.nixosModules.lanzaboote
       self.nixosModules.rollback-zfs-root
 
-      inputs.nix-modules-private.nixosModules.configure-sops
       self.nixosModules.configure-impermanence
       self.nixosModules.syncthing-for-desktop
     ];
