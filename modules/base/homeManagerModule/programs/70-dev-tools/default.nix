@@ -3,7 +3,7 @@
   imports = [
     ./50-db.nix
     ./50-nix-tools.nix
-    ./50-web-dev
+    ./50-web-dev.nix
 
     ./distrobox.nix
   ];

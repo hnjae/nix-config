@@ -8,10 +8,12 @@
     ./00-shell
     ./10-console-tools
     ./70-dev
+    ./70-dev-tools
     ./80-documents
     ./80-internet
     ./80-multimedia
     ./80-others
+    ./80-security
     ./80-utilities
   ];
 }
