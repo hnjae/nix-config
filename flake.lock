@@ -65,6 +65,28 @@
         "type": "github"
       }
     },
+    "devshell": {
+      "inputs": {
+        "nixpkgs": [
+          "nix-modules-private",
+          "my-python-utils",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1735644329,
+        "narHash": "sha256-tO3HrHriyLvipc4xr+Ewtdlo7wM1OjXNjlWRgmM7peY=",
+        "owner": "numtide",
+        "repo": "devshell",
+        "rev": "f7795ede5b02664b57035b3b757876703e2c3eac",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "devshell",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -211,9 +233,7 @@
     },
     "my-python-utils": {
       "inputs": {
-        "devshell": [
-          "nix-modules-private"
-        ],
+        "devshell": "devshell",
         "flake-parts": [
           "nix-modules-private",
           "flake-parts"
@@ -224,11 +244,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737631085,
-        "narHash": "sha256-KE4Hd8IIQDNylKuU5dEeQMjWuDLvQq4kQ0UM4paMOp4=",
+        "lastModified": 1737806187,
+        "narHash": "sha256-TCKnpfUpKb4c6iqhFKfeEw/N45qAPl/tudZDTFFZzxg=",
         "ref": "refs/heads/main",
-        "rev": "7dd70d1b600a63bf849c0960cf70340574470158",
-        "revCount": 19,
+        "rev": "bd1bbf9f3b126b9d05b21c1c20ec64de957fcbb3",
+        "revCount": 20,
         "type": "git",
         "url": "ssh://git@github.com/hnjae/my-python-utils"
       },
@@ -289,8 +309,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1737800117,
-        "narHash": "sha256-OhL8e5ZFDRsJgJBa43JeKaZHlmAH7uHCRYkf1RJ5l+Y=",
+        "lastModified": 1737806877,
+        "narHash": "sha256-avcNDnBd1m/jyvCa25aA5PcfbPnJ8Lo817E4RYjjV9g=",
         "path": "/home/hnjae/Projects/nix-modules-private",
         "type": "path"
       },

@@ -25,7 +25,7 @@
       nh
 
       # nix-shell -c, nix-index wrapper
-      comma
+      # comma
 
       # for NixOS/nix
       perl

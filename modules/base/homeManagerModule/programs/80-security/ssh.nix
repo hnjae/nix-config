@@ -1,9 +1,10 @@
-{ ... }:
+{ config, ... }:
+let
+  baseHomeCfg = config.base-home;
+in
 {
   programs.ssh = {
-    enable = true;
+    enable = baseHomeCfg.isHome;
     # compression = true;
-    matchBlocks = {
-    };
   };
 }

@@ -31,7 +31,7 @@ in
       nix-init
 
       # run nixpkgs' pkg with , (comma)
-      comma
+      # comma
 
       # docker-compose to nix
       compose2nix
