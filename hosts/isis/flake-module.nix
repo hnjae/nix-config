@@ -23,7 +23,6 @@
       }
 
       self.nixosModules.base-nixos
-      inputs.nix-modules-private.nixosModules.base-nixos-extend
       self.nixosModules.gnome
 
       inputs.lanzaboote.nixosModules.lanzaboote
