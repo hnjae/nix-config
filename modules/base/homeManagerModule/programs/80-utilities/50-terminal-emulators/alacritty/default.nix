@@ -16,27 +16,27 @@ in
     ];
     default-app.fromApps = [ "Alacritty" ];
 
-    xdg.configFile."alacritty/base16.toml".text =
-      lib.strings.optionalString (baseHomeCfg.base24.enable)
-        (
-          lib.concatLines [
-            (builtins.readFile (
-              config.scheme {
-                templateRepo = ./resources/base24-alacritty;
-                target = "default-256";
-              }
-            ))
-            (
-              let
-                COLORFGBG = if (config.base-home.base24.variant == "light") then "0;15" else "15;0";
-              in
-              ''
-                [env]
-                COLORFGBG="${COLORFGBG}"
-                TERM = "xterm-256color" # To use 256 color on tmux
-              ''
-            )
-          ]
-        );
+    xdg.configFile."alacritty/base16.toml" = lib.mkIf (baseHomeCfg.base24.enable) {
+      text = (
+        lib.concatLines [
+          (builtins.readFile (
+            config.scheme {
+              templateRepo = ./resources/base24-alacritty;
+              target = "default-256";
+            }
+          ))
+          (
+            let
+              COLORFGBG = if (config.base-home.base24.variant == "light") then "0;15" else "15;0";
+            in
+            ''
+              [env]
+              COLORFGBG="${COLORFGBG}"
+              TERM = "xterm-256color" # To use 256 color on tmux
+            ''
+          )
+        ]
+      );
+    };
   };
 }
