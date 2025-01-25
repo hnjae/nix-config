@@ -1,7 +1,7 @@
+{ inputs, ... }:
 {
   lib,
   config,
-  inputs,
   ...
 }:
 let
@@ -64,7 +64,11 @@ let
 in
 {
   options.base-home.base24 = {
-    enable = lib.mkEnableOption "Enable base24 colorscheme";
+    # enable = lib.mkEnableOption "Enable base24 colorscheme";
+    enable = mkOption {
+      type = types.bool;
+      default = true;
+    };
     variant = mkOption {
       type = types.enum [
         "light"

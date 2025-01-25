@@ -10,4 +10,8 @@ _: {
     ./typst.nix
     ./zotero.nix
   ];
+
+  services.flatpak.packages = [
+    "com.github.johnfactotum.Foliate"
+  ];
 }
