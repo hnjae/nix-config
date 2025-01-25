@@ -23,6 +23,7 @@ in
 
       inputs.sops-nix.nixosModules.sops
       inputs.nix-modules-private.nixosModules.my-build-farms
+      inputs.nix-modules-private.nixosModules.base-nixos-extend
     ];
   };
 }
