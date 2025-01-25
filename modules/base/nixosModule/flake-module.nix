@@ -1,4 +1,4 @@
-flakeArgs@{
+{
   inputs,
   self,
   flake-parts-lib,
@@ -20,6 +20,9 @@ in
       self.nixosModules.nix-gc-system-generations
       self.nixosModules.nix-store-gc
       inputs.home-manager.nixosModules.home-manager
+
+      inputs.sops-nix.nixosModules.sops
+      inputs.nix-modules-private.nixosModules.my-build-farms
     ];
   };
 }
