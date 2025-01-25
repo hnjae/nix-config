@@ -9,6 +9,7 @@
     ./mpv
     ./obs-studio.nix
     ./steam.nix
+    ./yacreader
 
     ./50-audio.nix
     ./50-video-and-image.nix
