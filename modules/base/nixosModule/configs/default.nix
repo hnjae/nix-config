@@ -14,7 +14,6 @@ _: {
     ./systemd.nix
     ./time.nix
     ./tmpfiles.nix
-    ./users.nix
     ./zram.nix
   ];
 }
