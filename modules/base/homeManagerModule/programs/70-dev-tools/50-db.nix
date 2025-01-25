@@ -18,6 +18,7 @@ in
       "io.dbeaver.DBeaverCommunity" # db tool
       # sql client, uses end-of-life dependency
       "com.github.alecaddd.sequeler"
+      "com.mongodb.Compass" # Proprietary
     ];
 
     services.flatpak.overrides = {

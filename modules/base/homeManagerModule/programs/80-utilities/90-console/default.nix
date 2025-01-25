@@ -1,3 +1,5 @@
+# https://github.com/ibraheemdev/modern-unix
+
 {
   pkgs,
   lib,
@@ -7,23 +9,14 @@
 {
   imports = [
     ./99-fancy.nix
-    ./99-modern-utils.nix
-    ./eza.nix
-    ./bat.nix
+
     ./bottom.nix
-    ./cheat.nix
     ./duf.nix
-    ./jq.nix
-    ./just.nix
-    ./navi
     ./tldr
-    ./zellij
     ./qalc.nix
-    ./fzf.nix
     ./rsync.nix
   ];
 
-  # https://github.com/ibraheemdev/modern-unix
   home.packages = builtins.concatLists [
     (with pkgs; [
       # NOTE: trashy is not usable because of following issue: https://github.com/Byron/trash-rs/issues/57 <2023-03-22>
@@ -50,11 +43,16 @@
     ])
     (with pkgsUnstable; [
       yt-dlp
-      cheat
       ouch
+      vimv-rs # cyclic-renaming 지원, 엣지 케이스 대응 잘함.
     ])
-    (lib.lists.optionals pkgs.stdenv.isLinux [ pkgs.convmv ])
+    (lib.lists.optionals pkgs.stdenv.isLinux [
+      pkgs.convmv
+      pkgs.poppler_utils # pdftotext
+      pkgs.clipboard-jh
+    ])
   ];
+
   home.shellAliases = {
     t = "tmux";
   };

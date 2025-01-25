@@ -10,22 +10,17 @@ let
 in
 {
   imports = [
-    ./data-interchange-formats.nix
-    ./db.nix
-    ./git
     ./go.nix
+    ./json-alikes.nix
     ./jvm.nix
     ./lua.nix
-    ./markup-language.nix
-    ./nix-tools.nix
+    ./markdown-alikes.nix
     ./nix.nix
-    ./nodejs
-    ./pueue.nix
+    ./nodejs.nix
     ./python.nix
     ./ruby.nix
     ./rust.nix
     ./shell.nix
-    ./web-dev
   ];
 
   config = lib.mkIf baseHomeCfg.isDev {
@@ -34,34 +29,12 @@ in
         gcc
         gnumake
         cmake
-        universal-ctags
-
-        # man pages
-        man-pages
-        man-pages-posix
-
-        #
-        openssl
-
-        #
-        patchelfStable
       ])
       (with pkgsUnstable; [
         # editorconfig
         editorconfig-checker
-
-        harper # grammer checker for developers
-        hyperfine # command-line benchmarking tool
+        pkgsUnstable.harper # grammer checker for developers
       ])
-    ];
-
-    services.flatpak.packages = [
-      "me.iepure.devtoolbox" # https://flathub.org/apps/me.iepure.devtoolbox
-
-      "com.jgraph.drawio.desktop" # apache2
-      "org.gaphor.Gaphor" # UML modeling, apache 2
-
-      "com.github.marhkb.Pods" # connects to podman
     ];
   };
 }
