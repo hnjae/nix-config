@@ -34,6 +34,20 @@
     '';
 
     home-manager.sharedModules = [
+      (
+        { config, ... }:
+        {
+          home.sessionVariables = {
+            SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
+          };
+          programs.ssh.matchBlocks = {
+            "*" = {
+              IdentityAgent = "~/.1password/agent.sock";
+            };
+          };
+
+        }
+      )
       {
         xdg.configFile."autostart/1password.desktop" = {
           enable = true;
