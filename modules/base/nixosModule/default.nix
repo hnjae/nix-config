@@ -29,5 +29,6 @@ in
     ./core
     ./packages
     ./role
+    ./misc
   ];
 }
