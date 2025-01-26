@@ -1,59 +1,77 @@
-# fallback editor using nixvim
-# treesitter 사용이 힘든 매우 큰 파일이나, formatter 를 쓰지 않고 파일을 편집할
-# 용도
+/*
+  fallback editor using nixvim
+  treesitter 사용이 힘든 매우 큰 파일이나, formatter 를 쓰지 않고 파일을 편집할 용도
+*/
+
 {
   nixvim,
   pkgs,
 }:
 let
   package = nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim {
+    # nixpkgs.useGlobalPackages = true;
+    performance = {
+      combinePlugins.enable = true;
+      byteCompileLua = {
+        enable = true;
+        configs = true;
+        initLua = true;
+        nvimRuntime = true;
+        plugins = true;
+      };
+    };
+
     enableMan = false;
-    extraConfigLua = ''
-      vim.opt.smarttab = true
+    extraPlugins = with pkgs.vimPlugins; [ nvim-window-picker ];
+    extraConfigLua = pkgs.lib.concatLines [
+      ''
+        vim.opt.smarttab = true
 
-      vim.opt.smartindent = false
-      vim.opt.cindent = false
-      vim.opt.autoindent = true
+        vim.opt.smartindent = false
+        vim.opt.cindent = false
+        vim.opt.autoindent = true
 
-      vim.opt.hlsearch = true
-      vim.opt.ignorecase = true
-      vim.opt.smartcase = true
+        vim.opt.hlsearch = true
+        vim.opt.ignorecase = true
+        vim.opt.smartcase = true
+        vim.opt.ruler = true
+        vim.opt.number = true
+        vim.opt.relativenumber = true
 
-      vim.opt.ruler = true
-      vim.opt.number = true
-      vim.opt.relativenumber = true
+        vim.opt.undofile = false
+        vim.opt.swapfile = false
+        vim.opt.backup = false
 
-      vim.opt.undofile = false
-      vim.opt.swapfile = false
-      vim.opt.backup = false
+        -- default: .wbut ?
+        vim.opt.complete = ".,w,b,u,t,i"
 
-      -- default: .wbut ?
-      vim.opt.complete = ".,w,b,u,t,i"
+        vim.opt.mouse = ""
+        vim.opt.cursorline = true
+        vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:block,r-cr-o:block"
 
-      vim.opt.mouse = ""
-      vim.opt.cursorline = true
-      vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:block,r-cr-o:block"
+        vim.opt.foldlevel = 999 -- default 0 (fold-all)
 
-      vim.opt.foldlevel = 999 -- default 0 (fold-all)
+        --
+        vim.g.loaded_ruby_provider = 0 -- disable ruby
+        vim.g.loaded_python_provider = 0 -- disable python2
+        vim.g.loaded_python3_provider = 0  -- disable python3
+        vim.g.loaded_perl_provider = 0 -- disable perl
+        vim.g.loaded_node_provider = 0 -- disable node
 
-      --
-      vim.g.loaded_ruby_provider = 0 -- disable ruby
-      vim.g.loaded_python_provider = 0 -- disable python2
-      vim.g.loaded_python3_provider = 0  -- disable python3
-      vim.g.loaded_perl_provider = 0 -- disable perl
-      vim.g.loaded_node_provider = 0 -- disable node
+        vim.g.mapleader = " "
+        vim.g.maplocalleader = "s"
 
-      vim.g.mapleader = " "
-      vim.g.maplocalleader = "s"
-
-      --
-      local COLORFGBG = os.getenv("COLORFGBG")
-      if COLORFGBG == "15;0" then
-        vim.opt.background = "dark"
-      elseif COLORFGBG ~= nil then
-        vim.opt.background = "light"
-      end
-    '';
+        --
+        local COLORFGBG = os.getenv("COLORFGBG")
+        if COLORFGBG == "15;0" then
+          vim.opt.background = "dark"
+        elseif COLORFGBG ~= nil then
+          vim.opt.background = "light"
+        end
+        --
+      ''
+      (builtins.readFile ./window-picker.lua)
+    ];
 
     keymaps = [
       {
@@ -65,6 +83,30 @@ let
           "v"
         ];
         options.desc = "cmdline";
+      }
+      {
+        key = "<F12>";
+        mode = [
+          "n"
+          "v"
+          "s"
+        ];
+        action = ''"+y'';
+      }
+      {
+        key = "<Space>f";
+        mode = [ "n" ];
+        action = {
+          __raw = ''
+            function()
+              local picked_window_id = require("window-picker").pick_window()
+              if picked_window_id == nil then
+                return
+              end
+              vim.api.nvim_set_current_win(picked_window_id)
+            end
+          '';
+        };
       }
     ];
 
@@ -173,8 +215,11 @@ let
         enable = true;
       };
 
-      lualine = {
+      lightline = {
         enable = true;
+      };
+      lualine = {
+        enable = false;
         settings = {
           options = {
             always_show_tabline = true;
