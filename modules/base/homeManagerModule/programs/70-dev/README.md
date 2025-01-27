@@ -1,5 +1,5 @@
-* Runtime
-* Compiler
-* LSP
-* Linters
-* Formatters
+- Runtime
+- Compiler
+- LSP
+- Linters
+- Formatters
