@@ -12,7 +12,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from argparse import Namespace
-    from typing import Final, Iterable, Mapping, Optional
+    from typing import Final
+    from collections.abc import Iterable, Mapping
 
 # ruff: noqa: ANN204, D107, D105
 
@@ -85,8 +86,8 @@ class NixGeneration:
 def get_generations() -> (
     tuple[
         NixGeneration,
-        Optional[NixGeneration],
-        Optional[NixGeneration],
+        NixGeneration | None,
+        NixGeneration | None,
         Mapping[date, set[NixGeneration]],
     ]
 ):
@@ -108,9 +109,9 @@ def get_generations() -> (
     # special_nix_gens: Mapping[str, Optional[NixGeneration]]
 
     # NOTE: 아래 3개는 모두 다를 수 있음
-    current_profile_gen: Optional[NixGeneration] = None
-    booted_sys_gen: Optional[NixGeneration] = None
-    current_sys_gen: Optional[NixGeneration] = None
+    current_profile_gen: NixGeneration | None = None
+    booted_sys_gen: NixGeneration | None = None
+    current_sys_gen: NixGeneration | None = None
 
     for line in proc.stdout.splitlines():
         gen: NixGeneration
