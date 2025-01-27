@@ -174,7 +174,7 @@ drybuild-nixos: update-local-repo
         --show-trace \
         ".#nixosConfigurations.{{ hostname }}.config.system.build.toplevel"
 
-build-nixos:
+build-nixos: update-local-repo
     @echo "Building .#nixosConfigurations.{{ hostname }}.config.system.build.toplevel"
     nix build \
         --no-link \
@@ -184,7 +184,7 @@ build-nixos:
         ".#nixosConfigurations.{{ hostname }}.config.system.build.toplevel"
 
 # slower than nix flake check
-drybuild-nixoses:
+drybuild-nixoses: update-local-repo
     #!/bin/sh
     set -eu
 
@@ -212,7 +212,7 @@ drybuild-nixoses:
 # home-manager build/switch
 
 # ###############################################################################
-build-home:
+build-home: update-local-repo
     @echo "Switch home-manager .#{{ hostname }}"
     nix build \
         --no-print-missing \
@@ -221,7 +221,7 @@ build-home:
         --json \
         ".#homeConfigurations.{{ hostname }}.activationPackage"
 
-switch-home:
+switch-home: update-local-repo
     #!/bin/sh
     set -eu
 
@@ -239,5 +239,5 @@ switch-home:
 # nh
 
 # ###############################################################################
-switch-os-nh:
-    nh os switch -a .
+switch-os-nh: update-local-repo
+    nh os switch .
