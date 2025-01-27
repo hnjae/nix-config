@@ -8,29 +8,26 @@ let
     sc = "systemctl";
     scu = "systemctl --user";
 
-    scs = "systemctl status";
-    scus = "systemctl --user status";
-
     sclst = "systemctl list-timers";
     sculst = "systemctl --user list-timers";
 
     sc-failed = "systemctl --failed";
     sc-ufailed = "systemctl --user --failed";
 
-    scstart = "sudo systemctl start";
-    scustart = "systemctl --user start";
+    scx = "sudo systemctl start";
+    scux = "systemctl --user start";
 
     scst = "systemctl status";
     scust = "systemctl --user status";
 
-    screstart = "sudo systemctl restart";
-    scurestart = "systemctl --user restart";
+    scrx = "sudo systemctl restart";
+    scurx = "systemctl --user restart";
 
     jc = "journalctl";
     jcu = "journalctl --user";
 
-    jcunit = "journalctl -xeu";
-    jcuunit = "journalctl --user -xeu";
+    jcx = "journalctl -xeu";
+    jcux = "journalctl --user -xeu";
   };
 in
 {

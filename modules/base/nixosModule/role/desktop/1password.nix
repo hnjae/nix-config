@@ -41,15 +41,10 @@
           home.sessionVariables = {
             SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
           };
-          home.file.".ssh/config".text = lib.mkOrder 1 ''
-            Host *
-              IdentityAgent = "~/.1password/agent.sock"
-          '';
-          # programs.ssh.matchBlocks = {
-          #   "*" = {
-          #     IdentityAgent = "~/.1password/agent.sock";
-          #   };
-          # };
+          # home.file.".ssh/config".text = lib.mkOrder 9999 ''
+          #   Host *
+          #     IdentityAgent = "~/.1password/agent.sock"
+          # '';
         }
       )
       {
