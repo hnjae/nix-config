@@ -50,7 +50,7 @@ ignore = [
   "D211", # no-blank-line-before-class
 ]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "pep257"
 
 [tool.black]
