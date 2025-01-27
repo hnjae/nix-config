@@ -13,3 +13,5 @@ result
 /dotfiles/xdg.configFile/cheat/cheatsheets/community
 
 /packages/*/default.nix
+
+/.pre-commit-config.yaml

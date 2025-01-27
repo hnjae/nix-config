@@ -108,11 +108,18 @@
     };
 
     ############################################################################
-    # formatters
+    # dev tools
     ############################################################################
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    git-hooks-nix = {
+      url = "github:cachix/git-hooks.nix";
+      inputs = {
+        flake-compat.follows = "";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
   };
 
@@ -122,6 +129,7 @@
       flake-parts,
       flake-utils,
       treefmt-nix,
+      git-hooks-nix,
       ...
     }:
     flake-parts.lib.mkFlake
@@ -133,6 +141,8 @@
       {
         imports = [
           treefmt-nix.flakeModule
+          git-hooks-nix.flakeModule
+
           ./flake-output-attributes
 
           ./constants/flake-module.nix
@@ -152,22 +162,25 @@
         ];
         perSystem =
           {
+            config,
             pkgs,
             ...
           }:
           {
             # Utilized by `nix develop`
             devShells.default = pkgs.mkShell {
+              shellHook = ''
+                ${config.pre-commit.installationScript}
+              '';
+
               packages = with pkgs; [
                 sops
 
-                # LSPs
+                # LSPs / Linters / Formatters
                 nil
-                nixd
-
-                # linters
                 statix
                 deadnix
+                nixfmt-rfc-style
 
                 # just
                 just
@@ -175,6 +188,8 @@
                 jq
               ];
             };
+
+            pre-commit.settings.hooks.treefmt.enable = true;
 
             # Utilized by `nix fmt` (formatter)
             treefmt.config = {
