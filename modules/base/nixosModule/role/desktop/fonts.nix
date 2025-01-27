@@ -13,7 +13,6 @@
         [
           fonts-toss-face
           fonts-kopub-world
-          # fonts-hanazono-appending
         ]
       ))
       (with pkgs; [
@@ -40,7 +39,7 @@
         })
 
         # chinese character
-        hanazono # 일본 자형 Sans-Serif
+        jigmo # 일본 자형 Sans-Serif (hanazono successor)
         fonts-plangothic # ofl
 
         # others
