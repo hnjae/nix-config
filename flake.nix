@@ -12,6 +12,15 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
 
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        utils.follows = "flake-utils";
+        flake-compat.follows = "";
+      };
+    };
+
     ############################################################################
     # nixosModules / homeManagerModule
     ############################################################################
