@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 let
   rootBlockDevice = "/dev/mapper/vg_af4e-lv_sys";
   btrfsOpts = [

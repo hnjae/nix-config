@@ -7,17 +7,26 @@
     remove /persist/@nocow
 */
 { self, inputs, ... }:
+let
+  deviceName = "horus";
+in
 {
-  flake.nixosConfigurations.horus = inputs.nixpkgs.lib.nixosSystem {
-    modules = [
-      self.nixosModules.base-nixos
+  # TODO: nix-ssh 계정 설정 <2025-01-28>
+  flake.deploy.nodes.${deviceName} = {
+    # TODO: horus.local 로 연결 가능하게 설정. <2025-01-28>
+    hostname = "horus.local";
+    profiles.system = {
+      user = "nix-ssh";
+      path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${deviceName};
+    };
+  };
 
-      self.nixosModules.configure-impermanence
-      self.nixosModules.rollback-btrfs-root
+  flake.nixosConfigurations.${deviceName} = inputs.nixpkgs.lib.nixosSystem {
+    modules = [
       {
         system.stateVersion = "24.05";
-
         # base-nixos.role = "none";
+        networking.hostName = deviceName;
 
         persist = {
           enable = true;
@@ -44,9 +53,13 @@
           };
         };
       }
+      self.nixosModules.base-nixos
+      self.nixosModules.configure-impermanence
+      self.nixosModules.rollback-btrfs-root
+      inputs.nix-modules-private.nixosModules.horus-services
       ./configs
       ./hardware
     ];
-    specialArgs = { inherit inputs; };
+    specialArgs = { inherit inputs self; };
   };
 }

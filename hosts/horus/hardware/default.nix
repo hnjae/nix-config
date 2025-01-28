@@ -13,8 +13,6 @@
   ];
 
   networking = {
-    hostName = "horus"; # Define your hostname.
-
     # for zfs. hexademical characters.
     # run `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "78baec6a";

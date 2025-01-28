@@ -25,7 +25,7 @@ TODO:
 
 `hardware`::
     ** 하드웨어 관련
-    ** bootloader, fstab, initrd, hostname, kernel 등 포함
+    ** bootloader, fstab, initrd, kernel 등 포함
     ** `hardware-configuration.nix` 에 들어가는 내용.
 
 `configs`::
