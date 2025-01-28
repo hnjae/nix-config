@@ -19,5 +19,6 @@
     };
 
     rollback-zfs-root = import ./system/rollback-zfs-root.nix;
+    rollback-btrfs-root = import ./system/rollback-btrfs-root.nix;
   };
 }
