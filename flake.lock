@@ -65,6 +65,30 @@
         "type": "github"
       }
     },
+    "deploy-rs": {
+      "inputs": {
+        "flake-compat": [],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "utils": [
+          "flake-utils"
+        ]
+      },
+      "locked": {
+        "lastModified": 1727447169,
+        "narHash": "sha256-3KyjMPUKHkiWhwR91J1YchF6zb6gvckCAY1jOE+ne0U=",
+        "owner": "serokell",
+        "repo": "deploy-rs",
+        "rev": "aa07eb05537d4cd025e2310397a6adcedfe72c76",
+        "type": "github"
+      },
+      "original": {
+        "owner": "serokell",
+        "repo": "deploy-rs",
+        "type": "github"
+      }
+    },
     "devshell": {
       "inputs": {
         "nixpkgs": [
@@ -502,6 +526,7 @@
         "base16": "base16",
         "base16-schemes": "base16-schemes",
         "base24-vscode-terminal": "base24-vscode-terminal",
+        "deploy-rs": "deploy-rs",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "git-hooks-nix": "git-hooks-nix",
