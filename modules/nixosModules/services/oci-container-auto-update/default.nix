@@ -17,8 +17,6 @@ let
 in
 {
   options.services.oci-container-auto-update = {
-    enable = mkEnableOption "";
-
     onCalendar = mkOption {
       type = types.str;
       description = ''
@@ -60,7 +58,7 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.containers != { }) {
     assertions = builtins.concatLists [
       (
         let
