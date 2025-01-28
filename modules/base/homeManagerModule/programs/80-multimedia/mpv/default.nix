@@ -9,8 +9,8 @@ let
 in
 {
   default-app = {
-    video = "umpv";
-    audio = "umpv";
+    video = "mpv";
+    audio = "mpv";
   };
 
   # NOTE: celluloid is very slow  <2024-12-15>

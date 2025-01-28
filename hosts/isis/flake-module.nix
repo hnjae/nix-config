@@ -33,13 +33,4 @@
     ];
     specialArgs = { inherit inputs; };
   };
-  # flake.deploy.nodes.isis = {
-  #   hostname = "isis";
-  #   profiles.system = {
-  #     user = "nix-ssh";
-  #     path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.isis;
-  #   };
-  # };
-  #
-  # flake.checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
 }
