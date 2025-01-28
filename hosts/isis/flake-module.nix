@@ -3,13 +3,9 @@
   flake.nixosConfigurations.isis = inputs.nixpkgs.lib.nixosSystem {
     modules = [
       {
-        imports = [
-          ./configs
-          ./hardware
-          ./services
-        ];
         system.stateVersion = "24.11";
         base-nixos.role = "desktop";
+        networking.hostName = "isis";
 
         rollback-zfs-root = {
           enable = true;
@@ -30,6 +26,10 @@
 
       self.nixosModules.configure-impermanence
       self.nixosModules.syncthing-for-desktop
+
+      ./configs
+      ./hardware
+      ./services
     ];
     specialArgs = { inherit inputs; };
   };

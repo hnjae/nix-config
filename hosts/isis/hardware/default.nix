@@ -12,7 +12,6 @@
   ];
 
   networking = {
-    hostName = "isis";
     # run `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "e177869e"; # for ZFS. hexadecimal characters.
   };

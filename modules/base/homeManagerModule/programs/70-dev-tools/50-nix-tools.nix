@@ -35,6 +35,9 @@ in
 
       # docker-compose to nix
       compose2nix
+
+      # deploy-rs
+      deploy-rs
     ];
 
     programs.nix-index-database.comma.enable = true;
