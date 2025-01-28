@@ -123,6 +123,25 @@ _drybuild-homes:
 check: update-local-repo _check-flake _drybuild-homes
 
 ################################################################################
+# Remotes devices
+
+drybuild-horus: update-local-repo
+    @echo "Dry-building .#nixosConfigurations.horus.config.system.build.toplevel"
+    nix build \
+        --dry-run \
+        --option eval-cache false \
+        --show-trace \
+        ".#nixosConfigurations.horus.config.system.build.toplevel"
+
+build-horus: update-local-repo
+    @echo "Dry-building .#nixosConfigurations.horus.config.system.build.toplevel"
+    nix build \
+        --no-link \
+        --option eval-cache false \
+        --show-trace \
+        ".#nixosConfigurations.horus.config.system.build.toplevel"
+
+################################################################################
 # show flake.outputs
 
 show:
