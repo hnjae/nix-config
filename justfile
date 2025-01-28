@@ -1,4 +1,3 @@
-alias t := test
 alias fmt := format
 
 # check: https://nixos.org/manual/nix/stable/command-ref/new-cli/nix
@@ -40,17 +39,6 @@ update:
 update-local-repo:
     nix flake update nix-modules-private
 
-test-flake:
-    #!/bin/sh
-    set -e
-
-    NIXPKGS_ALLOW_UNFREE=1
-    nix flake archive --no-warn-dirty
-    nix flake check \
-        --no-warn-dirty \
-        --all-systems \
-        --impure # to check unfree packages
-
 pre-home-manager-switch:
     #!/bin/sh
     set -eu
@@ -85,7 +73,20 @@ drybuild-homes-wip:
             --json \
             '.#homeConfigurations.{}.activationPackage' 2> >(sed '/^[[:space:]]*\/nix\/store\//d')"
 
-drybuild-homes:
+build-iso:
+    nix build .#nixosConfigurations.nixos-iso.config.system.build.isoImage
+
+# ###############################################################################
+_check-flake:
+    #!/bin/sh
+    set -eu
+
+    NIXPKGS_ALLOW_UNFREE=1
+    nix flake check \
+        --no-warn-dirty \
+        --impure # to check unfree packages
+
+_drybuild-homes:
     #!/bin/sh
 
     for home in $(
@@ -114,21 +115,15 @@ drybuild-homes:
             --option pure-eval true \
             --option show-trace false \
             --quiet \
-            --json \
-            --builders "" \
-        "${target}"
+            "${target}"
 
         echo ""
     done
 
-build-iso:
-    nix build .#nixosConfigurations.nixos-iso.config.system.build.isoImage
-
-test: test-flake drybuild-homes
+check: update-local-repo _check-flake _drybuild-homes
 
 ################################################################################
 # show flake.outputs
-################################################################################
 
 show:
     nix flake show 2>/dev/null
@@ -152,7 +147,6 @@ show-hm-configurations:
 ################################################################################
 # nixos-rebuild
 
-# ###############################################################################
 switch-nixos: pre-home-manager-switch update-local-repo
     @echo "Switch .#{{ hostname }}"
     sudo nixos-rebuild switch \
@@ -211,7 +205,6 @@ drybuild-nixoses: update-local-repo
 ################################################################################
 # home-manager build/switch
 
-# ###############################################################################
 build-home: update-local-repo
     @echo "Switch home-manager .#{{ hostname }}"
     nix build \
@@ -238,6 +231,5 @@ switch-home: update-local-repo
 ################################################################################
 # nh
 
-# ###############################################################################
 switch-os-nh: update-local-repo
     nh os switch .
