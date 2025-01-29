@@ -1,3 +1,8 @@
+/*
+  README:
+    Requires:
+      * `/secrets/home-age-private`
+*/
 {
   inputs,
   self,

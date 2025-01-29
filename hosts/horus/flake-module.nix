@@ -13,8 +13,7 @@ in
 {
   # TODO: nix-ssh 계정 설정 <2025-01-28>
   flake.deploy.nodes.${deviceName} = {
-    # TODO: horus.local 로 연결 가능하게 설정. <2025-01-28>
-    hostname = "horus.local";
+    hostname = "${deviceName}.local";
     profiles.system = {
       user = "nix-ssh";
       path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${deviceName};

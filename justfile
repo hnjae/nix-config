@@ -141,6 +141,18 @@ build-horus: update-local-repo
         --show-trace \
         ".#nixosConfigurations.horus.config.system.build.toplevel"
 
+deploy-switch-horus: update-local-repo
+    nixos-rebuild switch \
+      --flake .#horus \
+      --target-host "horus.local" \
+      --use-remote-sudo
+
+deploy-boot-horus: update-local-repo
+    nixos-rebuild boot \
+      --flake .#horus \
+      --target-host "horus.local" \
+      --use-remote-sudo
+
 ################################################################################
 # show flake.outputs
 
@@ -252,3 +264,6 @@ switch-home: update-local-repo
 
 switch-os-nh: update-local-repo
     nh os switch .
+
+build-os-hn: update-local-repo
+    nh os build .
