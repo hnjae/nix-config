@@ -31,6 +31,7 @@ in
           enable = true;
           path = "/persist/@cow";
           isDesktop = false;
+          isRootNotZFS = true;
         };
       }
       {

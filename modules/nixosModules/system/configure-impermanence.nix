@@ -21,6 +21,10 @@ in
       type = lib.types.bool;
       default = false;
     };
+    isRootNotZFS = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -96,28 +100,18 @@ in
           directory = "/var/lib/bluetooth";
           mode = "0700";
         })
-        # use zfs datasets for these
-        # (
-        #   lib.lists.optional (config.virtualisation.docker.enable)
-        #   {
-        #     directory = "/var/lib/docker";
-        #     mode = "0710";
-        #   }
-        # )
-        # (
-        #   lib.lists.optional (config.virtualisation.podman.enable)
-        #   {
-        #     directory = "/var/lib/containers";
-        #     mode = "0700";
-        #   }
-        # )
-        # (
-        #   lib.lists.optional (config.virtualisation.libvirtd.enable)
-        #   {
-        #     directory = "/var/lib/libvirt";
-        #     mode = "0755";
-        #   }
-        # )
+        (lib.lists.optional (config.virtualisation.docker.enable && cfg.isRootNotZFS) {
+          directory = "/var/lib/docker";
+          mode = "0710";
+        })
+        (lib.lists.optional (config.virtualisation.podman.enable && cfg.isRootNotZFS) {
+          directory = "/var/lib/containers";
+          mode = "0700";
+        })
+        (lib.lists.optional (config.virtualisation.libvirtd.enable && cfg.isRootNotZFS) {
+          directory = "/var/lib/libvirt";
+          mode = "0755";
+        })
         # (
         #   lib.lists.optional (config.services.flatpak.enable)
         #   {
