@@ -48,5 +48,11 @@ in
       # "2001:4860:4860::8888"
       # "2001:4860:4860::8844"
     ];
+    llmnr = "resolve";
+  };
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
   };
 }
