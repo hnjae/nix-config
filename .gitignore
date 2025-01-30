@@ -1,5 +1,9 @@
-.mypy_cache
+/.deploy-gc
+/.pre-commit-config.yaml
+
 .direnv
+.mypy_cache
+.ruff_cache
 result
 
 /dotfiles/xdg.configFile/lazygit/state.yml
@@ -13,5 +17,3 @@ result
 /dotfiles/xdg.configFile/cheat/cheatsheets/community
 
 /packages/*/default.nix
-
-/.pre-commit-config.yaml

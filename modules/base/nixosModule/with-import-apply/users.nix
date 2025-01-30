@@ -17,6 +17,7 @@ in
     users.mutableUsers = false;
     users.defaultUserShell = lib.mkOverride 999 pkgs.fish;
 
+    # TODO: disable root login <2025-01-29>
     users.users.root = {
       openssh.authorizedKeys.keys = [
         constants.homeSshPublic

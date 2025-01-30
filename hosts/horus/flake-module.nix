@@ -11,11 +11,10 @@ let
   deviceName = "horus";
 in
 {
-  # TODO: nix-ssh 계정 설정 <2025-01-28>
   flake.deploy.nodes.${deviceName} = {
     hostname = "${deviceName}.local";
     profiles.system = {
-      user = "nix-ssh";
+      user = "deploy";
       path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${deviceName};
     };
   };
