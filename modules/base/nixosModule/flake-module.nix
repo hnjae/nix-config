@@ -21,6 +21,7 @@ in
       (importApply ./with-import-apply/nix-registry.nix { inherit inputs; })
       (importApply ./with-import-apply/nixpkgs.nix { localFlake = self; })
       (importApply ./with-import-apply/users.nix { localFlake = self; })
+      (importApply ./with-import-apply/deploy-account.nix { localFlake = self; })
 
       self.nixosModules.nix-gc-system-generations
       self.nixosModules.nix-store-gc

@@ -3,6 +3,12 @@
 # init repo
 restic --repo <path> --insecure-no-password init
 
+# init REST server repo
+restic -r rest:http://host:8000/ --insecure-no-password init
+
+# help
+restic help <command>
+
 # backup
 restic --repo <path> --insecure-no-password backup --pack-size 128 <path>
 
@@ -28,4 +34,3 @@ restic --repo <path> --insecure-no-password repiar snapshots [--forget]
 # reslove when data packs are missing (dont use forget flag)
 restic --repo <path> --insecure-no-password repair index
 restic --repo <path> --insecure-no-password repiar snapshots [--forget]
-

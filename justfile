@@ -76,7 +76,9 @@ drybuild-homes-wip:
 build-iso:
     nix build .#nixosConfigurations.nixos-iso.config.system.build.isoImage
 
-# ###############################################################################
+#################################################################################
+# check recipes
+
 _check-flake:
     #!/bin/sh
     set -eu
@@ -123,35 +125,44 @@ _drybuild-homes:
 check: update-local-repo _check-flake _drybuild-homes
 
 ################################################################################
-# Remotes devices
+# Deploy recipes
 
-drybuild-horus: update-local-repo
-    @echo "Dry-building .#nixosConfigurations.horus.config.system.build.toplevel"
-    nix build \
-        --dry-run \
-        --option eval-cache false \
-        --show-trace \
-        ".#nixosConfigurations.horus.config.system.build.toplevel"
+[positional-arguments]
+@deploy-rs host: update-local-repo
+    deploy --keep-result --skip-checks -d ".#$1"
 
-build-horus: update-local-repo
-    @echo "Dry-building .#nixosConfigurations.horus.config.system.build.toplevel"
+# Use `NIX_SSHOPTS="-o RequestTTY=force"` to type sudo password
+[positional-arguments]
+@deploy-switch host: update-local-repo
+    nixos-rebuild switch \
+        --flake ".#$1" \
+        --target-host "deploy@${1}.local" \
+        --use-remote-sudo
+
+[positional-arguments]
+@deploy-boot host: update-local-repo
+    nixos-rebuild boot \
+        --flake ".#$1" \
+        --target-host "deploy@${1}.local" \
+        --use-remote-sudo
+
+[positional-arguments]
+@build host: update-local-repo
+    @echo "Dry-building .#nixosConfigurations.<host>.config.system.build.toplevel"
     nix build \
         --no-link \
         --option eval-cache false \
         --show-trace \
-        ".#nixosConfigurations.horus.config.system.build.toplevel"
+        ".#nixosConfigurations.${1}.config.system.build.toplevel"
 
-deploy-switch-horus: update-local-repo
-    nixos-rebuild switch \
-      --flake .#horus \
-      --target-host "horus.local" \
-      --use-remote-sudo
-
-deploy-boot-horus: update-local-repo
-    nixos-rebuild boot \
-      --flake .#horus \
-      --target-host "horus.local" \
-      --use-remote-sudo
+[positional-arguments]
+@drybuild host: update-local-repo
+    @echo "Dry-building .#nixosConfigurations.<host>.config.system.build.toplevel"
+    nix build \
+        --dry-run \
+        --option eval-cache false \
+        --show-trace \
+        ".#nixosConfigurations.${1}.config.system.build.toplevel"
 
 ################################################################################
 # show flake.outputs
