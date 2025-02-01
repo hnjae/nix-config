@@ -1,4 +1,5 @@
 /*
+  NOTE: deploy-rs 에서 작동 안됨. sudo password 요구 <2025-01-31>
   README:
     nixos-rebuild --target-host 와 deploy-rs 에서 사용할 계정을 생성합니다.
 
@@ -22,12 +23,12 @@
   };
   users.groups.deploy = { };
 
+  # PermitTTY no
   services.openssh.extraConfig = ''
     Match User deploy
       AllowAgentForwarding no
       AllowTcpForwarding no
       PermitTunnel no
-      PermitTTY no
       X11Forwarding no
     Match All
   '';

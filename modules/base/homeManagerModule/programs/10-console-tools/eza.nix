@@ -7,7 +7,7 @@
   home.shellAliases = {
     ls = builtins.concatStringsSep " " [
       "eza"
-      "--smart-group"
+      "--group"
       "--links"
       "--time-style long-iso"
       "--color=automatic"
@@ -17,7 +17,7 @@
     ];
     l = builtins.concatStringsSep " " [
       "eza"
-      "--smart-group"
+      "--group"
       "--links"
       "--time-style long-iso"
       "--color=always"

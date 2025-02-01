@@ -132,11 +132,13 @@ check: update-local-repo _check-flake _drybuild-homes
     deploy --keep-result --skip-checks -d ".#$1"
 
 # Use `NIX_SSHOPTS="-o RequestTTY=force"` to type sudo password
+
+# --target-host "deploy@${1}.local" \
 [positional-arguments]
 @deploy-switch host: update-local-repo
     nixos-rebuild switch \
         --flake ".#$1" \
-        --target-host "deploy@${1}.local" \
+        --target-host "deploy@192.168.0.200" \
         --use-remote-sudo
 
 [positional-arguments]
