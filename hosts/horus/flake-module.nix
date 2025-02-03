@@ -12,9 +12,9 @@ let
 in
 {
   flake.deploy.nodes.${deviceName} = {
-    # hostname = "${deviceName}.local";
-    hostname = "192.168.0.200";
+    hostname = "${deviceName}.local";
     profiles.system = {
+      sshUser = "deploy";
       user = "root";
       path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${deviceName};
     };

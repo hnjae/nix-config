@@ -1,9 +1,10 @@
 /*
-  NOTE: deploy-rs 에서 작동 안됨. sudo password 요구 <2025-01-31>
   README:
     nixos-rebuild --target-host 와 deploy-rs 에서 사용할 계정을 생성합니다.
 
-    extraRules 를 정밀하게 작성하려고 하였으나, 잘 안된다. <2025-01-30>
+    deploy-rs 는 /nix/store/<>/activate-rs 와 /tmp/deploy-rs-* 를 root 권한으로 실행시킴
+
+    해당 경로를 NOPASSWD 로 허락하면, 임의로 /tmp 에 스크립트를 작성해 실행시키는 방법을 사용할 수 있다. 때문에 NOPASSWD 로 실행 바이너리를 제한하는 것이 의미가 없다.
 */
 { localFlake, ... }:
 { pkgs, ... }:
@@ -11,8 +12,7 @@
   users.users.deploy = {
     isSystemUser = true;
     group = "deploy";
-    extraGroups = [ "wheel" ];
-    shell = pkgs.bashInteractive;
+    shell = pkgs.dash;
     openssh.authorizedKeys.keys = [
       # 다른 키 사용?
       localFlake.constants.homeSshPublic
@@ -23,12 +23,12 @@
   };
   users.groups.deploy = { };
 
-  # PermitTTY no
   services.openssh.extraConfig = ''
     Match User deploy
       AllowAgentForwarding no
       AllowTcpForwarding no
       PermitTunnel no
+      PermitTTY no
       X11Forwarding no
     Match All
   '';
@@ -43,27 +43,6 @@
           command = "ALL";
           options = [ "NOPASSWD" ];
         }
-        /*
-          NOTE:
-            deploy-rs 는 /nix/store/<>/activate-rs 를 실행시킴
-            TODO: 작동 확인 필요.
-
-            nixos-rebuild --target-host 는 다음의 커맨드를 sudo 로 실행 시킴
-              /run/current-system/sw/bin/systemd-run -E LOCALE_ARCHIVE -E NIXOS_INSTALL_BOOTLOADER= --collect --no-ask-password --pipe --quiet --service-type=exec --unit=nixos-rebuild-switch-to-configuration --wait true
-              /run/current-system/sw/bin/systemd-run -E LOCALE_ARCHIVE -E NIXOS_INSTALL_BOOTLOADER= --collect --no-ask-password --pipe --quiet --service-type=exec --unit=nixos-rebuild-switch-to-configuration --wait /nix/store/<>/bin/switch-to-configuration boot
-        */
-        # {
-        #   command = "/nix/store/*/activate-rs";
-        #   options = [ "NOPASSWD" ];
-        # }
-        # {
-        #   command = "/run/current-system/sw/bin/nix-env";
-        #   options = [ "NOPASSWD" ];
-        # }
-        # {
-        #   command = "/run/current-system/sw/bin/systemd-run";
-        #   options = [ "NOPASSWD" ];
-        # }
       ];
     }
   ];
