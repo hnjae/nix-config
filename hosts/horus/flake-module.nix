@@ -12,7 +12,8 @@ let
 in
 {
   flake.deploy.nodes.${deviceName} = {
-    hostname = "${deviceName}.local";
+    # hostname = "${deviceName}.local";
+    hostname = "${deviceName}";
     profiles.system = {
       sshUser = "deploy";
       user = "root";
