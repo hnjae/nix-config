@@ -161,9 +161,9 @@
           ./packages/flake-module.nix
           ./templates/flake-module.nix
 
-          ./modules/base/flake-module.nix
           ./modules/gnome/flake-module.nix
-          ./modules/nixosModules/flake-module.nix
+          ./modules/nixos-modules/flake-module.nix
+          ./modules/profiles/flake-module.nix
         ];
         systems = with flake-utils.lib.system; [
           x86_64-linux

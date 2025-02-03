@@ -27,7 +27,7 @@
     };
 
     home-manager.sharedModules = [
-      (import ../homeManagerModule)
+      (import ../hm-module)
       {
         # with lib.hm.gvariant;
         dconf.settings = {
