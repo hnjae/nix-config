@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ self, inputs, ... }:
 {
   imports = [
     # includes `updateMicrocoder`
@@ -14,20 +14,12 @@
     cpuFreqGovernor = "schedutil";
   };
 
-  # 8c16t cpu
   nixpkgs.hostPlatform = inputs.flake-utils.lib.system.x86_64-linux;
 
+  # 8c16t cpu
   nix.settings = {
     max-jobs = 4;
     cores = 4;
-    system-features = [
-      "kvm"
-      "big-parallel"
-      "nixos-test"
-      "benchmark"
-      "gccarch-x86-64-v2"
-      "gccarch-x86-64-v3"
-      "gccarch-znver1" # amd 2700 8C16T
-    ];
+    system-features = self.constants.hosts.horus.buildMachine.supportedFeatures;
   };
 }

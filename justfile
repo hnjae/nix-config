@@ -76,6 +76,14 @@ drybuild-homes-wip:
 build-iso:
     nix build .#nixosConfigurations.nixos-iso.config.system.build.isoImage
 
+remote-build-test: update-local-repo
+    nix build \
+        --no-link \
+        --option eval-cache false \
+        --show-trace \
+        --max-jobs 0 \
+        ".#nixosConfigurations.horus.config.system.build.toplevel"
+
 #################################################################################
 # check recipes
 
@@ -147,7 +155,7 @@ check: update-local-repo _check-flake _drybuild-homes
 
 [positional-arguments]
 @build host: update-local-repo
-    @echo "Dry-building .#nixosConfigurations.<host>.config.system.build.toplevel"
+    @echo "Building .#nixosConfigurations.<host>.config.system.build.toplevel"
     nix build \
         --no-link \
         --option eval-cache false \
