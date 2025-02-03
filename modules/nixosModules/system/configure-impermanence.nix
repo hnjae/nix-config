@@ -112,6 +112,10 @@ in
           directory = "/var/lib/libvirt";
           mode = "0755";
         })
+        (lib.lists.optional (config.services.tailscale.enable) {
+          directory = "/var/lib/tailscale";
+          mode = "0700";
+        })
         # (
         #   lib.lists.optional (config.services.flatpak.enable)
         #   {

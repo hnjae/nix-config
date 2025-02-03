@@ -27,8 +27,9 @@ in
   imports = [
     ./configs
     ./core
+    ./misc
+    ./non-declarative
     ./packages
     ./role
-    ./misc
   ];
 }
