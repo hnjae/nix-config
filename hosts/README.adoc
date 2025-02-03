@@ -1,5 +1,0 @@
-== directory 명명 도식
-
-`hardware/`:: 하드웨어 관련, 수정시 재부팅이 필요하거나 실패할 수도 있는 값
-`services/`:: systemd 서비스
-`configs/`:: 기타 설정. e.g. `/etc/` 에 기록될 값.
