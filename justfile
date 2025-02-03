@@ -128,12 +128,9 @@ check: update-local-repo _check-flake _drybuild-homes
 # Deploy recipes
 
 [positional-arguments]
-@deploy-rs host: update-local-repo
-    deploy --keep-result --skip-checks -d ".#$1"
+@deploy host: update-local-repo
+    deploy --keep-result --skip-checks ".#$1"
 
-# Use `NIX_SSHOPTS="-o RequestTTY=force"` to type sudo password
-
-# --target-host "deploy@${1}.local" \
 [positional-arguments]
 @deploy-switch host: update-local-repo
     nixos-rebuild switch \
@@ -258,7 +255,7 @@ build-home: update-local-repo
         --json \
         ".#homeConfigurations.{{ hostname }}.activationPackage"
 
-switch-home: update-local-repo
+switch-home: update-local-repo pre-home-manager-switch
     #!/bin/sh
     set -eu
 
@@ -275,7 +272,7 @@ switch-home: update-local-repo
 ################################################################################
 # nh
 
-switch-os-nh: update-local-repo
+switch-os-nh: update-local-repo pre-home-manager-switch
     nh os switch .
 
 build-os-hn: update-local-repo
