@@ -17,11 +17,12 @@ in
     users.mutableUsers = false;
     users.defaultUserShell = lib.mkOverride 999 pkgs.fish;
 
-    # TODO: disable root login <2025-01-29>
     users.users.root = {
       openssh.authorizedKeys.keys = [
+        # TODO: disable ssh login? <2025-02-03>
         constants.homeSshPublic
       ];
+      hashedPassword = "$y$j9T$s.YA/IM9krcOc4J..OIke1$s0tKPmYDPljrwee8fho0q5w6bMq1YhG9uKDk.O5S6U2";
     };
 
     users.users.hnjae = {
