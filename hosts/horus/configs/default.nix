@@ -1,5 +1,6 @@
 _: {
   imports = [
+    ./ssh-host-keys
     ./sysctl.nix
     ./systemd.nix
     ./udev.nix
