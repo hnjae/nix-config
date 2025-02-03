@@ -1,3 +1,4 @@
-/constants/home.nix filter=git-crypt diff=git-crypt
+*-encrypted.* filter=git-crypt diff=git-crypt
+*-encrypted/** filter=git-crypt diff=git-crypt
 secrets/** !filter !diff
 .gitattributes !filter !diff
