@@ -1,9 +1,9 @@
 /*
-  NOTE:  <2024-11-15>
+  NOTE: <2025-02-04>
 
-  Logesq 은 현재 electron 28 을 사용하고 있으며, 이는 text-input-v3 를 아직 지원하지 않는다.
+  Logesq 은 현재 electron 31.7.5 을 사용하고 있으며, 이는 text-input-v3 를 아직 지원하지 않는다.
 
-  electron 33+ 를 사용해야함.
+  electron 33+ 를 사용해야한다.
 */
 {
   config,
@@ -47,8 +47,6 @@ in
       };
     };
     xdg.dataFile."applications/com.logseq.Logseq.desktop" =
-      let
-      in
       # flags = builtins.concatStringsSep " " electronFlags;
       # Exec=flatpak run --branch=stable --arch=x86_64 --command=run.sh --file-forwarding com.logseq.Logseq @@u %U @@ ${flags}
       {

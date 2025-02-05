@@ -31,5 +31,13 @@ in
         Categories=AudioVideo;
       '';
     };
+
+    stateful.nodes = [
+      {
+        path = "${config.xdg.configHome}/sh.cider.electron";
+        mode = "700";
+        type = "dir";
+      }
+    ];
   };
 }
