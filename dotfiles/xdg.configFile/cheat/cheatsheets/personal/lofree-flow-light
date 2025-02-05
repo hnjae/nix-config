@@ -19,3 +19,8 @@ Fn+N
 3. 무선모드로 키보드 변경
 4. `Fn+4`
 5. Profit!
+
+# Fn lock
+```sh
+echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
+```

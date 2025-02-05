@@ -143,14 +143,14 @@ check: update-local-repo _check-flake _drybuild-homes
 @deploy-switch host: update-local-repo
     nixos-rebuild switch \
         --flake ".#$1" \
-        --target-host "deploy@${1}.local" \
+        --target-host "deploy@${1}" \
         --use-remote-sudo
 
 [positional-arguments]
 @deploy-boot host: update-local-repo
     nixos-rebuild boot \
         --flake ".#$1" \
-        --target-host "deploy@${1}.local" \
+        --target-host "deploy@${1}" \
         --use-remote-sudo
 
 [positional-arguments]

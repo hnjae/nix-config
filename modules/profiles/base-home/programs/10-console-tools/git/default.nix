@@ -83,8 +83,8 @@ let
     # gc: git-commit
     "gc" = "git commit -v";
     "gca" = "git commit -v --amend";
-    "gca!" = "git commit -v --amend --no-edit";
-    "gcm" = "git commit -m";
+    "gcaN" = "git commit -v --amend --no-edit";
+    "gcm" = "git commit -v -m";
 
     # git-cherry-pick
     # gcp                  git cherry-pick
@@ -242,6 +242,7 @@ let
     "gwip" = "git-wip";
     "gunwip" = "git-unwip";
     "gtodo" = "git-todo";
+    "gop" = "git open";
   };
 in
 {

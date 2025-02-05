@@ -71,9 +71,7 @@
     };
 
     # keybindings
-    "org/gnome/settings-daemon/plugins/media-keys" = {
-      screensaver = [ "<Alt><Super>l" ]; # defaults: <Super>l
-    };
+    "org/gnome/settings-daemon/plugins/media-keys".screensaver = [ "<Alt><Super>l" ]; # defaults: <Super>l
     "org/gnome/shell/keybindings" = {
       toggle-application-view = [ ]; # @as []
     };
@@ -126,9 +124,7 @@
       move-to-workspace-left = [ "<Shift><Super>Page_Up" ];
       move-to-workspace-right = [ "<Shift><Super>Page_Down" ];
     };
-    "org/gnome/settings-daemon/plugins/media-keys" = {
-      calculator = [ "Favorites" ];
-    };
+    "org/gnome/settings-daemon/plugins/media-keys".calculator = [ "Favorites" ];
 
     # "org/gnome/settings-daemon/plugins/media-keys" = {
     #   calculator = lib.hm.gvariant.mkArray ["Favorites"];
@@ -138,5 +134,7 @@
       screen-blank = "always";
       show-notifications = false;
     };
+
+    "org/gnome/settings-daemon/plugins/media-keys"."volume-step" = 4;
   };
 }
