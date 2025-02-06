@@ -46,9 +46,9 @@
 
     # TODO: declaratvie knownHosts <2025-02-04>
     # `SHA256:` 로 시작하는 값을 요구하는 것 같음 <2025-02-04>
-    # programs.ssh.knownHosts.horus = {
-    #   publicKey = localFlake.constants.hosts.horus.sshPublicKey;
-    #   hostNames = [ localFlake.constants.hosts.horus.buildMachine.hostName ];
-    # };
+    programs.ssh.knownHosts.horus = {
+      publicKey = localFlake.constants.hosts.horus.sshPublicKey;
+      hostNames = [ localFlake.constants.hosts.horus.buildMachine.hostName ];
+    };
   };
 }
