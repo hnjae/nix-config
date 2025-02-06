@@ -1,6 +1,6 @@
 { pkgsUnstable, ... }:
 {
-  home.packages = [ pkgsUnstable.ghostty ];
+  home.packages = [ pkgsUnstable.ghostty-tip ];
   default-app.fromApps = [ "com.mitchellh.ghostty" ];
 
   # NOTE: <2024-12-30>
