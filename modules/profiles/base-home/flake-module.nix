@@ -1,7 +1,7 @@
 flakeArgs@{
+  flake-parts-lib,
   inputs,
   self,
-  flake-parts-lib,
   ...
 }:
 let
@@ -27,13 +27,20 @@ in
               config = {
                 inherit (pkgs.config) allowUnfree;
               };
-              overlays = [ ];
+              overlays = [
+                (_: prev: {
+                  ghostty-tip = inputs.ghostty.packages.${prev.system}.default;
+                })
+              ];
             };
           };
         }
       )
       {
-        nixpkgs.overlays = [ self.overlays.default ];
+        # NOTE: HomeManager 가 NixOS 모듈로 사용되고, useGlobalPackages 가 설정되어 있으면 아래 값은 무시된다. <2025-02-06>
+        nixpkgs.overlays = [
+          self.overlays.default
+        ];
       }
     ];
   };
