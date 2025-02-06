@@ -29,8 +29,7 @@
     morewaita-icon-theme # extend adwaita
 
     # fallback theme for generic-icons (e.g. utilities-system-monitor)
-    whitesur-icon-theme
-    # paper-icon-theme
-    # papirus-icon-theme
+    # NOTE: fallback 이 내가 생각한 대로 작동하지 않는다. <2025-02-06>
+    # whitesur-icon-theme
   ];
 }

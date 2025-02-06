@@ -11,6 +11,12 @@ import = [
 size = 10.2
 builtin_box_drawing = true #
 
+[font.offset]
+y = 0
+
+[font.glyph_offset]
+y = 0
+
 [font.bold]
 family = "MesloLGM Nerd Font"
 style = "Bold"
