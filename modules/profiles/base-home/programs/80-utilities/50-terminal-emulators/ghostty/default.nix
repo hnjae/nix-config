@@ -12,8 +12,14 @@ in
     home.packages = [ pkgsUnstable.ghostty-tip ];
     default-app.fromApps = [ "com.mitchellh.ghostty" ];
 
-    # NOTE: <2024-12-30>
-    # https://github.com/ghostty-org/ghostty/discussions/3628
+    /*
+      NOTE: IME Status <2025-02-06>
+
+      Use text-input-v3
+
+      https://github.com/ghostty-org/ghostty/discussions/3628
+      https://github.com/ghostty-org/ghostty/discussions/3279
+    */
     xdg.dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
       [Desktop Entry]
       Name=Ghostty
