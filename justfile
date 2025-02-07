@@ -82,6 +82,7 @@ remote-build-test: update-local-repo
         --option eval-cache false \
         --show-trace \
         --max-jobs 0 \
+        -vvvvvvvvv \
         ".#nixosConfigurations.horus.config.system.build.toplevel"
 
 #################################################################################
