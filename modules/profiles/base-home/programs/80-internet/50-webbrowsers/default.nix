@@ -11,14 +11,10 @@ in
   imports = [
     ./google-chrome.nix
     ./opera.nix
+    ./zen-browser.nix
   ];
 
   config = lib.mkIf (baseHomeCfg.isDesktop) {
-    default-app.browser = "app.zen_browser.zen";
-
-    services.flatpak.packages = [
-      "app.zen_browser.zen"
-    ];
 
     home.packages = builtins.concatLists [
       (lib.lists.optionals (pkgs.stdenv.isLinux) [

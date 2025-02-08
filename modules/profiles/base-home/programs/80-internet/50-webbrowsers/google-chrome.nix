@@ -50,6 +50,7 @@ in
         services.flatpak.packages = [
           "com.google.Chrome"
         ];
+
         xdg.dataFile."applications/com.google.Chrome.desktop" =
           let
             flags = [
