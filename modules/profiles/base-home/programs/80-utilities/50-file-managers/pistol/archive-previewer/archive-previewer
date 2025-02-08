@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+
+import binascii
+import sys
+from datetime import datetime
+from pathlib import Path
+from zipfile import ZipFile
+
+import magic  # type: ignore
+from rarfile import RarFile  # type: ignore
+from tabulate import tabulate  # type: ignore
+
+
+def print_rar(file: Path) -> None:
+    with RarFile(file) as archive:
+        if archive.needs_password():
+            print("Password required")
+            return
+
+        if archive.is_solid():
+            print("Solid archive")
+            return
+
+        table = [
+            [
+                entry.file_size,
+                entry.is_file() and datetime(*entry.date_time) or "-",
+                entry.is_file()
+                and (
+                    entry.CRC
+                    or format(binascii.crc32(entry.blake2sp_hash), "x")
+                )
+                or "-",
+                entry.filename,
+            ]
+            for entry in archive.infolist()
+        ]
+
+        print(
+            tabulate(
+                sorted(table, key=(lambda x: x[-1])),
+                headers=["Size", "Datetime", "Hash", "Filename"],
+            )
+        )
+
+
+def print_zip(file: Path) -> None:
+    with ZipFile(file) as archive:
+        table = [
+            [
+                info.file_size,
+                info.is_dir() and "-" or datetime(*info.date_time),
+                info.is_dir() and "-" or format(info.CRC, "x"),
+                info.filename,
+            ]
+            for info in archive.infolist()
+        ]
+
+        print(
+            tabulate(
+                sorted(table, key=(lambda x: x[-1])),
+                headers=["Size", "Datetime", "Hash", "Filename"],
+            )
+        )
+
+def main() -> int:
+    if len(sys.argv) != 2:
+        print("Usage: <script> <archive_path>")
+        return 1
+
+    file = Path(sys.argv[1])
+    mime = magic.from_file(file, mime=True)
+    if mime == "application/x-rar":
+        print_rar(file)
+    elif mime == "application/zip":
+        print_zip(file)
+    else:
+        print(f"Unsupported file type: {mime}")
+        return 1
+
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

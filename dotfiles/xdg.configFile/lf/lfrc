@@ -1,0 +1,220 @@
+# interpreter for shell commands (needs to be POSIX compatible)
+set shell dash
+set ifs ""
+set sixel true
+
+# set '-eu' options for shell commands
+## These options are used to have safer shell commands. Option '-e' is used to
+## exit on error and option '-u' is used to give error for unset variables.
+## Option '-f' disables pathname expansion which can be useful when $f, $fs, and
+## $fx variables contain names with '*' or '?' characters. However, this option
+## is used selectively within individual commands as it can be limiting at
+## times.
+# -e: errexit (Abort script at first error)
+# -u: nounset (Attempt to use undefined variable outputs error message, and forces an exit)
+# -f: noglob (Filename expansion (globbing) disabled)
+set shellopts '-euf'
+
+# also run at startup
+
+################################################################################
+# UI
+set dircounts true
+set icons true
+set ratios "1:14:10"
+set dirpreviews true
+
+set previewer ~/.config/lf/previewer
+set cleaner ~/.config/lf/cleaner
+
+map i $clear; ~/.config/lf/previewer "$f" | less -R
+
+set number
+set relativenumber
+set info size:time
+# set drawbox
+# set promptfmt ""
+set incfilter false
+# set ifs
+set ignorecase true
+
+# https://pkg.go.dev/time#example-Time.Format
+set infotimefmtnew "--0102 1504"
+set infotimefmtold "2006-01-02"
+set timefmt "2006-01-02 15:04:05 MST Mon"
+
+set scrolloff 2
+
+################################################################################
+cmd open &xdg-open "$f"
+
+################################################################################
+# cmd on-cd &{{
+# 	# display git repository status in your prompt
+# 	source /usr/share/git/completion/git-prompt.sh
+# 	GIT_PS1_SHOWDIRTYSTATE=auto
+# 	GIT_PS1_SHOWSTASHSTATE=auto
+# 	GIT_PS1_SHOWUNTRACKEDFILES=auto
+# 	GIT_PS1_SHOWUPSTREAM=auto
+# 	git=$(__git_ps1 " (%s)") || true
+# 	fmt="\033[32;1m%u@%h\033[0m:\033[34;1m%d\033[0m\033[1m%f$git\033[0m"
+# 	lf -remote "send $id set promptfmt \"$fmt\""
+# }}
+# on-cd
+# cmd paste &{{
+#     set -- $(cat ~/.local/share/lf/files)
+#     mode="$1"
+#     shift
+#     case "$mode" in
+#         copy)
+#             rsync -ahX --ignore-existing --info=progress2 -- "$@" . |
+#             stdbuf -i0 -o0 -e0 tr '\r' '\n' |
+#             while IFS= read -r line; do
+#                 lf -remote "send $id echo $line"
+#             done
+#             ;;
+#         move) mv -n -- "$@" .;;
+#     esac
+#     rm ~/.local/share/lf/files
+#     lf -remote "send clear"
+# }}
+
+cmd bulkrename :${{clear; ~/.config/lf/scripts/vimv-wrapper "$fx"}}
+map C bulkrename
+
+################################################################################
+map d
+map dd cut
+cmd trash :${{clear; ~/.config/lf/scripts/handle-files trash "$fx"}}
+map dt trash
+cmd delete :${{clear; ~/.config/lf/scripts/handle-files delete "$fx"}}
+map dD delete
+cmd rmdir :${{clear; ~/.config/lf/scripts/handle-files rmdir "$fx"}}
+map dr rmdir
+cmd trace :${{clear; ~/.config/lf/scripts/handle-files "trash-with-trace-file" "$fx"}}
+map dT trace
+
+map y
+map yy copy
+cmd yank &{{~/.config/lf/scripts/yank "$1" "$f"}}
+map yd yank dir
+map yn yank name
+map yp yank path
+map yl yank paren
+map ys yank stem
+map yc yank colon
+
+map p
+cmd paste :${{~/.config/lf/scripts/handle-lf-files "use_lf_command"}}; clear; load
+map pp paste
+# map pp paste
+cmd paste-symlink-absolute ${{~/.config/lf/scripts/handle-lf-files "symlink-absolute"}}
+cmd paste-symlink-relative ${{~/.config/lf/scripts/handle-lf-files "symlink-relative"}}
+map pl paste-symlink-absolute
+map pL paste-symlink-relative
+################################################################################
+
+map zz push :filter<enter>
+map zR set ratios "1:14:10"
+map zr set ratios "20:200:1"
+# map zp toggle preview
+
+
+map R reload
+map @ load
+################################################################################
+
+
+cmd echo2 !echo $f
+
+map w
+# ranger - log
+map W push :shell-wait<enter>:<enter>
+# map s push :shell-wait<enter><space>
+map S $$SHELL
+
+
+map sa
+map sA
+map sC :set sortby ctime; set info ctime
+map sc :set sortby ctime; set info ctime; set reverse!
+map se :set sortby ext; set info size
+map sE :set sortby ext; set info size; set reverse!
+map s0 :set sortby natural; set info size:time
+map sn :set sortby natural; set info size:time
+map sN :set sortby natural; set info size:time; set reverse!
+map ss :set sortby size; set info size
+map sS :set sortby size; set info size; set reverse!
+map sr set reverse!
+
+# map zr
+
+map f
+cmd touch %{{~/.config/lf/scripts/concatenate-args touch "$@"}}
+map ft push :touch<space>
+cmd mkdir %{{~/.config/lf/scripts/concatenate-args mkdir "$@"}}
+map fM push :mkdir<space>
+cmd mkcd %~/.config/lf/scripts/mkcd "$id" "$@"
+map fm push :mkcd<space>
+
+map E $sudoedit "$f"
+map e ${{
+        cd "$(dirname '$f')"
+	EDITOR="${EDITOR:-nvim}"
+	if [ -f "${f}" ] && ! rg "\x00" -- "${f}" > /dev/null; then
+		"${EDITOR}" "${f}"
+	else
+		echo "Not a text file"
+	fi
+	}}
+
+# rename은 띄어쓰기 처리 잘하는 명령어. (2022-06-02)
+map r
+map rc push :rename<space>
+map c
+map cw push :rename<enter><c-u>
+map A push :rename<enter>
+map a &~/.config/lf/scripts/rename-append "$f"
+
+map u
+map uu jump-prev
+map <c-r> jump-next
+map uv unselect
+map uc clear
+map ud clear
+map uy clear
+
+# map [ :updir; down; open
+# map ] :updir; up; open
+
+#### g
+map gp cd "~/Projects"
+
+map gh set hidden!
+
+cmd z %{{
+  result="$(zoxide query --exclude $PWD $@)"
+  lf -remote "send $id cd $result"
+}}
+
+cmd zi ${{
+  result="$(zoxide query -i)"
+  lf -remote "send $id cd $result"
+}}
+
+cmd fzf ${{
+  result="$(fzf)"
+
+  [ ! -d "$result" ] && result="$(dirname \"$result\")"
+  lf -remote "send $id cd $result"
+
+  # TODO: if result is hidden file, make lf to show hidden files <2023-04-25>
+}}
+
+map gz push :z<space>
+map gs :zi
+map gf :fzf
+
+map gx &{{
+  xdg-open "$f"
+}}

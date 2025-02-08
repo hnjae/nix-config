@@ -1,0 +1,139 @@
+#!/bin/sh
+
+# Requires:
+#   pistol
+# Sixel Optional Dependencies:
+#   crc32, chafa, imagemagick
+
+HORIZONTAL_POS="$4"
+IMG_CACHE_SIZE=1920x2160
+
+is_lf_preview_pane=1
+if [ "$HORIZONTAL_POS" = "" ]; then
+  is_lf_preview_pane=0
+fi
+
+is_sixel_available() {
+  if [ "$TERM" = "tmux-256color" ] ||
+    [ "$ZELLIJ_SESSION_NAME" != "" ]; then
+    # NOTE: issue using sixel in zellij <2023-04-30>
+    echo 0
+    return
+  fi
+
+  if [ "$TERM" = "foot" ] ||
+    [ "$TERM_PROGRAM" = "WezTerm" ] ||
+    [ "$TERM" = "contour" ]; then
+    echo 1
+    return
+  fi
+
+  if [ "$TERM" = "tmux-256color" ] ||
+    [ "$TERM" = "xterm-kitty" ] ||
+    [ "$TERM" = "Linux" ] ||
+    [ "$KONSOLE_VERSION" != "" ] ||
+    [ "$ALACRITTY_WINDOW_ID" != "" ]; then
+    # NOTE: Issue using sixel in konsole <2023-04-28>
+    echo 0
+    return
+  fi
+
+  echo 0
+}
+
+is_kitty_available() {
+  if ([ "$TERM_PROGRAM" = "ghostty" ] && command -v kitten >/dev/null 2>&1) ||
+    [ "$TERM" = "xterm-kitty" ]; then
+    echo 1
+    return
+  fi
+
+  echo 0
+}
+
+draw_img_chafa() {
+  get_img_cache_path() {
+    filepath="$1"
+    [ ! -d "${XDG_CACHE_HOME}/lf" ] && mkdir -p "${XDG_CACHE_HOME}/lf"
+
+    if ! command -v crc32 >/dev/null 2>&1; then
+      echo "crc32 not installed"
+      exit 1
+    fi
+
+    echo "${XDG_CACHE_HOME}/lf/thumbnail.$(
+      stat --printf "%i\0%F\0%s\0%W\0%Y" -- "$filepath" |
+        crc32
+    ).jpg"
+  }
+
+  generate_cache() {
+    src="$1"
+    dst="$(get_img_cache_path "$src")"
+
+    magick \
+      "$src" \
+      -auto-orient \
+      -resize "${IMG_CACHE_SIZE}\>" \
+      -quality 70 \
+      "$dst" >/dev/null 2>&1
+
+    echo "$dst"
+  }
+
+  filepath="$1"
+  width="${2}"
+  height="${3}"
+
+  # [ "$(exiftool -Orientation -n -- "$filepath" | awk '{print $NF}')" -gt 1 ]; then
+
+  img_path="$filepath"
+  case "$(file -L --brief --mime-type -- "$filepath")" in
+  image/heic | \
+    image/avif | \
+    image/jxl | \
+    image/bmp | \
+    image/tiff | \
+    image/svg+xml | \
+    image/x-xpixmap)
+    img_path=$(generate_cache "$filepath")
+    ;;
+  esac
+
+  if [ "$(is_sixel_available)" -eq 1 ]; then
+    chafa -f sixel -s "${width}x${height}" --animate off --polite on "$img_path"
+  else
+    chafa -f symbols -s "${width}x${height}" --animate off --polite on "$img_path"
+  fi
+}
+
+main() {
+  filepath="$1"
+  # width=$(("${2:-"$(tput cols)"}" - 2))
+  # height="${3:-"$(("$(tput lines)" - 1))"}"
+  width="$2"
+  height="$3"
+  x="$4"
+  y="$5"
+
+  case "$(xdg-mime query filetype "$filepath")" in
+  image/vnd.microsoft.icon)
+    # image preview not supported
+    ;;
+  image/*)
+    if [ "$is_lf_preview_pane" -eq 1 ] && [ "$(is_kitty_available)" -eq 1 ]; then
+      kitten icat --stdin no --transfer-mode memory --place "${width}x${height}@${x}x${y}" "$1" </dev/null >/dev/tty
+      exit 1
+    fi
+
+    if [ "$is_lf_preview_pane" -eq 1 ]; then
+      draw_img_chafa "$filepath" "$width" "$height"
+      exit 0
+    fi
+    ;;
+  esac
+
+  pistol "$filepath"
+}
+
+main "$@"

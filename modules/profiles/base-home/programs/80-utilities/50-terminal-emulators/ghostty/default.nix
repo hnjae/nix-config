@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   pkgsUnstable,
   ...
 }:
@@ -9,7 +10,13 @@ let
 in
 {
   config = lib.mkIf baseHomeCfg.isDesktop {
-    home.packages = [ pkgsUnstable.ghostty-tip ];
+    home.packages = [
+      pkgsUnstable.ghostty-tip
+      (pkgs.runCommandLocal "kitten" { } ''
+        mkdir -p "$out/bin"
+        ln -s "${pkgs.kitty}/bin/kitten" "$out/bin/kitten"
+      '')
+    ];
     default-app.fromApps = [ "com.mitchellh.ghostty" ];
 
     /*

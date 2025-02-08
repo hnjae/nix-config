@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+from subprocess import CompletedProcess
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+RENAMER = "vimv"
+PWD: Path = Path(os.environ["PWD"])
+
+
+def fx2files(arg: str) -> list[Path]:
+    return [Path(path) for path in arg.split("\n")]
+
+
+def lf_send(commands: Iterable[str]) -> None:
+    lf_id: str | None = os.environ.get("id")  # noqa: SIM112
+
+    if lf_id is None:
+        return
+
+    for command in commands:
+        args = ["lf", "-remote", f"send {lf_id} {command}"]
+        subprocess.run(args, check=False)
+
+    return
+
+
+def main(paths: Iterable[Path]) -> int:
+    if not paths:
+        return 0
+
+    args: list[str] = [RENAMER]
+    # cwd: Path = Path().cwd()
+
+    for path in paths:
+        # path is fullpath (provided by lf)
+        if path.parent == PWD:
+            args.append(path.name)
+        else:
+            args.append(os.path.relpath(path, start=PWD))
+
+    proc: CompletedProcess = subprocess.run(
+        args,
+        stderr=subprocess.PIPE,
+        check=False,
+        text=True,
+        cwd=PWD,
+    )
+    msg = proc.stderr.strip()
+    # lf_send(["load", "unselect", "reload", f"echo {msg}"])
+    lf_send(["unselect", "reload", f"echo {msg}"])
+
+    return proc.returncode
+
+
+if __name__ == "__main__":
+    # Usage: <.py> <files>
+
+    if shutil.which(RENAMER) is None:
+        print(f"{RENAMER} is not installed.", file=sys.stderr)
+        sys.exit(1)
+
+    sys.exit(main(fx2files(sys.argv[1])))

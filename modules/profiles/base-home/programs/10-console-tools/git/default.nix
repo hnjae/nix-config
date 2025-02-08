@@ -238,7 +238,7 @@ let
     # new -commands
     ############################################################################
     "gtl" = "git-tag-list";
-    "grt" = "git-root";
+    "gsr" = "git-cd-root";
     "gwip" = "git-wip";
     "gunwip" = "git-unwip";
     "gtodo" = "git-todo";
@@ -319,8 +319,14 @@ in
         git tag --sort=-v:refname -n -l "''${1}*"
       }
 
-      git-root () {
-        cd "$(git rev-parse --show-toplevel || echo .)"
+      git-cd-root () {
+        local cd="cd"
+
+        if [ command -v __zoxide_z >/dev/null 2>&1 ]; then
+          cd="__zoxide_z"
+        fi
+
+        "$cd" "$(git rev-parse --show-toplevel || echo .)"
       }
 
       git-wip () {
