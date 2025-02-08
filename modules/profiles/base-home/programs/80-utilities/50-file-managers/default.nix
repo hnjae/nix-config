@@ -1,8 +1,9 @@
 { ... }:
 {
   imports = [
-    ./ranger
     ./lf
+    ./pistol
+    ./ranger
     ./yazi
   ];
 }

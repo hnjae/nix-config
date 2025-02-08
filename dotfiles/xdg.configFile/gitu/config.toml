@@ -2,3 +2,15 @@
 
 [general]
 always_show_help.enabled = true
+
+# match neogit.nvim
+[bindings]
+# status
+root.discard = ["x"]
+root.show_refs = ["y"]
+root.copy_hash = ["Y"]
+root.refresh = ["<ctrl+r>"]
+
+# popup
+root.pull_menu = ["p"]
+root.stash_menu = ["Z"]

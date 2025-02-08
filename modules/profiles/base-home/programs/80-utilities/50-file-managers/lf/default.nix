@@ -5,21 +5,12 @@ in
 {
   home.packages = with pkgsUnstable; [
     lf
-
-    # to preview files
-    exiftool
     chafa
-    hexyl
-    odt2txt
-    xlsx2csv
-    # glibc
-    # llvm
-    mediainfo
+    imagemagick
   ];
 
   programs.zsh.initExtra = lfcdPosix;
   programs.bash.initExtra = lfcdPosix;
-
   programs.fish.functions.lfcd = {
     body = builtins.readFile ./resources/lfcd.fish;
     description = "lf wrapper";

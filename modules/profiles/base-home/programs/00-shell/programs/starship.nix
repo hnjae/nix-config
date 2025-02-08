@@ -7,14 +7,12 @@
   programs.starship = {
     # "$schema" = 'https://starship.rs/config-schema.json'
     enable = true;
-    # package = pkgsUnstable.starship;
     enableBashIntegration = false;
 
     settings = {
       format = "$all";
       add_newline = true;
       follow_symlinks = false;
-
       directory = {
         read_only = " "; # nf-oct-lock
         read_only_style = "bold red";
@@ -28,14 +26,6 @@
         vimcmd_replace_symbol = "[❮](purple)";
         vimcmd_visual_symbol = "[❮](yellow)";
       };
-      # status = {
-      #   enable = true;
-      #   symbol = "";
-      #   # not_executable_symbol
-      #   # not_found_symbol
-      #   # sigint_symbol
-      #   # signal_symbol
-      # };
       cmd_duration = {
         show_notifications = false;
         min_time_to_notify = 30 * 1000;
@@ -71,7 +61,6 @@
       };
       git_status = {
         style = "cyan";
-        # format = "[$renamed$staged][$conflicted][$modified$deleted$untracked][$ahead_behind$stashed] ";
         format = "(($conflicted)($renamed$staged)($modified$untracked)($deleted)($ahead_behind)($stashed) )";
         # NOTE: $all_status == $conflicted$stashed$deleted$renamed$modified$staged$untracked
         up_to_date = "[✔](bold green)";
@@ -91,10 +80,14 @@
         renamed = "[»\${count}](yellow)"; # nf-oct-file-moved
       };
       nix_shell = {
+        format = ''via [$symbol$name( \($state\))]($style) '';
         symbol = "󱄅 "; # nf-md-nix
-        heuristic = true;
-        # impure_msg = "impure";
+        heuristic = false; # ghostty 와 충돌 <2025-02-07>
+
+        # state
+        # impure_msg = "";
         unknown_msg = "unknown";
+        pure_msg = "pure";
       };
       container = {
         style = "bold red";
@@ -105,27 +98,16 @@
         symbol = "󰍛 ";
         style = "bold white";
       };
-
       aws.symbol = "  "; # nf-dev-aws
       azure.symbol = " "; # nf-code-azure
       gcloud.symbol = " "; # nf-dev-google_cloud_platform
       openstack.symbol = " "; # nf-oct-cloud
-
-      # terraform = {
-      #   symbol = " "; # nf-seti-terraform
-      #   style = "";
-      # };
-
       guix_shell.symbol = " "; # nf-linux-gnu_guix
-
       gradle.symbol = " "; # nf-seti-gradle
-      # meson.symbol = ""
-
       package = {
         symbol = " "; # nf-oct-package
         style = "bold yellow";
       };
-
       c = {
         symbol = " "; # nf-custom-c
         style = "bold bright-green";
@@ -136,7 +118,6 @@
       elm.symbol = " "; # nf-seti-elm
       golang.symbol = " "; # nf-seti-go
       haskell.symbol = " "; # nf-seti-haskell
-      # haxe.symbol = " "; # nf-seti-haxel
       java = {
         symbol = " "; # nf-dev-java
         style = "bold red";
@@ -147,9 +128,6 @@
       nim.symbol = " "; # nf-seti-nim
       nodejs.symbol = "󰎙 "; # nf-md-nodjes
       ocaml.symbol = " "; # nf-seti-ocaml
-      # php = {
-      #   symbol = " "; # nf-seti-php
-      # };
       perl = {
         symbol = " "; # nf-seti-perl
         style = "bold bright-green";
@@ -163,17 +141,8 @@
         symbol = " "; # nf-seti-scala
         style = "red";
       };
-      # swift = {
-      #   symbol = " "; # nf-seti-swift
-      #   style = "";
-      # };
       vlang.symbol = " "; # nf-custom-v_lang
       zig.symbol = " "; # nf-seti-zig
     };
-
-    # custom.gitfetch = {
-    #   command = "${pkgsUnstable.onefetch}/bin/onefetch";
-    #   require_repo = true;
-    # };
   };
 }

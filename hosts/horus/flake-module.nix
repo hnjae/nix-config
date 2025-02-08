@@ -35,25 +35,29 @@ in
           isRootNotZFS = true;
         };
       }
-      {
-        rollback-btrfs-root = {
-          enable = true;
-          luksSupport = {
+      (
+        { config, ... }:
+        {
+          rollback-btrfs-root = {
             enable = true;
-            mappingName = "luks-horus";
-            device = "/dev/disk/by-partuuid/6ae2d92d-af4e-40e3-9f93-6a3d22dd4a34";
+            luksSupport = {
+              enable = true;
+              mappingName = "luks-horus";
+              device = "/dev/disk/by-partuuid/6ae2d92d-af4e-40e3-9f93-6a3d22dd4a34";
+            };
+            sshLuksUnlock = {
+              enable = true;
+              networkKernelModule = "r8169";
+              networkInterfaceName = "eno1";
+              authorizedKeys = [ self.constants.homeSshPublic ];
+              hostKeys = [
+                config.sops.secrets.ssh-host-key-prv.path
+                # "/persist/@/initrd-ssh-host-prviate"
+              ];
+            };
           };
-          sshLuksUnlock = {
-            enable = true;
-            networkKernelModule = "r8169";
-            networkInterfaceName = "eno1";
-            authorizedKeys = [ self.constants.homeSshPublic ];
-            hostKeys = [
-              "/persist/@/initrd-ssh-host-prviate"
-            ];
-          };
-        };
-      }
+        }
+      )
       self.nixosModules.base-nixos
       self.nixosModules.configure-impermanence
       self.nixosModules.rollback-btrfs-root
