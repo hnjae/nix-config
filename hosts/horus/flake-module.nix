@@ -1,6 +1,5 @@
 /*
   Requires:
-    * /perist/@/initrd-ssh-host-prviate
     * /secrets/home-age-private
 
   Todo:
@@ -52,7 +51,7 @@ in
               authorizedKeys = [ self.constants.homeSshPublic ];
               hostKeys = [
                 config.sops.secrets.ssh-host-key-prv.path
-                # "/persist/@/initrd-ssh-host-prviate"
+                "/etc/ssh/ssh_host_rsa_key"
               ];
             };
           };
