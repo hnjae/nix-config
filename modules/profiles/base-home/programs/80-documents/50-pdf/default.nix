@@ -2,7 +2,6 @@
   config,
   lib,
   pkgsUnstable,
-  pkgs,
   ...
 }:
 let
@@ -21,6 +20,8 @@ in
         "org.gnome.Papers"
       ]
     ];
+
+    default-app.mime."application/pdf" = "org.gnome.Papers";
 
     home.packages = builtins.concatLists [
       (lib.lists.optionals (baseHomeCfg.isDev) (

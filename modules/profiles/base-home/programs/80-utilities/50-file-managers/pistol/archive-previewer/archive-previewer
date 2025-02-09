@@ -25,12 +25,13 @@ def print_rar(file: Path) -> None:
             [
                 entry.file_size,
                 entry.is_file() and datetime(*entry.date_time) or "-",
+                (
                 entry.is_file()
                 and (
-                    entry.CRC
+                    entry.CRC and format(entry.CRC, "x")
                     or format(binascii.crc32(entry.blake2sp_hash), "x")
                 )
-                or "-",
+                or "-"),
                 entry.filename,
             ]
             for entry in archive.infolist()

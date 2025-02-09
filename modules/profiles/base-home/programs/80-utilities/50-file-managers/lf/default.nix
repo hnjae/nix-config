@@ -1,12 +1,18 @@
-{ pkgsUnstable, ... }:
+{ pkgs, pkgsUnstable, ... }:
 let
   lfcdPosix = builtins.readFile ./resources/lfcd.sh;
 in
 {
-  home.packages = with pkgsUnstable; [
-    lf
-    chafa
-    imagemagick
+  home.packages = [
+    pkgsUnstable.lf
+    pkgsUnstable.chafa
+    pkgsUnstable.imagemagick
+    (pkgs.runCommandLocal "papers-thumbnailer" { } ''
+      mkdir -p "$out/bin"
+      ln -s "${pkgs.papers}/bin/papers-thumbnailer" "$out/bin/papers-thumbnailer"
+    '')
+    pkgs.epub-thumbnailer
+    pkgs.gnome-epub-thumbnailer # for epub & mobi
   ];
 
   programs.zsh.initExtra = lfcdPosix;
