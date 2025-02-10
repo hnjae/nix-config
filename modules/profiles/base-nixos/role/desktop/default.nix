@@ -13,6 +13,7 @@
     ./locate.nix
     ./packages.nix
     ./portal-pipewire.nix
+    ./via.nix
   ];
 
   config = lib.mkIf (config.base-nixos.role == "desktop") {
