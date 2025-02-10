@@ -6,8 +6,8 @@
 #   crc32, chafa, imagemagick, rsvg-convert
 
 HORIZONTAL_POS="$4"
-IMG_CACHE_WIDTH=1900
-IMG_CACHE_HEIGH=2000
+IMG_CACHE_WIDTH=1600
+IMG_CACHE_HEIGH=1904
 IMG_CACHE_SIZE="${IMG_CACHE_WIDTH}x${IMG_CACHE_HEIGH}"
 
 is_lf_preview_pane=1
@@ -185,6 +185,20 @@ main() {
   y="$5"
 
   case "$(xdg-mime query filetype "$filepath")" in
+  inode/directory)
+    if [ -f "$filepath/cover.jpg" ]; then
+      filepath="$filepath/cover.jpg"
+      if [ "$is_lf_preview_pane" -eq 1 ] && [ "$(is_kitty_available)" -eq 1 ]; then
+        draw_img_kitten "$filepath" "$width" "$height" "$x" "$y"
+        exit 1
+      fi
+
+      if [ "$is_lf_preview_pane" -eq 1 ]; then
+        draw_img_chafa "$filepath" "$width" "$height"
+        exit 0
+      fi
+    fi
+    ;;
   image/vnd.microsoft.icon)
     # image preview not supported
     ;;
@@ -300,5 +314,10 @@ main() {
 
   pistol "$filepath"
 }
+
+if ! command -v xdg-mime >/dev/null 2>&1; then
+  pistol "$1"
+  exit 0
+fi
 
 main "$@"

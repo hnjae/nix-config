@@ -33,7 +33,16 @@ in
         }
         {
           mime = "inode/x-empty";
-          command = "${pkgs.dash}/bin/dash -c 'echo inode/x-empty'";
+          command =
+            # NOTE: %pistol-filename% 가 command 안에 반드시 있어야 한다. <2025-02-10>
+            let
+              p = pkgs.writeScript "p" ''
+                #!${pkgs.dash}/bin/dash
+
+                echo 'inode/x-empty'
+              '';
+            in
+            "${p} %pistol-filename%";
         }
       ]
       (map
