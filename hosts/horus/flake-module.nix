@@ -1,6 +1,7 @@
 /*
   Requires:
     * /secrets/home-age-private
+    * /secrets/ssh_host_ed25519_key
 
   Todo:
     remove /persist/@nocow
@@ -48,10 +49,13 @@ in
               enable = true;
               networkKernelModule = "r8169";
               networkInterfaceName = "eno1";
-              authorizedKeys = [ self.constants.homeSshPublic ];
+              authorizedKeys = [
+                self.constants.homeSshPublic
+              ];
               hostKeys = [
-                config.sops.secrets.ssh-host-key-prv.path
-                "/etc/ssh/ssh_host_rsa_key"
+                "/secrets/ssh_host_ed25519_key"
+                # config.sops.secrets.ssh-host-key-prv.path
+                # "/etc/ssh/ssh_host_rsa_key"
               ];
             };
           };

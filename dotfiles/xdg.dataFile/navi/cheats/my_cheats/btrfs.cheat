@@ -25,7 +25,7 @@ cat /sys/fs/btrfs/<uuid>/features/block_group_tree
 btrfs inspect-internal dump-super <blockdevice>
 
 # enable quota
-btrfs quota enable <path>
+btrfs quota --simple enable <path>
 
 # disable quota
 btrfs quota disable <path>
