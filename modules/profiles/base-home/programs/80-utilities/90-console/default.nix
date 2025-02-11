@@ -12,9 +12,10 @@
 
     ./bottom.nix
     ./duf.nix
-    ./tldr
     ./qalc.nix
     ./rsync.nix
+    ./tldr
+    ./tmux.nix
   ];
 
   home.packages = builtins.concatLists [
@@ -25,8 +26,6 @@
 
       stow
       cht-sh
-
-      tmux
 
       fio
 
