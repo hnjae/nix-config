@@ -4,7 +4,10 @@
     modules = [
       {
         system.stateVersion = "24.11";
-        base-nixos.role = "desktop";
+        base-nixos = {
+          role = "desktop";
+          hostType = "baremetal";
+        };
         networking.hostName = "isis";
 
         rollback-zfs-root = {
