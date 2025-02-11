@@ -6,6 +6,7 @@
 {
   imports = [
     ./1password.nix
+    ./earlyoom.nix
     ./flatpak.nix
     ./fonts.nix
     ./hardware.nix

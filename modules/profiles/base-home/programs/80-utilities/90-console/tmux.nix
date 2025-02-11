@@ -9,13 +9,13 @@
     prefix = "M-n";
     terminal = "tmux-256color";
 
-    plugins = [
-      {
-        # prefix + space
-        # NOTE: no wayland support <2025-02-11>
-        # plugin = pkgs.tmuxPlugins.tmux-thumbs;
-      }
-    ];
+    # plugins = [
+    #   {
+    #     # prefix + space
+    #     # NOTE: no wayland support <2025-02-11>
+    #     # plugin = pkgs.tmuxPlugins.tmux-thumbs;
+    #   }
+    # ];
 
     extraConfig = lib.concatLines [
       ''
