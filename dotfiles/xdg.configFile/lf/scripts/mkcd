@@ -14,4 +14,4 @@ big_arg="$(echo "${big_arg}" | xargs)"
 
 [ ! -d "$big_arg" ] && mkdir "$big_arg"
 
-lf -remote "send \"$id\" cd \"$big_arg\""
+lf -remote "send $id cd '$big_arg'"
