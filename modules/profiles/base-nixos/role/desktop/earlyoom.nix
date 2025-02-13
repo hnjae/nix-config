@@ -9,7 +9,7 @@
         "--ignore-root-user"
         "--prefer"
         # top, pstree, ps -e
-        "(^|/)(zen|chromium|chrome|Logseq)$"
+        "(^|/)(zen|chromium|chrome|Logseq|firefox-bin)$"
         # "--avoid"
       ];
     };

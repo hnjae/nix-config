@@ -9,6 +9,7 @@ let
 in
 {
   imports = [
+    ./firefox.nix
     ./google-chrome.nix
     ./opera.nix
     ./zen-browser.nix
@@ -17,11 +18,6 @@ in
   config = lib.mkIf (baseHomeCfg.isDesktop) {
 
     home.packages = builtins.concatLists [
-      (lib.lists.optionals (pkgs.stdenv.isLinux) [
-        pkgs.librewolf
-        pkgs.firefox-devedition-bin
-      ])
-
       (lib.lists.optional (pkgs.stdenv.isLinux) (
         let
           flags = builtins.concatStringsSep " " [
@@ -44,16 +40,6 @@ in
     ];
 
     stateful.nodes = [
-      {
-        path = "${config.home.homeDirectory}/.librewolf";
-        mode = "700";
-        type = "dir";
-      }
-      {
-        path = "${config.home.homeDirectory}/.mozilla";
-        mode = "700";
-        type = "dir";
-      }
       {
         path = "${config.xdg.configHome}/chromium";
         mode = "700";

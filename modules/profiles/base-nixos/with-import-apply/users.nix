@@ -17,6 +17,8 @@ in
     users.mutableUsers = false;
     users.defaultUserShell = lib.mkOverride 999 pkgs.fish;
 
+    security.sudo.wheelNeedsPassword = lib.mkOverride 999 false;
+
     users.users.root = {
       openssh.authorizedKeys.keys = [
         # TODO: disable ssh login? <2025-02-03>

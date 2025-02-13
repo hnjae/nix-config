@@ -17,6 +17,7 @@ in
       [
         "org.gnome.Logs" # systemd logs, ets
         "app.drey.KeyRack" # edit secrets
+        "com.github.qarmin.czkawka" # <https://github.com/qarmin/czkawka> deduplication
 
         # infos
         "xyz.tytanium.DoorKnocker" # check availability of all portals provided by xdg-desktop-portal.
