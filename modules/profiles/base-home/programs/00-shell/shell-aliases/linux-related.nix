@@ -7,11 +7,12 @@ let
   aliases = {
     fl = "flatpak --user";
     flr = "flatpak --user run";
+    flx = "flatpak --user run";
     fls = "flatpak --user search";
     fli = "flatpak --user install";
     flu = "flatpak --user update";
     flh = "flatpak --help";
-    flp = "flatpak ps";
+    flps = "flatpak ps";
     flK = "flatpak kill";
   };
 in

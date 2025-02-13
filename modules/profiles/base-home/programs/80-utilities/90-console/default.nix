@@ -29,6 +29,7 @@
 
       fio
 
+      fclones
       rmlint
 
       xxHash

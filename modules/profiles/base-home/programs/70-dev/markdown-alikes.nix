@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   pkgsUnstable,
   ...
 }:
@@ -23,7 +24,7 @@ in
       # spellcheck
       codespell # all
       proselint # markdown, tex
-      write-good # markdown
+      pkgs.write-good # markdown
       # textidote # markdown, tex
 
       # html formatter
