@@ -12,23 +12,6 @@ in
     lib.mkIf
       (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux && pkgs.stdenv.isx86_64 && pkgs.config.allowUnfree)
       {
-        home.packages = [
-          # (pkgs.google-chrome.override {
-          #   # NOTE: gtk-version=4 flag 안먹음 <2024-06-05>
-          #   commandLineArgs =
-          #     builtins.concatStringsSep
-          #     " " [
-          #       "--ozone-platform-hint=auto"
-          #       "--enable-features=UseOzonePlatform"
-          #       "--enable-wayland-ime"
-          #       "--wayland-text-input-version=3"
-          #       # "--enable-features=WaylandWindowDecorations"
-          #       # "--enable-features=VaapiVideoDecoder"
-          #       # "--enable-features=VaapiIgnoreDriverChecks"
-          #     ];
-          # })
-        ];
-
         stateful.nodes = [
           {
             path = "${config.xdg.configHome}/google-chrome";
@@ -82,7 +65,7 @@ in
               Icon=com.google.Chrome
               Type=Application
               Categories=Network;WebBrowser;
-              MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
+              MimeType=application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;text/html;x-scheme-handler/http;x-scheme-handler/https;
               Actions=new-window;new-private-window;
               X-Flatpak-Tags=proprietary;
               X-Flatpak=com.google.Chrome

@@ -31,6 +31,9 @@ in
       isNormalUser = true;
       extraGroups = concatLists [
         [ "wheel" ]
+        (lib.lists.optional (
+          config.services.locate.enable && (lib.hasPrefix "plocate" config.services.locate.package.name)
+        ) "plocate")
         (lib.lists.optionals (cfg.role == "desktop") (concatLists [
           # NOTE: docker/podman 을 유저가 sudo 없이 실행하는건 bad practice 임
           (optional config.networking.networkmanager.enable "networkmanager")

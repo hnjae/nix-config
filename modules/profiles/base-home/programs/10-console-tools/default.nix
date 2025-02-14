@@ -22,7 +22,8 @@
     pkgs.ripgrep-all # ripgrep & PDF E-Books & Office documents & etc.
     pkgs.sd # 'modern' sed
     pkgs.delta # replace diff
-    pkgsUnstable.hexyl # replace od
+    pkgs.tree
+    pkgs.hexyl # replace od
     pkgsUnstable.procs # replace ps
     pkgsUnstable.viddy # replace watch
 

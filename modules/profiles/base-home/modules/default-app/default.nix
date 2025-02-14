@@ -144,10 +144,10 @@ in
       xdg.mimeApps = {
         enable = true;
         defaultApplications = lib.attrsets.mergeAttrsList [
-          (builtins.mapAttrs (_: app: [ "${app}.desktop" ]) mimeMerged)
           (lib.attrsets.optionalAttrs (cfg.fileManager != null) {
             "inode/directory" = "${cfg.fileManager}.desktop";
           })
+          (builtins.mapAttrs (_: app: [ "${app}.desktop" ]) mimeMerged)
         ];
       };
 
@@ -184,9 +184,9 @@ in
                   "flatpak"
                   "permission-set"
                   "desktop-used-apps"
-                  ''"${x.mime}"''
-                  ''"${x.fromApp}"''
-                  ''"${x.defaultApp}"''
+                  "'${x.mime}'"
+                  "'${x.fromApp}'"
+                  "'${x.defaultApp}'"
                   "3"
                   "3"
                 ])

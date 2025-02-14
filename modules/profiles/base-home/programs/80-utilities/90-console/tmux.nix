@@ -1,5 +1,22 @@
-{ pkgs, lib, ... }:
+{ lib, ... }:
+let
+  aliases = {
+    t = "tmux";
+    tls = "tmux ls";
+    ta = "tmux attach";
+    tat = "tmux attach -t";
+    tn = "tmux new-session -n";
+    trn = "tmux rename-session";
+    tc = "tmux -c";
+  };
+in
 {
+  home.shellAliases = aliases;
+
+  xdg.configFile."zsh-abbr/user-abbreviations".text = (
+    lib.concatLines (lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') aliases)
+  );
+
   programs.tmux = {
     enable = true;
 

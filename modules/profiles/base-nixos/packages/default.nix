@@ -60,6 +60,7 @@
       hexyl # replace od
       procs # replace ps
       viddy # replace watch
+      tree
 
       # misc
       pwgen
