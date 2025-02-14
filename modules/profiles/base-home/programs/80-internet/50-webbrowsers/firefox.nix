@@ -11,9 +11,10 @@ in
     services.flatpak.packages = [
       "org.mozilla.firefox"
     ];
+
     xdg.mimeApps.associations.removed =
       let
-        desktopName = "app.zen_browser.zen.desktop";
+        desktopName = "org.mozilla.firefox.desktop";
         mimeTypes = [
           # "application/rdf+xml"
           # "application/rss+xml"
@@ -39,6 +40,5 @@ in
           value = desktopName;
         }) mimeTypes
       ));
-
   };
 }

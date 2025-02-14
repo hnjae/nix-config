@@ -37,6 +37,7 @@ def print_rar(file: Path) -> None:
             for entry in archive.infolist()
         ]
 
+        print(f"Num of files: {len(table)}")
         print(
             tabulate(
                 sorted(table, key=(lambda x: x[-1])),
@@ -57,6 +58,7 @@ def print_zip(file: Path) -> None:
             for info in archive.infolist()
         ]
 
+        print(f"Num of files: {len(table)}")
         print(
             tabulate(
                 sorted(table, key=(lambda x: x[-1])),

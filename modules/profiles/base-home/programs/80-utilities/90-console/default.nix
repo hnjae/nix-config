@@ -53,9 +53,5 @@
     ])
   ];
 
-  home.shellAliases = {
-    t = "tmux";
-  };
-
   programs.nh.enable = true;
 }
