@@ -1,20 +1,41 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
   baseHomeCfg = config.base-home;
+  appId = "org.mozilla.firefox";
 in
 {
-  config = lib.mkIf (baseHomeCfg.isDesktop) {
-    services.flatpak.packages = [
-      "org.mozilla.firefox"
+  config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
+    services.flatpak.packages = [ appId ];
+
+    services.flatpak.overrides.${appId}.Context = {
+      # to access home directory
+      filesystems = [ "home" ];
+    };
+
+    home.packages = [
+      (pkgs.writeScriptBin "firefox" ''
+        #!${pkgs.dash}/bin/dash
+
+        flatpak run ${appId} "$@"
+      '')
+    ];
+
+    stateful.nodes = [
+      {
+        path = "${config.home.homeDirectory}/.mozilla";
+        mode = "755";
+        type = "dir";
+      }
     ];
 
     xdg.mimeApps.associations.removed =
       let
-        desktopName = "org.mozilla.firefox.desktop";
+        desktopName = "${appId}.desktop";
         mimeTypes = [
           # "application/rdf+xml"
           # "application/rss+xml"

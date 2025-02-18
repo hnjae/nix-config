@@ -35,16 +35,17 @@
       xxHash
       rsbkb # crc32 / hex
 
-      payload-dumper-go
-
       dos2unix
-
       speedtest-rs
+
+      ouch # archive handler
+      vimv-rs # cyclic-renaming 지원, 엣지 케이스 대응 잘함.
     ])
     (with pkgsUnstable; [
       yt-dlp
-      ouch
-      vimv-rs # cyclic-renaming 지원, 엣지 케이스 대응 잘함.
+
+      restic
+      rustic
     ])
     (lib.lists.optionals pkgs.stdenv.isLinux [
       pkgs.convmv
@@ -53,5 +54,5 @@
     ])
   ];
 
-  programs.nh.enable = true;
+  programs.nh.enable = true; # nix wrapper
 }
