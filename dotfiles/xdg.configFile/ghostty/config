@@ -40,5 +40,4 @@ window-theme = ghostty
 
 # gtk-tabs-location = bottom
 gtk-titlebar = false
-gtk-adwaita = true
 # window-padding-x = 4

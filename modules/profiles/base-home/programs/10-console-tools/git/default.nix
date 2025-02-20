@@ -39,12 +39,10 @@ let
     "glgg" = "git log --oneline --decorate --graph";
     "glgf" = "git log --graph --decorate";
     "glgp" = "git log --graph --decorate --oneline --show-pulls --";
-    "gld" =
-      "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short";
-    "glda" =
-      "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short --all";
+    "gld" = "git log --graph --pretty='%C(auto)%h %C(green)%as%C(auto)%d %s %C(blue)<%an>%Creset' -19";
+    "gldd" = "git log --graph --pretty='%C(auto)%h %C(green)%as%C(auto)%d %s %C(blue)<%an>%Creset'";
     "glds" =
-      "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short --stat";
+      "git log --graph --pretty='%C(auto)%h %C(green)%as%C(auto)%d %s %C(blue)<%an>%Creset' --stat";
     "gls" = "git log --stat | bat --style=plain";
     "glsp" = "git log --stat -p";
     "glcount" = "git shortlog -sn";

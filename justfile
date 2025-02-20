@@ -39,6 +39,7 @@ update:
 update-local-repo:
     nix flake update nix-modules-private
 
+# TODO: 아래를 activation script 에 넣기 <2025-02-18>
 pre-home-manager-switch:
     #!/bin/sh
     set -eu
@@ -284,5 +285,5 @@ switch-home: update-local-repo pre-home-manager-switch
 switch-os-nh: update-local-repo pre-home-manager-switch
     nh os switch .
 
-build-os-hn: update-local-repo
+build-os-nh: update-local-repo
     nh os build .
