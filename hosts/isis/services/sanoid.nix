@@ -18,7 +18,7 @@
         recursive = true;
         processChildrenOnly = true;
         daily = 7;
-        hourly = 36;
+        hourly = 23;
         monthly = 0;
       };
       "isis/safe/home/hnjae/.cache" = {
