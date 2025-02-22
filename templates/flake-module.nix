@@ -9,9 +9,9 @@
       path = ./devshell;
       description = "development shell";
     };
-    devshell-numtide = {
-      path = ./devshell-numtide;
-      description = "development shell using numtide/devshell and flake-parts";
+    devshell-multi-inputs = {
+      path = ./devshell-multi-inputs;
+      description = "development shell using `devshell`, `treefmt-nix` and `flake-parts`";
     };
     nix-shell = {
       path = ./nix-shell;

@@ -219,8 +219,8 @@
                 fish_indent.enable = true;
                 just.enable = true;
                 mdformat.enable = true;
-                ruff-format.enable = true;
                 taplo.enable = true;
+                ruff-format.enable = true;
                 yamlfmt.enable = true;
                 shellcheck.enable = true;
                 shfmt = {

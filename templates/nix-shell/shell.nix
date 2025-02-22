@@ -3,7 +3,8 @@
 {
   pkgs ? import <nixpkgs> { },
 }:
-pkgs.mkShell {
+# or use mkShell
+pkgs.mkShellNoCC {
   env = {
     RUST_BACKTRACE = "1";
   };

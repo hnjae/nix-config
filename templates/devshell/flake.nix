@@ -18,9 +18,10 @@
         "aarch64-darwin"
       ];
 
-      mkShellWrapper = (
+      # or use mkShell
+      mkShellWrapper =
         pkgs:
-        pkgs.mkShell {
+        pkgs.mkShellNoCC {
           env = {
             PYTHONPATH = "$PHTHONPATH:/usr/lib/python3.7/lib-dynload";
           };
@@ -30,8 +31,7 @@
           shellHook = ''
             echo "blabla"
           '';
-        }
-      );
+        };
     in
     {
       devShells = nixpkgs.lib.genAttrs supportedSystems (system: {
