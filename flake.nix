@@ -131,7 +131,7 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    git-hooks-nix = {
+    git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs = {
         flake-compat.follows = "";
@@ -146,7 +146,7 @@
       flake-parts,
       flake-utils,
       treefmt-nix,
-      git-hooks-nix,
+      git-hooks,
       ...
     }:
     flake-parts.lib.mkFlake
@@ -158,7 +158,7 @@
       {
         imports = [
           treefmt-nix.flakeModule
-          git-hooks-nix.flakeModule
+          git-hooks.flakeModule
 
           ./flake-output-attributes
 
@@ -185,7 +185,7 @@
           }:
           {
             # Utilized by `nix develop`
-            devShells.default = pkgs.mkShell {
+            devShells.default = pkgs.mkShellNoCC {
               shellHook = ''
                 ${config.pre-commit.installationScript}
               '';
