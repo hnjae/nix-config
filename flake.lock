@@ -211,7 +211,7 @@
         "type": "github"
       }
     },
-    "git-hooks-nix": {
+    "git-hooks": {
       "inputs": {
         "flake-compat": [],
         "gitignore": "gitignore",
@@ -236,7 +236,7 @@
     "gitignore": {
       "inputs": {
         "nixpkgs": [
-          "git-hooks-nix",
+          "git-hooks",
           "nixpkgs"
         ]
       },
@@ -576,7 +576,7 @@
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "ghostty": "ghostty",
-        "git-hooks-nix": "git-hooks-nix",
+        "git-hooks": "git-hooks",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
         "lanzaboote": "lanzaboote",

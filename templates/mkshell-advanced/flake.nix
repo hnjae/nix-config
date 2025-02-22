@@ -2,18 +2,14 @@
   # description = "Description for the project";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    # nixpkgs = {
-    #   type = "indirect";
-    #   id = "nixpkgs-unstable";
-    # };
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs = {
+      type = "indirect";
+      id = "nixpkgs-unstable";
+    };
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -32,7 +28,6 @@
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = builtins.concatLists [
-        (lib.lists.optional (inputs.devshell ? flakeModule) inputs.devshell.flakeModule)
         (lib.lists.optional (inputs.treefmt-nix ? flakeModule) inputs.treefmt-nix.flakeModule)
       ];
 
@@ -43,34 +38,23 @@
         "x86_64-darwin"
       ];
       perSystem =
-        { pkgs, ... }:
+        {
+          pkgs,
+          config,
+          ...
+        }:
         {
           # Utilized by `nix develop`
-          devshells.default = lib.mkIf (inputs.devshell ? flakeModule) {
-            imports = [ "${inputs.devshell}/extra/git/hooks.nix" ];
-            env = [
-              {
-                name = "HTTP_PORT";
-                value = 8080;
-              }
-            ];
-            commands = [
-              {
-                help = "print hello";
-                name = "hello";
-                command = "echo hello";
-              }
-            ];
-            packages = [
-              pkgs.cowsay
-            ];
-            git.hooks = {
-              enable = true;
-              pre-commit.text = ''
-                # check something
-                exit 1
-              '';
+          devShells.default = pkgs.mkShellNoCC {
+            env = {
+              FOO = "bar";
             };
+
+            packages = with pkgs; [ hello ];
+
+            shellHook = ''
+              echo "blabla"
+            '';
           };
 
           # Utilized by `nix fmt`

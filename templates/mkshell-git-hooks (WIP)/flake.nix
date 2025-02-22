@@ -11,13 +11,16 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs = {
+        flake-compat.follows = "";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
   };
 
@@ -32,8 +35,8 @@
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = builtins.concatLists [
-        (lib.lists.optional (inputs.devshell ? flakeModule) inputs.devshell.flakeModule)
         (lib.lists.optional (inputs.treefmt-nix ? flakeModule) inputs.treefmt-nix.flakeModule)
+        (lib.lists.optional (inputs.git-hooks ? flakeModule) inputs.git-hooks.flakeModule)
       ];
 
       systems = [
@@ -43,26 +46,25 @@
         "x86_64-darwin"
       ];
       perSystem =
-        { pkgs, ... }:
+        {
+          pkgs,
+          config,
+          self',
+          ...
+        }:
         {
           # Utilized by `nix develop`
-          devshells.default = lib.mkIf (inputs.devshell ? flakeModule) {
-            env = [
-              {
-                name = "HTTP_PORT";
-                value = 8080;
-              }
-            ];
-            commands = [
-              {
-                help = "print hello";
-                name = "hello";
-                command = "echo hello";
-              }
-            ];
-            packages = [
-              pkgs.cowsay
-            ];
+          devShells.default = pkgs.mkShellNoCC {
+            env = {
+              FOO = "bar";
+            };
+
+            packages = with pkgs; [ hello ];
+
+            shellHook = ''
+              ${config.pre-commit.installationScript}
+              echo "blabla"
+            '';
           };
 
           # Utilized by `nix fmt`
@@ -84,6 +86,21 @@
                 ".editorconfig"
                 "LICENSE"
               ];
+            };
+          };
+
+          # Utilized by `nix flake check`
+          pre-commit = lib.mkIf (inputs.git-hooks ? flakeModule) {
+            settings = {
+              hooks = {
+                treefmt = {
+                  enable = true;
+                  # packageOverrides.treefmt = self'.formatter;
+                  settings.formatters = with pkgs; [
+                    nixfmt-rfc-style
+                  ];
+                };
+              };
             };
           };
         };
