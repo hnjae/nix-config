@@ -26,6 +26,8 @@
       # extraGSettingsOverrides = ''
     };
 
+    # services.blueman.enable = true; # gnome 47's bluetooth managing is not good
+
     home-manager.sharedModules = [
       (import ../hm-module)
       {

@@ -23,6 +23,18 @@
 }
 ```
 
+# Use system nix
+```nix
+{
+  inputs = {
+    <input-name> = {
+      url = "nixpkgs-unstable";
+      # inputs = { };
+    };
+  }
+}
+```
+
 <!--
 vi:sw=2:tw=80:ft=markdown:
 -->

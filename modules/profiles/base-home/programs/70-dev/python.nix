@@ -12,6 +12,7 @@ in
     home.sessionVariables = {
       PYTHON_HISTORY = "${config.xdg.stateHome}/python_history"; # from python 3.13
       PYTHON_COLORS = 1;
+      RYE_HOME = "${config.xdg.dataHome}/rye";
     };
 
     python = {
@@ -19,21 +20,11 @@ in
       pythonPackages = [
         # dev tools
         "setuptools"
-        "flit"
         "pip"
-
-        "ruff-lsp" # linter
-        "python-lsp-server" # lsp
-        "mypy" # typechecker
-
-        # formatters
-        # "isort"
-        # "black"
-
-        #
-        # "pydocstyle"
+        # "flit"
 
         # Lsps
+        # "python-lsp-server" # lsp
         # "jedi"
         # "jedi-language-server"
 
@@ -45,13 +36,10 @@ in
 
     home.packages = [
       pkgsUnstable.ruff
-      pkgsUnstable.poetry
-      pkgsUnstable.uv # Python package and project manager
-
-      # pkgs.pylyzer
-      # pkgsUnstable.nodePackages.pyright
-      # pkgsUnstable.pipx
-      # pkgsUnstable.pipenv
+      pkgsUnstable.ruff-lsp
+      pkgsUnstable.mypy # type-checker
+      pkgsUnstable.uv # Extremely fast Python package installer and resolver
+      pkgsUnstable.rye # Tool to easily manage python dependencies and environments
     ];
   };
 }

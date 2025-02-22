@@ -5,13 +5,19 @@
   ...
 }:
 {
-  config = lib.mkIf (config.base-nixos.role == "baremetal") {
+  config = lib.mkIf (config.base-nixos.hostType == "baremetal") {
+
+    # NOTE: udev 로는 bluetooth 연결의 경우를 커버하지 못함. <2024-04-29>
+    # services.udev.extraRules = ''
+    #   ACTION=="add", ATTRS{product}=="Flow84@Lofree", ATTR{idProduct}=="024f" ATTR{idVendor}=="05ac", RUN+="${pkgs.dash}/bin/dash -c 'echo 2 > /sys/module/hid_apple/parameters/fnmode'"
+    # '';
 
     /*
-      NOTE: udev 로는 bluetooth 연결의 경우를 커버하지 못함. <2024-04-29>
-      services.udev.extraRules = ''
-        ACTION=="add", ATTRS{product}=="Flow84@Lofree", ATTR{idProduct}=="024f" ATTR{idVendor}=="05ac", RUN+="${pkgs.dash}/bin/dash -c 'echo 2 > /sys/module/hid_apple/parameters/fnmode'"
-      '';
+      Run following if not working:
+
+      ```sh
+      echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
+      ```
     */
 
     boot.extraModprobeConfig = ''

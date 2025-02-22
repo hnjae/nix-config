@@ -11,7 +11,6 @@
       (lib.lists.optionals pkgs.config.allowUnfree (
         with pkgs;
         [
-          fonts-toss-face
           fonts-kopub-world
         ]
       ))
@@ -30,10 +29,14 @@
         # openmoji-color
 
         # NedFonts
+        # https://github.com/NixOS/nixpkgs/blob/8764d898c4f365d98ef77af140b32c6396eb4e02/pkgs/data/fonts/nerdfonts/shas.nix
+        # https://github.com/NixOS/nixpkgs/blob/master/pkgs/data/fonts/nerd-fonts/manifests/fonts.json
         (nerdfonts.override {
           fonts = [
             "Meslo"
             "IBMPlexMono"
+            "D2Coding"
+            "0xProto"
             # "NerdFontsSymbolsOnly"
           ];
         })

@@ -1,3 +1,7 @@
+/*
+  Homepage: https://freesentation.blog/
+  용도: 프리젠테이션용 글꼴
+*/
 {
   stdenv,
   lib,

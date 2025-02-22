@@ -254,6 +254,8 @@ in
       git-crypt
       git-lfs
 
+      commitlint
+
       # git-annex
       # bup
 
