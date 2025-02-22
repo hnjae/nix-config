@@ -86,7 +86,7 @@ map C bulkrename
 map d
 map dd cut
 cmd trash :${{clear; ~/.config/lf/scripts/handle-files trash "$fx"}}
-map dt trash
+map dt trash; load
 cmd delete :${{clear; ~/.config/lf/scripts/handle-files delete "$fx"}}
 map dD delete
 cmd rmdir :${{clear; ~/.config/lf/scripts/handle-files rmdir "$fx"}}
@@ -105,8 +105,8 @@ map ys yank stem
 map yc yank colon
 
 map p
-cmd paste :${{~/.config/lf/scripts/handle-lf-files "use_lf_command"}}; clear; load
-map pp paste
+cmd paste :${{~/.config/lf/scripts/handle-lf-files "use_lf_command"}}; clear; sync
+map pp paste; load
 # map pp paste
 cmd paste-symlink-absolute ${{~/.config/lf/scripts/handle-lf-files "symlink-absolute"}}
 cmd paste-symlink-relative ${{~/.config/lf/scripts/handle-lf-files "symlink-relative"}}
