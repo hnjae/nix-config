@@ -78,7 +78,7 @@ let
     ############################################################################
     # commit/branch-related
     ############################################################################
-    # gc: git-commit
+    # gc: git-commit; -v: diff 를 gitcommit 에 넣어줌
     "gc" = "git commit -v";
     "gca" = "git commit -v --amend";
     "gcaN" = "git commit -v --amend --no-edit";

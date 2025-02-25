@@ -10,6 +10,7 @@
 let
   package = nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim {
     # nixpkgs.useGlobalPackages = true;
+
     performance = {
       combinePlugins.enable = true;
       byteCompileLua = {
@@ -216,10 +217,10 @@ let
       };
 
       lightline = {
-        enable = true;
+        enable = false;
       };
       lualine = {
-        enable = false;
+        enable = true;
         settings = {
           options = {
             always_show_tabline = true;
