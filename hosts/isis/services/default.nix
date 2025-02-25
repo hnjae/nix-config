@@ -13,6 +13,11 @@ _: {
   powerManagement.powertop.enable = false;
   services.power-profiles-daemon.enable = true;
 
+  services.zfs.autoScrub = {
+    enable = true;
+    autoScrub.pools = [ "isis" ];
+  };
+
   # services.resilio = {
   #   enable = true;
   #   enableWebUI = true;

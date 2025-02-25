@@ -58,6 +58,7 @@
       url = "path:/home/hnjae/Projects/nix-modules-private";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        nixpkgs-unstable.follows = "nixpkgs-unstable";
         flake-utils.follows = "flake-utils";
         flake-parts.follows = "flake-parts";
         sops-nix.follows = "sops-nix";
@@ -108,6 +109,15 @@
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    py-utils = {
+      # url = "git+ssh://git@github.com/hnjae/py-utils";
+      url = "path:/home/hnjae/Projects/py-utils";
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        flake-parts.follows = "flake-parts";
+        treefmt-nix.follows = "";
+      };
     };
 
     ############################################################################

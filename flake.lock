@@ -417,13 +417,17 @@
         "nixpkgs": [
           "nixpkgs"
         ],
+        "nixpkgs-unstable": [
+          "nixpkgs-unstable"
+        ],
+        "py-utils": "py-utils",
         "sops-nix": [
           "sops-nix"
         ]
       },
       "locked": {
-        "lastModified": 1740112615,
-        "narHash": "sha256-5TpiFuEVokCrrHBgNql+wQvGNw2jZPnug3OXrzjC6nU=",
+        "lastModified": 1740381197,
+        "narHash": "sha256-QFqU9HUvr/fgpqiUdgb0KNQqVrYPbYdaPmCVI3485R4=",
         "path": "/home/hnjae/Projects/nix-modules-private",
         "type": "path"
       },
@@ -567,6 +571,55 @@
         "type": "github"
       }
     },
+    "py-utils": {
+      "inputs": {
+        "flake-parts": [
+          "nix-modules-private",
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nix-modules-private",
+          "nixpkgs-unstable"
+        ],
+        "treefmt-nix": [
+          "nix-modules-private"
+        ]
+      },
+      "locked": {
+        "lastModified": 1740381142,
+        "narHash": "sha256-IBac1t5nTHpqd2VypP/WQvnmhWqOPjYftE/Uiok1yM8=",
+        "ref": "refs/heads/main",
+        "rev": "1e0d78366841b66eb405b6126e810d4c51a38b94",
+        "revCount": 21,
+        "type": "git",
+        "url": "ssh://git@github.com/hnjae/py-utils"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/hnjae/py-utils"
+      }
+    },
+    "py-utils_2": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ],
+        "treefmt-nix": []
+      },
+      "locked": {
+        "lastModified": 1740389015,
+        "narHash": "sha256-ftGUUN9un5Ky7TMmkw/QoHjEdiZlA7Ft6O8tFC4EIew=",
+        "path": "/home/hnjae/Projects/py-utils",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/hnjae/Projects/py-utils",
+        "type": "path"
+      }
+    },
     "root": {
       "inputs": {
         "base16": "base16",
@@ -591,6 +644,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nur": "nur",
+        "py-utils": "py-utils_2",
         "rust-overlay": "rust-overlay",
         "sops-nix": "sops-nix",
         "treefmt-nix": "treefmt-nix"

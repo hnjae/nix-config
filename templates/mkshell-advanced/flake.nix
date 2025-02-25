@@ -43,41 +43,48 @@
           config,
           ...
         }:
-        {
-          # Utilized by `nix develop`
-          devShells.default = pkgs.mkShellNoCC {
-            env = {
-              FOO = "bar";
-            };
+        lib.mergeAttrsList [
+          {
+            packages.default = (import ./default.nix) { inherit pkgs; };
 
-            packages = with pkgs; [ hello ];
-
-            shellHook = ''
-              echo "blabla"
-            '';
-          };
-
-          # Utilized by `nix fmt`
-          treefmt.config = lib.mkIf (inputs.treefmt-nix ? flakeModule) {
-            projectRootFile = "flake.nix";
-            programs = {
-              nixfmt = {
-                enable = true;
-                package = pkgs.nixfmt-rfc-style;
+            # Utilized by `nix develop`
+            devShells.default = pkgs.mkShellNoCC {
+              env = {
+                FOO = "bar";
               };
-              just.enable = true;
-              mdformat.enable = true;
-              taplo.enable = true;
-              yamlfmt.enable = true;
-              ruff-format.enable = true;
+
+              packages = with pkgs; [ hello ];
+
+              shellHook = ''
+                echo "blabla"
+              '';
             };
-            settings = {
-              global.excludes = [
-                ".editorconfig"
-                "LICENSE"
-              ];
+          }
+          (lib.optionalAttrs (inputs.treefmt-nix ? flakeModule) {
+            # Utilized by `nix fmt`
+            treefmt.config = {
+              projectRootFile = "flake.nix";
+              programs = {
+                nixfmt = {
+                  enable = true;
+                  package = pkgs.nixfmt-rfc-style;
+                };
+                just.enable = true;
+                mdformat.enable = true;
+                taplo.enable = true;
+                yamlfmt.enable = true;
+                ruff-format.enable = true;
+              };
+              settings = {
+                global.excludes = [
+                  ".editorconfig"
+                  ".envrc"
+                  "LICENSE"
+                ];
+              };
             };
-          };
-        };
+          })
+
+        ];
     };
 }

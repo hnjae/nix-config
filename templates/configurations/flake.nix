@@ -6,6 +6,8 @@
     # nix-config.url = "path:/home/hnjae/Projects/nix-config";
     nixpkgs.follows = "nix-config/nixpkgs";
     home-manager.follows = "nix-config/home-manager";
+
+    py-utils.follows = "";
   };
 
   outputs =
