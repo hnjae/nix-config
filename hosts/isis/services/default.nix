@@ -15,7 +15,7 @@ _: {
 
   services.zfs.autoScrub = {
     enable = true;
-    autoScrub.pools = [ "isis" ];
+    pools = [ "isis" ];
   };
 
   # services.resilio = {
