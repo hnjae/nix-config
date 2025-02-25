@@ -2,36 +2,23 @@
 line-length = 79
 
 [tool.ruff.lint]
+fixable = ["ALL"]
 select = ["ALL"]
 ignore = [
-  "C901",    # too-complex
-  "PLR0915", # too-many-statement
-  # "PLR2004", # magic-value-comparison
-  # "INP", # implicit-namespace-package
-  "S603", # subprocess-without-shell-equals-true
-
   # Things might be enabled for production code:
-  "EXE",    # flake8-executable
-  "D",      # pydocstyle
-  "TRY",    # tryceratops
-  "T20",    # flake8-print
-  "ANN",    # flake8-annotations
-  "TD",     # flake8-todos
-  "ERA001", # commented-out-code
+  "ERA", # eradicate, e.g. ERA001 - commented-out-code
+  "D",   # pydocstyle
+  "FIX", # flake8-fixme
+  "TD",  # flake8-todos
 
-  # styles
-  "RET504", # unnecessary-assign
+  # Things that conflicts with other rules
+  "S603", # subprocess-without-shell-equals-true", conflicts with S602
 
-  # not useful
-  "RUF001", # ambiguous-unicode-character-string
-  "RUF002", # ambiguous-unicode-character-docstring
-  "RUF003", # ambiguous-unicode-character-comment
-
-  # Things can be fixed by formatter:
-  "I",   # isort
+  # Folloing rule should be fixed by formatter:
   "COM", # flake8-commas
   "Q",   # flake8-quotes
-  "W",   # pycodestyle - warning
+  "E",   # pycodestyle
+  "I",   # isort
 
   # Things can be fixed by formatter #2:
   "W293", # blank-line-with-whitespace

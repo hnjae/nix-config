@@ -67,6 +67,7 @@ in
       inputs.nix-modules-private.nixosModules.horus-services
       ./configs
       ./hardware
+      ./services
     ];
     specialArgs = { inherit inputs self; };
   };
