@@ -1,4 +1,4 @@
+**/*-encrypted/** filter=git-crypt diff=git-crypt
+**/secrets/** !filter !diff
 *-encrypted.* filter=git-crypt diff=git-crypt
-*-encrypted/** filter=git-crypt diff=git-crypt
-secrets/** !filter !diff
 .gitattributes !filter !diff

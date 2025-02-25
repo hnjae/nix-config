@@ -53,25 +53,32 @@ done
 main() {
   echo "mode: $mode"
 
-  xdg_config=("xdg.configFile" "${XDG_CONFIG_HOME}")
-  xdg_data=("xdg.dataFile" "${XDG_DATA_HOME}")
-  home=("home" "${HOME}")
+  xdg_config=("xdg.configFile" "$XDG_CONFIG_HOME")
+  xdg_config_e=("xdg.configFile-encrypted" "$XDG_CONFIG_HOME")
+  xdg_data=("xdg.dataFile" "$XDG_DATA_HOME")
+  home=("home" "$HOME")
 
   if [ -d "${xdg_config[0]}" ]; then
     echo "DRY-RUN: $XDG_CONFIG_HOME"
-    stow --no -v --"${mode}" --target="${xdg_config[1]}" "${xdg_config[0]}"
+    stow --no -v --"$mode" --target="${xdg_config[1]}" "${xdg_config[0]}"
+    echo ""
+  fi
+
+  if [ -d "${xdg_config_e[0]}" ]; then
+    echo "DRY-RUN: $XDG_CONFIG_HOME"
+    stow --no -v --"$mode" --target="${xdg_config_e[1]}" "${xdg_config_e[0]}"
     echo ""
   fi
 
   if [ -d "${xdg_data[0]}" ]; then
     echo "DRY-RUN: ${XDG_DATA_HOME}"
-    stow --no -v --"${mode}" --target="${xdg_data[1]}" "${xdg_data[0]}"
+    stow --no -v --"$mode" --target="${xdg_data[1]}" "${xdg_data[0]}"
     echo ""
   fi
 
   if [ -d "${home[0]}" ]; then
     echo "DRY-RUN: ${HOME}"
-    stow --no -v --"${mode}" --target="${home[1]}" "${home[0]}"
+    stow --no -v --"$mode" --target="${home[1]}" "${home[0]}"
     echo ""
   fi
 
@@ -81,6 +88,8 @@ main() {
 
   [ -d "${xdg_config[0]}" ] &&
     stow --"$mode" --target="${xdg_config[1]}" "${xdg_config[0]}"
+  [ -d "${xdg_config_e[0]}" ] &&
+    stow --"$mode" --target="${xdg_config_e[1]}" "${xdg_config_e[0]}"
   [ -d "${xdg_data[0]}" ] &&
     stow --"$mode" --target="${xdg_data[1]}" "${xdg_data[0]}"
   [ -d "${home[0]}" ] &&
