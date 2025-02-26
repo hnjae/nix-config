@@ -68,6 +68,7 @@ in
       ./configs
       ./hardware
       ./services
+      ./serve-encrypted
     ];
     specialArgs = { inherit inputs self; };
   };
