@@ -322,7 +322,7 @@ in
       git-cd-root () {
         local cd="cd"
 
-        if [ command -v __zoxide_z >/dev/null 2>&1 ]; then
+        if command -v __zoxide_z >/dev/null 2>&1; then
           cd="__zoxide_z"
         fi
 

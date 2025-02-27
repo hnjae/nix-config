@@ -6,6 +6,7 @@
   imports = [
     ./alacritty
     ./ghostty
+    ./warp-terminal
   ];
 }
 /*

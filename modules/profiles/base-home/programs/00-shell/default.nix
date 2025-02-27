@@ -1,7 +1,9 @@
 { ... }:
 {
   imports = [
+    ./bash
     ./zsh
+    ./nushell
 
     ./programs
 

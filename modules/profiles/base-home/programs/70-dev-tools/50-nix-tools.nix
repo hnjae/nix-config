@@ -30,7 +30,7 @@ in
       # auto-generate nix stderivation
       nix-init
 
-      # run nixpkgs' pkg with , (comma)
+      # run nixpkgs' pkg with , (comma) (use nix-index-database's)
       # comma
 
       # docker-compose to nix
@@ -39,8 +39,6 @@ in
       # deploy-rs
       deploy-rs
     ];
-
-    programs.nix-index-database.comma.enable = true;
 
     home.shellAliases = aliases;
     xdg.configFile."zsh-abbr/user-abbreviations".text = (

@@ -2,12 +2,24 @@
 # NOTE: check style before adding new one. (Must use color from terminal) <2024-02-15>
 # NOTE: dimmed -> normal <2024-02-15>
 # NOTE: some terminal uses bold font while printing bright-{color}
-{ ... }:
+{ config, ... }:
+let
+  starshipCmd = "${config.home.profileDirectory}/bin/starship";
+in
 {
+  programs.zsh.initExtra = ''
+    if [[ "$TERM" != "dumb" ]] && hash starship >/dev/null 2>&1; then
+      eval "$(${starshipCmd} init zsh)"
+    fi
+  '';
+
   programs.starship = {
     # "$schema" = 'https://starship.rs/config-schema.json'
     enable = true;
     enableBashIntegration = false;
+    enableFishIntegration = false;
+    enableNushellIntegration = false;
+    enableZshIntegration = false;
 
     settings = {
       format = "$all";

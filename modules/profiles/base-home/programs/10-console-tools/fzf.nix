@@ -3,7 +3,6 @@
   programs.fzf = {
     enable = true;
     package = pkgsUnstable.fzf;
-    enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
   };
@@ -27,6 +26,7 @@
         ''--exclude \".idea\"''
         ''--exclude \".vscode\"''
         ''--exclude \".vscode-server\"''
+        ''--exclude \".zed\"''
         # nodejs
         ''--exclude \"node_modules\"''
         # python
