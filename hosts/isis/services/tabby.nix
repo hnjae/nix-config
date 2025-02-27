@@ -38,10 +38,4 @@ in
       "Qwen2.5-Coder-0.5B-Instruct"
     ];
   };
-  #
-  # home-manager.sharedModules = [
-  #   {
-  #     home.shellAliases.tabby = "sudo podman exec -it tabby tabby";
-  #   }
-  # ];
 }

@@ -11,8 +11,6 @@
   # programs.xonsh.enable = true;
 
   environment.shells = with pkgs; [
-    # elvish
-    # nushell
     bashInteractive
     dash
   ];

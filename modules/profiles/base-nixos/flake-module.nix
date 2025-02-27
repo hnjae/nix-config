@@ -31,8 +31,8 @@ in
       self.nixosModules.nix-store-gc
       self.nixosModules.oci-container-auto-update
       inputs.home-manager.nixosModules.home-manager
-
       inputs.sops-nix.nixosModules.sops
+
       inputs.nix-modules-private.nixosModules.base-home-extend
     ];
   };
