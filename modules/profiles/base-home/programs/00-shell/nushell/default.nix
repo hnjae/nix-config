@@ -1,7 +1,7 @@
 { ... }:
 {
   programs.nushell = {
-    enable = false;
+    enable = true;
     # settings = {
     #   buffer_editor = "vi";
     # };

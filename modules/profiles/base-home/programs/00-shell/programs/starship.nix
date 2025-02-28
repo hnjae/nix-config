@@ -8,7 +8,7 @@ let
 in
 {
   programs.zsh.initExtra = ''
-    if [[ "$TERM" != "dumb" ]] && hash starship >/dev/null 2>&1; then
+    if [[ "$TERM" != "dumb" ]] && hash starship >/dev/null 2>&1 && [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
       eval "$(${starshipCmd} init zsh)"
     fi
   '';
@@ -18,7 +18,7 @@ in
     enable = true;
     enableBashIntegration = false;
     enableFishIntegration = false;
-    enableNushellIntegration = false;
+    enableNushellIntegration = true;
     enableZshIntegration = false;
 
     settings = {
@@ -53,7 +53,7 @@ in
         fish_indicator = "󰈺"; # nf-md-fish
         zsh_indicator = "%";
         bash_indicator = ""; # nf-cod-terminal_bash
-        unknown_indicator = "?";
+        # nu_indicator = "nu";
       };
       time = {
         disabled = true;

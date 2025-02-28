@@ -1,17 +1,15 @@
 {
+  pkgs,
   config,
   lib,
-  pkgs,
   ...
 }:
 let
   baseHomeCfg = config.base-home;
-
-  appId = "app.zen_browser.zen";
+  appId = "com.brave.Browser";
 in
 {
-  config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
-    default-app.browser = appId;
+  config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux && pkgs.stdenv.is64bit) {
     services.flatpak.packages = [ appId ];
     services.flatpak.overrides."${appId}" = {
       "Session Bus Policy" = {
@@ -24,7 +22,12 @@ in
         desktopName = "${appId}.desktop";
         mimeTypes = [
           "application/pdf"
-          "application/json"
+          "application/rdf+xml"
+          "application/rss+xml"
+          "image/gif"
+          "image/jpeg"
+          "image/png"
+          "image/webp"
           "text/xml"
         ];
       in
@@ -34,5 +37,13 @@ in
           value = desktopName;
         }) mimeTypes
       ));
+
+    stateful.nodes = [
+      {
+        path = "${config.xdg.configHome}/BraveSoftware";
+        mode = "700";
+        type = "dir";
+      }
+    ];
   };
 }

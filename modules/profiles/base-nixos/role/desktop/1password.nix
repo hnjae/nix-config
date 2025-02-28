@@ -15,6 +15,7 @@
       text = ''
         vivaldi-bin
         librewolf
+        flatpak-session-helper
       '';
       # NOTE: 0444 로 는 작동 안됨. 왜지. <2024-07-01>
       # https://1password.community/discussion/120954/how-the-browser-integration-works
