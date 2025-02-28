@@ -370,6 +370,22 @@
         "url": "ssh://git@github.com/hnjae/my-python-utils"
       }
     },
+    "neovim-configs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1740755294,
+        "narHash": "sha256-z2nC1IsLAPlYFhH73NAh6gWWxtNneotiIl8knpclqH4=",
+        "owner": "hnjae",
+        "repo": "neovim-configs",
+        "rev": "22a3d811c15086029016cbc1065baf5c46361b72",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hnjae",
+        "repo": "neovim-configs",
+        "type": "github"
+      }
+    },
     "nix-flatpak": {
       "locked": {
         "lastModified": 1730268921,
@@ -605,6 +621,7 @@
         "impermanence": "impermanence",
         "lanzaboote": "lanzaboote",
         "microvm": "microvm",
+        "neovim-configs": "neovim-configs",
         "nix-flatpak": "nix-flatpak",
         "nix-index-database": "nix-index-database",
         "nix-modules-private": "nix-modules-private",
