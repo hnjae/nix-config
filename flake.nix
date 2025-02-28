@@ -148,6 +148,15 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+
+    ############################################################################
+    # Misc
+    ############################################################################
+    # TODO: bundle some configs to nixvim <2025-03-01>
+    neovim-configs = {
+      url = "github:hnjae/neovim-configs";
+      flake = false;
+    };
   };
 
   outputs =
