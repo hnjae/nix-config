@@ -222,7 +222,6 @@ drybuild-nixos: update-local-repo
 build-nixos: update-local-repo
     @echo "Building .#nixosConfigurations.{{ hostname }}.config.system.build.toplevel"
     nix build \
-        --no-link \
         --option eval-cache false \
         --show-trace \
         --keep-failed \
