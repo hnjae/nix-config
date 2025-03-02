@@ -265,7 +265,7 @@
                   ".editorconfig"
                   "LICENSE"
                   "dotfiles/*"
-                  "secrets/*"
+                  "*/secrets/*"
                   "*/LICENSE"
                   "*.adoc"
                   "*.kdl"
