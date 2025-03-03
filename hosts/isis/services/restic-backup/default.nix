@@ -34,7 +34,7 @@ let
 
     # macOS
     ".DS_Store"
-    "._*" # thumbnails
+    ''._\*'' # thumbnails
 
     # MS Windows
     "Thumbs.db"
@@ -115,6 +115,7 @@ in
       RESTIC_CACHE_DIR = "/var/cache/${serviceName}";
       RESTIC_PASSWORD_FILE = config.sops.secrets."restic-onedrive-repo-password".path;
       RESTIC_REPOSITORY = "rclone:onedrive:.restic";
+      RESTIC_READ_CONCURRENCY = builtins.toString 1;
 
       # GOGC = "off";
       # GOMEMLIMIT = 4 * 1024 * 1024 * 1024; # 4GiB
@@ -190,6 +191,7 @@ in
           "${pkgs.restic}/bin/restic"
           "backup"
           "--one-file-system"
+          "--exclude-caches"
           "--exclude-file=${excludeFile}"
           "--files-from=${filesFrom}"
         ]);
