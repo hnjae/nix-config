@@ -34,3 +34,9 @@ restic --repo <path> --insecure-no-password repiar snapshots [--forget]
 # reslove when data packs are missing (dont use forget flag)
 restic --repo <path> --insecure-no-password repair index
 restic --repo <path> --insecure-no-password repiar snapshots [--forget]
+
+# find
+restic find <file>
+
+# diff
+restic diff <snapshot-id> <snapshot-id>

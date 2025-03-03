@@ -14,7 +14,6 @@
   ...
 }:
 let
-  # TODO: lib.generater? 로 작성 <2025-03-03>
   envResticOnedrive = pkgs.writeText "env-restic-onedrive" (
     lib.generators.toKeyValue { } {
       RESTIC_COMPRESSION = "auto";
@@ -24,6 +23,8 @@ let
       RCLONE_BWLIMIT = "4M"; # MiB/s
     }
   );
+
+  offSiteBackupName = "off-site";
 in
 {
   sops.secrets."restic-onedrive" = {
@@ -32,10 +33,19 @@ in
   };
 
   # Overrides
-  # services.systemd.ser
+  systemd.services."restic-backups-${offSiteBackupName}" = {
+    serviceConfig = {
+      Nice = 19;
+      CPUSchedulingPolicy = "idle";
+      IOSchedulingClass = "idle";
+    };
+    unitConfig = {
+      ConditionACPower = true;
+    };
+  };
 
   services.restic.backups = {
-    "off-site" = {
+    "${offSiteBackupName}" = {
       # user = "hnjae";
       timerConfig = {
         OnCalendar = "daily";
@@ -80,6 +90,7 @@ in
         ".mypy_cache"
         ".ruff_cache"
         ".pyc"
+        ".venv"
 
         # nodejs related
         "node_modules"
