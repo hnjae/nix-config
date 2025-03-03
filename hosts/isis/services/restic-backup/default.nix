@@ -34,7 +34,7 @@ let
 
     # macOS
     ".DS_Store"
-    "._*" # thumbnails
+    ''._\*'' # thumbnails
 
     # MS Windows
     "Thumbs.db"
@@ -98,9 +98,9 @@ in
     timerConfig = {
       AccuracySec = "1m";
       # OnCalendar = "*-*-* 00:00:00";
-      OnStartupSec = "2h";
-      OnUnitInactiveSec = "2h";
-      Persistent = true;
+      OnStartupSec = "30m";
+      OnUnitInactiveSec = "1h";
+      Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
       WakeSystem = false;
     };
   };
@@ -115,6 +115,7 @@ in
       RESTIC_CACHE_DIR = "/var/cache/${serviceName}";
       RESTIC_PASSWORD_FILE = config.sops.secrets."restic-onedrive-repo-password".path;
       RESTIC_REPOSITORY = "rclone:onedrive:.restic";
+      RESTIC_READ_CONCURRENCY = builtins.toString 1;
 
       # GOGC = "off";
       # GOMEMLIMIT = 4 * 1024 * 1024 * 1024; # 4GiB
