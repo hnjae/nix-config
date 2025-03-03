@@ -102,7 +102,7 @@ in
       # GOMEMLIMIT = 4 * 1024 * 1024 * 1024; # 4GiB
 
       RCLONE_CONFIG = "/secrets/rclone.conf";
-      RCLONE_BWLIMIT = "4M"; # MiB/s
+      RCLONE_BWLIMIT = "8M"; # MiB/s
     };
     serviceConfig = {
       Type = "simple"; # TODO: 나중에 oneshot 으로 변경 <2025-03-03>
