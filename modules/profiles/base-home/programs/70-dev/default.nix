@@ -10,6 +10,7 @@ let
 in
 {
   imports = [
+    ./dbus.nix
     ./go.nix
     ./json-alikes.nix
     ./jvm.nix

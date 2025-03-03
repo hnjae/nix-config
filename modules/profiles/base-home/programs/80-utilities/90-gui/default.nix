@@ -34,7 +34,6 @@ in
         # infos
         # "io.missioncenter.MissionCenter" # not working <NixOS 23.11>
         # "net.nokyan.Resources" # resource monitor; flatpak's 은 프로세스를 볼수 없음. https://github.com/nokyan/resources/issues/357 2024-09-19
-        "org.freedesktop.Bustle" # debug dbus, gpl2
 
         #
         "org.gnome.font-viewer"
