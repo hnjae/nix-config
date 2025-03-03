@@ -83,6 +83,7 @@ let
     "logseq/.recycle"
     "logseq/bak"
   ];
+
 in
 {
   sops.secrets."restic-onedrive-repo-password" = {
@@ -90,7 +91,24 @@ in
     format = "binary";
   };
 
+  systemd.timers."${serviceName}" = {
+    inherit (config.systemd.services."${serviceName}") documentation description;
+
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      AccuracySec = "1m";
+      # OnCalendar = "*-*-* 00:00:00";
+      OnStartupSec = "2h";
+      OnUnitInactiveSec = "2h";
+      Persistent = true;
+      WakeSystem = false;
+    };
+  };
+
   systemd.services."${serviceName}" = {
+    documentation = [ "man:restic-backup(1)" ];
+    description = "Restic off-site backup";
+
     environment = {
       RESTIC_COMPRESSION = "auto";
       RESTIC_PACK_SIZE = builtins.toString 128;
