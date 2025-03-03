@@ -4,21 +4,22 @@ def get_active_connections [] {
     # returns UUID of active ethernet and wifi connections
 
     let connections = (
-        nmcli -t -f UUID,TYPE connection show --active
-        | from csv --separator ":" --noheaders
-        | where column1 in [
+        nmcli -t -f NAME,UUID,TYPE connection show --active
+        | from csv --separator ":" --noheaders --no-infer
+        | rename NAME UUID TYPE
+        | where TYPE in [
             '802-3-ethernet',
             '802-11-wireless'
+            'bluetooth'
             ]
-        | get column0
     )
 
     return $connections
 }
 
-def check_metered [connection: string] {
+def check_metered [uuid: string] {
     let is_metered = (
-        nmcli -t connection show $connection
+        nmcli -t connection show $uuid
         | parse 'connection.metered:{value}'
         | where value == "yes"
         | is-not-empty
@@ -36,8 +37,13 @@ def main [] {
     }
 
     for con in $connections {
-        if (check_metered $con) {
-            print $"Metered network is connected - ($con)"
+        if ( ( $con | get TYPE ) == "bluetooth" ) {
+            print $"Bluetooth tethering network is connected - ( $con | get NAME )"
+            exit 1
+        }
+
+        if (check_metered ( $con | get UUID )) {
+            print $"Metered network is connected - ( $con | get NAME)"
             exit 1
         }
     }
