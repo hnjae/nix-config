@@ -47,10 +47,6 @@ in
             mode = "0755";
           }
           {
-            directory = "/var/lib/systemd/coredump";
-            mode = "0755";
-          }
-          {
             directory = "/var/lib/nixos";
             mode = "0755";
           }
@@ -61,12 +57,22 @@ in
             mode = "755";
           }
         ]
-        (lib.lists.optionals config.persist.isDesktop [
-          {
-            directory = "/var/lib/systemd/backlight";
-            mode = "0755";
-          }
-        ])
+        [
+          (
+            if config.persist.isDesktop then
+              {
+                directory = "/var/lib/systemd";
+                mode = "0755";
+              }
+            # persist 가 보존이 안된다.
+            else
+              {
+                directory = "/var/lib/systemd/coredump";
+                mode = "0755";
+              }
+
+          )
+        ]
         (lib.lists.optional (config.services.accounts-daemon.enable) {
           directory = "/var/lib/AccountsService";
           mode = "0755";
