@@ -19,6 +19,9 @@ in
 
       # shellcheck deprecated over bashls in none-ls
       bash-language-server
+
+      # nushell
+      nufmt
     ];
   };
 }
