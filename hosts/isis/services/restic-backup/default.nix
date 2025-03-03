@@ -4,7 +4,6 @@
     - `/secrets/rclone.conf` 에 적절한 rclone 설정을 넣어두어야 한다.
     - `rclone.conf` 의 access_token 이 업데이트 될수 있어야 하므로, sops 로 모듈에 번들하지 않는다.
 
-  # TODO: check ac condition <2025-03-03>
   # TODO: networkmanager 에서 metered connection 인지 물어보기. <2025-03-03>
 */
 {
@@ -38,6 +37,16 @@ in
       Nice = 19;
       CPUSchedulingPolicy = "idle";
       IOSchedulingClass = "idle";
+      ExecCondition = [
+        "${pkgs.inetutils}/bin/ping -c 1 'https://onedrive.live.com"
+      ];
+      # ExecCondition = pkgs.writeScript "${offSiteBackupName}-condition" ''
+      #   #!${pkgs.dash}/bin/dash
+      #
+      #   PATH="${pkgs.inetutils}/bin"
+      #
+      #   ping -c 1.1.1.1
+      # '';
     };
     unitConfig = {
       ConditionACPower = true;
@@ -63,21 +72,42 @@ in
       passwordFile = config.sops.secrets."restic-onedrive".path;
       initialize = false;
       inhibitsSleep = false;
+      extraBackupArgs = [
+        "--one-file-system"
+      ];
       exclude = [
-        # OS
-        "Thumbs.db" # MS Windows
-        ".DS_Store" # MacOS
-        ".localized"
+        # Linux
         ".directory" # KDE
-        ".thumbnails"
+        ".thumbnails" # KDE (maybe)
+        ".Trash-*"
+        ".nfs*"
+        ".fuse_hidden*"
+
+        # macOS
+        ".DS_Store"
+        "._*" # thumbnails
+
+        # MS Windows
+        "Thumbs.db"
+        "Desktop.ini"
+        "desktop.ini"
+        "$RECYCLE.BIN"
+
+        # Misc
+        ".localized"
         ".cache"
 
         # temporary files
         "*.parts"
         ".direnv" # nix-flake
 
-        # editor
+        # vscode
         ".vscode-server"
+
+        # vim
+        "tags"
+        "*.swp"
+        "*~"
 
         # shell related
         "fish_variables"
@@ -85,16 +115,20 @@ in
         ".zsh_history"
 
         # python related
-        ".ropeproject"
+        ".venv"
         "__pycache__"
+        ".pyc"
+
+        # python tools
+        ".ropeproject"
         ".mypy_cache"
         ".ruff_cache"
-        ".pyc"
-        ".venv"
+        ".pyre"
+        "dist"
 
         # nodejs related
         "node_modules"
-        "npm-cache"
+        "dist"
       ];
     };
   };
