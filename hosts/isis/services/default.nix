@@ -6,6 +6,8 @@ _: {
     # ./tabby.nix
     ./sanoid.nix
     # ./shairport-sync.nix
+
+    ./restic-backup
   ];
 
   # USB 를 autosuspend 해, 마우스 사용에 애로사항이 있음.
