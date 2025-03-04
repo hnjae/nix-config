@@ -166,6 +166,7 @@ in
       ConditionACPower = true;
       After = [ "network-online.target" ];
       Wants = [ "network-online.target" ];
+      ConditionFileNotEmpty = "/secrets/rclone.conf";
     };
   };
 }
