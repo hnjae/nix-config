@@ -67,6 +67,15 @@ in
     serviceConfig = {
       Type = "oneshot";
 
+      /*
+        NOTE:
+          systemd 가 rclone 을 SIGKILL 로 죽여 설정.
+
+          KillMode 를 control-group 으로 설정하든, TimeoutStopSec 을 널널하게 설정하든 rclone 이 SIGKILL 로 죽는다.
+          아마 rclone 이 -stdio 옵션을 사용하면서 별도 데몬? 같은걸로 동작하여서, restic 메인프로세스 보다 늦게 종료되어(추측) 그런 것 같다.
+      */
+      SendSIGKILL = "no";
+
       CacheDirectory = "${serviceName}";
       RuntimeDirectory = "${serviceName}";
       CacheDirectoryMode = "0700";
