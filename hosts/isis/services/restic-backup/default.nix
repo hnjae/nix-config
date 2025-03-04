@@ -116,6 +116,7 @@ in
       RESTIC_PASSWORD_FILE = config.sops.secrets."restic-onedrive-repo-password".path;
       RESTIC_REPOSITORY = "rclone:onedrive:.restic";
       RESTIC_READ_CONCURRENCY = builtins.toString 1;
+      RESTIC_PROGRESS_FPS = "0.05"; # update progress every 3 min
 
       # GOGC = "off";
       # GOMEMLIMIT = 4 * 1024 * 1024 * 1024; # 4GiB
@@ -206,6 +207,7 @@ in
           "${pkgs.restic}/bin/restic"
           "backup"
           "--one-file-system"
+          "--exclude-caches"
           "--exclude-file=${excludeFile}"
           "--files-from=${filesFrom}"
         ]);
