@@ -145,7 +145,7 @@ in
           PATH="${pkgs.procps}/bin"
 
           if pgrep 'restic|rustic' >/dev/null 2>&1; then
-            echo "Another restic(rustic) instance is running"
+            echo "Another restic(rustic) instance is running."
             exit 1
           fi
 
@@ -160,7 +160,7 @@ in
           PATH="${pkgs.iproute2}/bin:${pkgs.gnugrep}/bin"
 
           if ip route show default | grep -E "dev (tun|ppp)" >/dev/null 2>&1; then
-            echo "Network is routed to VPN"
+            echo "Network is routed to VPN."
             exit 1
           fi
 
@@ -190,7 +190,7 @@ in
           PATH="${pkgs.inetutils}/bin"
 
           if ! ping -c 1 'https://onedrive.live.com' >/dev/null 2>&1; then
-            echo "Cannot connect to onedrive.live.com"
+            echo "Cannot connect to 'onedrive.live.com'."
             exit 1
           fi
 

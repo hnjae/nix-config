@@ -32,18 +32,18 @@ def main [] {
     let connections = (get_active_connections)
 
     if ($connections | is-empty) {
-        print "No active ethernet or wifi connections"
+        print "No active ethernet or wifi connections."
         exit 1
     }
 
     for con in $connections {
         if ( ( $con | get TYPE ) == "bluetooth" ) {
-            print $"Bluetooth tethering network is connected - ( $con | get NAME )"
+            print $"Bluetooth tethering network is connected. Connection: ( $con | get NAME )"
             exit 1
         }
 
         if (check_metered ( $con | get UUID )) {
-            print $"Metered network is connected - ( $con | get NAME)"
+            print $"Metered network is connected. Connection: ( $con | get NAME)"
             exit 1
         }
     }
