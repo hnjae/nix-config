@@ -6,5 +6,7 @@ _: {
 
     home = import ./home-encrypted.nix;
     hosts = import ./hosts-encrypted.nix;
+
+    configs = import ./configs.nix;
   };
 }

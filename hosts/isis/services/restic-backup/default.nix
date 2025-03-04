@@ -1,4 +1,3 @@
-# WIP
 /*
   README:
     - `/secrets/rclone.conf` 에 적절한 rclone 설정을 넣어두어야 한다.
@@ -14,76 +13,17 @@
   config,
   pkgs,
   lib,
+  self,
   ...
 }:
 let
-  serviceName = "restic-off-site-backup";
+  serviceName = "restic-backup-off-site";
   paths = [
     "/home/hnjae/Projects"
-    # "/home/hnjae/Pictures"
-    # "/home/hnjae/Documents"
-    # "/home/hnjae/Library"
+    "/home/hnjae/Documents"
+    "/home/hnjae/Library"
+    "/home/hnjae/Pictures"
   ];
-  exclude = [
-    # Linux
-    ".directory" # KDE
-    ".thumbnails" # KDE (maybe)
-    ".Trash-*"
-    ".nfs*"
-    ".fuse_hidden*"
-
-    # macOS
-    ".DS_Store"
-    ''._\*'' # thumbnails
-
-    # MS Windows
-    "Thumbs.db"
-    "Desktop.ini"
-    "desktop.ini"
-    "$RECYCLE.BIN"
-
-    # Misc
-    ".localized"
-    ".cache"
-
-    # temporary files
-    "*.parts"
-    ".direnv" # nix-flake
-
-    # vscode
-    ".vscode-server"
-
-    # vim
-    "tags"
-    "*.swp"
-    "*~"
-
-    # shell related
-    "fish_variables"
-    "*.zcompdump"
-    ".zsh_history"
-
-    # python related
-    ".venv"
-    "__pycache__"
-    ".pyc"
-
-    # python tools
-    ".ropeproject"
-    ".mypy_cache"
-    ".ruff_cache"
-    ".pyre"
-    "dist"
-
-    # nodejs related
-    "node_modules"
-    "dist"
-
-    # logseq
-    "logseq/.recycle"
-    "logseq/bak"
-  ];
-
 in
 {
   sops.secrets."restic-onedrive-repo-password" = {
@@ -116,27 +56,34 @@ in
       RESTIC_PASSWORD_FILE = config.sops.secrets."restic-onedrive-repo-password".path;
       RESTIC_REPOSITORY = "rclone:onedrive:.restic";
       RESTIC_READ_CONCURRENCY = builtins.toString 1;
-      RESTIC_PROGRESS_FPS = "0.05"; # update progress every 3 min
+      RESTIC_PROGRESS_FPS = "0.02"; # update progress every 72s (1.0 == 3600s)
 
       # GOGC = "off";
-      # GOMEMLIMIT = 4 * 1024 * 1024 * 1024; # 4GiB
+      GOMEMLIMIT = builtins.toString (2 * 1024 * 1024 * 1024); # 2 GiB
 
       RCLONE_CONFIG = "/secrets/rclone.conf";
-      RCLONE_BWLIMIT = "8M"; # MiB/s
+      RCLONE_BWLIMIT = "4M"; # MiB/s
     };
     serviceConfig = {
-      Type = "simple"; # TODO: 나중에 oneshot 으로 변경 <2025-03-03>
+      Type = "oneshot";
 
       CacheDirectory = "${serviceName}";
       RuntimeDirectory = "${serviceName}";
       CacheDirectoryMode = "0700";
       PrivateTmp = true;
 
-      Nice = 19;
-      CPUSchedulingPolicy = "idle";
+      # systemd.exec
+      # Nice = 19;
       IOSchedulingClass = "idle";
+      CPUSchedulingPolicy = "idle";
 
-      ExecCondition = [
+      # systemd.resourced (cgroup)
+      CPUWeight = "idle";
+      IOWeight = "10";
+      MemoryHigh = "4G";
+      CPUQuota = "50%";
+
+      ExecCondition = lib.flatten [
         (pkgs.writeScript "${serviceName}-check-other-instance" ''
           #!${pkgs.dash}/bin/dash
 
@@ -200,7 +147,9 @@ in
 
       ExecStart =
         let
-          excludeFile = pkgs.writeText "${serviceName}-exclude-file" (lib.concatLines exclude);
+          excludeFile = pkgs.writeText "${serviceName}-exclude-file" (
+            lib.concatLines self.constants.configs.resticExcludes
+          );
           filesFrom = pkgs.writeText "${serviceName}-files-from" (lib.concatLines paths);
         in
         (builtins.concatStringsSep " " [
