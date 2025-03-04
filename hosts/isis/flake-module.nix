@@ -28,12 +28,15 @@
       self.nixosModules.rollback-zfs-root
       self.nixosModules.configure-impermanence
 
-      self.nixosModules.syncthing-for-desktop
+      # self.nixosModules.syncthing-for-desktop
 
       ./configs
       ./hardware
       ./services
     ];
-    specialArgs = { inherit inputs; };
+    specialArgs = {
+      inherit inputs;
+      inherit self;
+    };
   };
 }
