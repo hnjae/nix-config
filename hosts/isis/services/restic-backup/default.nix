@@ -136,6 +136,21 @@ in
       IOSchedulingClass = "idle";
 
       ExecCondition = [
+        (pkgs.writeScript "${serviceName}-check-other-instance" ''
+          #!${pkgs.dash}/bin/dash
+
+          set -eu
+
+          PATH="${pkgs.procps}/bin"
+
+          if pgrep 'restic|rustic' >/dev/null 2>&1; then
+            echo "Another restic(rustic) instance is running"
+            exit 1
+          fi
+
+          exit 0
+        '')
+
         (pkgs.writeScript "${serviceName}-check-vpn-route" ''
           #!${pkgs.dash}/bin/dash
 
