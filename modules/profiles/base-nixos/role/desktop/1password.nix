@@ -15,6 +15,7 @@
       text = ''
         vivaldi-bin
         librewolf
+        zen
         flatpak-session-helper
       '';
       # NOTE: 0444 로 는 작동 안됨. 왜지. <2024-07-01>

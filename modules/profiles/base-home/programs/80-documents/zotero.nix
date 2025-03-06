@@ -12,6 +12,12 @@ in
   config = lib.mkIf (baseHomeCfg.isDesktop && baseHomeCfg.isHome && pkgs.stdenv.isLinux) {
     services.flatpak.packages = [ appId ];
 
+    services.flatpak.overrides."${appId}" = {
+      Context = {
+        filesystems = [ "!home" ];
+      };
+    };
+
     # home.packages = [ pkgsUnstable.zotero_7 ];
     #
     # xdg.desktopEntries."zotero" = {

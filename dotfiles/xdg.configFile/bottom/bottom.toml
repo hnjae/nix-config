@@ -49,7 +49,7 @@ group_processes = true   # Whether to group processes with the same name togethe
 # Remove space in tables
 #hide_table_gap = false
 # Show the battery widgets
-battery = true
+battery = false
 # Disable mouse clicks
 #disable_click = false
 # Built-in themes.  Valid values are "default", "default-light", "gruvbox", "gruvbox-light", "nord", "nord-light"

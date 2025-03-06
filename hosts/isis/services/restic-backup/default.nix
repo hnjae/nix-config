@@ -19,10 +19,13 @@
 let
   serviceName = "restic-backup-off-site";
   paths = [
-    "/home/hnjae/Projects"
+    "/home/hnjae/Desktop"
     "/home/hnjae/Documents"
     "/home/hnjae/Library"
+    "/home/hnjae/Music"
     "/home/hnjae/Pictures"
+    "/home/hnjae/Projects"
+    "/home/hnjae/Videos"
   ];
 in
 {
@@ -39,7 +42,7 @@ in
       AccuracySec = "1m";
       # OnCalendar = "*-*-* 00:00:00";
       OnStartupSec = "30m";
-      OnUnitInactiveSec = "1h";
+      OnUnitInactiveSec = "72m";
       Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
       WakeSystem = false;
     };
@@ -62,7 +65,7 @@ in
       GOMEMLIMIT = builtins.toString (2 * 1024 * 1024 * 1024); # 2 GiB
 
       RCLONE_CONFIG = "/secrets/rclone.conf";
-      RCLONE_BWLIMIT = "4M"; # MiB/s
+      RCLONE_BWLIMIT = "3M"; # MiB/s
     };
     serviceConfig = {
       Type = "oneshot";
@@ -90,7 +93,9 @@ in
       CPUWeight = "idle";
       IOWeight = "10";
       MemoryHigh = "4G";
-      CPUQuota = "50%";
+      CPUQuota = "45%";
+      AllowedCPUs = "0";
+      # NOTE: 이래도 CPU Fan 은 돌아감.. <2025-03-05>
 
       ExecCondition = lib.flatten [
         (pkgs.writeScript "${serviceName}-check-other-instance" ''
@@ -164,6 +169,8 @@ in
         (builtins.concatStringsSep " " [
           "${pkgs.restic}/bin/restic"
           "backup"
+          "--group-by=host,tags"
+          "--tag='local-live-data'"
           "--one-file-system"
           "--exclude-caches"
           "--exclude-file=${excludeFile}"
