@@ -37,7 +37,7 @@ update:
     nix flake update
 
 update-local-repo:
-    nix flake update nix-modules-private
+    nix flake update nix-modules-private py-utils
 
 # TODO: 아래를 activation script 에 넣기 <2025-02-18>
 pre-home-manager-switch:
