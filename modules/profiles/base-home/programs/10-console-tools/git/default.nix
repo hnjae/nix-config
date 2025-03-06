@@ -63,6 +63,7 @@ let
 
     # git-status
     "gs" = "git status -sb";
+    "gst" = "git status -sb";
 
     # gshw: git-show
     "gshw" = "git show";

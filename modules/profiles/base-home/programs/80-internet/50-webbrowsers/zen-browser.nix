@@ -13,11 +13,17 @@ in
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
     default-app.browser = appId;
     services.flatpak.packages = [ appId ];
-    services.flatpak.overrides."${appId}" = {
-      "Session Bus Policy" = {
-        "org.freedesktop.Flatpak" = "talk";
-      };
-    };
+
+    # services.flatpak.overrides."${appId}" = {
+    #   "Session Bus Policy" = {
+    #     "org.freedesktop.Flatpak" = "talk";
+    #   };
+    #
+    #   # do I need this?
+    #   "System Bus Policy" = {
+    #     "org.freedesktop.Flatpak" = "talk";
+    #   };
+    # };
 
     xdg.mimeApps.associations.removed =
       let
