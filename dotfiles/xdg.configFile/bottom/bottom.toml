@@ -14,7 +14,7 @@ network_legend = "bottom-left"
 # type = "proc" panel
 # group_processes = true
 # process_command = true
-process_memory_as_value = false
+process_memory_as_value = true
 unnormalized_cpu = true
 enable_gpu = true
 enable_gpu_memory = true
@@ -23,7 +23,10 @@ enable_gpu_memory = true
 memory_legend = "bottom-left"
 
 # type = "cpu" panel
-hide_avg_cpu = true
+hide_avg_cpu = false
+
+[cpu]
+default = "average"
 
 [processes]
 columns = [
