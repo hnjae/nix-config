@@ -63,5 +63,13 @@
     # logseq
     "logseq/.recycle"
     "logseq/bak"
+
+    # kdenlive
+    "kdenlive/**/proxy"
+    "kdenlive/**/audiothumbs"
+    "kdenlive/**/preview"
+    "kdenlive/**/sequences"
+    "kdenlive/**/videothumbs"
+    "kdenlive/**/workfiles"
   ];
 }
