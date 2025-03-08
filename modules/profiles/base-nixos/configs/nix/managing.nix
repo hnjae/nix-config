@@ -27,9 +27,9 @@ in
         ."${cfg.role}";
   };
 
-  services.nix-store-gc = {
-    enable = mkOverride 999 config.base-nixos.role == "desktop";
-  };
+  # services.nix-store-gc = {
+  #   enable = mkOverride 999 config.base-nixos.role == "desktop";
+  # };
 
   nix.gc = {
     # run nix-collect-garbage
