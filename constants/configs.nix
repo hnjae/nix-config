@@ -27,6 +27,7 @@
 
     # temporary files
     "*.parts"
+    "*.crdownload"
     ".direnv" # nix-flake
 
     # vscode
@@ -57,7 +58,7 @@
     # nodejs related
     "node_modules"
 
-    # program build results (python, nodejs)
+    # project build results (python, nodejs)
     "dist"
 
     # logseq
