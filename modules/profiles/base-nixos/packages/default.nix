@@ -89,6 +89,8 @@
           mkdir -p "$out/bin"
           ln -s "${package7z}/bin/7zz" "$out/bin/7z"
         '')
+
+        pkgs.unzipNLS
       ]
     )
   ];
