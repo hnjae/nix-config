@@ -41,7 +41,7 @@ in
     timerConfig = {
       AccuracySec = "1m";
       # OnCalendar = "*-*-* 00:00:00";
-      OnStartupSec = "30m";
+      OnStartupSec = "24m";
       OnUnitInactiveSec = "72m";
       Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
       WakeSystem = false;
