@@ -85,10 +85,6 @@ in
           directory = "/var/lib/fprint";
           mode = "0700";
         })
-        (lib.lists.optional (config.virtualisation.waydroid.enable) {
-          directory = "/var/lib/waydroid";
-          mode = "0755";
-        })
         (
           # lib.lists.optional ((builtins.hasAttr "lanzaboote" config.boot) && config.boot.lanzaboote.enable)
           # 그냥 항상 유효화 <2024-11-19>
@@ -105,6 +101,11 @@ in
         (lib.lists.optional (config.hardware.bluetooth.enable) {
           directory = "/var/lib/bluetooth";
           mode = "0700";
+        })
+
+        (lib.lists.optional (config.virtualisation.waydroid.enable) {
+          directory = "/var/lib/waydroid";
+          mode = "0755";
         })
         (lib.lists.optional (config.virtualisation.docker.enable && cfg.isRootNotZFS) {
           directory = "/var/lib/docker";

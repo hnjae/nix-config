@@ -20,6 +20,8 @@ _: {
     pools = [ "isis" ];
   };
 
+  virtualisation.waydroid.enable = true;
+
   # services.resilio = {
   #   enable = true;
   #   enableWebUI = true;

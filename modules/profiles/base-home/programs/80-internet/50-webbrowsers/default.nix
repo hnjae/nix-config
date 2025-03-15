@@ -13,6 +13,7 @@ in
     ./firefox.nix
     ./google-chrome.nix
     ./opera.nix
+    ./vivaldi.nix
     ./zen-browser.nix
   ];
 

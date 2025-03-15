@@ -21,6 +21,8 @@
     # Android
     ".temp"
     ".thumbnails"
+    ".trashed-*"
+    ".nomedia"
 
     # Misc
     ".cache"
