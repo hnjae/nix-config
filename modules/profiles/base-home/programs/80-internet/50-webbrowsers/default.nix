@@ -14,7 +14,6 @@ in
     ./google-chrome.nix
     ./opera.nix
     ./vivaldi.nix
-    ./zen-browser.nix
   ];
 
   config = lib.mkIf (baseHomeCfg.isDesktop) {
