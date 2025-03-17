@@ -72,6 +72,8 @@ in
 {
   # NOTE: Vivaldi does not support wayland <2024-06-05; vivaldi v6.7.3329.31, NixOS 24.05>
   config = lib.mkIf (cfg.isDesktop && pkgs.config.allowUnfree && pkgs.stdenv.isLinux) {
+    default-app.browser = "vivaldi-stable";
+
     stateful.nodes = [
       {
         path = "${config.xdg.configHome}/vivaldi";
