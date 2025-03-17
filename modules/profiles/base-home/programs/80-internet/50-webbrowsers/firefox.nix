@@ -6,60 +6,108 @@
 }:
 let
   baseHomeCfg = config.base-home;
-  appId = "org.mozilla.firefox";
 in
 {
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
-    services.flatpak.packages = [ appId ];
+    programs.firefox = {
+      enable = true;
+      package = pkgs.firefox;
+      policies = {
+        DisableFirefoxStudies = true;
+        DisableTelemetry = true;
+        DisableFeedbackCommands = true;
+        DisablePocket = true;
 
-    services.flatpak.overrides.${appId}.Context = {
-      # to access home directory
-      filesystems = [ "home" ];
-    };
-
-    home.packages = [
-      (pkgs.writeScriptBin "firefox" ''
-        #!${pkgs.dash}/bin/dash
-
-        flatpak run ${appId} "$@"
-      '')
-    ];
-
-    stateful.nodes = [
-      {
-        path = "${config.home.homeDirectory}/.mozilla";
-        mode = "755";
-        type = "dir";
-      }
-    ];
-
-    xdg.mimeApps.associations.removed =
-      let
-        desktopName = "${appId}.desktop";
-        mimeTypes = [
-          # "application/rdf+xml"
-          # "application/rss+xml"
-          "application/xml"
-          "audio/flac"
-          "audio/ogg"
-          "audio/webm"
-          "image/avif"
-          "image/gif"
-          "image/jpeg"
-          "image/png"
-          "image/svg+xml"
-          "image/webp"
-          "text/xml"
-          "video/ogg"
-          "video/webm"
-          "x-scheme-handler/mailto"
+        # stateless
+        SanitizeOnShutdown = true;
+        PrivateBrowsingModeAvailability = false;
+        DontCheckDefaultBrowser = true;
+        BlockAboutConfig = true;
+        AppAutoUpdate = false;
+        DisableSystemAddonUpdate = true;
+        DisableFirefoxAccounts = true;
+        DisableFormHistory = true;
+        DisableMasterPasswordCreation = true;
+        DisableProfileImport = true;
+      };
+      profiles.default = {
+        search.engines = {
+          "Nix Packages" = {
+            urls = [
+              {
+                template = "https://search.nixos.org/packages";
+                params = [
+                  {
+                    name = "type";
+                    value = "packages";
+                  }
+                  {
+                    name = "query";
+                    value = "{searchTerms}";
+                  }
+                  {
+                    name = "size";
+                    value = "200";
+                  }
+                ];
+              }
+            ];
+            icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+            definedAliases = [ "@np" ];
+          };
+          "Nix Options" = {
+            urls = [
+              {
+                template = "https://search.nixos.org/options";
+                params = [
+                  {
+                    name = "size";
+                    value = "200";
+                  }
+                  {
+                    name = "type";
+                    value = "packages";
+                  }
+                  {
+                    name = "query";
+                    value = "{searchTerms}";
+                  }
+                ];
+              }
+            ];
+            icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+            definedAliases = [ "@no" ];
+          };
+          "NixOS Wiki" = {
+            urls = [ { template = "https://wiki.nixos.org/index.php?search={searchTerms}"; } ];
+            iconUpdateURL = "https://wiki.nixos.org/favicon.png";
+            updateInterval = 24 * 60 * 60 * 1000; # every day
+            definedAliases = [ "@nw" ];
+          };
+          "Bing".metaData.hidden = true;
+          "Wikipedia (en)".metaData.hidden = true;
+        };
+        bookmarks = [
+          {
+            name = "Nix sites";
+            toolbar = true;
+            bookmarks = [
+              {
+                name = "homepage";
+                url = "https://nixos.org/";
+              }
+              {
+                name = "wiki";
+                tags = [
+                  "wiki"
+                  "nix"
+                ];
+                url = "https://wiki.nixos.org/";
+              }
+            ];
+          }
         ];
-      in
-      (builtins.listToAttrs (
-        builtins.map (mimeType: {
-          name = mimeType;
-          value = desktopName;
-        }) mimeTypes
-      ));
+      };
+    };
   };
 }
