@@ -25,6 +25,7 @@ let
     "/home/hnjae/Music"
     "/home/hnjae/Pictures"
     "/home/hnjae/Projects"
+    "/home/hnjae/Templates"
     "/home/hnjae/Videos"
   ];
 in

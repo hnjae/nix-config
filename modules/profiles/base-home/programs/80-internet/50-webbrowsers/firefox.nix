@@ -84,8 +84,13 @@ in
             updateInterval = 24 * 60 * 60 * 1000; # every day
             definedAliases = [ "@nw" ];
           };
+          "Brave" = {
+            urls = [ { template = "https://search.brave.com/search?q={searchTerms}&source=web"; } ];
+            icon = "https://brave.com/static-assets/images/brave-logo-sans-text.svg";
+            definedAliases = [ "@b" ];
+          };
           "Bing".metaData.hidden = true;
-          "Wikipedia (en)".metaData.hidden = true;
+          "Wikipedia".metaData.hidden = true;
         };
         bookmarks = [
           {
