@@ -15,7 +15,11 @@ in
     ];
 
     services.flatpak.packages = [
-      "io.dbeaver.DBeaverCommunity" # db tool
+      # db tool
+      "io.dbeaver.DBeaverCommunity" # Apache-2.0
+      "io.beekeeperstudio.Studio" # GPL3
+      "org.pgadmin.pgadmin4"
+
       # sql client, uses end-of-life dependency
       "com.github.alecaddd.sequeler"
       "com.mongodb.Compass" # Proprietary
