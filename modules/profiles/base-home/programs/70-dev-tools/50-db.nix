@@ -14,7 +14,7 @@ in
       sqlite
     ];
 
-    services.flatpak.packages = lib.flattten [
+    services.flatpak.packages = lib.flatten [
       # db client
       "io.dbeaver.DBeaverCommunity" # Apache-2.0
       "io.beekeeperstudio.Studio" # GPL3

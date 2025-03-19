@@ -2,6 +2,14 @@
 tags: [ xkb ]
 ---
 
+Microsoft Keyboard 맵핑
+Fn-F5: XF86AudioPlay
+Fn-F6: XF86Tools (네모난 상자에 재생버튼 기호)
+Fn-F7: XF86TouchpadToggle (검색 기호)
+Fn-F8: Shift - Super + r (스크린샷 기호; 아마 super + s 인데 colemak 이라 r 로 인식된듯?)
+emoji 버튼: Contol-Shift-Meta-Super-space
+
+
 Thinkpad T14s Gen 4 AMD 맵핑
 
 Fn-key: XF86WakeUp

@@ -79,6 +79,11 @@
     "org/gnome/settings-daemon/plugins/media-keys".screensaver = [ "<Alt><Super>l" ]; # defaults: <Super>l
     "org/gnome/shell/keybindings" = {
       toggle-application-view = [ ]; # @as []
+      show-screenshot-ui = [
+        "Print"
+        "<Shift><Super>s" # like MS Window
+        "<Shift><Super>r" # colemak-dh of above mapping
+      ];
     };
     "org/gnome/desktop/wm/keybindings" = {
       close = [

@@ -24,6 +24,15 @@
       "isis/safe/home/hnjae/.cache" = {
         useTemplate = [ "ignore" ];
       };
+      # "isis/local" = {
+      #   autoprune = true;
+      #   autosnap = false;
+      #   yearly = 0;
+      #   monthly = 0;
+      #   processChildrenOnly = false;
+      #   daily = 0;
+      #   hourly = 0;
+      # };
     };
   };
 }
