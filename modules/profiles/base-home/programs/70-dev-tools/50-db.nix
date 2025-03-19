@@ -8,29 +8,20 @@ let
   baseHomeCfg = config.base-home;
 in
 {
-  config = lib.mkIf baseHomeCfg.isDev {
+  config = lib.mkIf (baseHomeCfg.isDev && baseHomeCfg.isDesktop) {
     home.packages = with pkgs; [
       mongosh
       sqlite
     ];
 
-    services.flatpak.packages = [
-      # db tool
+    services.flatpak.packages = lib.flattten [
+      # db client
       "io.dbeaver.DBeaverCommunity" # Apache-2.0
       "io.beekeeperstudio.Studio" # GPL3
       "org.pgadmin.pgadmin4"
 
-      # sql client, uses end-of-life dependency
-      "com.github.alecaddd.sequeler"
-      "com.mongodb.Compass" # Proprietary
+      # "com.github.alecaddd.sequeler" # sql client, uses end-of-life dependency
+      (lib.lists.optional pkgs.config.allowUnfree "com.mongodb.Compass") # proprietary
     ];
-
-    services.flatpak.overrides = {
-      "com.github.alecaddd.sequeler" = {
-        Context = {
-          shared = [ "!network" ];
-        };
-      };
-    };
   };
 }
