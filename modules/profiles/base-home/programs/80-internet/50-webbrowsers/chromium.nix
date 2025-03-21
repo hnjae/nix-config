@@ -20,17 +20,6 @@ in
     programs.chromium = {
       enable = true;
       package = pkgs.ungoogled-chromium;
-      commandLineArgs = [
-        # enable Wayland
-        "--ozone-platform-hint=auto"
-        "--enable-features=UseOzonePlatform"
-        # enable text-input-v3
-        "--enable-wayland-ime"
-        "--wayland-text-input-version=3"
-        # enable VA-API
-        "--enable-features=AcceleratedVideoDecodeLinuxGL"
-        "--enable-features=VaapiIgnoreDriverChecks"
-      ];
       # dictionaries = [ pkgs.hunspellDictsChromium.en_US ];
       extensions = [
         {
