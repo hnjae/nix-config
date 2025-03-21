@@ -3,8 +3,8 @@ _: {
     ./change-battery-threshold.nix
     ./fprint.nix
     ./ollama.nix
+    ./zrepl.nix
     # ./tabby.nix
-    ./sanoid.nix
     # ./shairport-sync.nix
 
     ./restic-backup

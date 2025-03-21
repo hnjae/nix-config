@@ -263,10 +263,15 @@
                 ];
                 global.excludes = [
                   ".editorconfig"
+                  "*/.editorconfig" # NOTE: 이거 "/.editorconfig" 가 포함이 안되는데? <2025-03-20>
+                  ".gitattributes"
+                  "*/.gitattributes"
+                  "*/*-encrypted/*"
                   "LICENSE"
                   "dotfiles/*"
                   "*/secrets/*"
                   "*/LICENSE"
+                  "*.gpg"
                   "*.adoc"
                   "*.kdl"
                   "*.mustache"

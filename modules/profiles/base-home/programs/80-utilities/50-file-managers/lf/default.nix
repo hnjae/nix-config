@@ -1,4 +1,9 @@
-{ pkgs, pkgsUnstable, ... }:
+{
+  pkgs,
+  pkgsUnstable,
+  lib,
+  ...
+}:
 let
   lfcdPosix = builtins.readFile ./resources/lfcd.sh;
 in
@@ -26,5 +31,21 @@ in
 
   python = {
     enable = true; # my config file uses python script
+  };
+
+  xdg.configFile."lf/icons" = {
+    # podman config
+    text =
+      let
+        icons = (import ./resources/icons);
+      in
+      lib.concatLines (
+        builtins.concatLists [
+          (lib.mapAttrsToList (key: icon: "${key}\t${icon}") icons.lfIconTypes)
+          (lib.mapAttrsToList (key: icon: "*${key}\t${icon}") icons.directoryIcons)
+          (lib.mapAttrsToList (key: icon: "*${key}\t${icon}") icons.filenameIcons)
+          (lib.mapAttrsToList (key: icon: "*.${key}\t${icon}") icons.extensionIcons)
+        ]
+      );
   };
 }

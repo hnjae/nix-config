@@ -1,3 +1,8 @@
+/*
+  NOTE:
+
+  eza 는 LS_COLORS 는 따름.
+*/
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
