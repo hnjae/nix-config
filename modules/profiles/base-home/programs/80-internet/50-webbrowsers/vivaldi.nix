@@ -90,6 +90,7 @@ in
     home.packages = [ package ];
 
     # NOTE: desktopEntries does not work in Gnome <NixOS 24.11; Gnome 47>
+    # vivaldi 는 NIX_OZONE_WL=1 플래그가 적용이 안됨 <NixOS 24.11>
     xdg.dataFile."applications/vivaldi-stable.desktop" = {
       enable = true;
       text = ''

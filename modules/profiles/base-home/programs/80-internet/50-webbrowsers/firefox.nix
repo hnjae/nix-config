@@ -6,9 +6,14 @@
 }:
 let
   baseHomeCfg = config.base-home;
+  profileName = "default";
 in
 {
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
+    systemd.user.tmpfiles.rules = [
+      ''r "${config.home.homeDirectory}/.mozilla/firefox/${profileName}/search.json.mozlz4.*"''
+    ];
+
     programs.firefox = {
       enable = true;
       package = pkgs.firefox;
@@ -30,7 +35,7 @@ in
         DisableMasterPasswordCreation = true;
         DisableProfileImport = true;
       };
-      profiles.default = {
+      profiles."${profileName}" = {
         search.engines = {
           "Nix Packages" = {
             urls = [

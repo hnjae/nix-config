@@ -2,8 +2,8 @@ rec {
   lfIconTypes = {
     ln = Icons.FOLDER; # link
     di = Icons.FOLDER; # dir
-    fi = Icons.FILE; # file
-    ex = Icons.FILE; # exec
+    fi = Icons.FILE_OUTLINE; # file
+    ex = Icons.FILE_OUTLINE; # exec
   };
 
   Icons = {

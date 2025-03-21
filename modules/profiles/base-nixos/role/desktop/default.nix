@@ -35,6 +35,8 @@
       }
     ];
 
+    environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
     # provides org.freedesktop.upower interface
     services.upower.enable = lib.mkOverride 999 true;
     services.printing.enable = lib.mkOverride 999 true;
