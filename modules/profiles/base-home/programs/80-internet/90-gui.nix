@@ -17,7 +17,7 @@ in
         "org.ferdium.Ferdium" # apache 1
         "org.gnome.Fractal" # matrix
         "com.discordapp.Discord" # Proprietary
-        "com.ticktick.TickTick" # Proprietary, Offline Support 지원 안함.
+        "com.ticktick.TickTick" # Proprietary, Offline Support 지원 안함. text-input-v3 지원 X <2025-03-21>
       ])
     ];
   };
