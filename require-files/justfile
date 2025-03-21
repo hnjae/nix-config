@@ -1,0 +1,7 @@
+#!/usr/bin/env -S just --justfile
+
+default:
+    @just --list
+
+require-files:
+    nix-store --add-fixed sha256 cider-linux-x64.AppImage

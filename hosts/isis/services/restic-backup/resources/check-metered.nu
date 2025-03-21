@@ -43,7 +43,7 @@ def main [] {
         }
 
         if (check_metered ( $con | get UUID )) {
-            print $"Metered network is connected. Connection: ( $con | get NAME)"
+            print $"Metered network is connected. Connection: ( $con | get NAME )"
             exit 1
         }
     }

@@ -7,10 +7,10 @@ hostname := `hostname`
 default:
     @just --list
 
-commit-all:
-    nix fmt --no-warn-dirty
+commit-all: format
     git add --all
     git commit --no-verify -m '{{ hostname }}: {{ datetime("%Y-%m-%dT%H:%M:%S%Z") }}'
+    git push
 
 format:
     nix fmt --no-warn-dirty

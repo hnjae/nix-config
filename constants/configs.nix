@@ -74,5 +74,8 @@
     "kdenlive/**/sequences"
     "kdenlive/**/videothumbs"
     "kdenlive/**/workfiles"
+
+    # digiKam
+    ".dtrash"
   ];
 }
