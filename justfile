@@ -39,9 +39,15 @@ update-except-unstable:
         base16 \
         base16-schemes \
         base24-vscode-terminal
+    git reset
+    git add flake.lock
+    git commit -m "build: update flake.lock"
 
 update:
     nix flake update
+    git reset
+    git add flake.lock
+    git commit -m "build: update flake.lock"
 
 update-local-repo:
     nix flake update nix-modules-private py-utils
