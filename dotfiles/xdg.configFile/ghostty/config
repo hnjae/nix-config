@@ -28,7 +28,7 @@ font-size = 10.0
 theme = GruvboxLight
 
 # default: 0.7 <version 1.0.1>
-unfocused-split-opacity=0.8
+unfocused-split-opacity=0.9
 
 cursor-style = block
 cursor-style-blink = false
@@ -41,3 +41,18 @@ window-theme = ghostty
 # gtk-tabs-location = bottom
 gtk-titlebar = false
 # window-padding-x = 4
+
+################################################################################
+# remap toggle_split_zoom and toggle_fullscreen
+keybind = ctrl+shift+enter=unbind
+keybind = ctrl+enter=toggle_split_zoom
+
+# default: ctrl-alt-(arrow)
+keybind = alt+h=goto_split:left
+keybind = alt+j=goto_split:down
+keybind = alt+k=goto_split:up
+keybind = alt+l=goto_split:right
+
+# paste_from_clipboard
+keybind = shift+insert=paste_from_clipboard
+keybind = shift+delete=copy_to_clipboard

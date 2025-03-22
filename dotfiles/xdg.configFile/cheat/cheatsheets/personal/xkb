@@ -75,7 +75,7 @@ F17: XF86Launch8
 F18: XF86Launch9
 F19: NoSymbol (serial: 7250)
 F20: NoSymbol (serial: 7251)
-F21: XF86AudioMicMute (serial: 7252)
-F22: XF86TouchpadToggle (serial: 7253)
-F23: XF86TouchpadOn (serial: 7254)
-F24: XF86TouchpadOff (serial: 7255)
+F20: XF86AudioMicMute (serial: 7252)
+F21: XF86TouchpadToggle (serial: 7253)
+F22: XF86TouchpadOn (serial: 7254)
+F23: XF86TouchpadOff (serial: 7255)
