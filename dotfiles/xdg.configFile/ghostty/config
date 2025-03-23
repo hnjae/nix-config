@@ -10,10 +10,12 @@ term = "xterm-256color"
 # Font
 ################################################################################
 # run `ghostty +list-fonts` to get a list of available fonts
+
+# font-family = "Monospace"
+# font-family = "D2Coding"
 font-family = "MesloLGM Nerd Font"
 font-family = "Noto Sans Mono CJK JP"
 font-family = "Noto Sans Mono CJK KR"
-# font-family = "D2Coding"
 
 # font-family-bold = "MesloLGM Nerd Font Bold"
 # font-family-bold = "D2Coding Bold"
@@ -28,7 +30,7 @@ font-size = 10.0
 theme = GruvboxLight
 
 # default: 0.7 <version 1.0.1>
-unfocused-split-opacity=0.9
+unfocused-split-opacity=1.0
 
 cursor-style = block
 cursor-style-blink = false
@@ -43,6 +45,9 @@ gtk-titlebar = false
 # window-padding-x = 4
 
 ################################################################################
+# Key Binding
+################################################################################
+
 # remap toggle_split_zoom and toggle_fullscreen
 keybind = ctrl+shift+enter=unbind
 keybind = ctrl+enter=toggle_split_zoom
@@ -52,6 +57,11 @@ keybind = alt+h=goto_split:left
 keybind = alt+j=goto_split:down
 keybind = alt+k=goto_split:up
 keybind = alt+l=goto_split:right
+
+keybind = alt+left=goto_split:left
+keybind = alt+down=goto_split:down
+keybind = alt+up=goto_split:up
+keybind = alt+right=goto_split:right
 
 # paste_from_clipboard
 keybind = shift+insert=paste_from_clipboard
