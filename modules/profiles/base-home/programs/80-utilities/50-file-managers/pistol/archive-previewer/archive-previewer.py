@@ -26,12 +26,14 @@ def print_rar(file: Path) -> None:
                 entry.file_size,
                 entry.is_file() and datetime(*entry.date_time) or "-",
                 (
-                entry.is_file()
-                and (
-                    entry.CRC and format(entry.CRC, "x")
-                    or format(binascii.crc32(entry.blake2sp_hash), "x")
-                )
-                or "-"),
+                    entry.is_file()
+                    and (
+                        entry.CRC
+                        and format(entry.CRC, "x")
+                        or format(binascii.crc32(entry.blake2sp_hash), "x")
+                    )
+                    or "-"
+                ),
                 entry.filename,
             ]
             for entry in archive.infolist()
@@ -66,6 +68,7 @@ def print_zip(file: Path) -> None:
             )
         )
 
+
 def main() -> int:
     if len(sys.argv) != 2:
         print("Usage: <script> <archive_path>")
@@ -82,6 +85,7 @@ def main() -> int:
         return 1
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

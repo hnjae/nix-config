@@ -235,8 +235,15 @@
                   enable = true;
                   package = pkgs.nixfmt-rfc-style;
                 };
+                rustfmt.enable = true;
                 fish_indent.enable = true;
-                just.enable = true;
+                just = {
+                  enable = true;
+                  includes = [
+                    "justfile"
+                    "*/justfile"
+                  ];
+                };
                 mdformat.enable = true;
                 taplo.enable = true;
                 ruff-format.enable = true;
@@ -262,21 +269,33 @@
                   "--width=100"
                 ];
                 global.excludes = [
+                  # specific file name
                   ".editorconfig"
-                  "*/.editorconfig" # NOTE: 이거 "/.editorconfig" 가 포함이 안되는데? <2025-03-20>
+                  "*/.editorconfig"
                   ".gitattributes"
                   "*/.gitattributes"
-                  "*/*-encrypted/*"
                   "LICENSE"
-                  "dotfiles/*"
-                  "*/secrets/*"
                   "*/LICENSE"
+
+                  # by directory pattern
+                  "dotfiles/*"
+                  "*/*-encrypted/*"
+                  "*/secrets/*"
+
+                  # by suffix pattern
                   "*.gpg"
                   "*.adoc"
                   "*.kdl"
                   "*.mustache"
                   "*.zsh"
+                  "*.txt"
+                  "*.nu" # nufmt break files. don't know why. <2025-03-23>
                   "*rc"
+                  "*.cheat"
+                  "*.log"
+
+                  # misc
+                  "*-samples"
                 ];
               };
             };

@@ -19,6 +19,6 @@ pkgs.callPackage (
       ))
     ];
     dontUnpack = true;
-    installPhase = "install -Dm555 ${./archive-previewer} $out/bin/archive-previewer";
+    installPhase = "install -Dm555 ${./archive-previewer.py} $out/bin/archive-previewer";
   }
 ) { }
