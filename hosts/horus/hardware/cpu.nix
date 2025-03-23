@@ -19,7 +19,7 @@
   # 8c16t cpu
   nix.settings = {
     max-jobs = 4;
-    cores = 4;
+    cores = 8;
     system-features = self.constants.hosts.horus.buildMachine.supportedFeatures;
   };
 }
