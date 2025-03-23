@@ -15,6 +15,7 @@
     ./packages.nix
     ./portal-pipewire.nix
     ./via.nix
+    ./xremap.nix
   ];
 
   config = lib.mkIf (config.base-nixos.role == "desktop") {

@@ -71,6 +71,17 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+    xremap = {
+      url = "github:xremap/nix-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        # devshell.follows = ""; flake.nix를 이상하게 작성했는지, devshell 이 필요하다. <2025-03-23>
+        treefmt-nix.follows = "treefmt-nix"; # 상동
+        home-manager.follows = "";
+        hyprland.follows = "";
+      };
+    };
 
     ############################################################################
     # Overlays / Packages
