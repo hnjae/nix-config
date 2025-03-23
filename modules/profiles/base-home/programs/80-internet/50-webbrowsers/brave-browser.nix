@@ -12,8 +12,12 @@ in
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux && pkgs.stdenv.is64bit) {
     services.flatpak.packages = [ appId ];
     services.flatpak.overrides."${appId}" = {
-      "Session Bus Policy" = {
-        "org.freedesktop.Flatpak" = "talk";
+      "Context" = {
+        filesystems = [
+          "xdg-config/BraveSoftware/Brave-Browser/NativeMessagingHosts:ro"
+          "~/.1password/agent.sock"
+          "~/.persist/.1password/agent.sock"
+        ];
       };
     };
 
