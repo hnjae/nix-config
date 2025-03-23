@@ -15,9 +15,6 @@ let
   baseHomeCfg = config.base-home;
 
   # appId = "com.logseq.Logseq";
-  electronFlags = [
-    "--enable-features=UseOzonePlatform"
-  ];
 
   package =
     (pkgs.logseq.override {
@@ -46,7 +43,10 @@ in
       }
     ];
 
-    home.packages = [ package ];
+    home.packages = [
+      package
+      pkgs.glibc # https://github.com/logseq/logseq/issues/10851
+    ];
 
     # default-app.fromApps = [ appId ];
     # services.flatpak.packages = [ appId ];

@@ -19,12 +19,14 @@ in
 
     programs.chromium = {
       enable = true;
-      package = pkgs.ungoogled-chromium;
-      # dictionaries = [ pkgs.hunspellDictsChromium.en_US ];
+      package = pkgs.chromium; # ungoogled-chromium 은 extensions 설치가 안된다.
+      dictionaries = [ pkgs.hunspellDictsChromium.en_US ];
       extensions = [
-        {
-          id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; # ublock-origin-light
-        }
+        { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # ublock-origin-light
+        { id = "lckanjgmijmafbedllaakclkaicjfmnk"; } # clearurls
+        { id = "njdfdhgcmkocbgbhcioffdbicglldapd"; } # localcdn
+        { id = "hfjbmagddngcpeloejdejnfgbamkjaeg"; } # vimium-c
+        { id = "mdjildafknihdffpkfmmpnpoiajfjnjd"; } # Consent-O-Matic
       ];
     };
   };
