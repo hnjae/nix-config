@@ -14,23 +14,7 @@
 let
   baseHomeCfg = config.base-home;
 
-  # appId = "com.logseq.Logseq";
-
-  package =
-    (pkgs.logseq.override {
-      electron_27 = pkgs.electron_33;
-    }).overrideAttrs
-      {
-        # to add --enable-wayland-ime --wayland-text-input-version=3 <2025-03-21>
-        postFixup = lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
-          # set the env "LOCAL_GIT_DIRECTORY" for dugite so that we can use the git in nixpkgs
-          makeWrapper ${pkgs.electron_33}/bin/electron $out/bin/logseq \
-            --set "LOCAL_GIT_DIRECTORY" ${pkgs.git} \
-            --add-flags $out/share/logseq/resources/app \
-            --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime --wayland-text-input-version=3}}"
-        '';
-      };
-
+  appId = "com.logseq.Logseq";
 in
 {
   config = lib.mkIf baseHomeCfg.isDesktop {
@@ -43,22 +27,17 @@ in
       }
     ];
 
-    home.packages = [
-      package
-      pkgs.glibc # https://github.com/logseq/logseq/issues/10851
-    ];
-
-    # default-app.fromApps = [ appId ];
-    # services.flatpak.packages = [ appId ];
-    # services.flatpak.overrides."${appId}" = {
-    #   Context = {
-    #     sockets = [ "!wayland" ];
-    #     # for git support
-    #     # filesystems = [
-    #     #   "~/.ssh"
-    #     #   "/run/current-system/sw/bin"
-    #     # ];
-    #   };
-    # };
+    default-app.fromApps = [ appId ];
+    services.flatpak.packages = [ appId ];
+    services.flatpak.overrides."${appId}" = {
+      Context = {
+        sockets = [ "!wayland" ];
+        # for git support
+        # filesystems = [
+        #   "~/.ssh"
+        #   "/run/current-system/sw/bin"
+        # ];
+      };
+    };
   };
 }
