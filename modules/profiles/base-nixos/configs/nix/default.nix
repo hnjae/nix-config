@@ -1,4 +1,7 @@
 { lib, ... }:
+let
+  fromGiBtoB = num: toString (num * 1024 * 1024 * 1024);
+in
 {
   imports = [
     ./managing.nix
@@ -24,17 +27,9 @@
       trusted-users = [
         "@wheel"
       ];
-    };
 
-    # HELP: run `man 5 nix.conf`
-    extraOptions =
-      let
-        fromGiBtoB = num: toString (num * 1024 * 1024 * 1024);
-      in
-      ''
-        # keep-env-derivations = true
-        min-free = ${fromGiBtoB 8}
-        max-free = ${fromGiBtoB 64}
-      '';
+      # HELP: run `man 5 nix.conf`
+      min-free = lib.mkOverride 999 "${fromGiBtoB 16}";
+    };
   };
 }
