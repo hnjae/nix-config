@@ -13,8 +13,8 @@ in
       # A modern load testing tool, using Go and JavaScript
       k6
 
-      # httpie # sends http requests
       xh # friendly and fast tool for sending HTTP requests.
+      hurl
     ];
 
     services.flatpak.packages = builtins.concatLists [
