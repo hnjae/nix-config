@@ -64,7 +64,7 @@ in
     onCalendar = mkOption {
       type = types.str;
       default = "*-*-* 04:00:00";
-      description = "How ofen clean old generations";
+      description = "How often to clean old generations";
     };
   };
 
