@@ -15,6 +15,7 @@ in
   config = lib.mkIf (baseHomeCfg.isDesktop) {
     services.flatpak.packages = builtins.concatLists [
       [
+        "org.gnome.clocks"
         "org.gnome.Logs" # systemd logs, ets
         "app.drey.KeyRack" # edit secrets
         "com.github.qarmin.czkawka" # <https://github.com/qarmin/czkawka> deduplication
