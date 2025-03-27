@@ -9,6 +9,7 @@
     ./kdeconnect.nix
     ./style
     ./tray.nix
+    ./xremap.nix
   ];
 
   config = {

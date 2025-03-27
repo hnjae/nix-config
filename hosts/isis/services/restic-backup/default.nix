@@ -55,7 +55,7 @@ in
 
     environment = {
       RESTIC_COMPRESSION = "auto";
-      RESTIC_PACK_SIZE = builtins.toString 64;
+      RESTIC_PACK_SIZE = builtins.toString 128;
       RESTIC_CACHE_DIR = "/var/cache/${serviceName}";
       RESTIC_PASSWORD_FILE = config.sops.secrets."restic-onedrive-repo-password".path;
       RESTIC_REPOSITORY = "rclone:onedrive:.restic";

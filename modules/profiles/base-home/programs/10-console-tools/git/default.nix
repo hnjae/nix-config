@@ -61,8 +61,9 @@ let
     # gbl                  git blame -b -w
     # gbl (forgit)
 
-    # git-status
+    # gst: git-status
     "gs" = "git status -sb";
+    "gsb" = "git status -sb";
     "gst" = "git status -sb";
 
     # gshw: git-show
