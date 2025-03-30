@@ -20,6 +20,12 @@ format:
 open-status:
     xdg-open "https://status.nixos.org/"
 
+update:
+    nix flake update
+    git reset
+    git add flake.lock
+    git commit -m "build: update flake.lock"
+
 update-except-unstable:
     nix flake update \
         nixpkgs \
@@ -39,12 +45,6 @@ update-except-unstable:
         base16 \
         base16-schemes \
         base24-vscode-terminal
-    git reset
-    git add flake.lock
-    git commit -m "build: update flake.lock"
-
-update:
-    nix flake update
     git reset
     git add flake.lock
     git commit -m "build: update flake.lock"
