@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, localFlake, ... }:
 {
   lib,
   config,
@@ -19,6 +19,13 @@
       flake = inputs.nixpkgs;
       to = {
         path = "${inputs.nixpkgs}";
+        type = "path";
+      };
+    };
+    nix-config = {
+      flake = localFlake;
+      to = {
+        path = "${localFlake}";
         type = "path";
       };
     };
