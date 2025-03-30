@@ -57,7 +57,10 @@ in
       })
       (importApply ./with-import-apply/deploy-account.nix { localFlake = self; })
       (importApply ./with-import-apply/home-manager.nix { localFlake = self; })
-      (importApply ./with-import-apply/nix-registry.nix { inherit inputs; })
+      (importApply ./with-import-apply/nix-registry.nix {
+        inherit inputs;
+        localFlake = self;
+      })
       (importApply ./with-import-apply/nixpkgs.nix { localFlake = self; })
       (importApply ./with-import-apply/users.nix { localFlake = self; })
 
