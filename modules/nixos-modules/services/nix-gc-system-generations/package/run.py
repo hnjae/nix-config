@@ -31,8 +31,6 @@ PROFILE_PATH: Final = "/nix/var/nix/profiles"
 BOOTED_SYS_NIX_PATH: Final[Path] = Path("/run/booted-system").readlink()
 CURRENT_SYS_NIX_PATH: Final[Path] = Path("/run/current-system").readlink()
 
-DAY_ADJUST: Final = timedelta(hours=4)  # 04 시를 날짜 변경 기준으로 삼음
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(levelname)s: %(message)s",
@@ -45,6 +43,7 @@ logger = logging.getLogger(__name__)
 class ArgsNamespace(Namespace):
     keep_days: int = 0
     run: bool = False
+    day_rollover_hour: timedelta = timedelta()
 
 
 def get_args() -> ArgsNamespace:
@@ -55,7 +54,19 @@ def get_args() -> ArgsNamespace:
             )
             raise ValueError(msg)
 
+        if not (timedelta() <= args.day_rollover_hour < timedelta(hours=24)):
+            msg = "--day-rollover-hour must be between 0 and 23."
+            raise ValueError(msg)
+
         return True
+
+    def hour_str_to_timedelta(hour_str: str) -> timedelta:
+        try:
+            hour_int = int(hour_str)
+            return timedelta(hours=hour_int)
+        except ValueError:
+            msg = f"Invalid hour value: '{hour_str}'. Must be an integer."
+            raise argparse.ArgumentTypeError(msg)
 
     parser = argparse.ArgumentParser()
     _ = parser.add_argument(
@@ -63,9 +74,23 @@ def get_args() -> ArgsNamespace:
         dest="keep_days",
         default=14,
         type=int,
+        help="Deletes generations older than this number of days.",
         nargs="?",  # consume 1 or 0 argument
     )
-    _ = parser.add_argument("--run", action="store_true")
+
+    _ = parser.add_argument(
+        "--day-rollover-hour",
+        default=timedelta(hours=4),
+        type=hour_str_to_timedelta,
+        help="The time considered the change of day; this may not be 00:00.",
+        nargs="?",  # consume 1 or 0 argument
+    )
+
+    _ = parser.add_argument(
+        "--run",
+        action="store_true",
+        help="Run the script in actual mode, not dry-run.",
+    )
 
     args_ns = ArgsNamespace()
     args = parser.parse_args(namespace=args_ns)
@@ -246,13 +271,15 @@ def entrypoint() -> int:
         if gen.is_current_profile or gen.is_booted_sys or gen.is_current_sys:
             generations_to_keep.add(gen)
 
-        date_ = (gen.datetime_ - DAY_ADJUST).date()
+        date_ = (gen.datetime_ - args.day_rollover_hour).date()
         date_map[date_].add(gen)
 
-    today = (datetime.now() - DAY_ADJUST).date()
+    today = (datetime.now() - args.day_rollover_hour).date()
     current_profile_date = (
         current_profile_generation is not None
-        and (current_profile_generation.datetime_ - DAY_ADJUST).date()
+        and (
+            current_profile_generation.datetime_ - args.day_rollover_hour
+        ).date()
         or None
     )
 
