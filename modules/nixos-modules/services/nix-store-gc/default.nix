@@ -21,9 +21,8 @@
 }:
 let
   serviceName = "nix-store-gc";
-  documentation = [ "man:nix-store-gc(1)" ];
-  description = "run nix-store --gc";
-  # binPath = "/run/current-system/sw/bin/nix-store";
+  documentation = [ "nix store --help" ];
+  description = "run nix store gc";
   cfg = config.services.${serviceName};
 
   inherit (lib)
@@ -54,7 +53,11 @@ in
         CPUSchedulingPolicy = "idle";
         IOSchedulingClass = "idle";
         Nice = 19;
-        ExecStart = "${pkgs.nix}/bin/nix-store --gc";
+        ExecStart = lib.escapeShellArgs [
+          "${config.nix.package.out}/bin/nix"
+          "store"
+          "gc"
+        ];
       };
     };
 
@@ -64,7 +67,7 @@ in
 
       timerConfig = {
         OnCalendar = cfg.onCalendar;
-        RandomizedDelaySec = "75m";
+        RandomizedDelaySec = "30m";
         Persistent = true;
       };
 

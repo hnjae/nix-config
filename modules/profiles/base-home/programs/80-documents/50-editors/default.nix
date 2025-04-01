@@ -24,7 +24,7 @@ in
       # --
       (optionals baseHomeCfg.isDesktop [
         # lapce
-        # jetbrains.idea-community
+        pkgsUnstable.jetbrains.idea-community
 
         # emacs related
         # emacs29-pgtk
