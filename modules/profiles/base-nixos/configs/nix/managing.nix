@@ -18,10 +18,10 @@ in
   services.nix-gc-system-generations = {
     # enable = config.services.nix-store-gc.enable;
     enable = lib.mkForce true;
-    delThreshold =
+    keepDays =
       mkOverride 999
         {
-          desktop = 3;
+          desktop = 7;
           none = 14;
         }
         ."${cfg.role}";

@@ -4,18 +4,19 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import subprocess
 import sys
+from argparse import Namespace
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING, override
 
 if TYPE_CHECKING:
-    from argparse import Namespace
     from collections.abc import Iterable, Mapping
     from datetime import date
-    from typing import Final
+    from typing import Final, Literal
 
 # ruff: noqa: ANN204, D107, D105
 
@@ -34,10 +35,58 @@ DAY_ADJUST: Final = timedelta(hours=4)  # 04 시를 날짜 변경 기준으로 �
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s: %(message)s",
+    format="%(levelname)s: %(message)s",
+    # format="%(asctime)s %(levelname)s: %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S%z",
 )
 logger = logging.getLogger(__name__)
+
+
+class ArgsNamespace(Namespace):
+    keep_days: int = 0
+    run: bool = False
+
+
+def get_args() -> ArgsNamespace:
+    def check_args(args: ArgsNamespace) -> Literal[True]:
+        if args.keep_days < 0:
+            msg = (
+                "--delete-older-than-days must be greater than or equal to 0."
+            )
+            raise ValueError(msg)
+
+        return True
+
+    parser = argparse.ArgumentParser()
+    _ = parser.add_argument(
+        "--delete-older-than-days",
+        dest="keep_days",
+        default=14,
+        type=int,
+        nargs="?",  # consume 1 or 0 argument
+    )
+    _ = parser.add_argument("--run", action="store_true")
+
+    args_ns = ArgsNamespace()
+    args = parser.parse_args(namespace=args_ns)
+
+    _ = check_args(args)
+
+    return args
+
+
+def check_condition() -> Literal[True]:
+    # check if is running as root:
+    if os.geteuid() != 0:
+        msg = "This script must be run as root."
+        raise PermissionError(msg)
+
+    for bin in (NIX_ENV_BIN, NIX_BIN):
+        if not Path(bin).is_file():
+            msg = f"{bin} does not exist."
+            raise FileNotFoundError(msg)
+
+    return True
 
 
 class NixGeneration:
@@ -78,58 +127,46 @@ class NixGeneration:
         return hash(frozenset({self.datetime_, self.number}))
 
     @override
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, NixGeneration):
+            return False
+
         return self.__hash__ == other.__hash__
 
     def remove_boot_entry(self, *, run: bool = False):
         if not self.entry_path.is_file():
-            msg = (
-                f"WARNING: {self.entry_name} does not exists or is not a file"
+            logger.warning(
+                "%s does not exists or is not a file.", self.entry_name
             )
-            print(msg)
             return
 
         if not run:
-            msg = f"INFO: Would remove boot entry {self.entry_name} ({self.entry_path})"
-            print(msg)
+            logger.info(
+                "DRY-RUN: Would remove boot entry %s (%s).",
+                self.entry_name,
+                self.entry_path,
+            )
             return
 
         if run:
-            msg = f"INFO: Removing {self.entry_path}"
-            print(msg)
+            logger.info("Removing %s.", self.entry_path)
             self.entry_path.unlink()
             return
 
 
-def get_generations() -> (
-    tuple[
-        NixGeneration,
-        NixGeneration | None,
-        NixGeneration | None,
-        Mapping[date, set[NixGeneration]],
-    ]
-):
-    """
-    Return (current_profile_gen, booted_sys_gen, current_sys_gen generation_map[key: datetime, list[generations]])
-    """
+def get_generations() -> set[NixGeneration]:
+    ret: set[NixGeneration] = set()
 
     args = (
         NIX_ENV_BIN,
         "--profile",
         "/nix/var/nix/profiles/system",
         "--list-generations",
-    )  # local timezone 으로 출력함.
+    )  # NOTE: local timezone 으로 출력함.
 
     proc = subprocess.run(args, check=True, capture_output=True, text=True)
 
-    generations_by_date: Mapping[date, set[NixGeneration]] = defaultdict(set)
-
-    # special_nix_gens: Mapping[str, Optional[NixGeneration]]
-
-    # NOTE: 아래 3개는 모두 다를 수 있음
     current_profile_gen: NixGeneration | None = None
-    booted_sys_gen: NixGeneration | None = None
-    current_sys_gen: NixGeneration | None = None
 
     for line in proc.stdout.splitlines():
         gen: NixGeneration
@@ -147,6 +184,8 @@ def get_generations() -> (
                 datetime_,
                 is_current_profile=True,
             )
+            current_profile_gen = gen
+
         else:
             number, datestr, timestr = line.split()
             datetime_ = datetime.fromisoformat(f"{datestr}T{timestr}")
@@ -156,53 +195,21 @@ def get_generations() -> (
                 is_current_profile=False,
             )
 
-        if gen.is_current_profile:
-            current_profile_gen = gen
-
-        if gen.is_booted_sys:
-            booted_sys_gen = gen
-
-        if gen.is_current_sys:
-            current_sys_gen = gen
-
-        gen_date = (datetime_ - DAY_ADJUST).date()
-        generations_by_date[gen_date].add(gen)
-
-    if booted_sys_gen is None:
-        logger.warning("Boot system's generation does not exists")
-
-    if current_sys_gen is None:
-        logger.warning("Current system's generation does not exists")
+        ret.add(gen)
 
     if current_profile_gen is None:
         msg = "No current generation in output"
         raise Exception(msg)
 
-    return (
-        current_profile_gen,
-        booted_sys_gen,
-        current_sys_gen,
-        generations_by_date,
-    )
+    return ret
 
 
-def remove_boot_entries(
-    generations: Iterable[NixGeneration], *, run: bool = False
-) -> None:
-    if not generations:
-        return
-
-    for g in generations:
-        g.remove_boot_entry(run=run)
-
-
-def remove_profile(
+def remove_profiles(
     generations: Iterable[NixGeneration], *, run: bool = False
 ) -> bool:
     """Return true if success."""
     if not generations:
-        msg = "INFO: No generations to delete."
-        print(msg)
+        logger.info("No generations to delete.")
         return True
 
     args = [
@@ -222,72 +229,64 @@ def remove_profile(
     return True
 
 
-def get_args() -> Namespace:
-    parser = argparse.ArgumentParser()
-    _ = parser.add_argument("delThreshold", default=14, type=int)
-    _ = parser.add_argument("--run", action="store_true")
-    return parser.parse_args()
-
-
-def main() -> int:
+def entrypoint() -> int:
+    _ = check_condition()
     args = get_args()
-    generations_to_remove: set[NixGeneration] = set()
 
-    current_profile_gen, booted_sys_gen, current_sys_gen, map_ = (
-        get_generations()
-    )
-    current_profile_date = (current_profile_gen.datetime_ - DAY_ADJUST).date()
+    all_generations = get_generations()
+    generations_to_keep: set[NixGeneration] = set()
+
+    current_profile_generation: NixGeneration | None = None
+    date_map: Mapping[date, set[NixGeneration]] = defaultdict(set)
+
+    for gen in all_generations:
+        if gen.is_current_profile:
+            current_profile_generation = gen
+
+        if gen.is_current_profile or gen.is_booted_sys or gen.is_current_sys:
+            generations_to_keep.add(gen)
+
+        date_ = (gen.datetime_ - DAY_ADJUST).date()
+        date_map[date_].add(gen)
 
     today = (datetime.now() - DAY_ADJUST).date()
+    current_profile_date = (
+        current_profile_generation is not None
+        and (current_profile_generation.datetime_ - DAY_ADJUST).date()
+        or None
+    )
 
-    # remove generations without boot-entry
-    # for generations in map_.values():
-    #     generations_to_remove.update(
-    #         {g for g in generations if not g.entry_path.is_file()}
-    #     )
-
-    for date_, generations in map_.items():
+    for date_, generations in date_map.items():
         if today <= date_:
             # generations created today
+            generations_to_keep.update(generations)
             continue
 
-        if current_profile_date < date_:
-            # future of current, expect not to exists
-            continue
+        if (
+            current_profile_generation is not None
+            and current_profile_date is not None
+            and (current_profile_date <= date_)
+        ):
+            # keep future of current
+            generations_to_keep.update(
+                gen
+                for gen in generations
+                if (current_profile_generation.datetime_ <= gen.datetime_)
+            )
 
-        if today - date_ > timedelta(days=args.delThreshold):
-            # old generations
-            generations_to_remove.update(generations)
-            continue
+        if (today - date_ <= timedelta(days=args.keep_days)) and generations:
+            # keep 1 of not old generations
+            generations_to_keep.add(max(generations))
 
-        if len(generations) > 1:
-            # multiple generations in one day
-            gens = generations.copy()
+    generations_to_remove = all_generations - generations_to_keep
 
-            for gen in (booted_sys_gen, current_sys_gen, current_profile_gen):
-                if gen is None:
-                    continue
-                gens.discard(gen)
-
-            if len(generations) == len(gens):
-                # keep latest
-                gens.remove(max(gens))
-
-            generations_to_remove.update(gens)
-            continue
-
-    # remove current_profile, current_sys, booted_sys from set if exists
-    for gen in (booted_sys_gen, current_sys_gen, current_profile_gen):
-        if gen is None:
-            continue
-        generations_to_remove.discard(gen)
-
-    is_success = remove_profile(generations_to_remove, run=args.run)
+    is_success = remove_profiles(generations_to_remove, run=args.run)
     if is_success:
-        remove_boot_entries(generations_to_remove, run=args.run)
+        for g in generations_to_remove:
+            g.remove_boot_entry(run=args.run)
 
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(entrypoint())

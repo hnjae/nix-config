@@ -55,16 +55,16 @@ in
   options.services.${serviceName} = {
     enable = mkEnableOption (lib.mDoc "");
 
-    delThreshold = mkOption {
+    keepDays = mkOption {
       type = types.int;
       default = 14;
-      description = lib.mdDoc "The last x days to keep";
+      description = "The last x days to keep.";
     };
 
     onCalendar = mkOption {
       type = types.str;
       default = "*-*-* 04:00:00";
-      description = "How often to clean old generations";
+      description = "How often to clean old generations.";
     };
   };
 
@@ -79,8 +79,12 @@ in
         Type = "oneshot";
         CPUSchedulingPolicy = "idle";
         IOSchedulingClass = "idle";
-        # Nice = 19;
-        ExecStart = "${package}/bin/nix-gc-system-generations --run ${toString (cfg.delThreshold)}";
+        ExecStart = lib.escapeShellArgs [
+          "${package}/bin/nix-gc-system-generations"
+          "--run"
+          "--delete-older-than-days"
+          (toString (cfg.keepDays))
+        ];
       };
     };
 
@@ -92,7 +96,7 @@ in
 
       timerConfig = {
         OnCalendar = cfg.onCalendar;
-        AccuracySec = "1h";
+        AccuracySec = "30m";
         Persistent = true;
       };
 
