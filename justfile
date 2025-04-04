@@ -27,24 +27,17 @@ update:
     git commit -m "build: update flake.lock"
 
 update-except-unstable:
-    nix flake update \
-        nixpkgs \
-        flake-parts \
-        flake-utils \
-        home-manager \
-        impermanence \
-        microvm \
-        nix-flatpak \
-        nix-index-database \
-        nix-web-app \
-        ghostty \
-        nixpkgs-mozilla \
-        nixvim \
-        nur \
-        rust-overlay \
-        base16 \
-        base16-schemes \
-        base24-vscode-terminal
+    #!/usr/bin/env nu
+    let inputs = (
+        nix flake metadata --json
+        | from json
+        | $in.locks.nodes.root.inputs
+        | columns
+        | where $it not-in ["nixpkgs-unstable"]
+    )
+
+    nix flake update ...$inputs
+
     git reset
     git add flake.lock
     git commit -m "build: update flake.lock"

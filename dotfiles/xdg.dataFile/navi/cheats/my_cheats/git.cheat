@@ -26,7 +26,7 @@ git diff --staged
 git diff HEAD <file>
 
 # 특정 브랜치/commit의 모든 내용을 현재 working directory, stage 에 덮어쓰기
-git checkout <branch-or-commit> -- .
+git reset --hard <commit>
 
 # show specific commit's specific file
 git show <commit>:<path>
