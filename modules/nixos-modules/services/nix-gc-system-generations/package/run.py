@@ -34,7 +34,6 @@ CURRENT_SYS_NIX_PATH: Final[Path] = Path("/run/current-system").readlink()
 logging.basicConfig(
     level=logging.INFO,
     format="%(levelname)s: %(message)s",
-    # format="%(asctime)s %(levelname)s: %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S%z",
 )
 logger = logging.getLogger(__name__)
@@ -302,7 +301,7 @@ def entrypoint() -> int:
             )
 
         if (today - date_ <= timedelta(days=args.keep_days)) and generations:
-            # keep 1 of not old generations
+            # Keep the newest generation created that day.
             generations_to_keep.add(max(generations))
 
     generations_to_remove = all_generations - generations_to_keep

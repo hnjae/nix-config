@@ -3,5 +3,8 @@
 # find out environment variable of process
 ps eww <PID>
 
+# find out process
+ps -p <pid>
+
 # find out environment variable of process
 cat /proc/<PID>/environ
