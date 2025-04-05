@@ -11,7 +11,9 @@ in
 {
   config = lib.mkIf baseHomeCfg.isDesktop {
     home.packages = [
-      pkgsUnstable.ghostty-tip
+      # pkgsUnstable.ghostty-tip
+      pkgsUnstable.ghostty
+
       (pkgs.runCommandLocal "kitten" { } ''
         mkdir -p "$out/bin"
         ln -s "${pkgs.kitty}/bin/kitten" "$out/bin/kitten"
