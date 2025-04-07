@@ -61,7 +61,10 @@ in
         inherit inputs;
         localFlake = self;
       })
-      (importApply ./with-import-apply/nixpkgs.nix { localFlake = self; })
+      (importApply ./with-import-apply/nixpkgs.nix {
+        inherit inputs;
+        localFlake = self;
+      })
       (importApply ./with-import-apply/users.nix { localFlake = self; })
 
       self.nixosModules.nix-gc-system-generations

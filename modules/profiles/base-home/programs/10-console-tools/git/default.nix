@@ -247,7 +247,7 @@ let
 in
 {
   imports = [
-    ./gitui
+    # ./gitui # lacks light-theme support
   ];
 
   config = lib.mkIf baseHomeCfg.isDev {
@@ -261,7 +261,8 @@ in
       # git-annex
       # bup
 
-      gitu
+      # gitu # it freezes
+      lazygit
     ];
 
     services.flatpak.packages = [
@@ -274,9 +275,9 @@ in
     ];
 
     # bindings https://github.com/wfxr/forgit 참고
-    home.shellAliases = {
-      gu = "gitu";
-    } // gitAliases;
+    home.shellAliases = gitAliases // {
+      lg = "lazygit";
+    };
 
     xdg.configFile."zsh-abbr/user-abbreviations".text = (
       lib.concatLines (lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') gitAliases)
