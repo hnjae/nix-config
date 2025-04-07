@@ -59,6 +59,7 @@ in
         };
         device.only = [
           "Lenovo Bluetooth Mouse"
+          "M5 Nano Mouse BT Mouse" # 한성 마우스
         ];
       }
     ];

@@ -149,4 +149,4 @@ git clone --recurse-submodules "git@<githubdotcom>:<owner>/<repo>"
 ;#############################################################################
 ; run `zstd -b3 -e19 <target-file>` to benchmark zstd
 # git-archive
-git archive --format=tgz <commit-or-branch> | zstd -6 -o <commit-or-branch>.tar.zst
+git archive --format=tar HEAD | zstd -12 -T0 -o HEAD.tar.zst

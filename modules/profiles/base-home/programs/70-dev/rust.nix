@@ -9,7 +9,7 @@ let
 in
 {
   config = lib.mkIf baseHomeCfg.isDev {
-    # home.packages = [pkgs.rust-bin.stable.latest.default];
+    home.packages = [ pkgs.rust-bin.stable.latest.default ];
 
     home.sessionVariables = {
       # a local cache of the registry index and of git checkouts of crates

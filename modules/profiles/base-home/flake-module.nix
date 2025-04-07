@@ -46,6 +46,7 @@ in
         # NOTE: HomeManager 가 NixOS 모듈로 사용되고, useGlobalPackages 가 설정되어 있으면 아래 값은 무시된다. <2025-02-06>
         nixpkgs.overlays = [
           self.overlays.default
+          inputs.rust-overlay.overlays.default
         ];
       }
     ];
