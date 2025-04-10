@@ -474,8 +474,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1741149547,
-        "narHash": "sha256-bth+oDmmSxKNJwxUy0XohL3bzKU1J/jDe+MkRrf/kmo=",
+        "lastModified": 1744176709,
+        "narHash": "sha256-2N45spVOHXXR1IGDncP+Tayc3SQG+Pn7e3+lHL0e/4c=",
         "path": "/home/hnjae/Projects/nix-modules-private",
         "type": "path"
       },
@@ -646,8 +646,8 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1743942068,
-        "narHash": "sha256-24e22mDmwoZWif3Ka6Axi0fjK/qbu8Z3HF3jZzPfF9E=",
+        "lastModified": 1744182229,
+        "narHash": "sha256-0P8mwZ4eYQV/o+0H5pKZrQIZHZFokR8LJgzp+r7AsWU=",
         "path": "/home/hnjae/Projects/py-utils",
         "type": "path"
       },

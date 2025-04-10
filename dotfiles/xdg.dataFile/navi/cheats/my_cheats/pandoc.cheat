@@ -1,5 +1,7 @@
 % pandoc
 
+# generic
+pandoc <input> -o <output>
 
 # list all supported input formats
 pandoc --list-input-formats
@@ -7,5 +9,23 @@ pandoc --list-input-formats
 # list all supported output formats
 pandoc --list-output-formats
 
-#
-pandoc <input> -o <output>
+# convert from markdown to org
+pandoc -f commonmark -t org --strip-comments=false --wrap=preserve <foo>.md -o <foo>.org
+
+# convert from org to markdown
+pandoc -f org -t commonmark --strip-comments=false --wrap=preserve <foo>.org -o <foo>.md
+
+# convert from markdown to asiicdoctor
+pandoc -f commonmark -t asciidoc --strip-comments=false --wrap=preserve <foo>.md -o <foo>.adoc
+
+# convert from org to asciidoctor
+pandoc -f org -t asciidoc --strip-comments=false --wrap=preserve <foo>.org -o <foo>.adoc
+
+# convert from asciidoc to markdown
+asciidoctor -b docbook5 -o temp.docbook <foo>.adoc && pandoc -f docbook -t commonmark --strip-comments=false --wrap=preserve temp.docbook -o <foo>.md
+
+# convert from asciidoc to org
+asciidoctor -b docbook5 -o temp.docbook <foo>.adoc && pandoc -f docbook -t org --strip-comments=false --wrap=preserve temp.docbook -o <foo>.org
+
+# convert from asciidoc to org type2
+asciidoctor -b html -o temp.html <foo>.adoc && pandoc -f html -t org --strip-comments=false --wrap=preserve temp.html -o <foo>.org

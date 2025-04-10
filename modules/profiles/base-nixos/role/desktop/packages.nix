@@ -31,6 +31,9 @@
 
     # Run unpatched dynamic binaries
     programs.nix-ld.enable = true;
+    programs.nix-ld.libraries = with pkgs; [
+      icu # marksman requires
+    ];
 
     # managing android
     programs.adb.enable = true;

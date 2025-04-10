@@ -32,9 +32,9 @@ in
         cmake
       ])
       (with pkgsUnstable; [
-        # editorconfig
         editorconfig-checker
-        pkgsUnstable.harper # grammer checker for developers
+        harper # grammar checker for developers
+        vale
       ])
     ];
   };

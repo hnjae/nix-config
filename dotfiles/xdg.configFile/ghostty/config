@@ -13,7 +13,7 @@ term = "xterm-256color"
 
 # font-family = "Monospace"
 # font-family = "D2Coding"
-font-family = "MesloLGM Nerd Font"
+font-family = "MesloLGM Nerd Font Mono"
 font-family = "Noto Sans Mono CJK JP"
 font-family = "Noto Sans Mono CJK KR"
 

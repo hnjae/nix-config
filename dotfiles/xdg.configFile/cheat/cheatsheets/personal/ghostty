@@ -29,13 +29,14 @@ Split Pane:
 
 Go to Pane:
   `<C-S>` + `[`/`]`
-  `<C-A>` + `Up/Dn/Left/Right`
+  `<C-A>` + `Up/Dn/Left/Right` (default)
+  `<A>` + `Up/Dn/Left/Right` (not-default)
 
 Resizing Pane: (`D` stands for Meta)
   `<C-D-S>` + `Up/Dn/Left/Right/=`
 
 Zoom Pane:
-  `<C-S-CR>`
+  `<C-S-CR>` (default)
 
 # Viewport
 
@@ -43,7 +44,7 @@ Change:
   `<S>` + `Home/End/PgUp/PgDn`
 
 Scroll:
-  `<C-S>` + `<PgUp/PgDn`
+  `<C-S>` + `<PgUp/PgDn>`
 
 # Copy & Paste
 Paste:

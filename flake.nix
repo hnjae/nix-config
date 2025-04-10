@@ -247,6 +247,7 @@
                   package = pkgs.nixfmt-rfc-style;
                 };
                 rustfmt.enable = true;
+                biome.enable = true;
                 fish_indent.enable = true;
                 just = {
                   enable = true;
