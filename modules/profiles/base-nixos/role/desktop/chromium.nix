@@ -1,6 +1,6 @@
 { lib, config, ... }:
 {
-  # this affetcts vivaldi too
+  # this affects Vivaldi too
   programs.chromium = {
     enable = true;
 
@@ -10,7 +10,7 @@
 
       "ddkjiahejlhfcafbddmgiahcphecmpfh" # ublock-origin-light
       # "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls (manifest v2)
-      "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
+      "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentralises
 
       "mdjildafknihdffpkfmmpnpoiajfjnjd" # Consent-O-Matic
 

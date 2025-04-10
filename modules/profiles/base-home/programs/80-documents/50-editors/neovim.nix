@@ -58,18 +58,5 @@ in
         type = "dir";
       }
     ];
-
-    python = {
-      enable = true;
-      pythonPackages = [
-        "pynvim"
-
-        # for coq
-        # "pynvim_pp"
-        # "msgpack"
-        # "std2"
-        # "pyyaml"
-      ];
-    };
   };
 }

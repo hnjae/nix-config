@@ -29,9 +29,9 @@ in
 
   home.shellAliases.lf = "lfcd";
 
-  python = {
-    enable = true; # my config file uses python script
-  };
+  # python = {
+  #   enable = true; # my config file uses python script
+  # };
 
   xdg.configFile."lf/icons" = {
     # podman config

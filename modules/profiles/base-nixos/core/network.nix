@@ -57,4 +57,6 @@ in
     nssmdns4 = true;
     # nssmdns6 = true;
   };
+
+  systemd.network.wait-online.enable = lib.mkOverride 999 false;
 }

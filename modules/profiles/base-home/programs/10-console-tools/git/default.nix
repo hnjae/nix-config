@@ -247,7 +247,6 @@ let
 in
 {
   imports = [
-    # ./gitui # lacks light-theme support
   ];
 
   config = lib.mkIf baseHomeCfg.isDev {
@@ -256,7 +255,9 @@ in
       git-crypt
       git-lfs
 
-      commitlint
+      # commitlint
+      # gitlint # broken 2025-04-09
+      # gitleaks
 
       # git-annex
       # bup

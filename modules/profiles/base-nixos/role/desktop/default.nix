@@ -62,5 +62,7 @@
       # SteamOS/Fedora default
       "vm.max_map_count" = lib.mkOverride 999 2147483642;
     };
+
+    systemd.network.wait-online.enable = lib.mkOverride 900 true;
   };
 }

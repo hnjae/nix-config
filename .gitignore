@@ -15,6 +15,7 @@ result
 /dotfiles/xdg.configFile/alacritty/base16.toml
 /dotfiles/xdg.configFile/lf/icons
 /dotfiles/xdg.configFile/btop/btop.log
+/dotfiles/xdg.configFile/vale/vale-styles
 
 # https://github.com/cheat/cheatsheets
 /dotfiles/xdg.configFile/cheat/cheatsheets/community
