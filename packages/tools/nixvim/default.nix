@@ -6,6 +6,7 @@
 {
   nixvim,
   pkgs,
+  lib,
 }:
 let
   package = nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim {
@@ -74,11 +75,10 @@ let
       (builtins.readFile ./window-picker.lua)
     ];
 
-    keymaps = [
+    keymaps = lib.flatten [
       {
         action = ":";
-        # key = "<Leader><Leader>";
-        key = "<Space><Space>";
+        key = "<BS>";
         mode = [
           "n"
           "v"
@@ -94,8 +94,25 @@ let
         ];
         action = ''"+y'';
       }
+      (builtins.map
+        (key: {
+          mode = [ "n" ];
+          key = "<C-${key}>";
+          action = "<C-w>${key}";
+          options = {
+            remap = true;
+            desc = "<C-w>${key}";
+          };
+        })
+        [
+          "h"
+          "j"
+          "k"
+          "l"
+        ]
+      )
       {
-        key = "<Space>f";
+        key = "<Space>p";
         mode = [ "n" ];
         action = {
           __raw = ''
@@ -112,6 +129,19 @@ let
     ];
 
     autoCmd = [
+      {
+        event = [ "FileType" ];
+        pattern = [ "man" ];
+        callback = {
+          __raw = builtins.concatStringsSep " " [
+            "function()"
+            ''vim.opt_local.ruler:true''
+            ''vim.opt_local.number:true''
+            ''vim.opt_local.relativenumber:true''
+            "end"
+          ];
+        };
+      }
       {
         # formatoptions 는 쉽게 override 되어 autocmd 로 설정
         event = [
@@ -190,6 +220,7 @@ let
             { name = "buffer"; }
           ];
         };
+
         cmdline = {
           "/" = {
             mapping = {
@@ -219,6 +250,7 @@ let
       lightline = {
         enable = false;
       };
+
       lualine = {
         enable = true;
         settings = {
@@ -248,7 +280,6 @@ let
 
       treesitter.enable = false; # 큰 파일 수정할때 매우 느려짐.
       lsp.enable = false;
-      # sleuth.enable = true;
     };
   };
 in

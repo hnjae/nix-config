@@ -62,9 +62,8 @@ let
     # gbl (forgit)
 
     # gst: git-status
-    "gs" = "git status -sb";
-    "gsb" = "git status -sb";
-    "gst" = "git status -sb";
+    "gs" = "git status --short --branch --untracked-files=all";
+    "gst" = "git status --short --branch --untracked-files=all";
 
     # gshw: git-show
     "gshw" = "git show";
@@ -140,8 +139,8 @@ let
     # gswco (forgit)
 
     # gr: git-reset
-    "gr" = "git reset";
-    # grh (forgit): git reset HEAD
+    # "gr" = "git reset"; (forgit)
+    "grhd" = "git reset HEAD";
     "grH" = "git reset --hard";
     # gru                  git reset --
     # groh                 git reset origin/$(git_current_branch) --hard
@@ -238,11 +237,12 @@ let
     # new -commands
     ############################################################################
     "gtl" = "git-tag-list";
-    "gsr" = "git-cd-root";
+    "gcr" = "git-cd-root";
     "gwip" = "git-wip";
     "gunwip" = "git-unwip";
     "gtodo" = "git-todo";
     "gop" = "git open";
+    # "ge" = ''vi $(git_status_select)''; # WIP: not working
   };
 in
 {
@@ -293,11 +293,11 @@ in
       forgit_branch_delete = "gbd"; # defaults
       forgit_blame = "gbl"; # defaults
       forgit_cherry_pick = "gcp"; # defaults
-      forgit_diff = "gdz"; # defaults: gd
+      forgit_diff = "gdz"; # defaults: `gd`
       forgit_log = "glz";
       forgit_rebase = "grb"; # defaults
       forgit_revert_commit = "grev";
-      forgit_reset_head = "grh"; # defaults
+      forgit_reset_head = "gr"; # defaults: `grh`
       forgit_checkout_file = "grs"; # git-restore
       forgit_stash_show = "gshs";
       forgit_stash_push = "gshp";
@@ -316,6 +316,10 @@ in
         # this does not deletes remote branch
         # https://gist.github.com/schacon/942899
         # https://gist.github.com/ryanc414/f7686d2c97808b41ed8518a5840e2d78
+
+        echo "WIP"
+        return
+
         git branch --no-color --merged | command grep -vE "^(\+|\*|\s*(master|main|develop|dev)\s*$)" | command xargs -n 1 git branch -d
       }
 
@@ -351,6 +355,8 @@ in
 
         git commit --allow-empty --no-verify --no-gpg-sign -m "--wip-- TODO: $*"
       };
+
+      ${builtins.readFile ./scripts/git-status-select.sh}
 
       . "${pkgsUnstable.zsh-forgit}/share/zsh/zsh-forgit/forgit.plugin.zsh"
     '';

@@ -24,6 +24,11 @@
             regex = "^(zrepl|autosnap)_.*";
           }
           {
+            type = "last_n";
+            count = 7;
+            regex = "^(zrepl|autosnap)_.*";
+          }
+          {
             type = "regex";
             negate = true;
             regex = "^(zrepl|autosnap)_.*";

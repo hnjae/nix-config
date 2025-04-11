@@ -7,6 +7,7 @@
     ./dircolors.nix
     ./direnv.nix
     ./greeting.nix
+    ./man.nix
     ./mc.nix
     ./starship.nix
     ./zoxide.nix
