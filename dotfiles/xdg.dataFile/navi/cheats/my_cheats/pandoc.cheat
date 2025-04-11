@@ -9,23 +9,26 @@ pandoc --list-input-formats
 # list all supported output formats
 pandoc --list-output-formats
 
+# convert markdown to html
+pandoc -f gfm -t html --strip-comments=false --wrap=preserve --mathml --embed-resources=true <foo>.md -o <foo>.html
+
 # convert from markdown to org
-pandoc -f commonmark -t org --strip-comments=false --wrap=preserve <foo>.md -o <foo>.org
+pandoc -f gfm -t org --strip-comments=false --wrap=preserve <foo>.md -o <foo>.org
 
 # convert from org to markdown
-pandoc -f org -t commonmark --strip-comments=false --wrap=preserve <foo>.org -o <foo>.md
+pandoc -f org -t gfm --strip-comments=false --wrap=preserve <foo>.org -o <foo>.md
 
 # convert from markdown to asiicdoctor
-pandoc -f commonmark -t asciidoc --strip-comments=false --wrap=preserve <foo>.md -o <foo>.adoc
+pandoc -f gfm -t asciidoc --strip-comments=false --wrap=preserve <foo>.md -o <foo>.adoc
 
 # convert from org to asciidoctor
 pandoc -f org -t asciidoc --strip-comments=false --wrap=preserve <foo>.org -o <foo>.adoc
 
 # convert from asciidoc to markdown
-asciidoctor -b docbook5 -o temp.docbook <foo>.adoc && pandoc -f docbook -t commonmark --strip-comments=false --wrap=preserve temp.docbook -o <foo>.md
+asciidoctor -b docbook5 -o /tmp/0583e2b0.docbook <foo>.adoc && pandoc -f docbook -t gfm --strip-comments=false --wrap=preserve /tmp/0583e2b0.docbook -o <foo>.md && rm /tmp/0583e2b0.docbook
 
 # convert from asciidoc to org
-asciidoctor -b docbook5 -o temp.docbook <foo>.adoc && pandoc -f docbook -t org --strip-comments=false --wrap=preserve temp.docbook -o <foo>.org
+asciidoctor -b docbook5 -o /tmp/ad93d449.docbook <foo>.adoc && pandoc -f docbook -t org --strip-comments=false --wrap=preserve /tmp/ad93d449.docbook -o <foo>.org && rm /tmp/ad93d449.docbook
 
 # convert from asciidoc to org type2
-asciidoctor -b html -o temp.html <foo>.adoc && pandoc -f html -t org --strip-comments=false --wrap=preserve temp.html -o <foo>.org
+asciidoctor -b html -o /tmp/7ec12acc.html <foo>.adoc && pandoc -f html -t org --strip-comments=false --wrap=preserve /tmp/7ec12acc.html -o <foo>.org && rm /tmp/7ec12acc.html
