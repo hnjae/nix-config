@@ -256,7 +256,7 @@
                     "*/justfile"
                   ];
                 };
-                mdformat.enable = false;
+                mdformat.enable = true; # forces indentation to 2 spaces
                 taplo.enable = true;
                 ruff-format.enable = true;
                 yamlfmt.enable = true;
