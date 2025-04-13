@@ -256,7 +256,7 @@
                     "*/justfile"
                   ];
                 };
-                mdformat.enable = true;
+                mdformat.enable = false;
                 taplo.enable = true;
                 ruff-format.enable = true;
                 yamlfmt.enable = true;

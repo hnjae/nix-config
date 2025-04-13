@@ -13,6 +13,7 @@ in
     {
       pkgs,
       system,
+      lib,
       ...
     }:
     {
@@ -26,7 +27,7 @@ in
       packages = {
         nixvim = (import ./tools/nixvim) {
           inherit (inputs) nixvim;
-          inherit pkgs;
+          inherit pkgs lib;
         };
         fonts-dmca-sans-serif = pkgs.callPackage ./fonts/fonts-dmca-sans-serif { };
         fonts-plangothic = pkgs.callPackage ./fonts/fonts-plangothic { };
