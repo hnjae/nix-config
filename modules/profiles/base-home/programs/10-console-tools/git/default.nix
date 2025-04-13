@@ -338,7 +338,7 @@ in
       }
 
       git-wip () {
-        git add -A
+        git add --all
         git rm $(git ls-files --deleted) 2> /dev/null
         git commit --no-verify --no-gpg-sign -m "--wip-- [skip ci]"
       }

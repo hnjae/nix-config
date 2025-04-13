@@ -9,24 +9,62 @@
   lib,
 }:
 let
-  package = nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim {
-    # nixpkgs.useGlobalPackages = true;
 
-    performance = {
-      combinePlugins.enable = true;
-      byteCompileLua = {
-        enable = true;
-        configs = true;
-        initLua = true;
-        nvimRuntime = true;
-        plugins = true;
+  recursiveMerge =
+    let
+      mergeTwo =
+        let
+          f =
+            leftVal: rightVal:
+            if (lib.isAttrs leftVal && lib.isAttrs rightVal) then
+              mergeTwo leftVal rightVal
+            else if (lib.isList leftVal && lib.isList rightVal) then
+              leftVal ++ rightVal
+            # FIXME:
+            # else if (lib.isString leftVal && lib.isString rightVal) then
+            #   builtins.concatStringsSep "\n" [
+            #     leftVal
+            #     rightVal
+            #   ]
+            else if (rightVal != null) then
+              rightVal
+            else
+              leftVal;
+          op =
+            outSet: items:
+            (
+              outSet
+              // {
+                "${items.name}" = f (outSet."${items.name}") items.value;
+              }
+            );
+        in
+        set1: set2: (builtins.foldl' op (set2 // set1) (lib.attrsToList set2));
+
+    in
+    builtins.foldl' mergeTwo { };
+
+  package = nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (recursiveMerge [
+    (import ./configs/flash.nix)
+    # ((import ./configs/window-picker.nix) { inherit pkgs; })
+    (import ./configs/comment.nix)
+    {
+      # nixpkgs.useGlobalPackages = true;
+
+      performance = {
+        combinePlugins.enable = true;
+        byteCompileLua = {
+          enable = true;
+          configs = true;
+          initLua = true;
+          nvimRuntime = true;
+          plugins = true;
+        };
       };
-    };
 
-    enableMan = false;
-    extraPlugins = with pkgs.vimPlugins; [ nvim-window-picker ];
-    extraConfigLua = pkgs.lib.concatLines [
-      ''
+      enableMan = false;
+
+      extraConfigLua = ''
         vim.opt.smarttab = true
 
         vim.opt.smartindent = false
@@ -61,7 +99,7 @@ let
         vim.g.loaded_node_provider = 0 -- disable node
 
         vim.g.mapleader = " "
-        vim.g.maplocalleader = "s"
+        vim.g.maplocalleader = "\\"
 
         --
         local COLORFGBG = os.getenv("COLORFGBG")
@@ -71,217 +109,218 @@ let
           vim.opt.background = "light"
         end
         --
-      ''
-      (builtins.readFile ./window-picker.lua)
-    ];
+      '';
 
-    keymaps = lib.flatten [
-      {
-        action = ":";
-        key = "<BS>";
-        mode = [
-          "n"
-          "v"
-        ];
-        options.desc = "cmdline";
-      }
-      {
-        key = "<F12>";
-        mode = [
-          "n"
-          "v"
-          "s"
-        ];
-        action = ''"+y'';
-      }
-      (builtins.map
-        (key: {
+      keymaps = lib.flatten [
+        {
+          action = "<cmd>w<CR><esc>";
+          key = "<C-s>";
+          mode = [
+            "n"
+            "i"
+            "s"
+            "x"
+          ];
+          options.desc = "save file";
+        }
+        {
+          action = "<cmd>w<CR>";
+          key = "st";
           mode = [ "n" ];
-          key = "<C-${key}>";
-          action = "<C-w>${key}";
-          options = {
-            remap = true;
-            desc = "<C-w>${key}";
-          };
-        })
-        [
-          "h"
-          "j"
-          "k"
-          "l"
-        ]
-      )
-      {
-        key = "<Space>p";
-        mode = [ "n" ];
-        action = {
-          __raw = ''
-            function()
-              local picked_window_id = require("window-picker").pick_window()
-              if picked_window_id == nil then
-                return
-              end
-              vim.api.nvim_set_current_win(picked_window_id)
-            end
-          '';
-        };
-      }
-    ];
-
-    autoCmd = [
-      {
-        event = [ "FileType" ];
-        pattern = [ "man" ];
-        callback = {
-          __raw = builtins.concatStringsSep " " [
-            "function()"
-            ''vim.opt_local.ruler:true''
-            ''vim.opt_local.number:true''
-            ''vim.opt_local.relativenumber:true''
-            "end"
+          options.desc = "save file";
+        }
+        {
+          key = "<bs>";
+          mode = [
+            "n"
+            "v"
           ];
-        };
-      }
-      {
-        # formatoptions 는 쉽게 override 되어 autocmd 로 설정
-        event = [
-          "BufRead"
-          "BufNewFile"
-          "BufNew"
-        ];
-        pattern = [
-          "*"
-        ];
-        desc = "remove r (enter), o (normal mode o), t (textwidth), c (textwidth-comment) from formatoptions";
-        callback = {
-          __raw = builtins.concatStringsSep " " [
-            "function()"
-            ''vim.opt_local.formatoptions:remove("r")''
-            ''vim.opt_local.formatoptions:remove("o")''
-            ''vim.opt_local.formatoptions:remove("t")''
-            ''vim.opt_local.formatoptions:remove("c")''
-            "end"
+          action = ":";
+          options.desc = "cmdline";
+        }
+        {
+          key = "<F12>";
+          mode = [
+            "n"
+            "v"
+            "s"
           ];
-        };
-      }
-    ];
+          action = ''"+y'';
+        }
+        (builtins.map
+          (key: {
+            mode = [ "n" ];
+            key = "<C-${key}>";
+            action = "<C-w>${key}";
+            options = {
+              remap = true;
+              desc = "<C-w>${key}";
+            };
+          })
+          [
+            "h"
+            "j"
+            "k"
+            "l"
+          ]
+        )
+      ];
 
-    colorschemes = {
-      # colorschemes that have light and dark version
-      gruvbox.enable = false;
-      modus.enable = false;
-      melange.enable = false; # gray background
-      nightfox.enable = false;
-      one.enable = false; # whitish background
-      rose-pine.enable = true;
-      everforest.enable = false; # yellowish background
-      vscode.enable = false; # whitish background
-    };
-
-    # extraFiles = import ./share/ftplugin.nix;
-
-    plugins = {
-      web-devicons.enable = false;
-
-      sleuth = {
-        enable = true;
-        settings = { };
-      };
-
-      # nvim-autopairs.enable = true;
-      nvim-surround.enable = true;
-
-      cmp = {
-        enable = true;
-        settings = {
-          mapping = {
+      autoCmd = [
+        {
+          event = [ "FileType" ];
+          pattern = [ "man" ];
+          callback = {
             __raw = ''
-              cmp.mapping.preset.insert({
-                ["<C-n>"] = cmp.mapping(function()
-                  if cmp.visible() then
-                    cmp.select_next_item()
-                  else
-                    cmp.complete()
-                  end
-                end, { "i" }),
-                ["<C-p>"] = cmp.mapping(function()
-                  if cmp.visible() then
-                    cmp.select_prev_item()
-                  else
-                    cmp.complete()
-                  end
-                end, { "i" }),
-              })
-
+              function()
+                vim.opt_local.ruler = true
+                vim.opt_local.number = true
+                vim.opt_local.relativenumber = true
+              end
             '';
           };
-          sources = [
-            { name = "async_path"; }
-            { name = "buffer"; }
-          ];
-        };
+        }
 
-        cmdline = {
-          "/" = {
-            mapping = {
-              __raw = "cmp.mapping.preset.cmdline()";
-            };
-            sources = [ { name = "buffer"; } ];
-          };
-          ":" = {
-            mapping = {
-              __raw = "cmp.mapping.preset.cmdline()";
-            };
-            sources = [
-              { name = "cmdline"; }
-              { name = "aync_path"; }
+        {
+          # formatoptions 는 쉽게 override 되어 autocmd 로 설정
+          event = [
+            "BufRead"
+            "BufNewFile"
+            "BufNew"
+          ];
+          pattern = [
+            "*"
+          ];
+          desc = "remove r (enter), o (normal mode o), t (textwidth), c (textwidth-comment) from formatoptions";
+          callback = {
+            __raw = builtins.concatStringsSep " " [
+              "function()"
+              ''vim.opt_local.formatoptions:remove("r")''
+              ''vim.opt_local.formatoptions:remove("o")''
+              ''vim.opt_local.formatoptions:remove("t")''
+              ''vim.opt_local.formatoptions:remove("c")''
+              "end"
             ];
           };
+        }
+      ];
+
+      colorschemes = {
+        # colorschemes that have light and dark version
+        gruvbox.enable = false;
+        modus.enable = false;
+        melange.enable = false; # gray background
+        nightfox.enable = false;
+        one.enable = false; # whitish background
+        rose-pine.enable = true;
+        everforest.enable = false; # yellowish background
+        vscode.enable = false; # whitish background
+      };
+
+      # extraFiles = import ./share/ftplugin.nix;
+
+      plugins = {
+        web-devicons.enable = false;
+
+        sleuth = {
+          enable = true;
+          settings = { };
         };
-      };
-      cmp-async-path.enable = true;
-      cmp-buffer.enable = true;
-      cmp-cmdline.enable = true;
 
-      marks = {
-        enable = true;
-      };
+        # nvim-autopairs.enable = true;
+        nvim-surround.enable = true;
 
-      lightline = {
-        enable = false;
-      };
-
-      lualine = {
-        enable = true;
-        settings = {
-          options = {
-            always_show_tabline = true;
-            icons_enabled = false;
-            theme = "auto";
-            component_separators = {
-              left = "┃";
-              right = "┃";
+        cmp = {
+          enable = true;
+          settings = {
+            mapping = {
+              __raw = ''
+                cmp.mapping.preset.insert({
+                  ["<C-n>"] = cmp.mapping(function()
+                    if cmp.visible() then
+                      cmp.select_next_item()
+                    else
+                      cmp.complete()
+                    end
+                  end, { "i" }),
+                  ["<C-p>"] = cmp.mapping(function()
+                    if cmp.visible() then
+                      cmp.select_prev_item()
+                    else
+                      cmp.complete()
+                    end
+                  end, { "i" }),
+                })
+              '';
             };
-            section_separators = {
-              left = "";
-              right = "";
+            sources = [
+              { name = "async_path"; }
+              { name = "buffer"; }
+            ];
+          };
+
+          cmdline = {
+            "/" = {
+              mapping = {
+                __raw = "cmp.mapping.preset.cmdline()";
+              };
+              sources = [ { name = "buffer"; } ];
+            };
+            ":" = {
+              mapping = {
+                __raw = "cmp.mapping.preset.cmdline()";
+              };
+              sources = [
+                { name = "cmdline"; }
+                { name = "aync_path"; }
+              ];
             };
           };
         };
-      };
+        cmp-async-path.enable = true;
+        cmp-buffer.enable = true;
+        cmp-cmdline.enable = true;
 
-      telescope = {
-        enable = true;
-        extensions = {
-          fzf-native.enable = true;
-          ui-select.enable = true;
+        marks = {
+          enable = true;
         };
-      };
 
-      treesitter.enable = false; # 큰 파일 수정할때 매우 느려짐.
-      lsp.enable = false;
-    };
-  };
+        lightline = {
+          enable = false;
+        };
+
+        lualine = {
+          enable = true;
+          settings = {
+            options = {
+              always_show_tabline = true;
+              icons_enabled = false;
+              theme = "auto";
+              component_separators = {
+                left = "┃";
+                right = "┃";
+              };
+              section_separators = {
+                left = "";
+                right = "";
+              };
+            };
+          };
+        };
+
+        telescope = {
+          enable = true;
+          extensions = {
+            fzf-native.enable = true;
+            ui-select.enable = true;
+          };
+        };
+
+        treesitter.enable = false; # 큰 파일 수정할때 매우 느려짐.
+        lsp.enable = false;
+      };
+    }
+  ]);
 in
 pkgs.runCommandLocal "vim" { } ''
   mkdir -p "$out/bin"
