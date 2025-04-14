@@ -28,6 +28,10 @@ in
       };
     };
 
+    home.shellAliases = {
+      st = ''cd "''${XDG_DOCUMENTS_DIR:-''${HOME}/Documents}/obsidian/home"'';
+    };
+
     xdg.dataFile."applications/${appId}.desktop" =
       let
         flags = [
