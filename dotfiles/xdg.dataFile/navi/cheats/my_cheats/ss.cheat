@@ -1,4 +1,0 @@
-% network, ss
-
-# list ports
-ss -lptn

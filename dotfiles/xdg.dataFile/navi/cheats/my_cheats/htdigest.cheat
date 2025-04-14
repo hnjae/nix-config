@@ -1,4 +1,0 @@
-% htdigest
-
-; nix-shell -p apacheHttpd
-htdigest -c <file> <realm> <username>

@@ -1,4 +1,0 @@
-% jq, json
-
-# print json
-jq -C <"<filepath>"

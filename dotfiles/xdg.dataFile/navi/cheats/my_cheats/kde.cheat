@@ -1,4 +1,0 @@
-% kde
-
-# trun-off screen
-kscreen-doctor --dpms off

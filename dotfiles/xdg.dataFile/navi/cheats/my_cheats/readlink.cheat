@@ -1,4 +1,0 @@
-% readlink, sh
-
-# resolve symlink
-readlink -f -- <path>
