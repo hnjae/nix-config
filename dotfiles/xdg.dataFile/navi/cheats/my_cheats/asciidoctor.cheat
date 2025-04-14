@@ -1,7 +1,0 @@
-% asciidoctor
-
-# convert to html
-asciidoctor --backend html5 --doctype book
-
-# convert to html (without header-footer)
-asciidoctor --backend html5 --doctype book --no-header-footer

@@ -1,7 +1,0 @@
-% mount
-
-# mj
-mount --mkdir /mnt -t <filesystem-type> <path-to-device> <path-to-target-dir>
-
-# mount as fsatb
-mount -a

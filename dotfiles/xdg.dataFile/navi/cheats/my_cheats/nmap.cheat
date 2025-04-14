@@ -1,4 +1,0 @@
-% nmap, network
-
-# print lan devices
-sudo nmap -sA 192.168.0.0/24

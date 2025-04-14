@@ -1,5 +1,0 @@
-% atuin
-; https://docs.atuin.sh/reference
-
-# remove history
-atuin search --delete <keyword>

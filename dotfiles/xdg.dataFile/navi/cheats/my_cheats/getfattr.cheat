@@ -1,4 +1,0 @@
-% getfattr, xattr
-
-# print xattr
-getfattr -d <file>

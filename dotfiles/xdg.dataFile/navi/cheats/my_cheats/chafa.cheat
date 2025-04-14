@@ -1,4 +1,0 @@
-% chafa, sixel
-
-# view
-chafa -f sixel -- <image>

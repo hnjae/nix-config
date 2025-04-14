@@ -1,4 +1,0 @@
-% zstd, archive
-
-# compress with zstd using multitheread
-zstd -T0 <file>

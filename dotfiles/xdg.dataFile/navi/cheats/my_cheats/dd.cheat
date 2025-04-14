@@ -1,4 +1,0 @@
-% dd
-
-# dd
-dd bs=<size> count=<count> if=<path> out=<path>
