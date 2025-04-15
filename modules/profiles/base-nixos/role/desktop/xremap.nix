@@ -50,8 +50,8 @@ in
         };
         device.only = [ "Designer Compact Keyboard" ];
       }
-      # NOTE: gnome 이 디바이스별 설정을 지원하지 않아 xremap 단에서 처리. <2025-03-30>
       {
+        # NOTE: gnome 이 디바이스별 설정을 지원하지 않아 xremap 단에서 처리. <2025-03-30>
         name = "left-handed-mouse";
         remap = {
           "BTN_LEFT" = "BTN_RIGHT";

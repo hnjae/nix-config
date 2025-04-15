@@ -12,6 +12,16 @@
     inputs.nixos-hardware.nixosModules.common-gpu-amd
   ];
 
+  boot.kernelParams = [
+    # 백라이트가 갑자기 꺼지는 문제 해결 (WIP; 테스트 안됨; 6.12.19; NixOS 24.11)
+    # https://forums.lenovo.com/t5/Other-Linux-Discussions/ThinkPad-T16-Gen-1-on-Linux-backlight-switches-off-once-in-a-while/m-p/5260463
+    "amdgpu.dcdebugmask=0x10" # turn off Panel-Self-Refresh (PSR)
+
+    # Low-battery (<20%) 에서 전력 소모를 줄이기 위해, 색상 정확도를 낮추는 기능 끄기.
+    # https://discussion.fedoraproject.org/t/update-reduces-color-accuracy-in-favor-of-power-efficiency-amd-gpu/124723
+    "amdgpu.abmlevel=0"
+  ];
+
   environment.defaultPackages = with pkgs; [
     amdgpu_top
     nvtopPackages.amd

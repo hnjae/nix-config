@@ -7,7 +7,7 @@ _: {
     ./latex.nix
     ./libreoffice.nix
     ./logseq.nix
-    ./obsidian.nix
+    ./obsidian
     ./onlyoffice.nix
     ./typst.nix
     ./zotero.nix

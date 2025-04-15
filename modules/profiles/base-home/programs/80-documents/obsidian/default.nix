@@ -15,8 +15,13 @@ let
       - <https://obsidian.md/blog/free-for-work/?ref=creativerly.com>
   */
   appId = "md.obsidian.Obsidian";
+
 in
 {
+  imports = [
+    ./obsidian-nvim.nix
+  ];
+
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.config.allowUnfree) {
 
     default-app.fromApps = [ appId ];
@@ -26,10 +31,6 @@ in
       Context = {
         sockets = [ "wayland" ];
       };
-    };
-
-    home.shellAliases = {
-      st = ''cd "''${XDG_DOCUMENTS_DIR:-''${HOME}/Documents}/obsidian/home"'';
     };
 
     xdg.dataFile."applications/${appId}.desktop" =
