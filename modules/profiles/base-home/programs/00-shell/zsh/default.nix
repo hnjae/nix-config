@@ -93,6 +93,11 @@ in
         # cd
         "cd *"
         "s *"
+        "z *"
+
+        # 자주 하는 실수
+        "zi *"
+        "si *"
 
         # files
         "rm *"
@@ -101,17 +106,14 @@ in
         "trash-put *"
         "trash-rm *"
         "trash-empty"
-        # "trash-restore"
-        # "trash-list"
         "mv"
+        "rcp *"
+        "rmv *"
 
-        # ls & misc
-        # "pwd"
-
-        "pfkill"
+        # process
+        "pfkill *"
 
         #
-        "clear"
         "exit"
         "fg"
         "bg"
@@ -134,6 +136,32 @@ in
         "systemctl poweroff"
         "systemctl kexec"
         "systemctl soft-reboot"
+
+        # 저장할 필요가 없는 명령어들
+        "man *"
+        # "j *"
+        "just *"
+        "rg *"
+        "vi *"
+        "vim *"
+        "nvim *"
+        "nano *"
+        "which *"
+        "command *"
+        "stat *"
+        "xdg-open *"
+        "mpv *"
+
+        # New pattern: Ignore command lines where no argument starts with '-'
+        # Breakdown:
+        #   ([^ ]##)      : Match the command name (1+ non-space chars).
+        #   ( ... )#     : Match the following group 0 or more times.
+        #     ' '        : Match the space separating command/args.
+        #     [^ -]      : Match first char of arg (not space or hyphen).
+        #     [^ ]#      : Match rest of arg (0+ non-space chars).
+        # Requires EXTENDED_GLOB to be set.
+        # setopt EXTENDED_GLOB
+        # "([^ ]##)( [^ -][^ ]#)#"
       ];
       ignoreSpace = true;
       extended = true; # save timestamp into the history file

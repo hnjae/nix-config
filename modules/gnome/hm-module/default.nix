@@ -73,6 +73,10 @@
     };
     "org/gnome/mutter" = {
       dynamic-workspaces = false;
+      edge-tiling = true;
+    };
+    "org/gnome/desktop/interface" = {
+      enable-hot-corners = false;
     };
 
     # keybindings

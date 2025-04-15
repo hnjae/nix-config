@@ -13,6 +13,8 @@
       "dash-to-panel@jderose9.github.com"
     ];
     "org/gnome/shell/extensions/dash-to-panel" = {
+      hot-keys = true; # shows number on the app icon
+
       #################
       # group windows #
       #################

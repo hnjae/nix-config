@@ -123,12 +123,12 @@ let
           ];
           options.desc = "save file";
         }
-        {
-          action = "<cmd>w<CR>";
-          key = "st";
-          mode = [ "n" ];
-          options.desc = "save file";
-        }
+        # {
+        #   action = "<cmd>wall<CR>";
+        #   key = "st";
+        #   mode = [ "n" ];
+        #   options.desc = "save file";
+        # }
         {
           key = "<bs>";
           mode = [
@@ -146,6 +146,15 @@ let
             "s"
           ];
           action = ''"+y'';
+        }
+        {
+          key = "<S-F12>";
+          mode = [
+            "n"
+            "v"
+            "s"
+          ];
+          action = ''"+p'';
         }
         (builtins.map
           (key: {

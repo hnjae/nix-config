@@ -13,7 +13,7 @@ let
     flu = "flatpak --user update";
     flh = "flatpak --help";
     flps = "flatpak ps";
-    flK = "flatpak kill";
+    flk = "flatpak kill";
   };
 in
 {

@@ -8,7 +8,7 @@ import = [
 ]
 
 [font]
-size = 10.2
+size = 11.0
 builtin_box_drawing = true #
 
 [font.offset]

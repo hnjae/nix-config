@@ -59,7 +59,7 @@ sync: format
     echo ""
 
     case "$response" in
-    "Y") ;; # catch
+    "y") ;; # catch
     *)
             echo "O.k., not syncing."
             exit 0
