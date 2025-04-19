@@ -1,12 +1,12 @@
-alias fmt := format
-
 # check: https://nixos.org/manual/nix/stable/command-ref/new-cli/nix
 
 hostname := `hostname`
 
-default:
+[private]
+_:
     @just --list
 
+[group('git')]
 commit:
     #!/bin/sh
 
@@ -39,6 +39,7 @@ commit:
 
     git commit --no-verify -m '{{ hostname }}: {{ datetime("%Y-%m-%dT%H:%M:%S%Z") }}'
 
+[group('git')]
 sync: format
     #!/bin/sh
 
@@ -69,20 +70,26 @@ sync: format
     git commit --no-verify -m '{{ hostname }}: {{ datetime("%Y-%m-%dT%H:%M:%S%Z") }}'
     git push
 
+alias fmt := format
+
 format:
     nix fmt --no-warn-dirty
 
+[group('update')]
 open-status:
     xdg-open "https://status.nixos.org/"
 
+[group('update')]
 update:
     nix flake update
     git reset
     git add flake.lock
     git commit -m "build: update flake.lock"
 
+[group('update')]
 update-except-unstable:
     #!/usr/bin/env nu
+
     let inputs = (
         nix flake metadata --json
         | from json
@@ -97,23 +104,11 @@ update-except-unstable:
     git add flake.lock
     git commit -m "build: update flake.lock"
 
+[group('update')]
 update-local-repo:
     nix flake update nix-modules-private py-utils
 
-# TODO: 아래를 activation script 에 넣기 <2025-02-18>
-pre-home-manager-switch:
-    #!/bin/sh
-    set -eu
-
-    file="${XDG_CONFIG_HOME:-$HOME/.config}/mimeapps.list.backup"
-    if [ -f "$file" ]; then
-        if command -v trash >/dev/null 2>&1; then
-            trash -- "$file"
-        else
-            rm -- "$file"
-        fi
-    fi
-
+[group('check')]
 drybuild-homes-wip:
     #!/bin/sh
 
@@ -135,9 +130,7 @@ drybuild-homes-wip:
             --json \
             '.#homeConfigurations.{}.activationPackage' 2> >(sed '/^[[:space:]]*\/nix\/store\//d')"
 
-build-iso:
-    nix build .#nixosConfigurations.nixos-iso.config.system.build.isoImage
-
+[group('check')]
 remote-build-test: update-local-repo
     nix build \
         --no-link \
@@ -150,8 +143,13 @@ remote-build-test: update-local-repo
 #################################################################################
 # check recipes
 
+[group('check')]
+check: update-local-repo _check-flake _drybuild-homes
+
+[group('check')]
 _check-flake:
     #!/bin/sh
+
     set -eu
 
     NIXPKGS_ALLOW_UNFREE=1
@@ -159,6 +157,7 @@ _check-flake:
         --no-warn-dirty \
         --impure # to check unfree packages
 
+[group('check')]
 _drybuild-homes:
     #!/bin/sh
 
@@ -193,104 +192,12 @@ _drybuild-homes:
         echo ""
     done
 
-check: update-local-repo _check-flake _drybuild-homes
-
-################################################################################
-# Deploy recipes
-
-[positional-arguments]
-@deploy host: update-local-repo
-    deploy --keep-result --skip-checks ".#$1"
-
-[positional-arguments]
-@deploy-switch host: update-local-repo
-    nixos-rebuild switch \
-        --flake ".#$1" \
-        --target-host "deploy@${1}" \
-        --use-remote-sudo
-
-[positional-arguments]
-@deploy-boot host: update-local-repo
-    nixos-rebuild boot \
-        --flake ".#$1" \
-        --target-host "deploy@${1}" \
-        --use-remote-sudo
-
-[positional-arguments]
-@build host: update-local-repo
-    @echo "Building .#nixosConfigurations.<host>.config.system.build.toplevel"
-    nix build \
-        --no-link \
-        --option eval-cache false \
-        --show-trace \
-        ".#nixosConfigurations.${1}.config.system.build.toplevel"
-
-[positional-arguments]
-@drybuild host: update-local-repo
-    @echo "Dry-building .#nixosConfigurations.<host>.config.system.build.toplevel"
-    nix build \
-        --dry-run \
-        --option eval-cache false \
-        --show-trace \
-        ".#nixosConfigurations.${1}.config.system.build.toplevel"
-
-################################################################################
-# show flake.outputs
-
-show:
-    nix flake show 2>/dev/null
-
-show-hm-modules:
-    nix eval \
-        --no-warn-dirty \
-        --json \
-        ".#homeManagerModules" \
-        --apply builtins.attrNames | \
-        jq '.[]'
-
-show-hm-configurations:
-    nix eval \
-        --no-warn-dirty \
-        --json \
-        ".#homeConfigurations" \
-        --apply builtins.attrNames | \
-        jq '.[]'
-
-################################################################################
-# nixos-rebuild
-
-switch-nixos: pre-home-manager-switch update-local-repo
-    @echo "Switch .#{{ hostname }}"
-    sudo nixos-rebuild switch \
-        --flake ".#{{ hostname }}" \
-        --keep-failed
-
-boot-nixos: pre-home-manager-switch update-local-repo
-    @echo "Build .#{{ hostname }} and register to bootloader"
-    sudo nixos-rebuild boot \
-        --flake ".#{{ hostname }}" \
-        --option eval-cache false \
-        --keep-failed
-
-drybuild-nixos: update-local-repo
-    @echo "Dry-building .#nixosConfigurations.{{ hostname }}.config.system.build.toplevel"
-    nix build \
-        --dry-run \
-        --option eval-cache false \
-        --show-trace \
-        ".#nixosConfigurations.{{ hostname }}.config.system.build.toplevel"
-
-build-nixos: update-local-repo
-    @echo "Building .#nixosConfigurations.{{ hostname }}.config.system.build.toplevel"
-    nix build \
-        --option eval-cache false \
-        --show-trace \
-        --keep-failed \
-        ".#nixosConfigurations.{{ hostname }}.config.system.build.toplevel"
-
 # slower than nix flake check
-drybuild-nixoses: update-local-repo
+
+[group('check')]
+_drybuild-nixoses: update-local-repo
     #!/bin/sh
+
     set -eu
 
     for os in $(
@@ -314,8 +221,111 @@ drybuild-nixoses: update-local-repo
     done
 
 ################################################################################
+# Deploy recipes
+
+[doc('deploy to host using deplory-rs (will rollback if error)')]
+[group('deploy')]
+[positional-arguments]
+@deploy host: update-local-repo
+    deploy --keep-result --skip-checks ".#$1"
+
+[doc('deploy to host using nixos-rebuild (will not rollback)')]
+[group('deploy')]
+[positional-arguments]
+@deploy-switch host: update-local-repo
+    nixos-rebuild switch \
+        --flake ".#$1" \
+        --target-host "deploy@${1}" \
+        --use-remote-sudo
+
+[group('deploy')]
+[positional-arguments]
+@deploy-boot host: update-local-repo
+    nixos-rebuild boot \
+        --flake ".#$1" \
+        --target-host "deploy@${1}" \
+        --use-remote-sudo
+
+[group('build')]
+[positional-arguments]
+@build host: update-local-repo
+    @echo "Building .#nixosConfigurations.<host>.config.system.build.toplevel"
+    nix build \
+        --no-link \
+        --option eval-cache false \
+        --show-trace \
+        --keep-failed \
+        ".#nixosConfigurations.${1}.config.system.build.toplevel"
+
+[group('build')]
+build-iso: update-local-repo
+    nix build .#nixosConfigurations.nixos-iso.config.system.build.isoImage
+
+[group('check')]
+[positional-arguments]
+@drybuild host: update-local-repo
+    @echo "Dry-building .#nixosConfigurations.<host>.config.system.build.toplevel"
+    nix build \
+        --dry-run \
+        --option eval-cache false \
+        --show-trace \
+        ".#nixosConfigurations.${1}.config.system.build.toplevel"
+
+################################################################################
+# show flake.outputs
+
+[group('status')]
+show:
+    nix flake show 2>/dev/null
+
+[group('status')]
+show-hm-modules:
+    nix eval \
+        --no-warn-dirty \
+        --json \
+        ".#homeManagerModules" \
+        --apply builtins.attrNames | \
+        jq '.[]'
+
+[group('status')]
+show-hm-configurations:
+    nix eval \
+        --no-warn-dirty \
+        --json \
+        ".#homeConfigurations" \
+        --apply builtins.attrNames | \
+        jq '.[]'
+
+################################################################################
+# switch/boot local nixos
+
+[group('self-deploy')]
+switch-nixos: update-local-repo
+    @echo "Switch .#{{ hostname }}"
+    sudo nixos-rebuild switch \
+        --flake ".#{{ hostname }}" \
+        --keep-failed
+
+[group('self-deploy')]
+boot-nixos: update-local-repo
+    @echo "Build .#{{ hostname }} and register to bootloader"
+    sudo nixos-rebuild boot \
+        --flake ".#{{ hostname }}" \
+        --option eval-cache false \
+        --keep-failed
+
+[group('self-deploy')]
+switch-nixos-nh: update-local-repo
+    nh os switch .
+
+[group('build')]
+build-nisos-nh: update-local-repo
+    nh os build .
+
+################################################################################
 # home-manager build/switch
 
+[group('build')]
 build-home: update-local-repo
     @echo "Switch home-manager .#{{ hostname }}"
     nix build \
@@ -325,7 +335,8 @@ build-home: update-local-repo
         --json \
         ".#homeConfigurations.{{ hostname }}.activationPackage"
 
-switch-home: update-local-repo pre-home-manager-switch
+[group('self-deploy')]
+switch-home: update-local-repo
     #!/bin/sh
     set -eu
 
@@ -338,12 +349,3 @@ switch-home: update-local-repo pre-home-manager-switch
         ".#homeConfigurations.{{ hostname }}.activationPackage"
 
     bash "$(nix eval --raw ".#homeConfigurations.{{ hostname }}.activationPackage")/activate"
-
-################################################################################
-# nh
-
-switch-os-nh: update-local-repo pre-home-manager-switch
-    nh os switch .
-
-build-os-nh: update-local-repo
-    nh os build .
