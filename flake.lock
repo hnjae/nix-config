@@ -548,17 +548,17 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1744932701,
-        "narHash": "sha256-fusHbZCyv126cyArUwwKrLdCkgVAIaa/fQJYFlCEqiU=",
+        "lastModified": 1743429424,
+        "narHash": "sha256-1aI8yCKuG1rOkUtOyQsvO+UxsgfGx4YREsTM7n/ZcCg=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b024ced1aac25639f8ca8fdfc2f8c4fbd66c48ef",
+        "rev": "d9d5f4b7972df076fe146bf1eb946f6e9df87231",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixos-unstable",
         "repo": "nixpkgs",
+        "rev": "d9d5f4b7972df076fe146bf1eb946f6e9df87231",
         "type": "github"
       }
     },
@@ -646,8 +646,8 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1745064036,
-        "narHash": "sha256-EpTOGrBOYT2wS5hfT3eHQb7BLQRVfoEELyVZF9mwbIE=",
+        "lastModified": 1745074789,
+        "narHash": "sha256-t+vzqlworl9TVXTJFy8bgQ2Krf1hFAExAEQaZrIQHP8=",
         "path": "/home/hnjae/Projects/py-utils",
         "type": "path"
       },
