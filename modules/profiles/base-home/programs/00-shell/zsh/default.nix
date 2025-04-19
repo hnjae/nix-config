@@ -125,6 +125,7 @@ in
         "sudo zfs destroy *"
         "sudo zpool destroy *"
         "sudo btrfs subvolume delete *"
+        "* --please-destroy-my-drive *" # hdparm
 
         # dangerous commands
         "reboot"
