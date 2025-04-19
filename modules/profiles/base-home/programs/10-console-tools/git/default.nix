@@ -23,10 +23,10 @@ let
     "grm" = "git rm";
     "grmc" = "git rm --cached";
 
-    # git-restore
+    # grst: git-restore
     # grs: forgit: git-restore
-    "grss" = "git restore --source";
-    "grst" = "git restore --staged";
+    "grsts" = "git restore --source";
+    "grstt" = "git restore --staged";
 
     ############################################################################
     # log, stat, diff
@@ -138,14 +138,14 @@ let
     # gswt (forgit)
     # gswco (forgit)
 
-    # gr: git-reset
-    # "gr" = "git reset"; (forgit)
+    # grs: git-reset
+    # "grs" = "git reset"; (forgit)
     "grhd" = "git reset HEAD";
     "grH" = "git reset --hard";
     # gru                  git reset --
     # groh                 git reset origin/$(git_current_branch) --hard
-    "grHhd" = "git reset --hard HEAD";
-    "grHhd1" = "git reset --hard HEAD~1";
+    "grsHhd" = "git reset --hard HEAD";
+    "grsHhd1" = "git reset --hard HEAD~1";
 
     ############################################################################
     # git-stash
@@ -297,8 +297,8 @@ in
       forgit_log = "glz";
       forgit_rebase = "grb"; # defaults
       forgit_revert_commit = "grev";
-      forgit_reset_head = "gr"; # defaults: `grh`
-      forgit_checkout_file = "grs"; # git-restore
+      forgit_reset_head = "grs"; # default: `grh`
+      forgit_checkout_file = "grst"; # git-restore (default: `gcf`)
       forgit_stash_show = "gshs";
       forgit_stash_push = "gshp";
       forgit_checkout_branch = "gsw"; # git-switch

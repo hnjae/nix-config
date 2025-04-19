@@ -50,7 +50,7 @@ sync: format
     git -c color.ui=always status --short --untracked-files=all --find-renames=y
     echo ""
 
-    echo "> sync? [Y/Any]: " > /dev/stderr
+    echo "> sync? [y/Any]: " > /dev/stderr
 
     stty -icanon -echo
     eval "response=$(dd bs=1 count=1 2>/dev/null)"
