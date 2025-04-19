@@ -230,11 +230,11 @@
         "zon2nix": "zon2nix"
       },
       "locked": {
-        "lastModified": 1745015712,
-        "narHash": "sha256-QW63gxUvWkKqmy5e6Rex/nh2T4KL47lrkqhR7fsJBNY=",
+        "lastModified": 1745043798,
+        "narHash": "sha256-yMhARATsXf+dDVhl/m2nfZWELcHsnE9y34VXVnaTIrs=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "6a876ef8ec3e2aeb3d15df0dfb0e07677e49ff03",
+        "rev": "14134d61fb4b1bbf4ce80bb9b3ed849908bf9344",
         "type": "github"
       },
       "original": {
@@ -406,11 +406,11 @@
     "neovim-configs": {
       "flake": false,
       "locked": {
-        "lastModified": 1744959764,
-        "narHash": "sha256-OKOD4x8+NAgAOqIJftdl30cyCvvOADZmALn6EJPJK6I=",
+        "lastModified": 1745060402,
+        "narHash": "sha256-vylVgu/pq2kJVaXcmbbpsO7aVms0BO673YL5bY73hBA=",
         "owner": "hnjae",
         "repo": "neovim-configs",
-        "rev": "68e6de06325fb165dbb0e1641f8dadbb0b00ce39",
+        "rev": "75dff21574c3308c5029ae256c85b55bd950c9c8",
         "type": "github"
       },
       "original": {
@@ -597,11 +597,11 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1744461753,
-        "narHash": "sha256-3oO3CwYmZE5P4Hp5XR5WCZbF/rj5+kF0m5sTNTMDYss=",
+        "lastModified": 1745068593,
+        "narHash": "sha256-YuQRMvqLVu+ghl2XzqXyVg/YevH/t3XHVCl7w+UrCH8=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "a22fbed4c4784e6a9761f9a896d31da98c3117b2",
+        "rev": "d35dc6dfcae3ff1a0c72f2d59491a7d83e5505a3",
         "type": "github"
       },
       "original": {
@@ -622,11 +622,11 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1745039273,
-        "narHash": "sha256-65tcyAuRqTYErz1eNX25FI1/Ia9+BEQRFQkaAxeG8L4=",
+        "lastModified": 1745069578,
+        "narHash": "sha256-vh0lPo3alUtd6xY615ir100SrWrz9J9BtdNSDoX1vLc=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "b2b70ade2860ed9526db2f8b4db855ef6bdc2c52",
+        "rev": "a86ce067d898360dbdbe9dc4de50a49b6bf8fabe",
         "type": "github"
       },
       "original": {
@@ -646,8 +646,8 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1744985787,
-        "narHash": "sha256-P6I2E+oiE/00E9Au5hbJkk6MZf+SDnjq+Te1tWyLU7I=",
+        "lastModified": 1745064036,
+        "narHash": "sha256-EpTOGrBOYT2wS5hfT3eHQb7BLQRVfoEELyVZF9mwbIE=",
         "path": "/home/hnjae/Projects/py-utils",
         "type": "path"
       },
