@@ -11,11 +11,13 @@ term = "xterm-256color"
 ################################################################################
 # run `ghostty +list-fonts` to get a list of available fonts
 
+# font-family = "MesloLGM Nerd Font"
+# font-family = "Noto Sans Mono CJK JP"
+# font-family = "Noto Sans Mono CJK KR"
+
 # font-family = "Monospace"
-# font-family = "D2Coding"
-font-family = "MesloLGM Nerd Font"
-font-family = "Noto Sans Mono CJK JP"
-font-family = "Noto Sans Mono CJK KR"
+font-family="Pretendard JP"
+font-family="Pretendard"
 
 # font-family-bold = "MesloLGM Nerd Font Bold"
 # font-family-bold = "D2Coding Bold"
