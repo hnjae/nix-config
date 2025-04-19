@@ -28,16 +28,48 @@
         noto-fonts-color-emoji
         # openmoji-color
 
-        # NedFonts
+        # NerdFonts
         # https://github.com/NixOS/nixpkgs/blob/8764d898c4f365d98ef77af140b32c6396eb4e02/pkgs/data/fonts/nerdfonts/shas.nix
         # https://github.com/NixOS/nixpkgs/blob/master/pkgs/data/fonts/nerd-fonts/manifests/fonts.json
         (nerdfonts.override {
           fonts = [
-            "Meslo"
-            "IBMPlexMono"
-            "D2Coding"
-            "0xProto"
             # "NerdFontsSymbolsOnly"
+
+            # abcd
+            # 가나
+
+            # NOTE: 선정 가이드 <2025-04-19 updated>
+            # 1. Slashed zero
+            # 2. NO ligatures
+            # 3. `f` 기호를 function 기호 (e.g. `󰊕`) 처럼 렌더링 하지 않음
+            # 4. 한글 한자가 로마자 두자랑 길이가 비슷
+            # <https://www.programmingfonts.org/> 에서 렌더링 결과물을 확인할 수 있다.
+
+            # Slashed Zero & NO ligatures
+            "Meslo" # <https://github.com/andreberg/Meslo-Font>
+            "RobotoMono"
+            "InconsolataLGC"
+            "CommitMono" # <https://github.com/eigilnikolajsen/commit-mono> / <https://commitmono.com>
+            "CodeNewRoman"
+
+            # 아직 지원 안됨
+            # Atkinson Hyperlegible Mono
+
+            # 못 쓰겠을 폰트
+            # "Mononoki" # `f` 를 function 기호 처럼 렌더링
+            # "Recursive" # `f` 를 function 기호 처럼 렌더링
+
+            # Dotted Zero & NO ligatures
+            # "Agave"
+            # "FiraMono"
+            # "IBMPlexMono"
+
+            # Slashed zero & ligatures
+            # "0xProto"
+            # "D2Coding"
+            # "fira-code"
+            # "geist-mono"
+            # "jetbrains-mono"
           ];
         })
 

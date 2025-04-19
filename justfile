@@ -2,7 +2,6 @@
 
 hostname := `hostname`
 
-[private]
 _:
     @just --list
 
@@ -105,30 +104,9 @@ update-except-unstable:
     git commit -m "build: update flake.lock"
 
 [group('update')]
+[private]
 update-local-repo:
     nix flake update nix-modules-private py-utils
-
-[group('check')]
-drybuild-homes-wip:
-    #!/bin/sh
-
-    nix eval \
-        --no-warn-dirty \
-        --json \
-        ".#homeConfigurations" \
-        --apply builtins.attrNames |
-        jq '.[]' |
-        parallel --jobs {{ num_cpus() }} \
-        "echo '{}' && nix build \
-            --dry-run \
-            --no-warn-dirty \
-            --no-print-missing \
-            --option keep-env-derivations true \
-            --option pure-eval true \
-            --option show-trace false \
-            --quiet \
-            --json \
-            '.#homeConfigurations.{}.activationPackage' 2> >(sed '/^[[:space:]]*\/nix\/store\//d')"
 
 [group('check')]
 remote-build-test: update-local-repo
@@ -158,6 +136,28 @@ _check-flake:
         --impure # to check unfree packages
 
 [group('check')]
+_parallel-drybuild-homes-wip:
+    #!/bin/sh
+
+    nix eval \
+        --no-warn-dirty \
+        --json \
+        ".#homeConfigurations" \
+        --apply builtins.attrNames |
+        jq '.[]' |
+        parallel --jobs {{ num_cpus() }} \
+        "echo '{}' && nix build \
+            --dry-run \
+            --no-warn-dirty \
+            --no-print-missing \
+            --option keep-env-derivations true \
+            --option pure-eval true \
+            --option show-trace false \
+            --quiet \
+            --json \
+            '.#homeConfigurations.{}.activationPackage' 2> >(sed '/^[[:space:]]*\/nix\/store\//d')"
+
+[group('check')]
 _drybuild-homes:
     #!/bin/sh
 
@@ -171,13 +171,6 @@ _drybuild-homes:
     ); do
         target=".#homeConfigurations.${home}.activationPackage"
         echo "Dry-building ${target}"
-
-        # nix eval \
-        #   --raw \
-        #   --no-warn-dirty \
-        #   --option eval-cache true \
-        #   --quiet \
-        #   "${target}"
 
         nix build \
             --dry-run \
@@ -319,7 +312,7 @@ switch-nixos-nh: update-local-repo
     nh os switch .
 
 [group('build')]
-build-nisos-nh: update-local-repo
+build-nixos-nh: update-local-repo
     nh os build .
 
 ################################################################################

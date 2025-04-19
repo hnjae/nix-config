@@ -39,10 +39,10 @@ let
     "glgg" = "git log --oneline --decorate --graph";
     "glgf" = "git log --graph --decorate";
     "glgp" = "git log --graph --decorate --oneline --show-pulls --";
-    "gld" = "git log --graph --pretty='%C(auto)%h %C(green)%as%C(auto)%d %s %C(blue)<%an>%Creset' -19";
-    "gldd" = "git log --graph --pretty='%C(auto)%h %C(green)%as%C(auto)%d %s %C(blue)<%an>%Creset'";
-    "glds" =
-      "git log --graph --pretty='%C(auto)%h %C(green)%as%C(auto)%d %s %C(blue)<%an>%Creset' --stat";
+    "glgd" = "git log --graph --pretty='%C(auto)%h %C(green)%aI%C(auto)%d %s %C(blue)<%an>%Creset' -19";
+    "glgdd" = "git log --graph --pretty='%C(auto)%h %C(green)%aI%C(auto)%d %s %C(blue)<%an>%Creset'";
+    "glgds" =
+      "git log --graph --pretty='%C(auto)%h %C(green)%aI%C(auto)%d %s %C(blue)<%an>%Creset' --stat";
     "gls" = "git log --stat | bat --style=plain";
     "glsp" = "git log --stat -p";
     "glcount" = "git shortlog -sn";
@@ -65,9 +65,9 @@ let
     "gs" = "git status --short --branch --untracked-files=all";
     "gst" = "git status --short --branch --untracked-files=all";
 
-    # gshw: git-show
-    "gshw" = "git show";
-    "gshwps" = "git show --pretty=short --show-signature";
+    # gsh: git-show
+    "gsh" = "git show --no-abbrev-commit";
+    "gshp" = "git show --no-abbrev-commit --pretty=short --show-signature";
 
     # git-bisect
     "gbs" = "git bisect";
@@ -130,7 +130,7 @@ let
     ############################################################################
     # HEAD 조작; git-tag
     ############################################################################
-    # git-switch
+    # gsw: git-switch
     # gsw                git switch
     # gsw (forgit)
     "gswc" = "git switch -c";
@@ -150,12 +150,12 @@ let
     ############################################################################
     # git-stash
     ############################################################################
-    # git-stash
-    "gsh" = "git stash -u"; # -u: --include-untracked
-    "gshl" = "git stash list";
-    "gsho" = "git stash pop";
-    # gshs forgit -- show
-    # gshp forgit -- push
+    # gss: git-stash
+    "gssu" = "git stash --include-untracked"; # -u: --include-untracked
+    "gssl" = "git stash list";
+    "gsso" = "git stash pop";
+    # gsss forgit -- show
+    # gssp forgit -- push
 
     # gsta                 git stash save
     # gstaa                git stash apply
@@ -299,8 +299,8 @@ in
       forgit_revert_commit = "grev";
       forgit_reset_head = "grs"; # default: `grh`
       forgit_checkout_file = "grst"; # git-restore (default: `gcf`)
-      forgit_stash_show = "gshs";
-      forgit_stash_push = "gshp";
+      forgit_stash_show = "gsss"; # default: `gss`
+      forgit_stash_push = "gssp"; # default: `gsp`
       forgit_checkout_branch = "gsw"; # git-switch
       forgit_checkout_tag = "gswt";
       forgit_checkout_commit = "gswco";
