@@ -1,4 +1,4 @@
-# [keybord]
+# [keyboard]
 # bindings = [{ <key>, <mods>, <mode>, <command> | <chars> | <action> },]
 #
 #   # command + t                      C-q c
@@ -7,6 +7,13 @@
 
 [keyboard]
 bindings = [
+  { key = "-", mods = "Control|Shift", action = "DecreaseFontSize" },
+  { key = "+", mods = "Control|Shift", action = "IncreaseFontSize" },
+  { key = "_", mods = "Control|Shift", action = "DecreaseFontSize" },
+
+  ##############################################################################
+  # Tmux
+  ##############################################################################
   # alt-n: \u001bn
 
   # split

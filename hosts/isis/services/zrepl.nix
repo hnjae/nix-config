@@ -1,4 +1,5 @@
 # NOTE: <https://zrepl.github.io/configuration/jobs.html>
+{ pkgs, config, ... }:
 let
   fileSystems = {
     "isis/safe<" = true;
@@ -42,11 +43,6 @@ in
     {
       name = "isis-push"; # must-not-change
       type = "push";
-      # connect = {
-      #   type = "local";
-      #   listener_name = "replica";
-      #   client_identity = "replica";
-      # };
       connect = {
         type = "tcp";
         address = "horus:65535";
@@ -56,10 +52,11 @@ in
       send = {
         encrypted = false; # cobalt have loaded encryption keys
         large_blocks = true; # must-not-change after initial replication
-        compressed = true; # yes compression because it is remote
+        # compressed = false; # > Streams sent with -c will not have their data recompressed on the receiver side using -o compress= value.
       };
       replication = {
         protection = {
+          # initial = "guarantee_resumability";
           initial = "guarantee_incremental";
           incremental = "guarantee_incremental";
           /*
@@ -77,7 +74,6 @@ in
           # KEEP ALL
           {
             type = "regex";
-            negate = true;
             regex = ".*";
           }
         ];
@@ -101,4 +97,47 @@ in
       };
     }
   ];
+
+  systemd =
+    let
+      jobName = "isis-push"; # must-not-change
+
+      serviceName = "zrepl-signal-${jobName}";
+      description = "Zrepl signal ${jobName}";
+      documentation = [ "https://zrepl.github.io/configuration.html" ];
+    in
+    {
+      timers."${serviceName}" = {
+        inherit description documentation;
+
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          AccuracySec = "1m";
+          OnStartupSec = "30m";
+          OnUnitInactiveSec = "90m";
+          Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
+          WakeSystem = false;
+        };
+      };
+
+      services."${serviceName}" = {
+        inherit description documentation;
+        unitConfig = rec {
+          BindsTo = [
+            "zrepl.service"
+            "zfs-import.target"
+          ];
+          Wants = [ "network-online.target" ];
+          After = BindsTo ++ Wants;
+          ConditionACPower = true;
+        };
+
+        serviceConfig = {
+          Type = "oneshot";
+          inherit (config.systemd.services.restic-backup-off-site.serviceConfig) ExecCondition;
+          ExecStart = "${pkgs.zrepl}/bin/zrepl signal wakeup ${jobName}";
+          SuccessExitStatus = 1; # zrepl prints if job is in progress: "already woken up" and exits with 1.
+        };
+      };
+    };
 }
