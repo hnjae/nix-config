@@ -342,3 +342,6 @@ switch-home: update-local-repo
         ".#homeConfigurations.{{ hostname }}.activationPackage"
 
     bash "$(nix eval --raw ".#homeConfigurations.{{ hostname }}.activationPackage")/activate"
+
+flatpak-sync:
+    systemctl --user start flatpak-managed-install.service
