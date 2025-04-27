@@ -19,17 +19,17 @@ in
     #   eval "$(rye self completion -s zsh)"
     # '';
 
-    # python = {
-    #   enable = true;
-    #   pythonPackages = [
-    #     # Lsps
-    #     # "python-lsp-server"
-    #     # "jedi-language-server"
-    #
-    #     "ipython"
-    #     "mypy"
-    #   ];
-    # };
+    python = {
+      enable = true;
+      pythonPackages = [
+        # Lsps
+        # "python-lsp-server"
+        # "jedi-language-server"
+
+        "ipython"
+        "mypy"
+      ];
+    };
 
     home.packages = [
       pkgsUnstable.ruff # includes lsp via `ruff server`

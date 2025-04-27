@@ -31,6 +31,6 @@ in
     # if the random IO against the swap device is on average 2x faster than IO
     # from the filesystem, swappiness should be 133 (x + 2x = 200, 2x = 133.33).
     # 180: PopOS defaults
-    "vm.swappiness" = mkOverride 100 120;
+    "vm.swappiness" = mkOverride 100 100;
   };
 }

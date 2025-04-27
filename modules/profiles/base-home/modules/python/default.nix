@@ -39,12 +39,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.python312 ];
-    # home.packages = [
-    #   (cfg.package.withPackages (
-    #     # python-pkgs: (builtins.map (x: (builtins.getAttr x python-pkgs)) cfg.pythonPackages)
-    #     python-pkgs: (builtins.map (x: (builtins.getAttr x python-pkgs)) cfg.pythonPackages)
-    #   ))
-    # ];
+    # home.packages = [ pkgs.python312 ];
+    home.packages = [
+      (cfg.package.withPackages (
+        # python-pkgs: (builtins.map (x: (builtins.getAttr x python-pkgs)) cfg.pythonPackages)
+        python-pkgs: (builtins.map (x: (builtins.getAttr x python-pkgs)) cfg.pythonPackages)
+      ))
+    ];
   };
 }
