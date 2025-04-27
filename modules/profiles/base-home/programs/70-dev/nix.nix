@@ -10,7 +10,7 @@ in
 {
   config = lib.mkIf baseHomeCfg.isDev {
     home.packages = with pkgsUnstable; [
-      # lsp
+      # LSPs
       # rnix-lsp -- dead 2024-03-16
       nixd
       nil
@@ -22,6 +22,9 @@ in
 
       # formatter
       nixfmt-rfc-style
+
+      #
+      hydra-check
     ];
   };
 }

@@ -4,10 +4,12 @@
     modules = [
       {
         system.stateVersion = "24.11";
+
         base-nixos = {
           role = "desktop";
           hostType = "baremetal";
         };
+
         networking.hostName = "isis";
 
         rollback-zfs-root = {
@@ -28,12 +30,11 @@
       self.nixosModules.rollback-zfs-root
       self.nixosModules.configure-impermanence
 
-      # self.nixosModules.syncthing-for-desktop
-
       ./configs
       ./hardware
       ./services
     ];
+
     specialArgs = {
       inherit inputs;
       inherit self;

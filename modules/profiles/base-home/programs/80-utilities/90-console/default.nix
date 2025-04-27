@@ -41,12 +41,13 @@
       ouch # archive handler
       vimv-rs # cyclic-renaming 지원, 엣지 케이스 대응 잘함.
 
-      kmon # linux kernerl activity monitor
+      kmon # linux kernel activity monitor
       btop
     ])
     (with pkgsUnstable; [
       yt-dlp
 
+      rclone
       restic
       rustic
     ])
