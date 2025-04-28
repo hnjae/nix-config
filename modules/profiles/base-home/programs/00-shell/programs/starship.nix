@@ -1,7 +1,7 @@
 # NOTE: use nf-seti-* <2024-02-15>
 # NOTE: check style before adding new one. (Must use color from terminal) <2024-02-15>
 # NOTE: dimmed -> normal <2024-02-15>
-# NOTE: some terminal uses bold font while printing bright-{color}
+# NOTE: some terminal uses bold font when printing bright-{color}
 { config, ... }:
 let
   starshipCmd = "${config.home.profileDirectory}/bin/starship";
@@ -26,33 +26,34 @@ in
       add_newline = true;
       follow_symlinks = false;
       directory = {
-        read_only = " "; # nf-oct-lock
+        read_only = " 󰍁"; # nf-md
         read_only_style = "bold red";
         truncation_length = 6;
       };
       character = {
-        success_symbol = "[❯](green)";
-        error_symbol = "[❯](red)"; # nf-seti-error
-        vicmd_symbol = "[❮](green)";
-        vimcmd_replace_one_symbol = "[❮](purple)";
-        vimcmd_replace_symbol = "[❮](purple)";
-        vimcmd_visual_symbol = "[❮](yellow)";
+        # ❯
+        success_symbol = "[>](green)";
+        error_symbol = "[>](red)";
+        vicmd_symbol = "[<](green)";
+        vimcmd_replace_one_symbol = "[<](purple)";
+        vimcmd_replace_symbol = "[<](purple)";
+        vimcmd_visual_symbol = "[<](yellow)";
       };
       cmd_duration = {
+        min_time_to_notify = 30 * 1000; # milliseconds
         show_notifications = false;
-        min_time_to_notify = 30 * 1000;
       };
       username.disabled = false;
       hostname = {
         ssh_only = false;
-        ssh_symbol = "󰖟 ";
+        ssh_symbol = "󰀂 "; # nf-md
         style = "bold green";
       };
       shell = {
         disabled = false;
         fish_indicator = "󰈺"; # nf-md-fish
         zsh_indicator = "%";
-        bash_indicator = ""; # nf-cod-terminal_bash
+        bash_indicator = "$"; # nf-cod-terminal_bash
         # nu_indicator = "nu";
       };
       time = {
@@ -66,15 +67,17 @@ in
       };
       battery.disabled = true;
       git_branch = {
-        symbol = " "; # nf-oct-git_branch
+        # symbol = " "; # nf-oct-git_branch
+        symbol = "󰘬 "; # nf-md-git-branch
       };
       git_commit = {
-        tag_symbol = ""; # nf-oct-tag
+        # tag_symbol = ""; # nf-oct-tag
+        tag_symbol = "󰓼"; # nf-md
       };
       git_status = {
         style = "cyan";
-        format = "(($conflicted)($renamed$staged)($modified$untracked)($deleted)($ahead_behind)($stashed) )";
         # NOTE: $all_status == $conflicted$stashed$deleted$renamed$modified$staged$untracked
+        format = "(($conflicted)($renamed$staged)($modified$untracked)($deleted)($ahead_behind)($stashed) )";
         up_to_date = "[✔](bold green)";
 
         ahead = "[↑\${count}](yellow)";
@@ -103,21 +106,22 @@ in
       };
       container = {
         style = "bold red";
-        symbol = " "; # nf-oct-container
+        # symbol = " "; # nf-oct-container
+        symbol = "⬢' ";
       };
       docker_context.symbol = " "; # nf-seti-docker
       memory_usage = {
-        symbol = "󰍛 ";
+        symbol = "󰍛 "; # nf-md
         style = "bold white";
       };
       aws.symbol = "  "; # nf-dev-aws
       azure.symbol = " "; # nf-code-azure
       gcloud.symbol = " "; # nf-dev-google_cloud_platform
-      openstack.symbol = " "; # nf-oct-cloud
+      openstack.symbol = "󰅣 "; # nf-md
       guix_shell.symbol = " "; # nf-linux-gnu_guix
       gradle.symbol = " "; # nf-seti-gradle
       package = {
-        symbol = " "; # nf-oct-package
+        symbol = "󰏗 "; # nf-md
         style = "bold yellow";
       };
       c = {
@@ -135,7 +139,7 @@ in
         style = "bold red";
       };
       julia.symbol = " "; # nf-seti-julia
-      kotlin.symbol = " "; # nf-seti-kotlin
+      kotlin.symbol = "󱈙 "; # nf-md
       lua.symbol = " "; # nf-seti-lua
       nim.symbol = " "; # nf-seti-nim
       nodejs.symbol = "󰎙 "; # nf-md-nodjes
@@ -147,7 +151,7 @@ in
       purescript.symbol = " "; # nf-seti-purescript
       python.symbol = " "; # nf-seti-python
       rlang.symbol = " "; # nf-seti-r
-      ruby.symbol = " "; # nf-seti-ruby
+      ruby.symbol = "󰴭 "; # nf-md
       rust.symbol = " "; # nf-seti-rust
       scala = {
         symbol = " "; # nf-seti-scala
