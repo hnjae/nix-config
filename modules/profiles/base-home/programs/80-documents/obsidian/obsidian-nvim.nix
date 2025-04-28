@@ -42,7 +42,7 @@ in
 
     home.shellAliases = {
       so = ''cd "''${XDG_DOCUMENTS_DIR:-''${HOME}/Documents}/obsidian/home"'';
-      et = ''vi "''${XDG_DOCUMENTS_DIR:-''${HOME}/Documents}/obsidian/home/journals/$(date '+%Y-%m-%d').md"'';
+      et = ''vi "''${XDG_DOCUMENTS_DIR:-''${HOME}/Documents}/obsidian/home/dailies/$(date '+%Y-%m-%d').md"'';
       ew = ''vi "''${XDG_DOCUMENTS_DIR:-''${HOME}/Documents}/obsidian/home/weeklies/$(date '+%G-W%V').md"'';
     };
 

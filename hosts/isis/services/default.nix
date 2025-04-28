@@ -20,6 +20,9 @@ _: {
     pools = [ "isis" ];
   };
 
+  # 아래 켰을때, /persist 에 링크하기
+  # services.fwupd.enable = true;
+
   virtualisation.waydroid.enable = true;
 
   # services.resilio = {
