@@ -67,6 +67,9 @@ in
 
       RCLONE_CONFIG = "/secrets/rclone.conf";
       RCLONE_BWLIMIT = "3M"; # MiB/s
+      RCLONE_ONEDRIVE_HARD_DELETE = "1";
+      RCLONE_ONEDRIVE_NO_VERSIONS = "1";
+      RCLONE_ONEDRIVE_AV_OVERRIDE = "1"; # allow download of files the server thinks has a virus
     };
     serviceConfig = {
       Type = "oneshot";

@@ -89,7 +89,9 @@
         # caladea # replace: campria
 
         #
-        wqy_microhei # replace: Microsoft YaHei, SimHei, SimSun
+
+        # <https://www.wp-vps.com/arch-manjaro-에서-chrome사용시-한글이-겹치고-깨져서-나올떄.html> 2023-03-10
+        # wqy_microhei # replace: Microsoft YaHei, SimHei, SimSun
         ipafont # replace: MS [P]{Mincho, Gothic}
       ])
     ];
