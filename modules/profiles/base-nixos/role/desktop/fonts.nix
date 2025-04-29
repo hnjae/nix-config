@@ -84,7 +84,7 @@
         # https://wiki.archlinux.org/title/Metric-compatible_fonts
         liberation_ttf # replace: Times New Roman, Arial, and Courier New
         liberation-sans-narrow # replace: Arial Narrow
-        # fonts-dmca-sans-serif # replace: consolas
+        fonts-dmca-sans-serif # replace: consolas
         # carlito # replace: calibri
         # caladea # replace: campria
 
