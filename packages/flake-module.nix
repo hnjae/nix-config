@@ -29,7 +29,7 @@ in
           inherit (inputs) nixvim;
           inherit pkgs lib;
         };
-        fonts-dmca-sans-serif = pkgs.callPackage ./fonts/fonts-dmca-sans-serif { };
+        fonts-dmca-sans-serif = ./fonts/fonts-dmca-sans-serif { inherit pkgs; };
         fonts-plangothic = pkgs.callPackage ./fonts/fonts-plangothic { };
         fonts-ridibatang = pkgs.callPackage ./fonts/fonts-ridibatang { };
         fonts-freesentation = pkgs.callPackage ./fonts/fonts-freesentation { };
