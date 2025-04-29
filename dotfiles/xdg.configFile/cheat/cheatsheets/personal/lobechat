@@ -4,11 +4,15 @@ tags: [ LobeChat ]
 
 <https://github.com/lobehub/lobe-chat>
 
-New Chat:
-  `<A-n>` or `<A-k>`
+- New Chat:
+  - `<A-n>` or `<A-k>`
 
-Generate:
-  `<A-s>` ?
+- reGenerate:
+  - `<A-r>` ?
+
+- `<C-[>`, `<C-]>`
+- `<C-S-?>`
+- `<A-,>`
 
 ```typescript
 export const ALT_KEY = 'alt';
@@ -22,3 +26,7 @@ export const HOTKEYS = {
   zenMode: 'mod+\\',
 };
 ```
+
+<!--
+vi:ft=markdown
+-->

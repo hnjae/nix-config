@@ -52,7 +52,8 @@ in
       send = {
         encrypted = false; # cobalt have loaded encryption keys
         large_blocks = true; # must-not-change after initial replication
-        # compressed = false; # > Streams sent with -c will not have their data recompressed on the receiver side using -o compress= value.
+        compressed = false; # > Streams sent with -c will not have their data recompressed on the receiver side using -o compress= value.
+        # compressed = true;
       };
       replication = {
         protection = {
