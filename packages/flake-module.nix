@@ -32,7 +32,7 @@ in
         fonts-dmca-sans-serif = ./fonts/fonts-dmca-sans-serif { inherit pkgs; };
         fonts-plangothic = pkgs.callPackage ./fonts/fonts-plangothic { };
         fonts-ridibatang = pkgs.callPackage ./fonts/fonts-ridibatang { };
-        fonts-freesentation = pkgs.callPackage ./fonts/fonts-freesentation { };
+        fonts-freesentation = ./fonts/fonts-freesentation { inherit pkgs; };
 
         # unfree
         fonts-kopub-world = pkgs.callPackage ./fonts/fonts-kopub-world { };
