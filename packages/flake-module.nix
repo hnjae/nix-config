@@ -29,14 +29,15 @@ in
           inherit (inputs) nixvim;
           inherit pkgs lib;
         };
-        fonts-dmca-sans-serif = ./fonts/fonts-dmca-sans-serif { inherit pkgs; };
+
+        fonts-dmca-sans-serif = (import ./fonts/fonts-dmca-sans-serif) { inherit pkgs; };
+        fonts-freesentation = (import ./fonts/fonts-freesentation) { inherit pkgs; };
         fonts-plangothic = pkgs.callPackage ./fonts/fonts-plangothic { };
         fonts-ridibatang = pkgs.callPackage ./fonts/fonts-ridibatang { };
-        fonts-freesentation = ./fonts/fonts-freesentation { inherit pkgs; };
 
         # unfree
         fonts-kopub-world = pkgs.callPackage ./fonts/fonts-kopub-world { };
-        fonts-toss-face = pkgs.callPackage ./fonts/fonts-toss-face { };
+        fonts-toss-face = (import ./fonts/fonts-toss-face) { };
       };
     };
 

@@ -9,7 +9,7 @@
     ./greeting.nix
     ./man.nix
     ./mc.nix
-    ./starship.nix
+    ./starship-simple.nix
     ./zoxide.nix
   ];
 }

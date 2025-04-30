@@ -32,12 +32,12 @@ in
       };
       character = {
         # ❯
-        success_symbol = "[>](green)";
-        error_symbol = "[>](red)";
-        vicmd_symbol = "[<](green)";
-        vimcmd_replace_one_symbol = "[<](purple)";
-        vimcmd_replace_symbol = "[<](purple)";
-        vimcmd_visual_symbol = "[<](yellow)";
+        success_symbol = "[%](purple)";
+        error_symbol = "[%](red)";
+        vicmd_symbol = "[❮](green)";
+        vimcmd_replace_one_symbol = "[❮](purple)";
+        vimcmd_replace_symbol = "[❮](purple)";
+        vimcmd_visual_symbol = "[❮](yellow)";
       };
       cmd_duration = {
         min_time_to_notify = 30 * 1000; # milliseconds
@@ -50,7 +50,7 @@ in
         style = "bold green";
       };
       shell = {
-        disabled = false;
+        disabled = true;
         fish_indicator = "󰈺"; # nf-md-fish
         zsh_indicator = "%";
         bash_indicator = "$"; # nf-cod-terminal_bash
