@@ -7,6 +7,28 @@
 {
   config.fonts = lib.mkIf (config.base-nixos.role == "desktop") {
     fontDir.enable = lib.mkOverride 999 true;
+
+    fontconfig = {
+      hinting = {
+        style = "full";
+      };
+      defaultFonts = {
+        sansSerif = [
+          "Pretendard"
+        ];
+        monospace = [
+          # "CommitMono Nerd Font"
+          "Nodo Sans Mono CJK JP"
+          "Nodo Sans Mono CJK KR"
+          "Nodo Sans Mono CJK TC"
+        ];
+        serif = [
+          "RIDIBatang"
+        ];
+        # emoji = [ ];
+      };
+    };
+
     packages = builtins.concatLists [
       (lib.lists.optionals pkgs.config.allowUnfree (
         with pkgs;
@@ -24,9 +46,30 @@
         noto-fonts-cjk-sans
         noto-fonts-cjk-serif
 
-        # emoji
+        # EMOJI <https://emojipedia.org/grinning-face#designs> / <https://changjoo-park.github.io/toss_full_emoji/> 에서 디자인 확인
         noto-fonts-color-emoji
-        # openmoji-color
+        openmoji-color
+
+        # chinese character
+        jigmo # 일본 자형 Sans-Serif (hanazono successor)
+        fonts-plangothic # ofl
+
+        # others
+        fonts-ridibatang # ofl
+        d2coding
+
+        # https://wiki.archlinux.org/title/Metric-compatible_fonts
+        liberation_ttf # replace: Times New Roman, Arial, and Courier New / fontconfig 의 default system-wide config 에 의해 자동 설정. <NixOS 24.11>
+        liberation-sans-narrow # replace: Arial Narrow / fontconfig 의 default system-wide config 에 의해 자동 설정. <NixOS 24.11>
+        fonts-dmca-sans-serif # replace: consolas
+        # carlito # replace: calibri
+        # caladea # replace: campria
+
+        #
+
+        # <https://www.wp-vps.com/arch-manjaro-에서-chrome사용시-한글이-겹치고-깨져서-나올떄.html> 2023-03-10
+        # wqy_microhei # replace: Microsoft YaHei, SimHei, SimSun
+        ipafont # replace: MS [P]{Mincho, Gothic}
 
         # NerdFonts
         # https://github.com/NixOS/nixpkgs/blob/8764d898c4f365d98ef77af140b32c6396eb4e02/pkgs/data/fonts/nerdfonts/shas.nix
@@ -73,26 +116,6 @@
           ];
         })
 
-        # chinese character
-        jigmo # 일본 자형 Sans-Serif (hanazono successor)
-        fonts-plangothic # ofl
-
-        # others
-        fonts-ridibatang # ofl
-        d2coding
-
-        # https://wiki.archlinux.org/title/Metric-compatible_fonts
-        liberation_ttf # replace: Times New Roman, Arial, and Courier New
-        liberation-sans-narrow # replace: Arial Narrow
-        fonts-dmca-sans-serif # replace: consolas
-        # carlito # replace: calibri
-        # caladea # replace: campria
-
-        #
-
-        # <https://www.wp-vps.com/arch-manjaro-에서-chrome사용시-한글이-겹치고-깨져서-나올떄.html> 2023-03-10
-        # wqy_microhei # replace: Microsoft YaHei, SimHei, SimSun
-        ipafont # replace: MS [P]{Mincho, Gothic}
       ])
     ];
   };
