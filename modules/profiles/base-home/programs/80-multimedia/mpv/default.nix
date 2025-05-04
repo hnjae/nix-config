@@ -52,7 +52,7 @@ in
         (with pkgs.mpvScripts; [
           # visualizer # visualize audio; CPU 자원 꽤 소모
           vr-reversal
-          mpv-cheatsheet # type ? to see keybord shortcuts
+          mpv-cheatsheet # type ? to see keyboard shortcuts
         ])
       ];
     };
@@ -68,6 +68,7 @@ in
       `x11-bypass-compositor=%2%no` <2024-11-28>
     */
     config = {
+      geometry = "1920x1080";
       # Video / Audio
       ao = if pkgs.stdenv.isDarwin then "coreaudio" else "pipewire";
       pipewire-volume-mode = lib.mkIf (pkgs.stdenv.isLinux) "global";
@@ -102,11 +103,6 @@ in
       screenshot-webp-compression = 6; # best compression
       screenshot-jxl-distance = 0; # lossless
       screenshot-jxl-effort = 9; # best compression
-      # screenshot-avif-opts = builtins.concatStringsSep "," (
-      # builtins.mapAttrs (key: name: ) {
-      #     crf = "0";
-      #   }
-      # );
       screenshot-directory = "${config.xdg.userDirs.pictures}/mpv-screenshots";
 
       # do not disable compositor

@@ -49,11 +49,6 @@ in
       ];
       add_newline = true;
       follow_symlinks = false;
-      cmd_duration = {
-        # 'took [$duration]($style) '
-        min_time_to_notify = 30 * 1000; # milliseconds
-        show_notifications = false;
-      };
 
       #######################
       # Basic
@@ -83,6 +78,11 @@ in
         vimcmd_replace_one_symbol = "[❮](purple)";
         vimcmd_replace_symbol = "[❮](purple)";
         vimcmd_visual_symbol = "[❮](yellow)";
+      };
+      cmd_duration = {
+        # 'took [$duration]($style) '
+        min_time_to_notify = 30 * 1000; # milliseconds
+        show_notifications = false;
       };
 
       #######################

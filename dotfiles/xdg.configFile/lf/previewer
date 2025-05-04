@@ -7,8 +7,8 @@
 
 HORIZONTAL_POS="$4"
 IMG_CACHE_WIDTH=1800
-IMG_CACHE_HEIGH=2160
-IMG_CACHE_SIZE="${IMG_CACHE_WIDTH}x${IMG_CACHE_HEIGH}"
+IMG_CACHE_HEIGHT=2160
+IMG_CACHE_SIZE="${IMG_CACHE_WIDTH}x${IMG_CACHE_HEIGHT}"
 
 is_lf_preview_pane=1
 if [ "$HORIZONTAL_POS" = "" ]; then
@@ -44,11 +44,20 @@ is_sixel_available() {
 }
 
 is_kitty_available() {
-  if ([ "$TERM_PROGRAM" = "ghostty" ] && command -v kitten >/dev/null 2>&1) ||
-    [ "$TERM" = "xterm-kitty" ]; then
+  if ! command -v kitten >/dev/null 2>&1; then
+    echo 0
+    return
+  fi
+
+  if [ "$TERM_PROGRAM" = "ghostty" ] || [ "$TERM" = "xterm-kitty" ]; then
     echo 1
     return
   fi
+
+  # if [ "$TERM_PROGRAM" = "tmux" ] || [ "$GHOSTTY_BIN_DIR" != "" ]; then
+  #   echo 1
+  #   return
+  # fi
 
   echo 0
 }
@@ -91,7 +100,7 @@ generate_img_cache() {
   magick \
     "$src" \
     -auto-orient \
-    -resize "${IMG_CACHE_SIZE}" \
+    -resize "$IMG_CACHE_SIZE" \
     -quality 70 \
     "$dst" >/dev/null 2>&1
 
@@ -133,7 +142,7 @@ draw_img_kitten() {
     image/svg+xml)
       img_path=$(get_img_cache_path "$filepath")
       if [ ! -f "$img_path" ]; then
-        rsvg-convert --width="$IMG_CACHE_WIDTH" --height="$IMG_CACHE_HEIGH" --keep-aspect-ratio -- "$filepath" >"$img_path"
+        rsvg-convert --width="$IMG_CACHE_WIDTH" --height="$IMG_CACHE_HEIGHT" --keep-aspect-ratio -- "$filepath" >"$img_path"
       fi
       ;;
     image/*)
@@ -235,7 +244,7 @@ main() {
       command -v papers-thumbnailer >/dev/null 2>&1; then
       img_path=$(get_img_cache_path "$filepath")
       if [ ! -f "$img_path" ]; then
-        papers-thumbnailer -s "$IMG_CACHE_HEIGH" "$filepath" "$img_path"
+        papers-thumbnailer -s "$IMG_CACHE_HEIGHT" "$filepath" "$img_path"
       fi
 
       if [ "$(is_kitty_available)" -eq 1 ]; then
@@ -254,15 +263,15 @@ main() {
 
       if [ ! -f "$img_path" ]; then
         if command -v gnome-epub-thumbnailer >/dev/null 2>&1; then
-          gnome-epub-thumbnailer -s "$IMG_CACHE_HEIGH" "$filepath" "$img_path"
+          gnome-epub-thumbnailer -s "$IMG_CACHE_HEIGHT" "$filepath" "$img_path"
         else
-          epub-thumbnailer "$filepath" "$img_path" "$IMG_CACHE_HEIGH"
+          epub-thumbnailer "$filepath" "$img_path" "$IMG_CACHE_HEIGHT"
 
           if [ "$(is_img_small "$img_path")" -eq 1 ]; then
             magick \
               "$img_path" \
               -auto-orient \
-              -resize "${IMG_CACHE_SIZE}" \
+              -resize "$IMG_CACHE_SIZE" \
               -quality 70 \
               "$img_path" >/dev/null 2>&1
           fi
@@ -286,7 +295,7 @@ main() {
 
       img_path=$(get_img_cache_path "$filepath")
       if [ ! -f "$img_path" ]; then
-        gnome-mobi-thumbnailer -s "$IMG_CACHE_HEIGH" "$filepath" "$img_path"
+        gnome-mobi-thumbnailer -s "$IMG_CACHE_HEIGHT" "$filepath" "$img_path"
       fi
 
       if [ "$(is_kitty_available)" -eq 1 ]; then
