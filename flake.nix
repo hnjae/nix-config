@@ -5,7 +5,6 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixos-unstable-small";
-      # url = "git+https://nixos.org/channels/nixos-unstable-small"; # 여길 가리키면 hydra 가 빌드 완료 후 업데이트 되나?
     };
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -129,7 +128,7 @@
       # 2025-04-19 기준 최신 commit 이 pymediainfo 빌드 에러뜸. <https://github.com/NixOS/nixpkgs/issues/400062>
       url = "path:/home/hnjae/Projects/py-utils";
       inputs = {
-        # nixpkgs.follows = "nixpkgs-unstable";
+        nixpkgs.follows = "nixpkgs-unstable";
         flake-parts.follows = "flake-parts";
         treefmt-nix.follows = "";
       };

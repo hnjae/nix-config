@@ -105,7 +105,7 @@ let
         local COLORFGBG = os.getenv("COLORFGBG")
         if COLORFGBG == "15;0" then
           vim.opt.background = "dark"
-        elseif COLORFGBG ~= nil then
+        else
           vim.opt.background = "light"
         end
         --
@@ -123,12 +123,6 @@ let
           ];
           options.desc = "save file";
         }
-        # {
-        #   action = "<cmd>wall<CR>";
-        #   key = "st";
-        #   mode = [ "n" ];
-        #   options.desc = "save file";
-        # }
         {
           key = "<bs>";
           mode = [
@@ -141,18 +135,16 @@ let
         {
           key = "<F12>";
           mode = [
-            "n"
-            "v"
+            "x"
             "s"
           ];
           action = ''"+y'';
         }
         {
-          key = "<S-F12>";
+          key = "<F23>";
           mode = [
             "n"
-            "v"
-            "s"
+            "x"
           ];
           action = ''"+p'';
         }
@@ -221,9 +213,9 @@ let
         melange.enable = false; # gray background
         nightfox.enable = false;
         one.enable = false; # whitish background
-        rose-pine.enable = true;
+        rose-pine.enable = false;
         everforest.enable = false; # yellowish background
-        vscode.enable = false; # whitish background
+        vscode.enable = true; # whitish background
       };
 
       # extraFiles = import ./share/ftplugin.nix;
