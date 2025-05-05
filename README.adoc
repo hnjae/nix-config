@@ -1,7 +1,5 @@
 == 주의 사항
 
-※ 2025-04-20 현재 nixos-unstable 에서 `pymediainfo` 가 빌드가 안되어, 2025-03-31 자 사용 중. https://github.com/NixOS/nixpkgs/issues/400062
-
 * nixpkgs 를 업데이트하기전에  <https://status.nixos.org/> 에서 이슈 확인할 것.
 * 만일 nixpkgs 를 고정할 필요가 있다면 다음 링크를 참고하여, hydra 빌드가 제공 되는 커밋을 사용할 것.
 ** https://hydra.nixos.org/job/nixos/trunk-combined/tested[nixos-unstable hydra build]
