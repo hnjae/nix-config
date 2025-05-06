@@ -37,6 +37,8 @@
       }
     ];
 
+    systemd.services.NetworkManager-wait-online.enable = lib.mkOverride 900 true;
+
     environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
     # provides org.freedesktop.upower interface
@@ -62,7 +64,5 @@
       # SteamOS/Fedora default
       "vm.max_map_count" = lib.mkOverride 999 2147483642;
     };
-
-    systemd.network.wait-online.enable = lib.mkOverride 900 true;
   };
 }

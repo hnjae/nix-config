@@ -18,6 +18,8 @@ in
     ];
   };
 
+  systemd.services.NetworkManager-wait-online.enable = lib.mkOverride 999 false;
+
   services.dbus.packages = lib.lists.optional config.networking.networkmanager.enable pkgs.strongswanNM;
 
   # TODO: use host's dns in vm <2024-08-20>
@@ -57,6 +59,4 @@ in
     nssmdns4 = true;
     # nssmdns6 = true;
   };
-
-  systemd.network.wait-online.enable = lib.mkOverride 999 false;
 }
