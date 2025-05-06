@@ -47,7 +47,7 @@ let
   package = nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (recursiveMerge [
     (import ./configs/flash.nix)
     # ((import ./configs/window-picker.nix) { inherit pkgs; })
-    (import ./configs/comment.nix)
+    # (import ./configs/comment.nix)
     {
       # nixpkgs.useGlobalPackages = true;
 
@@ -141,7 +141,7 @@ let
           action = ''"+y'';
         }
         {
-          key = "<F23>";
+          key = "<F24>";
           mode = [
             "n"
             "x"
@@ -228,12 +228,31 @@ let
           settings = { };
         };
 
-        # nvim-autopairs.enable = true;
         nvim-surround.enable = true;
+        # nvim-autopairs.enable = true;
 
         cmp = {
           enable = true;
           settings = {
+            formatting = {
+              format = ''
+                function(entry, item)
+                  item.menu = string.format("[%s]", entry.source.name)
+                  local widths = {
+                    abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr or 40,
+                    menu = vim.g.cmp_widths and vim.g.cmp_widths.menu or 30,
+                  }
+
+                  for key, width in pairs(widths) do
+                    if item[key] and vim.fn.strdisplaywidth(item[key]) > width then
+                      item[key] = vim.fn.strcharpart(item[key], 0, width - 1) .. "…"
+                    end
+                  end
+
+                  return item
+                end
+              '';
+            };
             mapping = {
               __raw = ''
                 cmp.mapping.preset.insert({
@@ -282,10 +301,12 @@ let
         cmp-buffer.enable = true;
         cmp-cmdline.enable = true;
 
+        # UI
+        ############################################################################################
+
         marks = {
           enable = true;
         };
-
         lightline = {
           enable = false;
         };
@@ -309,6 +330,9 @@ let
           };
         };
 
+        # ?
+        ############################################################################################
+
         telescope = {
           enable = true;
           extensions = {
@@ -319,6 +343,24 @@ let
 
         treesitter.enable = false; # 큰 파일 수정할때 매우 느려짐.
         lsp.enable = false;
+
+        # snacks = {
+        #   bigfile = {
+        #     enabled = false;
+        #   };
+        #   notifier = {
+        #     enabled = false;
+        #   };
+        #   quickfile = {
+        #     enabled = false;
+        #   };
+        #   statuscolumn = {
+        #     enabled = false;
+        #   };
+        #   words = {
+        #     enabled = false;
+        #   };
+        # };
       };
     }
   ]);
