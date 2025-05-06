@@ -6,4 +6,8 @@
   home.shellAliases = {
     ch = "cheat";
   };
+
+  home.sessionVariables = {
+    CHEAT_USE_FZF = "true";
+  };
 }
