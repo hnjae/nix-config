@@ -36,7 +36,7 @@ in
         };
       }
       (
-        { config, ... }:
+        { ... }:
         {
           rollback-btrfs-root = {
             enable = true;
