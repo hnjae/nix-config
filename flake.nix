@@ -133,6 +133,14 @@
         treefmt-nix.follows = "";
       };
     };
+    yaml2nix = {
+      url = "github:euank/yaml2nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        cargo2nix.follows = "cargo2nix";
+        flake-utils.follows = "flake-utils";
+      };
+    };
 
     ############################################################################
     # Base16
@@ -164,13 +172,26 @@
     };
 
     ############################################################################
+    # Used in input dependency only
+    ############################################################################
+    cargo2nix = {
+      url = "github:cargo2nix/cargo2nix/release-0.11.0";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        rust-overlay.follows = "rust-overlay";
+        flake-utils.follows = "flake-utils";
+        flake-compat.follows = "";
+      };
+    };
+
+    ############################################################################
     # Misc
     ############################################################################
     # TODO: bundle some configs to nixvim <2025-03-01>
-    neovim-configs = {
-      url = "github:hnjae/neovim-configs";
-      flake = false;
-    };
+    # neovim-configs = {
+    #   url = "github:hnjae/neovim-configs";
+    #   flake = false;
+    # };
   };
 
   outputs =
