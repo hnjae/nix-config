@@ -310,9 +310,8 @@ let
         lightline = {
           enable = false;
         };
-
         lualine = {
-          enable = true;
+          enable = false;
           settings = {
             options = {
               always_show_tabline = true;

@@ -98,6 +98,7 @@ in
           containerName: opts:
           let
             name = "${backend}-${containerName}-update";
+            # TODO: virtualisation.oci-containers.containers.<name>.serviceName 을 활용. NixOS 24.11 에서 생겼나? <2025-01-06>
             targetService = "${backend}-${containerName}.service";
             package = import ./package {
               inherit

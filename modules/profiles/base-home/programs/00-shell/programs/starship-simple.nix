@@ -125,7 +125,7 @@ in
         # Style
         # format = ''[$symbol( \($state\))]($style) '';
         format = ''via [$symbol$state]($style) '';
-        style = "bold blue";
+        style = "bold light-blue";
         symbol = "󱄅 "; # nf-md-nix
 
         # Configs
@@ -151,12 +151,21 @@ in
         denied_msg = "";
         loaded_msg = "";
         unloaded_msg = "";
+
+        # disable detection using files
+        detect_files = [ ];
       };
 
       python = {
-        format = ''[([via](fg) 󰌠 $virtualenv)]($style) '';
-        style = "bold blue";
+        # format = ''[([via](fg) 󰌠 $virtualenv)]($style) '';
+        format = ''[[via](fg) 󰌠 venv]($style) '';
+        style = "bold yellow";
         disabled = false;
+
+        # disable detection using files
+        detect_extensions = [ ];
+        detect_files = [ ];
+        detect_folders = [ ];
       };
     };
   };
