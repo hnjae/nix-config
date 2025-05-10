@@ -20,4 +20,7 @@ in
   };
 
   home.shellAliases.y = "yazicd";
+  home.packages = with pkgsUnstable; [
+    glow
+  ];
 }
