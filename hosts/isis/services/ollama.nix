@@ -9,6 +9,7 @@ let
 in
 {
   virtualisation.oci-containers.containers."${serviceName}" = {
+    inherit serviceName;
     image = "docker.io/ollama/ollama:rocm";
     autoStart = true;
     environment = {
@@ -18,7 +19,7 @@ in
       OLLAMA_NUM_PARALLEL = "1";
       OLLAMA_MAX_LOADED_MODELS = "1";
       OLLAMA_MAX_QUEUE = "1";
-      OLLAMA_MAX_VRAM = toString (4 * 1024 * 1024 * 1024);
+      OLLAMA_MAX_VRAM = toString (6 * 1024 * 1024 * 1024);
 
       # default: `f16`
       OLLAMA_KV_CACHE_TYPE = "q4_0"; # uses 1/4 the memory of `f16`
