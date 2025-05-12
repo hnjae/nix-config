@@ -222,7 +222,7 @@ _drybuild-nixoses: update-local-repo
 @deploy host: update-local-repo
     deploy --keep-result --skip-checks ".#$1"
 
-[doc('deploy to host using nixos-rebuild (will not rollback)')]
+[doc('deploy to host using nixos-rebuild (will NOT rollback)')]
 [group('deploy')]
 [positional-arguments]
 @deploy-switch host: update-local-repo
@@ -242,12 +242,13 @@ _drybuild-nixoses: update-local-repo
 [group('build')]
 [positional-arguments]
 @build host: update-local-repo
-    @echo "Building .#nixosConfigurations.<host>.config.system.build.toplevel"
+    @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
     nix build \
         --no-link \
         --option eval-cache false \
         --show-trace \
         --keep-failed \
+     --option builders "" \
         ".#nixosConfigurations.${1}.config.system.build.toplevel"
 
 [group('build')]
@@ -257,7 +258,7 @@ build-iso: update-local-repo
 [group('check')]
 [positional-arguments]
 @drybuild host: update-local-repo
-    @echo "Dry-building .#nixosConfigurations.<host>.config.system.build.toplevel"
+    @echo "Dry-building .#nixosConfigurations.${1}.config.system.build.toplevel"
     nix build \
         --dry-run \
         --option eval-cache false \

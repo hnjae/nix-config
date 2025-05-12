@@ -31,7 +31,7 @@ in
         # graphviz-nox
 
         pkgsUnstable.zed-editor
-        pkgsUnstable.code-cursor
+        # pkgsUnstable.code-cursor
       ])
     ]);
 

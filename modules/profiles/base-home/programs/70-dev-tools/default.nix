@@ -14,6 +14,8 @@
 
     pkgsUnstable.universal-ctags
     pkgsUnstable.hyperfine # command-line benchmarking tool
+    pkgsUnstable.gh # github cli
+    pkgsUnstable.github-copilot-cli
   ];
 
   services.flatpak.packages = [
