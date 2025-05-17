@@ -37,8 +37,6 @@
       }
     ];
 
-    systemd.services.NetworkManager-wait-online.enable = lib.mkOverride 900 true;
-
     environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
     # provides org.freedesktop.upower interface
