@@ -13,7 +13,7 @@ in
   config = lib.mkIf (baseHomeCfg.isDesktop) {
     services.flatpak.packages = [
       # email
-      "com.getmailspring.Mailspring" # gpl3
+      # "com.getmailspring.Mailspring" # gpl3
     ];
   };
 }

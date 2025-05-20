@@ -6,244 +6,266 @@
 }:
 let
   baseHomeCfg = config.base-home;
-  gitAliases = {
-    "g" = "git";
+  gitAliases =
+    let
+      lFormat = lib.concatStringsSep "␟" [
+        "%C(auto)%h"
+        "%s"
+        "%C(blue)%aI"
+        "%C(green)%an"
+        "%C(auto)%d"
+      ];
+      gFormat = lib.concatStringsSep " " [
+        "%C(auto)%h"
+        "%C(auto)%d"
+        "%s"
+        "%C(blue)%aI"
+        "%C(green)<%an>"
+      ];
+    in
+    {
+      "g" = "git";
 
-    ############################################################################
-    # 파일 관련
-    ############################################################################
-    # ga: git-add
-    # ga (forgit)        interactive `git add` selector
-    "gaa" = "git add --all";
-    "gapa" = "git add --patch";
-    "gau" = "git add --update";
-    "gav" = "git add --verbose";
+      ############################################################################
+      # 파일 관련
+      ############################################################################
+      # ga: git-add
+      # ga (forgit)        interactive `git add` selector
+      "gaa" = "git add --all";
+      "gapa" = "git add --patch";
+      "gau" = "git add --update";
+      "gav" = "git add --verbose";
 
-    # git-rm
-    "grm" = "git rm";
-    "grmc" = "git rm --cached";
+      # git-rm
+      "grm" = "git rm";
+      "grmc" = "git rm --cached";
 
-    # grst: git-restore
-    # grs: forgit: git-restore
-    "grsts" = "git restore --source";
-    "grstt" = "git restore --staged";
+      # grst: git-restore
+      # grs: forgit: git-restore
+      "grsts" = "git restore --source";
+      "grstt" = "git restore --staged";
 
-    ############################################################################
-    # log, stat, diff
-    ############################################################################
-    # git-log
-    # glz interactive `git log` viewer (forgit)
-    "gl" = "git log --oneline --decorate -19";
-    "gll" = "git log --oneline --decorate";
-    "glg" = "git log --oneline --decorate --graph -19";
-    "glgg" = "git log --oneline --decorate --graph";
-    "glgf" = "git log --graph --decorate";
-    "glgp" = "git log --graph --decorate --oneline --show-pulls --";
-    "glgd" = "git log --graph --pretty='%C(auto)%h %C(green)%aI%C(auto)%d %s %C(blue)<%an>%Creset' -19";
-    "glgdd" = "git log --graph --pretty='%C(auto)%h %C(green)%aI%C(auto)%d %s %C(blue)<%an>%Creset'";
-    "glgds" =
-      "git log --graph --pretty='%C(auto)%h %C(green)%aI%C(auto)%d %s %C(blue)<%an>%Creset' --stat";
-    "gls" = "git log --stat | bat --style=plain";
-    "glsp" = "git log --stat -p";
-    "glcount" = "git shortlog -sn";
+      ############################################################################
+      # log, stat, diff
+      ############################################################################
+      # git-log
+      # glz interactive `git log` viewer (forgit)
+      "gl" = "git log --oneline --decorate -19";
+      "gll" = "git log --oneline --decorate";
 
-    # git-diff
-    "gd" = "git diff";
-    # gdz: forgit
-    "gdw" = "git diff --word-diff";
-    "gds" = "git diff --staged";
-    "gdst" = "git diff --stat";
-    "gdsw" = "git diff --staged --word-diff";
-    "gdl" = "git difftool";
-    "gdt" = "git diff-tree --no-commit-id --name-only -r";
+      "gld" = ("git log --color=always --pretty='${lFormat}' -19 | column --table --separator '␟'");
+      "gldd" = ("git log --color=always --pretty='${lFormat}' | column --table --separator '␟'");
 
-    # git-blame
-    # gbl                  git blame -b -w
-    # gbl (forgit)
+      "glg" = "git log --oneline --decorate --graph -19";
+      "glgg" = "git log --oneline --decorate --graph";
 
-    # gst: git-status
-    "gs" = "git status --short --branch --untracked-files=all";
-    "gst" = "git status --short --branch --untracked-files=all";
+      "glgf" = "git log --graph --decorate";
+      "glgp" = "git log --graph --decorate --oneline --show-pulls --";
 
-    # gsh: git-show
-    "gsh" = "git show --no-abbrev-commit";
-    "gshp" = "git show --no-abbrev-commit --pretty=short --show-signature";
+      "glgd" = "git log --graph --pretty='${gFormat}' -19";
+      "glgdd" = "git log --graph --pretty='${gFormat}'";
+      "glgds" = "git log --graph --pretty='${gFormat}' --stat";
+      "gls" = "git log --stat | bat --style=plain";
+      "glsp" = "git log --stat -p";
+      "glcount" = "git shortlog -sn";
 
-    # git-bisect
-    "gbs" = "git bisect";
-    "gbsb" = "git bisect bad";
-    "gbsg" = "git bisect good";
-    "gbsr" = "git bisect reset";
-    "gbss" = "git bisect start";
+      # git-diff
+      "gd" = "git diff";
+      # gdz: forgit
+      "gdw" = "git diff --word-diff";
+      "gds" = "git diff --staged";
+      "gdst" = "git diff --stat";
+      "gdsw" = "git diff --staged --word-diff";
+      "gdl" = "git difftool";
+      "gdt" = "git diff-tree --no-commit-id --name-only -r";
 
-    ############################################################################
-    # commit/branch-related
-    ############################################################################
-    # gc: git-commit; -v: diff 를 gitcommit 에 넣어줌
-    "gc" = "git commit -v";
-    "gca" = "git commit -v --amend";
-    "gcaN" = "git commit -v --amend --no-edit";
-    "gcm" = "git commit -v -m";
+      # git-blame
+      # gbl                  git blame -b -w
+      # gbl (forgit)
 
-    # git-cherry-pick
-    # gcp                  git cherry-pick
-    # gcp: forgit
-    "gcpA" = "git cherry-pick --abort";
-    "gcpc" = "git cherry-pick --continue";
+      # gst: git-status
+      "gs" = "git status --short --branch --untracked-files=all";
+      "gst" = "git status --short --branch --untracked-files=all";
 
-    # git-merge
-    "gm" = "git merge";
-    "gmA" = "git merge --abort";
-    "gmt" = "git mergetool --no-prompt";
-    "gmtvim" = "git mergetool --no-prompt --tool=vimdiff";
-    "gmom" = "git merge origin/master";
-    "gmum" = "git merge upstream/main";
+      # gsh: git-show
+      "gsh" = "git show --no-abbrev-commit";
+      "gshp" = "git show --no-abbrev-commit --pretty=short --show-signature";
 
-    # git-rebase
-    # grb                git rebase
-    # grb (forgit)       interactive `git rebase -i` selector (forgit)
-    "grbA" = "git rebase --abort";
-    "grbc" = "git rebase --continue";
-    "grbi" = "git rebase -i";
-    "grbm" = "git rebase main";
-    "grbs" = "git rebase --skip";
+      # git-bisect
+      "gbs" = "git bisect";
+      "gbsb" = "git bisect bad";
+      "gbsg" = "git bisect good";
+      "gbsr" = "git bisect reset";
+      "gbss" = "git bisect start";
 
-    # git-revert
-    # grev                 git revert
-    # grev (forgit)
+      ############################################################################
+      # commit/branch-related
+      ############################################################################
+      # gc: git-commit; -v: diff 를 gitcommit 에 넣어줌
+      "gc" = "git commit -v";
+      "gca" = "git commit -v --amend";
+      "gcaN" = "git commit -v --amend --no-edit";
+      "gcm" = "git commit -v -m";
 
-    # git-branch
-    "gb" = "git branch";
-    "gbm" = "git branch --move";
-    "gba" = "git branch --all";
-    "gbnm" = "git branch --no-merged";
-    "gbr" = "git branch --remote";
-    # gbd : git branch --delete
-    # gbd : (forgit)
-    "gbd!" = "git branch --delete --force";
-    # "gbdm" = "git-branch-delete-merged";
+      # git-cherry-pick
+      # gcp                  git cherry-pick
+      # gcp: forgit
+      "gcpA" = "git cherry-pick --abort";
+      "gcpc" = "git cherry-pick --continue";
 
-    # git-tag
-    "gts" = "git tag -s";
-    "gtv" = "git tag | sort -V";
+      # git-merge
+      "gm" = "git merge";
+      "gmA" = "git merge --abort";
+      "gmt" = "git mergetool --no-prompt";
+      "gmtvim" = "git mergetool --no-prompt --tool=vimdiff";
+      "gmom" = "git merge origin/master";
+      "gmum" = "git merge upstream/main";
 
-    ############################################################################
-    # HEAD 조작; git-tag
-    ############################################################################
-    # gsw: git-switch
-    # gsw                git switch
-    # gsw (forgit)
-    "gswc" = "git switch -c";
-    # gsw                  git branch | sed 's/^[[:space:]*]*//' | fzf --header="current: $(git branch --show-current)" --preview='git log --oneline --color=always {}' | xargs git switch
-    # gswt (forgit)
-    # gswco (forgit)
+      # git-rebase
+      # grb                git rebase
+      # grb (forgit)       interactive `git rebase -i` selector (forgit)
+      "grbA" = "git rebase --abort";
+      "grbc" = "git rebase --continue";
+      "grbi" = "git rebase -i";
+      "grbm" = "git rebase main";
+      "grbs" = "git rebase --skip";
 
-    # grs: git-reset
-    # "grs" = "git reset"; (forgit)
-    "grhd" = "git reset HEAD";
-    "grH" = "git reset --hard";
-    # gru                  git reset --
-    # groh                 git reset origin/$(git_current_branch) --hard
-    "grsHhd" = "git reset --hard HEAD";
-    "grsHhd1" = "git reset --hard HEAD~1";
+      # git-revert
+      # grev                 git revert
+      # grev (forgit)
 
-    ############################################################################
-    # git-stash
-    ############################################################################
-    # gss: git-stash
-    "gssu" = "git stash --include-untracked"; # -u: --include-untracked
-    "gssl" = "git stash list";
-    "gsso" = "git stash pop";
-    # gsss forgit -- show
-    # gssp forgit -- push
+      # git-branch
+      "gb" = "git branch";
+      "gbm" = "git branch --move";
+      "gba" = "git branch --all";
+      "gbnm" = "git branch --no-merged";
+      "gbr" = "git branch --remote";
+      # gbd : git branch --delete
+      # gbd : (forgit)
+      "gbd!" = "git branch --delete --force";
+      # "gbdm" = "git-branch-delete-merged";
 
-    # gsta                 git stash save
-    # gstaa                git stash apply
-    # gstc                 git stash clear
-    # gstd                 git stash drop
-    # gsts                 git stash show --text
-    # gstall               git stash --all
+      # git-tag
+      "gts" = "git tag -s";
+      "gtv" = "git tag | sort -V";
 
-    ############################################################################
-    # Remote repository related
-    ############################################################################
-    # git-remote
-    "gre" = "git remote -v";
-    "grea" = "git remote add";
-    "gremv" = "git remote rename";
-    "grerm" = "git remote remove";
-    "greset" = "git remote set-url";
-    "greup" = "git remote update";
+      ############################################################################
+      # HEAD 조작; git-tag
+      ############################################################################
+      # gsw: git-switch
+      # gsw                git switch
+      # gsw (forgit)
+      "gswc" = "git switch -c";
+      # gsw                  git branch | sed 's/^[[:space:]*]*//' | fzf --header="current: $(git branch --show-current)" --preview='git log --oneline --color=always {}' | xargs git switch
+      # gswt (forgit)
+      # gswco (forgit)
 
-    # git-push
-    "gP" = "git push";
-    "gPu" = "git push upstream";
-    "gPv" = "git push -v";
-    "gP!" = "git push --force-with-lease";
-    "gPd" = "git push --dry-run";
-    "gPoat" = "git push origin --all && git push origin --tags";
-    # gpsup                git push --set-upstream origin $(git_current_branch)
-    # ggpush               git push --set-upstream origin HEAD
+      # grs: git-reset
+      # "grs" = "git reset"; (forgit)
+      "grhd" = "git reset HEAD";
+      "grH" = "git reset --hard";
+      # gru                  git reset --
+      # groh                 git reset origin/$(git_current_branch) --hard
+      "grsHhd" = "git reset --hard HEAD";
+      "grsHhd1" = "git reset --hard HEAD~1";
 
-    # git-fetch
-    "gf" = "git fetch";
-    "gfa" = "git fetch --all --prune";
-    "gfo" = "git fetch origin";
+      ############################################################################
+      # git-stash
+      ############################################################################
+      # gss: git-stash
+      "gssu" = "git stash --include-untracked"; # -u: --include-untracked
+      "gssl" = "git stash list";
+      "gsso" = "git stash pop";
+      # gsss forgit -- show
+      # gssp forgit -- push
 
-    # gpl: git-pull
-    "gplf" = "git pull --ff-only";
-    "gplr" = "git pull --rebase -v";
-    "gplra" = "git pull --rebase --autostash -v";
-    # glum                 git pull upstream master
-    # ggpull               git pull origin "$(git_current_branch)"
-    # ggpush               git push origin "$(git_current_branch)"
+      # gsta                 git stash save
+      # gstaa                git stash apply
+      # gstc                 git stash clear
+      # gstd                 git stash drop
+      # gsts                 git stash show --text
+      # gstall               git stash --all
 
-    # gcl: git-clone
-    "gcl" = "git clone --recurse-submodules";
-    "gclm" = "git clone --depth 1 --recurse-submodules --shallow-submodules";
+      ############################################################################
+      # Remote repository related
+      ############################################################################
+      # git-remote
+      "gre" = "git remote -v";
+      "grea" = "git remote add";
+      "gremv" = "git remote rename";
+      "grerm" = "git remote remove";
+      "greset" = "git remote set-url";
+      "greup" = "git remote update";
 
-    ############################################################################
-    # misc
-    ############################################################################
-    # git-submodule
-    "gsui" = "git submodule init";
-    "gsur" = "git submodule update --recursive";
-    "gsuu" = "git submodule update";
+      # git-push
+      "gP" = "git push";
+      "gPu" = "git push upstream";
+      "gPv" = "git push -v";
+      "gP!" = "git push --force-with-lease";
+      "gPd" = "git push --dry-run";
+      "gPoat" = "git push origin --all && git push origin --tags";
+      # gpsup                git push --set-upstream origin $(git_current_branch)
+      # ggpush               git push --set-upstream origin HEAD
 
-    "gcf" = "git config --list";
-    "gfg" = "git ls-files | grep";
-    "gg" = "git gui citool";
-    "ggA" = "git gui citool --amend";
-    "ghp" = "git help";
-    "gwch" = "git whatchanged -p --abbrev-commit --pretty=medium";
-    "gignore" = "git update-index --assume-unchanged";
-    "gunignore" = "git update-index --no-assume-unchanged";
-    "gignored" = "git ls-files -v | grep \"^[[:lower:]]\"";
-    "gpristine!" = "git reset --hard && git clean -dfx";
-    "gdct" = "git describe --tags \$(git rev-list --tags --max-count=1)";
-    # gap                  git apply
-    # ggsup                git branch --set-upstream-to=origin/$(git_current_branch)
-    # "gke" = "\gitk --all \$(git log -g --pretty=%h)";
+      # git-fetch
+      "gf" = "git fetch";
+      "gfa" = "git fetch --all --prune";
+      "gfo" = "git fetch origin";
 
-    # misc using forgit
-    # gclean               git clean -id
-    # grl                  git reflog
-    # gclean (forgit)
-    # greflog (forgit) `git reflog`
-    # gignoredgenerate (forgit)
-    # gfixup (forgit)
+      # gpl: git-pull
+      "gplf" = "git pull --ff-only";
+      "gplr" = "git pull --rebase -v";
+      "gplra" = "git pull --rebase --autostash -v";
+      # glum                 git pull upstream master
+      # ggpull               git pull origin "$(git_current_branch)"
+      # ggpush               git push origin "$(git_current_branch)"
 
-    ############################################################################
-    # new -commands
-    ############################################################################
-    "gtl" = "git-tag-list";
-    "gcr" = "git-cd-root";
-    "gwip" = "git-wip";
-    "gunwip" = "git-unwip";
-    "gtodo" = "git-todo";
-    "gop" = "git open";
-    # "ge" = ''vi $(git_status_select)''; # WIP: not working
-  };
+      # gcl: git-clone
+      "gcl" = "git clone --recurse-submodules";
+      "gclm" = "git clone --depth 1 --recurse-submodules --shallow-submodules";
+
+      ############################################################################
+      # misc
+      ############################################################################
+      # git-submodule
+      "gsui" = "git submodule init";
+      "gsur" = "git submodule update --recursive";
+      "gsuu" = "git submodule update";
+
+      "gcf" = "git config --list";
+      "gfg" = "git ls-files | grep";
+      "gg" = "git gui citool";
+      "ggA" = "git gui citool --amend";
+      "ghp" = "git help";
+      "gwch" = "git whatchanged -p --abbrev-commit --pretty=medium";
+      "gignore" = "git update-index --assume-unchanged";
+      "gunignore" = "git update-index --no-assume-unchanged";
+      "gignored" = "git ls-files -v | grep \"^[[:lower:]]\"";
+      "gpristine!" = "git reset --hard && git clean -dfx";
+      "gdct" = "git describe --tags \$(git rev-list --tags --max-count=1)";
+      # gap                  git apply
+      # ggsup                git branch --set-upstream-to=origin/$(git_current_branch)
+      # "gke" = "\gitk --all \$(git log -g --pretty=%h)";
+
+      # misc using forgit
+      # gclean               git clean -id
+      # grl                  git reflog
+      # gclean (forgit)
+      # greflog (forgit) `git reflog`
+      # gignoredgenerate (forgit)
+      # gfixup (forgit)
+
+      ############################################################################
+      # new -commands
+      ############################################################################
+      "gtl" = "git-tag-list";
+      "gcr" = "git-cd-root";
+      "gwip" = "git-wip";
+      "gunwip" = "git-unwip";
+      "gtodo" = "git-todo";
+      "gop" = "git open";
+      # "ge" = ''vi $(git_status_select)''; # WIP: not working
+    };
 in
 {
   imports = [
