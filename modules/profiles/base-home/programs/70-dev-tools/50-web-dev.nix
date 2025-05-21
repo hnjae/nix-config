@@ -13,7 +13,7 @@ in
       # A modern load testing tool, using Go and JavaScript
       k6
 
-      xh # friendly and fast tool for sending HTTP requests.
+      # xh # friendly and fast tool for sending HTTP requests.
       hurl
     ];
 
@@ -32,6 +32,7 @@ in
         sockets = [ "!wayland" ];
       };
     };
+
     xdg.dataFile."applications/com.usebruno.Bruno.desktop" = lib.mkIf (baseHomeCfg.isDesktop) {
       text = ''
         [Desktop Entry]

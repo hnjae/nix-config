@@ -88,15 +88,15 @@
     ############################################################################
     # Overlays / Packages
     ############################################################################
-    ghostty = {
-      url = "github:ghostty-org/ghostty/refs/tags/tip";
-      inputs = {
-        nixpkgs-unstable.follows = "nixpkgs-unstable";
-        nixpkgs-stable.follows = "nixpkgs";
-        flake-compat.follows = "";
-      };
-    };
-    nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
+    # ghostty = {
+    #   url = "github:ghostty-org/ghostty/refs/tags/tip";
+    #   inputs = {
+    #     nixpkgs-unstable.follows = "nixpkgs-unstable";
+    #     nixpkgs-stable.follows = "nixpkgs";
+    #     flake-compat.follows = "";
+    #   };
+    # };
+    # nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
     nixvim = {
       url = "github:nix-community/nixvim/nixos-24.11";
       inputs = {
@@ -111,14 +111,14 @@
         treefmt-nix.follows = "";
       };
     };
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        treefmt-nix.follows = "";
-      };
-    };
+    # nur = {
+    #   url = "github:nix-community/NUR";
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #     flake-parts.follows = "flake-parts";
+    #     treefmt-nix.follows = "";
+    #   };
+    # };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";

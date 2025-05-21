@@ -41,6 +41,7 @@ in
     ];
 
     home.shellAliases = aliases;
+
     xdg.configFile."zsh-abbr/user-abbreviations".text = (
       lib.concatLines (lib.mapAttrsToList (key: value: ''abbr "${key}"="${value}"'') aliases)
     );
