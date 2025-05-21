@@ -23,9 +23,9 @@ in
     (builtins.concatLists [
       # --
       (optionals baseHomeCfg.isDesktop [
-        # lapce
         pkgsUnstable.jetbrains.idea-community
 
+        # lapce
         # emacs related
         # emacs29-pgtk
         # graphviz-nox
@@ -38,7 +38,7 @@ in
   services.flatpak.packages = lib.lists.optionals (pkgs.stdenv.isLinux && baseHomeCfg.isDesktop) [
     # editors
     # "org.gnome.gitlab.cheywood.Buffer" # empty editor
-    "io.gitlab.liferooter.TextPieces" # Developer's scratchpad
     # "dev.pulsar_edit.Pulsar" # editor, mit
+    "io.gitlab.liferooter.TextPieces" # Developer's scratchpad
   ];
 }

@@ -13,7 +13,7 @@ in
     ./dbus.nix
     ./go.nix
     ./json-alikes.nix
-    ./jvm.nix
+    # ./jvm.nix
     ./lua.nix
     ./markdown-alikes.nix
     ./nix.nix
