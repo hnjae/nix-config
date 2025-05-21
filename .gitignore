@@ -19,5 +19,3 @@ result
 
 # https://github.com/cheat/cheatsheets
 /dotfiles/xdg.configFile/cheat/cheatsheets/community
-
-/packages/*/default.nix
