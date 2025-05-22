@@ -33,7 +33,7 @@ in
     };
 
     home.sessionVariables = {
-      EDITOR = "nvim";
+      EDITOR = lib.mkForce "nvim";
       VISUAL = "nvim";
     };
     home.shellAliases = {

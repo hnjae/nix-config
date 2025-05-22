@@ -274,6 +274,7 @@ in
   config = lib.mkIf baseHomeCfg.isDev {
     home.packages = with pkgsUnstable; [
       git-open
+      git-filter-repo
       git-crypt
       git-lfs
 

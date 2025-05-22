@@ -150,9 +150,10 @@
         # NOTE: system-wide flatpak 말고 user 사용 (라이브러리 공유)
         services.flatpak.packages = [
           # "org.gnome.Evolution" # Microsoft 의 이메일 처리가 문제 있음. Evolution 으로 타 계정에서 ms로 옮긴 이메일이 ms에서 Drafts 로 인식됨. <Gnome 47; NixOS 24.11>
+          # "org.gnome.Geary" 사용이 가능한 수준의 소프트웨어가 아님. MS와 IMAP 으로 통신이 안됨. 메뉴에 없는 단축키가 있음. <2025-05-21>
+          # "org.gnome.Contacts"
+
           "org.gnome.Calendar"
-          "org.gnome.Contacts"
-          "org.gnome.Geary"
           "org.gnome.Calculator"
         ];
       }
