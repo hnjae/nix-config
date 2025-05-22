@@ -20,13 +20,14 @@
       LC_TIME = "en_IE.UTF-8";
     })
     {
-      EDITOR = lib.mkDefault "vi";
+      EDITOR = "vi";
     }
   ];
 
-  # NOTE: 적용 안됨. __HM_ZSH_SESS_VARS_SOURCED=1 임에도 EDITOR 가 설정되지 않는다. 디깅 해야할 듯.
   programs.zsh.sessionVariables = {
-    inherit (config.home.sessionVariables) EDITOR;
+    # NOTE: 적용 안됨. __HM_ZSH_SESS_VARS_SOURCED=1 임에도 EDITOR 가 설정되지 않는다. 디깅 해야할 듯.
+    # inherit (config.home.sessionVariables) EDITOR;
+    EDITOR = "vi";
   };
 
   # .zshenv 말미

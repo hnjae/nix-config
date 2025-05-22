@@ -43,6 +43,8 @@
 
       kmon # linux kernel activity monitor
       btop
+
+      uuid7
     ])
     (with pkgsUnstable; [
       yt-dlp

@@ -16,7 +16,7 @@ let
   start_path = "/sys/class/power_supply/BAT0/charge_control_start_threshold";
 
   pkgsRestore = pkgs.writeTextFile {
-    name = "restore-battery-thresold";
+    name = "restore-battery-threshold";
     executable = true;
     text = ''
       #!${pkgs.dash}/bin/dash
@@ -28,15 +28,15 @@ let
   };
 
   pkgsLimit = pkgs.writeTextFile {
-    name = "limit-battery-thresold";
+    name = "limit-battery-threshold";
     executable = true;
-    # NOTE: should edit start-path firt then end-path
+    # NOTE: should edit start-path first then end-path
     text = ''
       #!${pkgs.dash}/bin/dash
       set -eu
 
-      echo 75 >"${start_path}"
-      echo 80 >"${end_path}"
+      echo 70 >"${start_path}"
+      echo 75 >"${end_path}"
     '';
   };
 
@@ -48,7 +48,7 @@ let
         stem = builtins.replaceStrings [ ".target" ] [ "" ] unit;
       in
       {
-        name = "restore-battery-thresold-${stem}";
+        name = "restore-battery-threshold-${stem}";
         value = {
           description = "restore battery threshold";
           before = [ unit ];
@@ -74,7 +74,7 @@ let
           stem = builtins.replaceStrings [ ".target" ] [ "" ] unit;
         in
         {
-          name = "limit-battery-thresold-${stem}";
+          name = "limit-battery-threshold-${stem}";
           value = {
             description = "limit battery threshold";
             after = [ unit ];
@@ -93,7 +93,7 @@ let
   );
 
   multiUserService = {
-    "control-battery-thresold" = {
+    "control-battery-threshold" = {
       description = "limit/restore battery threshold";
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
