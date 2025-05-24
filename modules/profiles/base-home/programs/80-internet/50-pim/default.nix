@@ -15,7 +15,7 @@ in
     services.flatpak.packages = [
       # email
       # "com.getmailspring.Mailspring" # gpl3
-      "org.claws_mail.Claws-Mail"
+      # "org.claws_mail.Claws-Mail"
 
       "io.github.alescdb.mailviewer" # .eml .msg viewer
     ];

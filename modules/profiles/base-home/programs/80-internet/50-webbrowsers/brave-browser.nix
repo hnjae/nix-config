@@ -9,8 +9,6 @@ let
 in
 {
   config = lib.mkIf (cfg.isDesktop && pkgs.stdenv.isLinux) {
-    # home.packages = [ pkgs.chromium ];
-
     programs.chromium = {
       enable = true;
       # NOTE: ungoogled-chromium 은 extensions 설치가 안된다.
