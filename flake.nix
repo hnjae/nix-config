@@ -275,7 +275,7 @@
                     "*/justfile"
                   ];
                 };
-                mdformat.enable = true; # forces indentation to 2 spaces
+                mdformat.enable = false; # forces indentation to 2 spaces; does not support frontmatter
                 taplo.enable = true;
                 ruff-format.enable = true;
                 yamlfmt.enable = true;
@@ -324,6 +324,7 @@
                   "*rc"
                   "*.cheat"
                   "*.log"
+                  "*.md" # mdformat does not support frontmatter, so it breaks markdown files.
 
                   # misc
                   "*-samples"
