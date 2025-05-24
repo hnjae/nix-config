@@ -11,7 +11,6 @@
 # base0F: darkest color of `red`
 # base10: 2nd darkest color of `dark`
 # base11: darkest color of `dark`
-
 system: "base24"
 name: "adwaita-light"
 author: "Mofiqul"
