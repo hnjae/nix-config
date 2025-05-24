@@ -8,7 +8,6 @@
 # base0F: gb.faded_orange (fg of bracket in html)
 # base10: gb.light0_soft
 # base11: gb.light0_hard
-
 system: "base24"
 name: "gruvbox"
 author: "morhetz"

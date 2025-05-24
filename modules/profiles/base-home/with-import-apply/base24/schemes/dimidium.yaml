@@ -20,7 +20,6 @@
 
 # NOTE: color of base11, 10, 0F, 03, 04 는 임의로 작성해서 넣음.
 # https://github.com/tinted-theming/base24/blob/master/styling.md
-
 system: "base24"
 name: "dimidium"
 author: "dofuuz"
