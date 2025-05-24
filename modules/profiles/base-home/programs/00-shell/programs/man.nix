@@ -6,6 +6,6 @@ let
   '';
 in
 {
-  programs.zsh.initExtra = function;
+  programs.zsh.initContent = function;
   programs.bash.initExtra = function;
 }

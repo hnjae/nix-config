@@ -12,12 +12,7 @@ in
     home.sessionVariables = {
       PYTHON_HISTORY = "${config.xdg.stateHome}/python_history"; # from python 3.13
       PYTHON_COLORS = 1;
-      # RYE_HOME = "${config.xdg.dataHome}/rye";
     };
-    # TODO: 이걸 eval 하지 말고 패키지로 해서 source 할수 없나 <2025-02-24>
-    # programs.zsh.initExtra = ''
-    #   eval "$(rye self completion -s zsh)"
-    # '';
 
     python = {
       enable = true;

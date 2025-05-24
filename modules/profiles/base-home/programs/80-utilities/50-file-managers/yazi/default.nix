@@ -12,7 +12,7 @@ in
     enableNushellIntegration = false;
   };
 
-  programs.zsh.initExtra = cdPosix;
+  programs.zsh.initContent = cdPosix;
   programs.bash.initExtra = cdPosix;
   programs.fish.functions.yazicd = {
     body = builtins.readFile ./resources/yazi-cd.fish;

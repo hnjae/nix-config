@@ -20,7 +20,7 @@ in
     pkgs.gnome-epub-thumbnailer # for epub & mobi
   ];
 
-  programs.zsh.initExtra = lfcdPosix;
+  programs.zsh.initContent = lfcdPosix;
   programs.bash.initExtra = lfcdPosix;
   programs.fish.functions.lfcd = {
     body = builtins.readFile ./resources/lfcd.fish;

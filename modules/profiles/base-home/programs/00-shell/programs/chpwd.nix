@@ -3,7 +3,7 @@ let
   cmd = ''timeout 0.05s ${config.home.shellAliases.l} || echo "ls timeout"'';
 in
 {
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
     function chpwd_ls() {
       ${cmd}
     }

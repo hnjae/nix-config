@@ -85,7 +85,7 @@ in
           };
           "NixOS Wiki" = {
             urls = [ { template = "https://wiki.nixos.org/index.php?search={searchTerms}"; } ];
-            iconUpdateURL = "https://wiki.nixos.org/favicon.png";
+            icon = "https://wiki.nixos.org/favicon.png";
             updateInterval = 24 * 60 * 60 * 1000; # every day
             definedAliases = [ "@nw" ];
           };
@@ -94,29 +94,32 @@ in
             icon = "https://brave.com/static-assets/images/brave-logo-sans-text.svg";
             definedAliases = [ "@b" ];
           };
-          "Bing".metaData.hidden = true;
-          "Wikipedia".metaData.hidden = true;
+          "bing".metaData.hidden = true;
+          "wikipedia".metaData.hidden = true;
         };
-        bookmarks = [
-          {
-            name = "Nix sites";
-            toolbar = true;
-            bookmarks = [
-              {
-                name = "homepage";
-                url = "https://nixos.org/";
-              }
-              {
-                name = "wiki";
-                tags = [
-                  "wiki"
-                  "nix"
-                ];
-                url = "https://wiki.nixos.org/";
-              }
-            ];
-          }
-        ];
+        bookmarks = {
+          force = true;
+          settings = [
+            {
+              name = "Nix sites";
+              toolbar = true;
+              bookmarks = [
+                {
+                  name = "homepage";
+                  url = "https://nixos.org/";
+                }
+                {
+                  name = "wiki";
+                  tags = [
+                    "wiki"
+                    "nix"
+                  ];
+                  url = "https://wiki.nixos.org/";
+                }
+              ];
+            }
+          ];
+        };
       };
     };
   };

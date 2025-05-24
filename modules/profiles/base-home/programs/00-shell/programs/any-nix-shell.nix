@@ -5,7 +5,7 @@
   '';
 
   # nix-shell 에서 zsh 사용할 수 있게 해줌
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
     ${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin
   '';
 }
