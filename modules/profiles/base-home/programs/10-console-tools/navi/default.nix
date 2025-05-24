@@ -24,7 +24,7 @@ in
     # navi = ''echo "use <C-g> instead"'';
   };
 
-  programs.zsh.initExtra = posixSh;
+  programs.zsh.initContent = posixSh;
   programs.bash.initExtra = posixSh;
   # programs.fish.interactiveShellInit =
   #   builtins.readFile (babelfishTranslate

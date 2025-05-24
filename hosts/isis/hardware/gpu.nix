@@ -73,7 +73,7 @@
   home-manager.sharedModules = [
     {
       # use amdvlk only in interactive shell
-      programs.zsh.initExtra = ''
+      programs.zsh.initContent = ''
         export DISABLE_LAYER_AMD_SWITCHABLE_GRAPHICS_1="1"
         export VK_DRIVER_FILES="/run/current-system/sw/share/vulkan/icd.d/amd_icd64.json"
       '';
