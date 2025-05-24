@@ -2,6 +2,7 @@
   config,
   pkgs,
   pkgsUnstable,
+  lib,
   ...
 }:
 let
@@ -20,16 +21,20 @@ in
     pkgsUnstable.zsh-completions
   ];
 
-  # NOTE: source order:
-  # .zshenv, .zprofile, .zlogin(optional?), .zshrc | .zlogout
-  # home.sessionVariables 는 .zshenv의 머리에,
-  # home.shellAliases 는 .zshrc 말미에 적힘
-  # home-manager:
-  # localVariables??
-  # envExta
-  # profileExtra
-  # initExtraFirst initExtraBeforeCompInit initExta
-  # logoutExtra
+  /*
+    NOTE:
+
+    - source order:
+      - .zshenv, .zprofile, .zlogin(optional?), .zshrc | .zlogout
+    - home.sessionVariables 는 .zshenv의 머리에,
+    - home.shellAliases 는 .zshrc 말미에 적힘
+    - home-manager:
+      - localVariables??
+      - envExtra
+      - profileExtra
+      - initContent
+      - logoutExtra
+  */
 
   programs.zsh = {
     enable = true;
@@ -43,13 +48,13 @@ in
     # .zprofle
     # profileExtra = "";
 
-    initExtraBeforeCompInit = ''
-      # source "${pkgs.nix-zsh-completions}/share/zsh/plugins/nix/nix-zsh-completions.plugin.zsh"
-      fpath=(${pkgs.nix-zsh-completions}/share/zsh/site-functions $fpath)
-    '';
-
     # .zshrc 중간 (after zplugin, history)
-    initExtra = concat [
+    initContent = lib.mkMerge [
+      (lib.mkOrder 550 ''
+        # source "${pkgs.nix-zsh-completions}/share/zsh/plugins/nix/nix-zsh-completions.plugin.zsh"
+        fpath=(${pkgs.nix-zsh-completions}/share/zsh/site-functions $fpath)
+      '')
+
       ''
         # https://github.com/Aloxaf/fzf-tab/issues/477
         zstyle ':fzf-tab:*' default-color ""

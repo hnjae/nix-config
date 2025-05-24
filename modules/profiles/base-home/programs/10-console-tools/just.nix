@@ -12,7 +12,7 @@
     # je = "just-edit";
   };
 
-  # programs.zsh.initExtra = ''
+  # programs.zsh.initContent = ''
   #   just-edit () {
   #     $EDITOR "$(git rev-parse --show-toplevel || echo .)/justfile"
   #   }

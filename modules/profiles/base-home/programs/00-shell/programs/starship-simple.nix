@@ -3,7 +3,7 @@ let
   starshipCmd = "${config.home.profileDirectory}/bin/starship";
 in
 {
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
     if [[ "$TERM" != "dumb" ]] && hash starship >/dev/null 2>&1 && [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
       eval "$(${starshipCmd} init zsh)"
     fi
