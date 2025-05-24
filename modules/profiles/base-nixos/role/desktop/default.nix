@@ -46,8 +46,8 @@
 
     documentation.dev.enable = lib.mkOverride 999 true;
 
-    i18n.supportedLocales = [
-      # add more locales to system
+    # add more locales to system
+    i18n.extraLocales = [
       "ko_KR.UTF-8/UTF-8"
       "ja_JP.UTF-8/UTF-8"
     ];
