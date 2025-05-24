@@ -235,9 +235,9 @@
           {
             # Utilized by `nix develop`
             devShells.default = pkgs.mkShellNoCC {
-              shellHook = ''
-                ${config.pre-commit.installationScript}
-              '';
+              # shellHook = ''
+              #   ${config.pre-commit.installationScript}
+              # '';
 
               packages = with pkgs; [
                 sops
@@ -255,7 +255,7 @@
               ];
             };
 
-            pre-commit.settings.hooks.treefmt.enable = true;
+            # pre-commit.settings.hooks.treefmt.enable = false;
 
             # Utilized by `nix fmt` (formatter)
             treefmt.config = {
