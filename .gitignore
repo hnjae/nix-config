@@ -1,6 +1,6 @@
 /.deploy-gc
 /.pre-commit-config.yaml
-/require-files/*.AppImage
+/_required-files/*.AppImage
 
 .direnv
 .mypy_cache
