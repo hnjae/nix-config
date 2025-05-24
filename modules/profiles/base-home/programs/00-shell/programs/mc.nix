@@ -8,7 +8,7 @@ let
   '';
 in
 {
-  programs.zsh.initExtra = mcFuncPosix;
+  programs.zsh.initContent = mcFuncPosix;
   programs.bash.initExtra = mcFuncPosix;
   programs.fish.functions.mc = {
     body = ''

@@ -7,7 +7,9 @@
     {
       defaultLocale = "en_US.UTF-8";
       extraLocaleSettings = {
-        LANGUAGE = "en_US:en";
+        # LANGUAGE = "en_US:en:C";
+        # BUG: NixOS 25.05 does not support Above syntax; glibc 컴파일에 에러가 발생
+
         LC_NUMERIC = "en_US.UTF-8"; # e.g.) 150,392.2
         LC_MESSAGES = "en_US.UTF-8";
         LC_MONETARY = "en_US.UTF-8";
@@ -29,12 +31,8 @@
         LC_NAME = metricLocale;
       };
 
-      supportedLocales = builtins.concatLists [
-        [
-          "C.UTF-8/UTF-8"
-          "en_US.UTF-8/UTF-8"
-          "en_IE.UTF-8/UTF-8"
-        ]
+      extraLocales = [
+        "C.UTF-8/UTF-8"
       ];
     };
 }

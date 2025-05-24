@@ -161,7 +161,7 @@
     programs.file-roller.enable = true; # flatpak's version is unofficial
 
     services.gnome = {
-      core-utilities.enable = false; # install core-utilites e.g. nautilus, calculator
+      core-apps.enable = false; # install core-utilities e.g. nautilus, calculator
       core-shell.enable = true;
       core-os-services.enable = true; # setup portal, polkit, dconf, and etc.
       # tracker.enable = false;

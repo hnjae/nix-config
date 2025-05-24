@@ -333,7 +333,7 @@ in
       forgit_fixup = "gfixup";
     };
 
-    programs.zsh.initExtra = ''
+    programs.zsh.initContent = ''
       git-branch-delete-merged () {
         # TODO: fix this <2024-12-31>
         # this does not deletes remote branch

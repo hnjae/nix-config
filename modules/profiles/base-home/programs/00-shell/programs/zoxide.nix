@@ -48,7 +48,7 @@ in
     # options = [ "--cmd cd" ];
     # options = [ "--nocmd" ];
   };
-  programs.zsh.initExtra = posixFunction;
+  programs.zsh.initContent = posixFunction;
   programs.bash.initExtra = posixFunction;
 
   # programs.fish.functions.s = {

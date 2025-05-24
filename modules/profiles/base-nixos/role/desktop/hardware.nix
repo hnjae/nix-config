@@ -53,7 +53,6 @@ in
 
     # sound
     security.rtkit.enable = mkProfileDefault true;
-    hardware.pulseaudio.enable = false; # use pipewire
 
     # opengl
     hardware.graphics = {
