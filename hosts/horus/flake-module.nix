@@ -69,6 +69,7 @@ in
       ./hardware
       ./services
       ./serve-encrypted
+      ./selfhost-encrypted
     ];
     specialArgs = { inherit inputs self; };
   };
