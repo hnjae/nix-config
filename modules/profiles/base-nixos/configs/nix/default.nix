@@ -32,4 +32,7 @@ in
       min-free = lib.mkOverride 999 "${fromGiBtoB 16}";
     };
   };
+
+  # Whether to use ‘nixos-rebuild-ng’ in place of ‘nixos-rebuild’, the Python-based re-implementation of the original in Bash.
+  system.rebuild.enableNg = true;
 }

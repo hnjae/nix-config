@@ -309,14 +309,12 @@ boot-nixos: update-local-repo
         --option eval-cache false \
         --keep-failed
 
-[group('self-deploy')]
-switch-nixos-nh: update-local-repo
-    nh os switch .
-
-[group('build')]
-build-nixos-nh: update-local-repo
-    nh os build .
-
+# [group('self-deploy')]
+# switch-nixos-nh: update-local-repo
+#     nh os switch .
+# [group('build')]
+# build-nixos-nh: update-local-repo
+#     nh os build .
 ################################################################################
 # home-manager build/switch
 
