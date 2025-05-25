@@ -2,7 +2,6 @@
 # Base24 scheme using colorscheme of [adwaita.nvim](https://github.com/Mofiqul/adwaita.nvim/tree/main)
 
 # https://github.com/tinted-theming/base24/blob/master/styling.md
-
 # Selection criteria for colors not defined by the Adwaita.nvim author (or that differ).
 # base01: bg of lualine
 # base04: fg of lualine
