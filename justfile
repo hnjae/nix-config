@@ -44,6 +44,7 @@ sync: format
 
     set -eu
 
+    just format
     git add --all
 
     echo ""
