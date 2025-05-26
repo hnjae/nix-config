@@ -187,6 +187,10 @@
     #   url = "github:hnjae/neovim-configs";
     #   flake = false;
     # };
+    dotfiles = {
+      url = "github:hnjae/dotfiles";
+      flake = false;
+    };
   };
 
   outputs =

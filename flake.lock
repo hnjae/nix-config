@@ -172,6 +172,22 @@
         "type": "github"
       }
     },
+    "dotfiles": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1747978960,
+        "narHash": "sha256-RDxsvrvRtHRLty1Um4dV1D3CNxlwl4Bo4m2uYX/81x0=",
+        "owner": "hnjae",
+        "repo": "dotfiles",
+        "rev": "f566380dfb25fc08ad9900ed26336d583e58fa9c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hnjae",
+        "repo": "dotfiles",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -440,8 +456,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1748105095,
-        "narHash": "sha256-Rti55tl/+Kt0vriYSC4swqHGtytSpAV3c5hHjndik3k=",
+        "lastModified": 1748229790,
+        "narHash": "sha256-6UJ5JIMPFAuvzZ26r2deVMZnPHGDoVp9MkooBJ+nQqY=",
         "path": "/home/hnjae/Projects/nix-modules-private",
         "type": "path"
       },
@@ -583,6 +599,7 @@
         "base24-vscode-terminal": "base24-vscode-terminal",
         "cargo2nix": "cargo2nix",
         "deploy-rs": "deploy-rs",
+        "dotfiles": "dotfiles",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "git-hooks": "git-hooks",
