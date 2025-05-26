@@ -230,7 +230,7 @@ _drybuild-nixoses: update-local-repo
     nixos-rebuild switch \
         --flake ".#$1" \
         --target-host "deploy@${1}" \
-        --use-remote-sudo
+        --sudo
 
 [group('deploy')]
 [positional-arguments]
@@ -238,7 +238,7 @@ _drybuild-nixoses: update-local-repo
     nixos-rebuild boot \
         --flake ".#$1" \
         --target-host "deploy@${1}" \
-        --use-remote-sudo
+        --sudo
 
 [group('build')]
 [positional-arguments]
