@@ -6,7 +6,7 @@ __ne_select() {
   term="$1"
   file="$(
     (
-      fd "$term" "${CHEATS_DIR}" -e cheat -t f
+      fd "$term" "$CHEATS_DIR" -e cheat -t f
     ) |
       sed -e "s|^$CHEATS_DIR||g" -e "s|\.cheat$||g" |
       fzf --select-1 --exit-0 --preview='bat -l sh --color=always --italic-text=always --paging=never --decorations=never '"$CHEATS_DIR"'/{}.cheat' |
@@ -18,11 +18,11 @@ __ne_select() {
 
 # navi-edit
 ne() {
-  if [ -n "$1" ]; then
+  if [ "$1" != "" ]; then
     file="${CHEATS_DIR}/$1.cheat"
   else
     file="$(__ne_select ".")"
-    [ -z "$file" ] && return
+    [ "$file" = "" ] && return
   fi
 
   # if [ "$file" == "new" ]; then
@@ -31,18 +31,19 @@ ne() {
   #   [ -z "$file" ] && echo "O.k. I'll do nothing" && return
   # fi
 
-  $EDITOR -- "$file"
+  # $EDITOR -- "$file"
+  nvim -- "$file"
 }
 
 # navi-show
 ns() {
-  if [ -n "$1" ] && [ -f "${CHEATS_DIR}/$1.cheat" ]; then
+  if [ "$1" != "" ] && [ -f "${CHEATS_DIR}/$1.cheat" ]; then
     file="${CHEATS_DIR}/$1.cheat"
   else
-    [ -n "$1" ] && term="$1" || term="."
+    [ "$1" != "" ] && term="$1" || term="."
 
     file="$(__ne_select "$term")"
-    [ -z "$file" ] && return
+    [ "$file" = "" ] && return
   fi
 
   # if [ "$file" == "new" ]; then

@@ -26,8 +26,14 @@ in
     };
   };
 
-  environment.systemPackages = builtins.concatLists [
-    (lib.lists.optional isPodman pkgs.podman-compose)
+  environment.systemPackages = lib.flatten [
+    (lib.lists.optionals isPodman (
+      with pkgs;
+      [
+        podman-compose
+        podlet
+      ]
+    ))
     (lib.lists.optional (isDocker || config.virtualisation.podman.dockerCompat) pkgs.docker-compose)
   ];
 

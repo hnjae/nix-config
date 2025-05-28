@@ -67,6 +67,9 @@
       };
     };
     nix-web-app.url = "github:hnjae/nix-web-app";
+    quadlet-nix = {
+      url = "github:SEIAROTg/quadlet-nix";
+    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs = {
