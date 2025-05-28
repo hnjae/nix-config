@@ -7,7 +7,7 @@ let
   inherit (lib.attrsets) optionalAttrs;
   inherit (pkgs.stdenv) isLinux;
   serviceName = "nix-gc-user";
-  Description = "Run nix-collect-garbarge";
+  Description = "Run nix-collect-garbage";
 in
 {
   systemd.user.services."${serviceName}" = lib.mkIf isLinux {
