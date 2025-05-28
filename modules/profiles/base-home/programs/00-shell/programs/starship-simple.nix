@@ -125,7 +125,7 @@ in
         # Style
         # format = ''[$symbol( \($state\))]($style) '';
         format = ''via [$symbol$state]($style) '';
-        style = "bold light-blue";
+        style = "bold blue";
         symbol = "󱄅 "; # nf-md-nix
 
         # Configs

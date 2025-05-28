@@ -34,7 +34,7 @@ in
       plugins = with pkgs; [
         networkmanager_strongswan
       ];
-      wifi.backend = mkProfileDefault "iwd"; # NixOS 24.11 기준 unstable 함
+      # wifi.backend = mkProfileDefault "iwd"; # NixOS 24.11 기준 unstable 함
     };
 
     services.dbus.packages = [ pkgs.strongswanNM ];

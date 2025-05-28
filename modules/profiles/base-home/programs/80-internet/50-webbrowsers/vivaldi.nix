@@ -61,10 +61,13 @@ let
     # enable wayland
     "--ozone-platform-hint=auto"
     "--enable-features=UseOzonePlatform"
+
     # enable text-input-v3
     "--enable-wayland-ime"
     "--wayland-text-input-version=3"
-    # enable vaapi
+
+    # disable global shortcuts portal
+    "--disable-features=GlobalShortcutsPortal" # https://github.com/brave/brave-browser/issues/44886
   ];
 
   flagsStr = builtins.concatStringsSep " " flags;

@@ -114,11 +114,6 @@
               mode = "700";
               type = "dir";
             }
-            {
-              path = "${config.xdg.configHome}/fcitx5";
-              mode = "700";
-              type = "dir";
-            }
           ];
         }
       )

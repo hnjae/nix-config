@@ -24,14 +24,15 @@
       dot-position = "TOP";
       dot-style-focused = "DOTS";
       dot-style-unfocused = "DOTS";
-      # panel-anchors = ''
-      #   {"0":"MIDDLE","1":"MIDDLE","2":"MIDDLE"}
-      # '';
-      # panel-lengths = ''
-      #   {"0":100,"1":100,"2":100}
-      # '';
-      panel-positions = ''{"0":"TOP","1":"TOP","2":"TOP"}'';
-      panel-sizes = ''{"0":32,"1":32,"2":32}'';
+
+      # panel-positions = ''{"0":"TOP","1":"TOP","2":"TOP"}'';
+      # panel-sizes = ''{"0":32,"1":32,"2":32}'';
+      panel-positions = ''
+        {"LGD-0x00000000":"TOP","GSM-0x01010101":"TOP"}
+      '';
+      panel-sizes = ''
+        {"LGD-0x00000000":32,"GSM-0x01010101":32}
+      '';
 
       # workspace & monitors
       isolate-monitors = false;
