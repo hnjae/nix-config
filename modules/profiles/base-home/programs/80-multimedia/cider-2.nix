@@ -100,9 +100,16 @@ let
     pname = "Cider";
     inherit (pkgsUnstable.cider-2)
       version
-      src
+      # src
       meta
       ;
+
+    # NOTE: 2025-05-29 기준 nixos-unstable-small 에서 `cider-2` 의 src 가 잘못 선언되어 있음.
+    src = pkgs.requireFile {
+      name = "cider-v${version}-linux-x64.AppImage";
+      url = "https://taproom.cider.sh/downloads";
+      sha256 = "XVBhMgSNJAYTRpx5GGroteeOx0APIzuHCbf+kINT2eU=";
+    };
     nativeBuildInputs = [ pkgs.makeWrapper ];
     extraInstallCommands =
       let
