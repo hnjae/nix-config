@@ -3,7 +3,7 @@
 set fallback := true
 
 add-to-nix-store:
-    nix-store --add-fixed sha256 cider-linux-x64.AppImage
+    nix-store --add-fixed sha256 *.AppImage
 
 
     # nix-store --add-root ./nix-store-link --indirect --realise "$store_path"
