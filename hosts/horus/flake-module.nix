@@ -54,8 +54,6 @@ in
               ];
               hostKeys = [
                 "/secrets/ssh_host_ed25519_key"
-                # config.sops.secrets.ssh-host-key-prv.path
-                # "/etc/ssh/ssh_host_rsa_key"
               ];
             };
           };

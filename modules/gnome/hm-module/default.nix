@@ -112,7 +112,7 @@
       ];
       switch-windows-backward = [
         "<Shift><Alt>Tab"
-        "<Shfit><Super>Tab"
+        "<Shift><Super>Tab"
       ];
 
       # Worskpace

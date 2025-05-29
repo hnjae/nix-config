@@ -13,12 +13,12 @@ in
       enable = true;
       # NOTE: ungoogled-chromium 은 extensions 설치가 안된다.
       # package = pkgs.chromium;
-      package = pkgs.brave;
+      package = pkgs.brave.override {
+        commandLineArgs = lib.escapeShellArgs [
+          "--wayland-text-input-version=3"
+        ];
+      };
       dictionaries = [ pkgs.hunspellDictsChromium.en_US ];
-      commandLineArgs = [
-        "--enable-wayland-ime"
-        "--wayland-text-input-version=3"
-      ];
       extensions = [
         { id = "fmkadmapgofadopljbjfkapdkoienihi"; } # react-developer-tools
         { id = "lmhkpmbekcpmknklioeibfkpmmfibljd"; } # redux-dev-tools
