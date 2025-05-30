@@ -1,4 +1,4 @@
-{ pkgs, pkgsUnstable, ... }:
+{ pkgs, ... }:
 {
   imports = [
     ./bat.nix
@@ -24,14 +24,15 @@
     pkgs.delta # replace diff
     pkgs.tree
     pkgs.hexyl # replace od
-    pkgsUnstable.procs # replace ps
-    pkgsUnstable.viddy # replace watch
+    pkgs.procs # replace ps
+    pkgs.viddy # replace watch
+    pkgs.yq # sed for json/yaml
 
-    pkgsUnstable.mprocs # run mutliple commands in parallel
+    pkgs.mprocs # run multiple commands in parallel
+    pkgs.tinty # https://github.com/tinted-theming/tinty (base24 / base16)
 
-    pkgsUnstable.yq # sed for json/yaml
-    pkgsUnstable.du-dust # dust(du)
-    pkgsUnstable.gping # gping(ping)
-    pkgsUnstable.doggo # doqqg(dig)
+    # pkgs.du-dust # dust(du)
+    # pkgs.gping # gping(ping)
+    # pkgs.doggo # doggo(dig)
   ];
 }
