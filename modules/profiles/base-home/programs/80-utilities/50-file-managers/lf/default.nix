@@ -4,9 +4,6 @@
   lib,
   ...
 }:
-let
-  lfcdPosix = builtins.readFile ./resources/lfcd.sh;
-in
 {
   home.packages = [
     pkgsUnstable.lf
@@ -19,19 +16,6 @@ in
     pkgs.epub-thumbnailer
     pkgs.gnome-epub-thumbnailer # for epub & mobi
   ];
-
-  programs.zsh.initContent = lfcdPosix;
-  programs.bash.initExtra = lfcdPosix;
-  programs.fish.functions.lfcd = {
-    body = builtins.readFile ./resources/lfcd.fish;
-    description = "lf wrapper";
-  };
-
-  home.shellAliases.lf = "lfcd";
-
-  # python = {
-  #   enable = true; # my config file uses python script
-  # };
 
   xdg.configFile."lf/icons" = {
     # podman config

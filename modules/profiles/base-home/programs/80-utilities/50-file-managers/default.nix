@@ -3,11 +3,11 @@
   imports = [
     ./lf
     ./pistol
-    ./ranger
-    ./yazi
   ];
 
   home.packages = [
-    pkgsUnstable.superfile
+    # pkgsUnstable.superfile
+    pkgsUnstable.glow
+    pkgsUnstable.yazi
   ];
 }

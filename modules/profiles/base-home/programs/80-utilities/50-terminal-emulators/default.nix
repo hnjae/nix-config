@@ -1,6 +1,6 @@
 /*
   <https://www.arewesixelyet.com/>
-    NOTE: wayland-input-protocl 의 한계로 GTK, QT 를 안쓰는 터미널은 한글 입력시 잦은 애로 사항이 있음. <NixOS 23.11>
+    NOTE: wayland-input-protocol 의 한계로 GTK, QT 를 안쓰는 터미널은 한글 입력시 잦은 애로 사항이 있음. <NixOS 23.11>
 
     NOTE:
       rio: terminal built with rust, no fontconfig, sixel support

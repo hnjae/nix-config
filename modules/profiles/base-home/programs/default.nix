@@ -5,8 +5,6 @@
 { ... }:
 {
   imports = [
-    ./00-shell
-    ./10-console-tools
     ./70-dev
     ./70-dev-tools
     ./80-documents
