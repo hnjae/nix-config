@@ -20,12 +20,5 @@ in
         ))
       ];
     };
-    stateful.nodes = [
-      {
-        path = "${config.xdg.dataHome}/zathura";
-        mode = "700";
-        type = "dir";
-      }
-    ];
   };
 }

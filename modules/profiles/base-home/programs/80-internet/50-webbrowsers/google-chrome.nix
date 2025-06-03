@@ -13,24 +13,6 @@ let
 in
 {
   config = lib.mkIf (shouldApply) {
-    stateful.nodes = [
-      {
-        path = "${config.xdg.configHome}/google-chrome";
-        mode = "700";
-        type = "dir";
-      }
-      {
-        path = "${config.xdg.configHome}/google-chrome-beta";
-        mode = "700";
-        type = "dir";
-      }
-      {
-        path = "${config.xdg.configHome}/google-chrome-unstable";
-        mode = "700";
-        type = "dir";
-      }
-    ];
-
     services.flatpak.packages = [ appId ];
 
     xdg.dataFile."applications/${appId}.desktop" =

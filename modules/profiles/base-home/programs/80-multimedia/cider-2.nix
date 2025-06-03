@@ -142,13 +142,5 @@ in
 {
   config = lib.mkIf (baseHomeCfg.isDesktop && baseHomeCfg.isHome && pkgs.config.allowUnfree) {
     home.packages = [ package ];
-
-    stateful.nodes = [
-      {
-        path = "${config.xdg.configHome}/sh.cider.genten";
-        mode = "700";
-        type = "dir";
-      }
-    ];
   };
 }

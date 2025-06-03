@@ -9,6 +9,7 @@ let
   baseHomeCfg = config.base-home;
 in
 {
+  # treesitter 을 시스템 단위로 관리하고 싶지 않으니, home-manager 모듈은 사용하지 말 것.
   config = lib.mkIf baseHomeCfg.isDev {
     home.packages = lib.lists.concatLists [
       (with pkgsUnstable; [
@@ -36,27 +37,9 @@ in
       EDITOR = lib.mkForce "nvim";
       VISUAL = "nvim";
     };
+
     home.shellAliases = {
       vi = "nvim";
     };
-
-    # treesitter 을 시스템 단위로 관리하고 싶지 않으니, home-manager 모듈은 사용하지 말 것.
-    programs.neovim = {
-      enable = false;
-      # extraPackages = with pkgsUnstable; [ tree-sitter nodePackages.neovim ];
-      plugins = with pkgsUnstable.vimPlugins; [
-        nvim-treesitter.withAllGrammars
-        sniprun
-      ];
-      package = pkgsUnstable.neovim-unwrapped;
-      # package = pkgsUnstable.neovim;
-    };
-    stateful.nodes = [
-      {
-        path = "${config.xdg.dataHome}/nvim";
-        mode = "700";
-        type = "dir";
-      }
-    ];
   };
 }

@@ -38,7 +38,7 @@
 
     home-manager.sharedModules = [
       (
-        { config, lib, ... }:
+        { config, ... }:
         {
           home.sessionVariables = {
             SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
@@ -69,28 +69,6 @@
           # Exec=sh -c 'sleep 1 && GTK_USE_PORTAL=0 1password --silent --enable-features=UseOzonePlatform --ozone-platform-hint=auto --enable-wayland-ime'
         };
       }
-      (
-        { config, ... }:
-        {
-          stateful.nodes = [
-            {
-              path = "${config.xdg.configHome}/op";
-              mode = "700";
-              type = "dir";
-            }
-            {
-              path = "${config.xdg.configHome}/1Password";
-              mode = "700";
-              type = "dir";
-            }
-            {
-              path = "${config.home.homeDirectory}/.1password";
-              mode = "700";
-              type = "dir";
-            }
-          ];
-        }
-      )
     ];
   };
 }

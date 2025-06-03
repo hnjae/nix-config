@@ -38,13 +38,5 @@ in
     #     "text/plain"
     #   ];
     # };
-    #
-    # stateful.nodes = [
-    #   {
-    #     path = "${config.home.homeDirectory}/.zotero";
-    #     mode = "755";
-    #     type = "dir";
-    #   }
-    # ];
   };
 }

@@ -19,7 +19,6 @@ in
         isDev = cfg.role == "desktop";
         isHome = true;
       };
-      stateful.enable = cfg.role == "desktop";
     };
   };
 }

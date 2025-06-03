@@ -105,18 +105,7 @@
           };
         };
       }
-      (
-        { config, ... }:
-        {
-          stateful.nodes = [
-            {
-              path = "${config.xdg.configHome}/mozc";
-              mode = "700";
-              type = "dir";
-            }
-          ];
-        }
-      )
+
     ];
     environment.systemPackages = with pkgs.gnomeExtensions; [
       kimpanel # to use with fcitx5

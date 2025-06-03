@@ -12,19 +12,6 @@ in
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.config.allowUnfree && baseHomeCfg.isDev) {
     home.packages = [ pkgsUnstable.vscode-fhs ];
 
-    stateful.nodes = [
-      {
-        path = "${config.xdg.configHome}/Code";
-        mode = "700";
-        type = "dir";
-      }
-      {
-        path = "${config.home.homeDirectory}/.vscode";
-        mode = "755";
-        type = "dir";
-      }
-    ];
-
     /*
       NOTE: 2025-03-24
 

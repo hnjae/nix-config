@@ -77,19 +77,6 @@ in
   config = lib.mkIf (cfg.isDesktop && pkgs.config.allowUnfree && pkgs.stdenv.isLinux) {
     default-app.browser = "vivaldi-stable";
 
-    stateful.nodes = [
-      {
-        path = "${config.xdg.configHome}/vivaldi";
-        mode = "700";
-        type = "dir";
-      }
-      {
-        path = "${config.xdg.configHome}/vivaldi-snapshot";
-        mode = "700";
-        type = "dir";
-      }
-    ];
-
     home.packages = [ package ];
 
     # NOTE: desktopEntries does not work in Gnome <NixOS 24.11; Gnome 47>

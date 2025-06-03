@@ -19,7 +19,7 @@
 
   home-manager.sharedModules = [
     (
-      { config, ... }:
+      { ... }:
       {
         xdg.configFile."Kvantum/kvantum.kvconfig".text = lib.generators.toINI { } {
           General.theme = "KvLibadwaita";
@@ -50,25 +50,6 @@
             # };
           };
         };
-
-        stateful.nodes = [
-          # {
-          #   path = "${config.xdg.configHome}/Kvantum";
-          #   mode = "755";
-          #   type = "dir";
-          # }
-
-          # {
-          #   path = "${config.xdg.configHome}/qt5ct";
-          #   mode = "755";
-          #   type = "dir";
-          # }
-          # {
-          #   path = "${config.xdg.configHome}/qt6ct";
-          #   mode = "755";
-          #   type = "dir";
-          # }
-        ];
       }
     )
   ];

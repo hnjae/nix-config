@@ -19,14 +19,6 @@ in
 {
   config = lib.mkIf baseHomeCfg.isDesktop {
 
-    stateful.nodes = [
-      {
-        path = "${config.xdg.configHome}/Logseq";
-        mode = "700";
-        type = "dir";
-      }
-    ];
-
     default-app.fromApps = [ appId ];
     services.flatpak.packages = [ appId ];
     services.flatpak.overrides."${appId}" = {
