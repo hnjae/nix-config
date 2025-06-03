@@ -16,11 +16,12 @@
     ./nushell.nix
     ./pueue.nix
     ./qalc.nix
-    ./rsync.nix
     ./tldr.nix
   ];
 
   home.packages = lib.flatten [
+    pkgs.rsync
+
     # NOTE: trashy is not usable because of following issue: https://github.com/Byron/trash-rs/issues/57 <2023-03-22>
     # pkgs.trashy # trash-cli alternative in rust
     pkgs.trash-cli
@@ -77,6 +78,7 @@
     pkgs.zoxide
     pkgs.any-nix-shell
 
+    pkgs.nh # nix wrapper
     (with pkgs; [
       stow
       cht-sh
@@ -110,14 +112,5 @@
       pkgs.poppler_utils # pdftotext
       pkgs.clipboard-jh
     ])
-  ];
-
-  programs.nh.enable = true; # nix wrapper
-  stateful.nodes = [
-    {
-      path = "${config.xdg.dataHome}/zoxide";
-      mode = "755";
-      type = "dir";
-    }
   ];
 }

@@ -1,14 +1,17 @@
-{ pkgs, pkgsUnstable, ... }:
+{
+  pkgs,
+  pkgsUnstable,
+  lib,
+  ...
+}:
 {
   imports = [
     ./50-db.nix
     ./50-nix-tools.nix
     ./50-web-dev.nix
-
-    ./distrobox.nix
   ];
 
-  home.packages = [
+  home.packages = lib.flatten [
     pkgs.openssl
     pkgs.patchelfStable
 
@@ -16,6 +19,8 @@
     pkgsUnstable.hyperfine # command-line benchmarking tool
     pkgsUnstable.gh # github cli
     pkgsUnstable.github-copilot-cli
+
+    (lib.lists.optional pkgs.stdenv.isLinux pkgsUnstable.distrobox)
   ];
 
   services.flatpak.packages = [

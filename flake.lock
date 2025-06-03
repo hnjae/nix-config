@@ -456,8 +456,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1748229790,
-        "narHash": "sha256-6UJ5JIMPFAuvzZ26r2deVMZnPHGDoVp9MkooBJ+nQqY=",
+        "lastModified": 1748845594,
+        "narHash": "sha256-FXzFNRo3TBkdzMWQxYkzcVlvx1KoS9YBh/NO/FWKVGs=",
         "path": "/home/hnjae/Projects/nix-modules-private",
         "type": "path"
       },
