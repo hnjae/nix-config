@@ -5,7 +5,6 @@
   ...
 }:
 let
-  # baseHomeCfg = config.base-home;
   inherit (pkgs.stdenv) isLinux;
 
   package = pkgsUnstable.tealdeer;
@@ -15,20 +14,30 @@ let
 
   # Documentation = [""]; no man page for tealdeer <NixOS 23.11; tealdeer 1.6.1>
 
-  tldrUpdateScript = pkgs.writeShellScript "tldr-update" ''
+  tldrUpdateScript = pkgs.writeScript "tldr-update" ''
+    #!${pkgs.dash}/bin/dash
+
     set -eu
+
+    PATH=${
+      lib.makeBinPath [
+        package
+        pkgs.inetutils
+        pkgs.uutils-coreutils-noprefix
+      ]
+    }
 
     MAX_RETRY=5
     PAUSE_SEC=120
     i=0
     while [ "$i" -lt "$MAX_RETRY" ]; do
-      if ${pkgs.inetutils}/bin/ping -c 1 1.1.1.1 >/dev/null 2>&1; then
+      if ping -c 1 1.1.1.1 >/dev/null 2>&1; then
         break
       fi
 
       if [ "$i" -ge "$MAX_RETRY" ]; then
-        echo "ERROR: Internet is not connected. Aborting execution."
-        exit 1
+        echo "INFO: Internet is not connected."
+        exit 0
       fi
 
       echo "INFO: Waiting Internet connection. Will retry after ''${PAUSE_SEC}s."
@@ -36,7 +45,7 @@ let
     done
     unset i
 
-    ${package}/bin/tldr --update
+    tldr --update
   '';
 in
 {
@@ -71,6 +80,10 @@ in
       OnCalendar = "*-*-* 04:00:00";
       AccuracySec = "1h";
       Persistent = true;
+
+      # AccuracySec = "1m";
+      # OnStartupSec = "20m";
+      # OnUnitInactiveSec = "12h";
     };
 
     Install = {
