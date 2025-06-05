@@ -10,10 +10,11 @@ in
 {
   config =
     lib.mkIf
+      #  --wayland-text-input-version=3  --enable-features=UseOzonePlatform --ozone-platform=auto --enable-wayland-ime
       (baseHomeCfg.isDesktop && baseHomeCfg.isHome && pkgs.stdenv.isLinux && pkgs.config.allowUnfree)
       {
         services.flatpak.packages = [
-          # NOTE: opera is only browser that suport netflix 1080p on linux <2024-11-24>
+          # NOTE: opera is only browser that support netflix 1080p on linux <2024-11-24>
           # https://help.netflix.com/en/node/30081
           "com.opera.Opera"
         ];

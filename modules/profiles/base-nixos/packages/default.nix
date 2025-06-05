@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  lib,
   ...
 }:
 {
@@ -17,10 +18,8 @@
   ];
 
   # Set of default packages that aren't strictly necessary for a running system
-  environment.defaultPackages = builtins.concatLists [
+  environment.defaultPackages = lib.flatten [
     (with pkgs; [
-      dash
-
       # nix CLI wrapper
       nh
 
@@ -31,44 +30,40 @@
       perl
       rsync
       strace
+      git # for flake.nix
 
-      # for flake.nix
-      git
-
-      file
-      sysstat # iostat
-      lsof
+      # some basic utils
       beep
+      curl
+      dig
+      file
+      lsb-release
+      lsof
+      sysstat # iostat
       wget
 
       # Get hardware info
-      pciutils # lspci
-      lshw
-      usbutils # lsusb
       dmidecode
       lm_sensors
-
-      # some basic utils
-      dig
-      curl
-      lsb-release
+      lshw
+      pciutils # lspci
+      usbutils # lsusb
 
       # some "modern" utils
-      fd
-      ripgrep
+      bat
+      bottom # tops
       eza
+      fd
       hexyl # replace od
+      just
       procs # replace ps
-      viddy # replace watch
+      ripgrep
       tree
+      viddy # replace watch
 
-      # misc
+      # MISC
       pwgen
       wireguard-tools
-
-      # tops
-      bottom
-      unrar
 
       (wezterm.overrideAttrs (_: {
         passthru.cargoBuildFlags = [
@@ -79,6 +74,7 @@
     ])
 
     # archives
+    pkgs.unrar
     (
       let
         package7z = pkgs._7zz.override { enableUnfree = pkgs.config.allowUnfree; };
@@ -89,7 +85,6 @@
           mkdir -p "$out/bin"
           ln -s "${package7z}/bin/7zz" "$out/bin/7z"
         '')
-
         pkgs.unzipNLS
       ]
     )

@@ -4,10 +4,12 @@ _: {
     ./fprint.nix
     ./ollama.nix
     ./zrepl.nix
+
     # ./tabby.nix
     # ./shairport-sync.nix
 
-    ./restic-backup
+    # ./restic-backup
+    ./rustic-backup
   ];
 
   # USB 를 autosuspend 해, 마우스 사용에 애로사항이 있음.

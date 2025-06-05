@@ -135,7 +135,7 @@ in
 
         serviceConfig = {
           Type = "oneshot";
-          inherit (config.systemd.services.restic-backup-off-site.serviceConfig) ExecCondition;
+          inherit (config.systemd.services.rustic-backup.serviceConfig) ExecCondition;
           ExecStart = "${pkgs.zrepl}/bin/zrepl signal wakeup ${jobName}";
           SuccessExitStatus = 1; # zrepl prints if job is in progress: "already woken up" and exits with 1.
         };
