@@ -49,7 +49,11 @@
           Wants = [ "network-online.target" ];
         };
 
-        path = with pkgs; [ rclone ];
+        path = with pkgs; [
+          rclone
+          util-linux
+          uutils-findutils
+        ];
 
         serviceConfig = {
           Type = "oneshot";
