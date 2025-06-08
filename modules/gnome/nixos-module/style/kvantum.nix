@@ -6,7 +6,6 @@
 */
 {
   lib,
-  pkgs,
   ...
 }:
 {
@@ -25,31 +24,31 @@
           General.theme = "KvLibadwaita";
         };
 
-        services.flatpak.packages =
-          let
-            arch = pkgs.stdenv.targetPlatform.ubootArch;
-          in
-          [
-            # NOTE: 2025-01-06 checked
-            "org.kde.KStyle.Kvantum/${arch}/5.15"
-            "org.kde.KStyle.Kvantum/${arch}/5.15-21.08"
-            "org.kde.KStyle.Kvantum/${arch}/5.15-22.08"
-            "org.kde.KStyle.Kvantum/${arch}/5.15-23.08"
-            "org.kde.KStyle.Kvantum/${arch}/6.5"
-            "org.kde.KStyle.Kvantum/${arch}/6.6"
-          ];
-
-        # ~/.local/share/flatpak/overrides
-        services.flatpak.overrides = {
-          "global" = {
-            Context = {
-              filesystems = [ "xdg-config/Kvantum:ro" ];
-            };
-            # Environment = {
-            #   QT_STYLE_OVERRIDE = "kvantum";
-            # };
-          };
-        };
+        # services.flatpak.packages =
+        #   let
+        #     arch = pkgs.stdenv.targetPlatform.ubootArch;
+        #   in
+        #   [
+        #     # NOTE: 2025-01-06 checked
+        #     "org.kde.KStyle.Kvantum/${arch}/5.15"
+        #     "org.kde.KStyle.Kvantum/${arch}/5.15-21.08"
+        #     "org.kde.KStyle.Kvantum/${arch}/5.15-22.08"
+        #     "org.kde.KStyle.Kvantum/${arch}/5.15-23.08"
+        #     "org.kde.KStyle.Kvantum/${arch}/6.5"
+        #     "org.kde.KStyle.Kvantum/${arch}/6.6"
+        #   ];
+        #
+        # # ~/.local/share/flatpak/overrides
+        # services.flatpak.overrides = {
+        #   "global" = {
+        #     Context = {
+        #       filesystems = [ "xdg-config/Kvantum:ro" ];
+        #     };
+        #     # Environment = {
+        #     #   QT_STYLE_OVERRIDE = "kvantum";
+        #     # };
+        #   };
+        # };
       }
     )
   ];

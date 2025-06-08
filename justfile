@@ -343,5 +343,8 @@ switch-home: update-local-repo
 
     bash "$(nix eval --raw ".#homeConfigurations.{{ hostname }}.activationPackage")/activate"
 
+[linux]
 flatpak-sync:
-    systemctl --user start flatpak-managed-install.service
+    #!/bin/sh
+    systemctl --user start flatpak-managed-install.service &
+    journalctl --follow --user --unit=flatpak-managed-install.service

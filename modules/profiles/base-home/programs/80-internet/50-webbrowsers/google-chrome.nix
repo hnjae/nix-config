@@ -27,7 +27,7 @@ in
           # enable vaapi
           "--enable-features=AcceleratedVideoDecodeLinuxGL"
           "--enable-features=VaapiIgnoreDriverChecks"
-          # enable vulakn support
+          # enable vulkan support
           # NOTE: enabling vulkan disable video play in wavve.com <2024-12-25>
           # "--enable-features=Vulkan"
         ];
