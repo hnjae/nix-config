@@ -18,7 +18,7 @@
     pkgsUnstable.universal-ctags
     pkgsUnstable.hyperfine # command-line benchmarking tool
     pkgsUnstable.gh # github cli
-    pkgsUnstable.github-copilot-cli
+    pkgsUnstable.gh-copilot
 
     (lib.lists.optional pkgs.stdenv.isLinux pkgsUnstable.distrobox)
   ];
