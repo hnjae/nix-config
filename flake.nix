@@ -48,7 +48,7 @@
         flake-utils.follows = "flake-utils";
       };
     };
-    nix-flatpak.url = "github:hnjae/nix-flatpak";
+    nix-flatpak.url = "github:hnjae/nix-flatpak/patch-0.6.0";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
