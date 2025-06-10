@@ -6,16 +6,17 @@
 {
   imports = [
     ./1password.nix
-    # ./chromium.nix
     ./earlyoom.nix
     ./flatpak.nix
     ./fonts.nix
     ./hardware.nix
+    ./ios.nix
     ./libvirtd.nix
     ./locate.nix
     ./packages.nix
     ./portal-pipewire.nix
     ./via.nix
+
     # ./xremap.nix
   ];
 

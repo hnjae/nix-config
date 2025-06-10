@@ -28,7 +28,7 @@ in
         [
           virt-manager
 
-          remmina # Remote Desktop
+          # remmina # Remote Desktop # 자동으로 autostart 에 등록하는데, 조금 짜증남.
           # virt-viewer
           # rustdesk
           # vinagre # removed in nixos-24.11 use, remmina or gnome-connections
