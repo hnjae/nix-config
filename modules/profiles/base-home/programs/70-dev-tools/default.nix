@@ -15,6 +15,8 @@
     pkgs.openssl
     pkgs.patchelfStable
 
+    pkgsUnstable.buildah
+
     pkgsUnstable.universal-ctags
     pkgsUnstable.hyperfine # command-line benchmarking tool
     pkgsUnstable.gh # github cli
