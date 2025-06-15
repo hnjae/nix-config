@@ -12,12 +12,12 @@
     useXkbConfig = true; # use xkbOptions in tty.
 
     # font = "${pkgs.terminus_font}/share/consolefonts/ter-v32n.psf.gz";
-    font = "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz";
+    # font = "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz"; # this does not work in NixOS 25.05
 
     # font option does not work in NixOS 23.11
     # https://github.com/NixOS/nixpkgs/issues/274545
     # https://github.com/NixOS/nixpkgs/issues/257904
-    # font = "latarcyrheb-sun32";
+    font = "latarcyrheb-sun32";
     # font = "ter-132n";
     # packages = with pkgs; [kbd terminus_font]; # for fonts
     # packages = with pkgs; [kbd]; # for fonts
