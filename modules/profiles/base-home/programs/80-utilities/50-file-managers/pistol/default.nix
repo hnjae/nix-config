@@ -83,6 +83,7 @@ in
         })
         [
           "application/x-rar"
+          "application/vnd.rar"
           "application/zip"
         ]
       )

@@ -21,6 +21,8 @@
 
   home.packages = lib.flatten [
     pkgs.rsync
+    pkgs.oh-my-posh
+    pkgs.starship
 
     # NOTE: trashy is not usable because of following issue: https://github.com/Byron/trash-rs/issues/57 <2023-03-22>
     # pkgs.trashy # trash-cli alternative in rust

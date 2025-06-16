@@ -76,7 +76,7 @@ def main() -> int:
 
     file = Path(sys.argv[1])
     mime = magic.from_file(file, mime=True)
-    if mime == "application/x-rar":
+    if mime == "application/x-rar" or mime == "application/vnd.rar":
         print_rar(file)
     elif mime == "application/zip":
         print_zip(file)
