@@ -54,7 +54,7 @@
     pkgs.navi
 
     pkgs.mprocs # run multiple commands in parallel
-    pkgs.tinty # https://github.com/tinted-theming/tinty (base24 / base16)
+    pkgsUnstable.tinty # https://github.com/tinted-theming/tinty (base24 / base16)
 
     # pkgs.du-dust # dust(du)
     # pkgs.gping # gping(ping)

@@ -1,7 +1,6 @@
 flakeArgs@{
   flake-parts-lib,
   inputs,
-  self,
   ...
 }:
 let
@@ -11,12 +10,10 @@ in
   flake.homeManagerModules.base-home = {
     imports = [
       ./.
-      inputs.base16.homeManagerModule
       inputs.impermanence.nixosModules.home-manager.impermanence
       inputs.nix-flatpak.homeManagerModules.nix-flatpak
       inputs.nix-web-app.homeManagerModules.default
 
-      (importApply ./with-import-apply/base24 { inherit inputs; })
       (importApply ./with-import-apply/inputs-packages { inherit inputs; })
 
       inputs.nix-index-database.hmModules.nix-index

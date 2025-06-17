@@ -141,20 +141,6 @@
     };
 
     ############################################################################
-    # Base16
-    # https://github.com/chriskempson/base16-templates-source/blob/master/list.yaml
-    ############################################################################
-    base16.url = "github:SenchoPens/base16.nix";
-    base16-schemes = {
-      url = "github:tinted-theming/schemes";
-      flake = false;
-    };
-    base24-vscode-terminal = {
-      url = "github:Base24/base24-vscode-terminal";
-      flake = false;
-    };
-
-    ############################################################################
     # dev tools
     ############################################################################
     treefmt-nix = {

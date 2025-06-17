@@ -66,7 +66,7 @@
           CPUWeight = "idle";
           IOWeight = "10";
           # MemoryHigh = "4G";
-          # CPUQuota = "45%";
+          CPUQuota = "40%";
           AllowedCPUs = "0";
           # NOTE: 이래도 CPU Fan 은 돌아감.. <2025-03-05>
 

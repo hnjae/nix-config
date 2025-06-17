@@ -9,7 +9,7 @@ let
   baseHomeCfg = config.base-home;
   inherit (builtins) concatStringsSep;
 
-  COLORFGBG = if (config.base-home.base24.variant == "light") then "0;15" else "15;0";
+  COLORFGBG = if ("light" == "light") then "0;15" else "15;0";
 in
 {
   config = lib.mkIf baseHomeCfg.isDesktop {
@@ -17,7 +17,7 @@ in
 
     default-app.text = "neovide";
 
-    xdg.desktopEntries."neovide" = lib.mkIf (pkgs.stdenv.isLinux && baseHomeCfg.base24.enable) {
+    xdg.desktopEntries."neovide" = lib.mkIf (pkgs.stdenv.isLinux) {
       type = "Application";
       name = "Neovide";
       comment = "custom desktop entry";
