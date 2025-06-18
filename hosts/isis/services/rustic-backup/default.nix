@@ -34,7 +34,7 @@
           AccuracySec = "1m";
           # OnCalendar = "*-*-* 00:00:00";
           OnStartupSec = "15m";
-          OnUnitInactiveSec = "60m";
+          OnUnitInactiveSec = "75m";
           Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
           WakeSystem = false;
         };
@@ -49,14 +49,9 @@
           Wants = [ "network-online.target" ];
         };
 
-        path = with pkgs; [
-          rclone
-          util-linux
-          uutils-findutils
-        ];
-
         serviceConfig = {
-          Type = "oneshot";
+          # Type = "oneshot";
+          Type = "simple";
 
           PrivateTmp = true;
           IOSchedulingClass = "idle";
@@ -64,31 +59,51 @@
 
           # systemd.resourced (cgroup)
           CPUWeight = "idle";
-          IOWeight = "10";
+          # IOWeight = "10";
           # MemoryHigh = "4G";
-          CPUQuota = "40%";
-          AllowedCPUs = "0";
-          # NOTE: 이래도 CPU Fan 은 돌아감.. <2025-03-05>
+          CPUQuota = "200%";
+          # AllowedCPUs = "0";
 
-          ExecStart = [
-            (pkgs.writeScript "${serviceName}-start" ''
+          ExecStart = (
+            pkgs.writeScript "${serviceName}-start" ''
               #!${pkgs.dash}/bin/dash
 
               set -eu
+
+              PATH=${
+                lib.makeBinPath (
+                  with pkgs;
+                  [
+                    rustic
+                    rclone
+                    util-linux
+                    uutils-findutils
+                    uutils-coreutils-noprefix
+                  ]
+                )
+              }
 
               if [ ! -f "${profile}.toml" ]; then
                 echo "ERROR: ${profile}.toml does not exists."
                 exit 1
               fi
-            '')
-            (lib.escapeShellArgs [
-              "${pkgs.rustic}/bin/rustic"
-              "backup"
-              "--no-progress"
-              "--log-level=info"
-              "--use-profile=${profile}"
-            ])
-          ];
+
+              rustic backup \
+                --no-progress \
+                --log-level=info \
+                --no-scan \
+                --long \
+                --use-profile="${profile}"
+            ''
+          );
+          # rustic backup --no-progress --log-level=info --as-path=<foo> --git-ignore --glob-file --noscan --time (zrepl time)
+          # (lib.escapeShellArgs [
+          #   "${pkgs.rustic}/bin/rustic"
+          #   "backup"
+          #   "--no-progress"
+          #   "--log-level=info"
+          #   "--use-profile=${profile}"
+          # ])
           ExecCondition = lib.flatten [
             (pkgs.writeScript "${serviceName}-check-other-instance" ''
               #!${pkgs.dash}/bin/dash
