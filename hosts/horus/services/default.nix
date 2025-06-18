@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./snapper.nix
   ];
   services.zfs.autoScrub.enable = true;
 
