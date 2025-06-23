@@ -65,12 +65,12 @@
       pwgen
       wireguard-tools
 
-      (wezterm.overrideAttrs (_: {
-        passthru.cargoBuildFlags = [
-          "--package"
-          "wezterm-mux-server"
-        ];
-      }))
+      # (wezterm.overrideAttrs (_: {
+      #   passthru.cargoBuildFlags = [
+      #     "--package"
+      #     "wezterm-mux-server"
+      #   ];
+      # }))
     ])
 
     # archives

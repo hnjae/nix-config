@@ -11,7 +11,6 @@ in
 {
   config = lib.mkIf baseHomeCfg.isDesktop {
     home.packages = [
-      # pkgsUnstable.ghostty-tip
       pkgsUnstable.ghostty
 
       (pkgs.runCommandLocal "kitten" { } ''

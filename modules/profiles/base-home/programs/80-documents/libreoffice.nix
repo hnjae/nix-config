@@ -33,21 +33,23 @@ in
 
     default-app.mime = {
       "application/vnd.oasis.opendocument.text" = "org.libreoffice.LibreOffice.writer";
+      "application/vnd.oasis.opendocument.spreadsheet" = "org.libreoffice.LibreOffice.calc";
+      "application/vnd.oasis.opendocument.presentation" = "org.libreoffice.LibreOffice.impress";
+
+      "application/vnd.oasis.opendocument.text-template" = "org.libreoffice.LibreOffice.writer";
+      "application/vnd.oasis.opendocument.spreadsheet-template" = "org.libreoffice.LibreOffice.calc";
+      "application/vnd.oasis.opendocument.presentation-template" = "org.libreoffice.LibreOffice.impress";
+
       # "application/vnd.oasis.opendocument.text-flat-xml" = "org.libreoffice.LibreOffice.writer";
       # "application/vnd.oasis.opendocument.text-master" = "org.libreoffice.LibreOffice.writer";
       # "application/vnd.oasis.opendocument.text-master-template" = "org.libreoffice.LibreOffice.writer";
-      "application/vnd.oasis.opendocument.text-template" = "org.libreoffice.LibreOffice.writer";
       # "application/vnd.oasis.opendocument.text-web" = "org.libreoffice.LibreOffice.writer";
 
       # "application/vnd.oasis.opendocument.chart" = "org.libreoffice.LibreOffice.calc";
       # "application/vnd.oasis.opendocument.chart-template" = "org.libreoffice.LibreOffice.calc";
-      "application/vnd.oasis.opendocument.spreadsheet" = "org.libreoffice.LibreOffice.calc";
       # "application/vnd.oasis.opendocument.spreadsheet-flat-xml" = "org.libreoffice.LibreOffice.calc";
-      "application/vnd.oasis.opendocument.spreadsheet-template" = "org.libreoffice.LibreOffice.calc";
 
-      "application/vnd.oasis.opendocument.presentation" = "org.libreoffice.LibreOffice.impress";
       # "application/vnd.oasis.opendocument.presentation-flat-xml" = "org.libreoffice.LibreOffice.impress";
-      "application/vnd.oasis.opendocument.presentation-template" = "org.libreoffice.LibreOffice.impress";
 
       # "application/vnd.oasis.opendocument.base" = "org.libreoffice.LibreOffice.base";
 

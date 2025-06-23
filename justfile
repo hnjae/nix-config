@@ -105,6 +105,24 @@ update-except-unstable:
     git commit -m "build: update flake.lock"
 
 [group('update')]
+update-except-stable:
+    #!/usr/bin/env nu
+
+    let inputs = (
+        nix flake metadata --json
+        | from json
+        | $in.locks.nodes.root.inputs
+        | columns
+        | where $it not-in ["nixpkgs"]
+    )
+
+    nix flake update ...$inputs
+
+    git reset
+    git add flake.lock
+    git commit -m "build: update flake.lock"
+
+[group('update')]
 [private]
 update-local-repo:
     nix flake update nix-modules-private py-utils

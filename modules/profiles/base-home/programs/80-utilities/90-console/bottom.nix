@@ -7,9 +7,10 @@
 }:
 let
   baseHomeCfg = config.base-home;
+  isLinuxDesktop = pkgs.stdenv.isLinux && baseHomeCfg.isDesktop;
+  appId = "bottom";
 
   icon = "${pkgs.pantheon.elementary-icon-theme}/share/icons/elementary/apps/128/utilities-system-monitor.svg";
-  appId = "btm";
 
   iconPkg = pkgs.runCommandLocal appId { } ''
     mkdir -p "$out/share/icons/hicolor/scalable/apps/"
@@ -27,6 +28,7 @@ let
       "$out/share/icons/hicolor/32x32/apps/"
       "$out/share/icons/hicolor/16x16/apps/"
     )
+
     for path in "''${paths[@]}"; do
       mkdir -p "''$path"
       ln -s \
@@ -36,35 +38,24 @@ let
   '';
 in
 {
-  programs.bottom = {
-    enable = true;
-    package = pkgsUnstable.bottom;
-    # settings = { };
-  };
-
-  xdg.desktopEntries.${appId} = lib.mkIf (pkgs.stdenv.isLinux && baseHomeCfg.isDesktop) {
-    name = "Bottom (btm)";
-    comment = "w. custom .desktop entry";
-    exec = "${pkgs.alacritty}/bin/alacritty --class ${appId},${appId} --title bottom -e btm %F";
-    # exec = "footclient --app-id=btm --title=bottom -e btm";
-    terminal = false;
-    inherit icon;
-    type = "Application";
-    startupNotify = false;
-    categories = [
-      "System"
-      "Monitor"
-    ];
-    settings = {
-      Keywords = builtins.concatStringsSep ";" [
-        "system"
-        "process"
-        "task"
-      ];
-    };
-  };
-
-  home.packages = lib.mkIf (pkgs.stdenv.isLinux && baseHomeCfg.isDesktop) [
-    iconPkg
+  home.packages = lib.flatten [
+    pkgsUnstable.bottom
+    (lib.lists.optional isLinuxDesktop iconPkg)
   ];
+
+  xdg.dataFile."applications/${appId}.desktop" = lib.mkIf (isLinuxDesktop) {
+    text = ''
+      [Desktop Entry]
+      Categories=System;Monitor
+      Comment=with custom desktop entry
+      Exec=${pkgs.alacritty}/bin/alacritty --class ${appId},${appId} --title bottom -e btm %F
+      Icon=${icon}
+      Keywords=system;process;task
+      Name=Bottom (btm)
+      StartupNotify=false
+      Terminal=false
+      Type=Application
+      Version=1.4
+    '';
+  };
 }

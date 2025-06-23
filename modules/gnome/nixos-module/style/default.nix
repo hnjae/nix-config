@@ -9,7 +9,7 @@
       dconf.settings = {
         # `gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3'`
         "org/gnome/desktop/interface".gtk-theme = "adw-gtk3";
-        "org/gnome/desktop/interface".icon-theme = "MoreWaita";
+        # "org/gnome/desktop/interface".icon-theme = "MoreWaita";
         "org/gnome/desktop/interface".font-name = "Sans 11";
         "org/gnome/desktop/interface".document-font-name = "Sans 11";
         "org/gnome/desktop/interface".monospace-font-name = "Monospace 10";

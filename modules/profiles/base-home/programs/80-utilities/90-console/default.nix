@@ -4,7 +4,6 @@
   pkgs,
   lib,
   pkgsUnstable,
-  config,
   ...
 }:
 {
@@ -12,12 +11,14 @@
     ./99-fancy.nix
 
     ./bottom.nix
-    ./direnv.nix
     ./nushell.nix
     ./pueue.nix
     ./qalc.nix
     ./tldr.nix
   ];
+
+  programs.direnv.enable = true;
+  programs.direnv.nix-direnv.enable = true;
 
   home.packages = lib.flatten [
     pkgs.rsync
@@ -101,7 +102,6 @@
 
       kmon # linux kernel activity monitor
       btop
-
     ])
     (with pkgsUnstable; [
       yt-dlp

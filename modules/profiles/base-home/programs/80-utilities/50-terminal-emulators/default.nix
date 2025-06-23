@@ -12,11 +12,16 @@
       * wl_drm#48: error 0: wl_drm.create_prime_buffer is not implemented
       * It seems plasma6 wayland session uses linux-dmabuf(wayland protocol), but AMDVLK/AMDGPU-PRO driver only support wl_drm
 */
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
-    ./alacritty
     ./ghostty
     ./warp-terminal
   ];
+
+  home.packages = [
+    pkgs.alacritty
+  ];
+
+  default-app.fromApps = [ "Alacritty" ];
 }

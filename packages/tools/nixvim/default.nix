@@ -209,13 +209,13 @@ let
       colorschemes = {
         # colorschemes that have light and dark version
         gruvbox.enable = false;
-        modus.enable = false;
+        modus.enable = true;
         melange.enable = false; # gray background
         nightfox.enable = false;
         one.enable = false; # whitish background
         rose-pine.enable = false;
         everforest.enable = false; # yellowish background
-        vscode.enable = true; # whitish background
+        # vscode.enable = true; # whitish background
       };
 
       # extraFiles = import ./share/ftplugin.nix;

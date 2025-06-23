@@ -13,7 +13,7 @@ in
     home.packages = [ ((import ./package) { inherit pkgs pkgsUnstable; }) ];
 
     default-app.mime = {
-      "application/vnd.comcbook+zip" = "YACReader";
+      "application/vnd.comicbook+zip" = "YACReader";
       "application/vnd.comicbook-rar" = "YACReader";
       "application/x-cb7" = "YACReader";
       "application/x-cbt" = "YACReader";

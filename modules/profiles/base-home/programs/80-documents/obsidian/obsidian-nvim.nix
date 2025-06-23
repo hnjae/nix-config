@@ -11,7 +11,8 @@ let
   appId = "obsidian-nvim";
   # icon = "${pkgs.pantheon.elementary-icon-theme}/share/icons/elementary/apps/128/utilities-system-monitor.svg";
 
-  icon = "${pkgs.whitesur-icon-theme}/share/icons/WhiteSur/apps/scalable/accessories-notes.svg";
+  # icon = "${pkgs.whitesur-icon-theme}/share/icons/WhiteSur/apps/scalable/accessories-notes.svg";
+  icon = "${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/org.standardnotes.standardnotes.svg";
   iconPkg = pkgs.runCommandLocal appId { } ''
     mkdir -p "$out/share/icons/hicolor/scalable/apps/"
 
