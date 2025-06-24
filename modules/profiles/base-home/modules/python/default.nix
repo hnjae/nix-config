@@ -40,7 +40,20 @@ in
 
   config = lib.mkIf cfg.enable {
     # home.packages = [ pkgs.python312 ];
+    python.pythonPackages = [
+      "httpx"
+      "requests"
+      "selenium"
+
+      "beautifulsoup4"
+      "lxml"
+
+      "pyyaml"
+      "loguru"
+    ];
     home.packages = [
+      pkgs.chromedriver
+
       (cfg.package.withPackages (
         # python-pkgs: (builtins.map (x: (builtins.getAttr x python-pkgs)) cfg.pythonPackages)
         python-pkgs: (builtins.map (x: (builtins.getAttr x python-pkgs)) cfg.pythonPackages)

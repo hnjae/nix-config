@@ -16,5 +16,9 @@ in
         filesystems = [ "home" ];
       };
     };
+
+    home.packages = [
+      pkgs.flameshot
+    ];
   };
 }

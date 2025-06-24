@@ -125,7 +125,7 @@ update-except-stable:
 [group('update')]
 [private]
 update-local-repo:
-    nix flake update nix-modules-private py-utils
+    nix flake update py-utils
 
 [group('check')]
 remote-build-test: update-local-repo

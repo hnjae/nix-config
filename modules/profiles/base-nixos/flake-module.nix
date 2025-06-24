@@ -81,8 +81,6 @@ in
           config.services.xremap.enable = lib.mkOverride 999 false;
         }
       )
-
-      inputs.nix-modules-private.nixosModules.base-home-extend
     ];
   };
 }

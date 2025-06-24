@@ -84,28 +84,6 @@
     },
     "devshell": {
       "inputs": {
-        "nixpkgs": [
-          "nix-modules-private",
-          "my-python-utils",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1728330715,
-        "narHash": "sha256-xRJ2nPOXb//u1jaBnDP56M7v5ldavjbtR6lfGqSvcKg=",
-        "owner": "numtide",
-        "repo": "devshell",
-        "rev": "dd6b80932022cea34a019e2bb32f6fa9e494dfef",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "devshell",
-        "type": "github"
-      }
-    },
-    "devshell_2": {
-      "inputs": {
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
@@ -309,32 +287,6 @@
         "type": "github"
       }
     },
-    "my-python-utils": {
-      "inputs": {
-        "devshell": "devshell",
-        "flake-parts": [
-          "nix-modules-private",
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nix-modules-private",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1745667088,
-        "narHash": "sha256-Ujx+haY4cq1jY2/pKoA6QxxM6SKt958o9xaqCK85osE=",
-        "ref": "refs/heads/main",
-        "rev": "43f84c8f82d41e3cb94336e1122fa80ca5742745",
-        "revCount": 25,
-        "type": "git",
-        "url": "ssh://git@github.com/hnjae/my-python-utils"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/hnjae/my-python-utils"
-      }
-    },
     "nix-flatpak": {
       "locked": {
         "lastModified": 1749389379,
@@ -369,36 +321,6 @@
         "owner": "nix-community",
         "repo": "nix-index-database",
         "type": "github"
-      }
-    },
-    "nix-modules-private": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "my-python-utils": "my-python-utils",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "nixpkgs-unstable": [
-          "nixpkgs-unstable"
-        ],
-        "sops-nix": [
-          "sops-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1750224897,
-        "narHash": "sha256-GBykXN5BUAD0iR0rPYGPtqMJwpl4DJfBeA/GPXmdqDU=",
-        "path": "/home/hnjae/Projects/nix-modules-private",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/hnjae/Projects/nix-modules-private",
-        "type": "path"
       }
     },
     "nix-web-app": {
@@ -517,7 +439,7 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1750075610,
+        "lastModified": 1750648750,
         "narHash": "sha256-H4iPwL+9QRQkzAOiUB0LYAaQ2XvAM6U3YoQKuOZh2UA=",
         "path": "/home/hnjae/Projects/py-utils",
         "type": "path"
@@ -556,7 +478,6 @@
         "microvm": "microvm",
         "nix-flatpak": "nix-flatpak",
         "nix-index-database": "nix-index-database",
-        "nix-modules-private": "nix-modules-private",
         "nix-web-app": "nix-web-app",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
@@ -680,7 +601,7 @@
     "xremap": {
       "inputs": {
         "crane": "crane_2",
-        "devshell": "devshell_2",
+        "devshell": "devshell",
         "flake-parts": [
           "flake-parts"
         ],

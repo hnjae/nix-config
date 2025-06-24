@@ -15,10 +15,11 @@
     gnomeExtensions.windownavigator
     gnomeExtensions.xwayland-indicator
 
-    # Test
+    # Testing
     trayscale
     gnomeExtensions.tailscale-status
     gnomeExtensions.tailscale-qs
+    gnomeExtensions.tactile
 
     # Not in use
     # gnomeExtensions.arcmenu

@@ -62,7 +62,6 @@ in
       self.nixosModules.base-nixos
       self.nixosModules.configure-impermanence
       self.nixosModules.rollback-btrfs-root
-      inputs.nix-modules-private.nixosModules.horus-services
       inputs.quadlet-nix.nixosModules.quadlet
       ./configs
       ./hardware

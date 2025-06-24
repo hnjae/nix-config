@@ -64,6 +64,7 @@ in
         pkgs.qdirstat
         pkgsUnstable.resources
         pkgsUnstable.scrcpy # display and control android
+        pkgsUnstable.ulauncher
       ])
     ];
   };
