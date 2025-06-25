@@ -17,11 +17,6 @@ in
   # The list of nameservers. It can be left empty if it is auto-detected through DHCP.
   networking.nameservers = lib.mkIf (cfg.hostType == "baremetal") (
     mkOverride 999 [
-      # "8.8.8.8"
-      # "8.8.4.4"
-      # "2001:4860:4860::8888"
-      # "2001:4860:4860::8844"
-
       # "1.1.1.1"
       # "1.0.0.1"
       # "2606:4700:4700::1111"

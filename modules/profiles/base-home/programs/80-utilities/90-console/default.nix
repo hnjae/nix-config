@@ -73,7 +73,7 @@ in
     pkgs.git-filter-repo
     pkgs.git-crypt
     pkgs.git-lfs
-    pkgs.lazygit
+    pkgsUnstable.lazygit
     # commitlint
     # gitlint # broken 2025-04-09
     # gitleaks

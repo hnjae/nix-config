@@ -29,6 +29,7 @@
       inputs.lanzaboote.nixosModules.lanzaboote
       self.nixosModules.rollback-zfs-root
       self.nixosModules.configure-impermanence
+      inputs.quadlet-nix.nixosModules.quadlet
 
       ./configs
       ./hardware

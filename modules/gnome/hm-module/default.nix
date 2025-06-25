@@ -73,7 +73,7 @@
       natural-scroll = true;
     };
     "org/gnome/mutter" = {
-      dynamic-workspaces = false;
+      dynamic-workspaces = true;
       edge-tiling = true;
     };
     "org/gnome/desktop/interface" = {

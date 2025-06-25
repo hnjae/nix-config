@@ -32,8 +32,8 @@
 
 `hardware`
 : 하드웨어 관련
-: bootloader, fstab, initrd, kernel 등 포함
 : `hardware-configuration.nix` 에 들어가는 내용.
+: `bootloader`, `initrd`, `kernelModules`, `fstab` 등 포함
 
 `configs`
 : 모듈의 옵션 설정 (위에 해당하지 않는 값)

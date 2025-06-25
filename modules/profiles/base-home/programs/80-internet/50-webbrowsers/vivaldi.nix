@@ -43,6 +43,19 @@ let
       nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [
         pkgs.kdePackages.wrapQtAppsHook
       ];
+      # vivaldi 는 NIX_OZONE_WL=1 플래그가 적용이 안됨 <NixOS 24.11>
+      commandLineARgs = builtins.concatStringsSep " " [
+        # enable wayland
+        "--ozone-platform-hint=auto"
+        "--enable-features=UseOzonePlatform"
+
+        # enable text-input-v3
+        "--enable-wayland-ime"
+        "--wayland-text-input-version=3"
+
+        # disable global shortcuts portal
+        "--disable-features=GlobalShortcutsPortal" # https://github.com/brave/brave-browser/issues/44886
+      ];
       inherit (pkgsUnstable.vivaldi) version src;
     })).override
       {
@@ -56,21 +69,6 @@ let
         });
       }
   );
-
-  flags = [
-    # enable wayland
-    "--ozone-platform-hint=auto"
-    "--enable-features=UseOzonePlatform"
-
-    # enable text-input-v3
-    "--enable-wayland-ime"
-    "--wayland-text-input-version=3"
-
-    # disable global shortcuts portal
-    "--disable-features=GlobalShortcutsPortal" # https://github.com/brave/brave-browser/issues/44886
-  ];
-
-  flagsStr = builtins.concatStringsSep " " flags;
 in
 {
   # NOTE: Vivaldi does not support wayland <2024-06-05; vivaldi v6.7.3329.31, NixOS 24.05>
@@ -79,33 +77,31 @@ in
 
     home.packages = [ package ];
 
-    # NOTE: desktopEntries does not work in Gnome <NixOS 24.11; Gnome 47>
-    # vivaldi 는 NIX_OZONE_WL=1 플래그가 적용이 안됨 <NixOS 24.11>
-    xdg.dataFile."applications/vivaldi-stable.desktop" = {
-      enable = true;
-      text = ''
-        [Desktop Entry]
-        Version=1.0
-        Name=Vivaldi
-        GenericName=Web Browser
-        Comment=Access the Internet
-        Exec=${package}/bin/vivaldi ${flagsStr} %U
-        StartupNotify=true
-        Terminal=false
-        Icon=vivaldi
-        Type=Application
-        Categories=Network;WebBrowser;
-        MimeType=application/pdf;application/rdf+xml;application/xhtml+xml;application/xhtml_xml;application/xml;text/html;text/xml;x-scheme-handler/ftp;x-scheme-handler/http;x-scheme-handler/https;
-        Actions=new-window;new-private-window;
-
-        [Desktop Action new-window]
-        Name=New Window
-        Exec=${package}/bin/vivaldi ${flagsStr} --new-window
-
-        [Desktop Action new-private-window]
-        Name=New Private Window
-        Exec=${package}/bin/vivaldi ${flagsStr} --incognito
-      '';
-    };
+    # xdg.dataFile."applications/vivaldi-stable.desktop" = {
+    #   enable = true;
+    #   text = ''
+    #     [Desktop Entry]
+    #     Version=1.0
+    #     Name=Vivaldi
+    #     GenericName=Web Browser
+    #     Comment=Access the Internet
+    #     Exec=${package}/bin/vivaldi ${flagsStr} %U
+    #     StartupNotify=true
+    #     Terminal=false
+    #     Icon=vivaldi
+    #     Type=Application
+    #     Categories=Network;WebBrowser;
+    #     MimeType=application/pdf;application/rdf+xml;application/xhtml+xml;application/xhtml_xml;application/xml;text/html;text/xml;x-scheme-handler/ftp;x-scheme-handler/http;x-scheme-handler/https;
+    #     Actions=new-window;new-private-window;
+    #
+    #     [Desktop Action new-window]
+    #     Name=New Window
+    #     Exec=${package}/bin/vivaldi ${flagsStr} --new-window
+    #
+    #     [Desktop Action new-private-window]
+    #     Name=New Private Window
+    #     Exec=${package}/bin/vivaldi ${flagsStr} --incognito
+    #   '';
+    # };
   };
 }
