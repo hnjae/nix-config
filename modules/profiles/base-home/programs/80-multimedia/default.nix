@@ -7,7 +7,6 @@
     ./ffmpeg
     ./kooha.nix
     ./mpv
-    ./steam.nix
     ./yacreader
 
     ./50-audio.nix

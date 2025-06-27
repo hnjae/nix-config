@@ -23,17 +23,16 @@ in
     ];
 
     home.packages = lib.flatten [
-      (lib.lists.optionals (pkgs.stdenv.isLinux) (
-        with pkgs;
-        [
-          virt-manager
+      pkgs.firefox
 
-          # remmina # Remote Desktop # 자동으로 autostart 에 등록하는데, 조금 짜증남.
-          # virt-viewer
-          # rustdesk
-          # vinagre # removed in nixos-24.11 use, remmina or gnome-connections
-        ]
-      ))
+      (lib.lists.optionals (pkgs.stdenv.isLinux) ([
+        pkgs.virt-manager
+
+        # remmina # Remote Desktop # 자동으로 autostart 에 등록하는데, 조금 짜증남.
+        # virt-viewer
+        # rustdesk
+        # vinagre # removed in nixos-24.11 use, remmina or gnome-connections
+      ]))
     ];
 
   };

@@ -31,14 +31,17 @@ in
     # 아래를 끄면, 위가 해결이 되나?
     # cpuFreqGovernor = cpuScalingGovernor.schedutil;
   };
+
   services.tlp.settings = {
     CPU_BOOST_ON_BAT = 0;
     CPU_BOOST_ON_AC = 1;
 
     # https://linrunner.de/tlp/settings/processor.html
-    # CPU
     # run `tlp-stat -p` to determine availability on your hardware
-    # CPU_SCALING_GOVERNOR_ON_AC = cpuScalingGovernor.schedutil;
-    # CPU_SCALING_GOVERNOR_ON_BAT = cpuScalingGovernor.schedutil;
+    CPU_SCALING_GOVERNOR_ON_AC = cpuScalingGovernor.schedutil;
+    CPU_SCALING_GOVERNOR_ON_BAT = cpuScalingGovernor.schedutil;
+
+    PLATFORM_PROFILE_ON_AC = "performance";
+    PLATFORM_PROFILE_ON_BAT = "balanced";
   };
 }

@@ -22,6 +22,8 @@
     pkgsUnstable.gh # github cli
     pkgsUnstable.gh-copilot
 
+    pkgsUnstable.awscli2
+
     (lib.lists.optional pkgs.stdenv.isLinux pkgsUnstable.distrobox)
   ];
 

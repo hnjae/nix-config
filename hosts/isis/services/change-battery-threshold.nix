@@ -1,3 +1,6 @@
+# TODO: 여기에 시간을 넣어서, 완충을 할 수 있는 시각을 지정하면 어떨까? <2025-06-26>
+# TODO: 완충을 가능하게할 스크립트 PATH 에 넣기 <2025-06-26>
+
 # NOTE:
 # run `systemctl list-dependencies --all --recursive  <target-name>` to list
 # dependencies
@@ -22,8 +25,8 @@ let
       #!${pkgs.dash}/bin/dash
       set -eu
 
-      echo 96 >"${end_path}"
-      echo 91 >"${start_path}"
+      echo 100 >"${end_path}"
+      echo 98 >"${start_path}"
     '';
   };
 
@@ -35,8 +38,8 @@ let
       #!${pkgs.dash}/bin/dash
       set -eu
 
-      echo 70 >"${start_path}"
-      echo 75 >"${end_path}"
+      echo 90 >"${start_path}"
+      echo 97 >"${end_path}"
     '';
   };
 
@@ -63,9 +66,7 @@ let
   );
 
   # NOTE: After=suspend.target 이면 resume 후 잘 켜짐 <NixOS 23.11>
-  # TODO: hibernate.target 같은거 필요할까? suspend.target 으로 잘 작동하지
-  # 않을까 싶음데.. <2024-01-24>
-  # => `suspend.target` 만으로 hibernate 시에도 잘 작동 된다.
+  # NOTE: `suspend.target` 만으로 hibernate 시에도 잘 작동 된다. <NixOS 23.11>
   limitServices = listToAttrs (
     map
       (

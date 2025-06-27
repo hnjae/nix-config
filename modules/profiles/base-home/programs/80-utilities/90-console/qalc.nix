@@ -1,39 +1,33 @@
 {
   pkgs,
-  lib,
   pkgsUnstable,
-  config,
   ...
 }:
-let
-  baseHomeCfg = config.base-home;
-in
 {
-  home.packages = [ pkgsUnstable.libqalculate ];
-
-  # services.flatpak.packages = lib.lists.optional (baseHomeCfg.isDesktop) "io.github.Qalculate.qalculate-qt";
-
-  xdg.desktopEntries.qalc = lib.mkIf (pkgs.stdenv.isLinux && baseHomeCfg.isDesktop) {
-    name = "Qalculate";
-    comment = "w. custom .desktop entry";
-    # exec = "footclient --app-id=qalc --title=Qalculate -e qalc";
-    exec = "${pkgs.alacritty}/bin/alacritty --class qalc,qalc --title Qalculate -e qalc %F";
-    terminal = false;
-    # icon = "accessories-calculator";
-    icon = "${pkgs.colloid-icon-theme}/share/icons/Colloid/apps/scalable/io.github.Qalculate.svg";
-    type = "Application";
-    startupNotify = false;
-    categories = [
-      "Utility"
-      "Calculator"
-    ];
-    settings = {
-      Keywords = builtins.concatStringsSep ";" [
+  home.packages = [
+    pkgsUnstable.libqalculate
+    (pkgs.makeDesktopItem {
+      desktopName = "Qalculate";
+      name = "qalcuate";
+      categories = [
+        "Utility"
+        "Calculator"
+      ];
+      keywords = [
         "calculation"
         "arithmetic"
         "scientific"
         "financial"
       ];
-    };
-  };
+      exec = "${pkgs.alacritty}/bin/alacritty --class qalc,qalc --title Qalculate -e qalc %F";
+      terminal = false;
+      startupNotify = false;
+      type = "Application";
+      # icon = "accessories-calculator";
+      icon = "${pkgs.cosmic-icons}/share/icons/Cosmic/scalable/apps/accessories-calculator.svg";
+      # icon = "${pkgs.colloid-icon-theme}/share/icons/Colloid/apps/scalable/io.github.Qalculate.svg";
+      # /nix/store/wyjgkavzidsxa2v1klwald80120s2z10-breeze-icons-6.14.0/share/icons/breeze/apps/48/accessories-calculator.svg
+
+    })
+  ];
 }

@@ -1,4 +1,4 @@
-_: {
+{
   imports = [
     ./systemd.nix
     ./pipewire.nix
@@ -6,4 +6,11 @@ _: {
   ];
 
   nix.settings.min-free = "343597383680"; # 20% of root zfs pool
+
+  programs.steam = {
+    enable = true;
+    gamescopeSession = {
+      enable = true;
+    };
+  };
 }
