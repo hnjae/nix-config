@@ -24,7 +24,7 @@ let
   documentation = [ "man:nix-env-delete-generations(1)" ];
   serviceName = "nix-gc-system-generations";
   cfg = config.services.${serviceName};
-  package = pkgs.callPackage ./package { };
+  package = (import ./package) { inherit pkgs; };
 
   inherit (lib)
     mkEnableOption
@@ -80,7 +80,7 @@ in
         CPUSchedulingPolicy = "idle";
         IOSchedulingClass = "idle";
         ExecStart = lib.escapeShellArgs [
-          "${package}/bin/nix-gc-system-generations"
+          "${package}/bin/nix-gc-sysgen"
           "--run"
           "--delete-older-than-days"
           (toString (cfg.keepDays))
