@@ -3,6 +3,8 @@
   lib,
 }:
 stdenv.mkDerivation {
+  preferLocalBuild = true;
+
   pname = "fonts-ridibatang";
   version = "1.0.1"; # 2019-10-01 build # 2023-06-18
 

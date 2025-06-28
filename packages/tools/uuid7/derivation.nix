@@ -5,6 +5,8 @@
 }:
 
 buildGoModule rec {
+  preferLocalBuild = true;
+
   pname = "uuid7";
   version = "0.1.1"; # checked 2025-05-21
 

@@ -3,7 +3,9 @@
   lib,
   fetchzip,
 }:
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
+  preferLocalBuild = true;
+
   pname = "fonts-kopub-world";
   version = "1.1.1"; # 2021-03 # 2023-06-08
 

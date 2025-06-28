@@ -4,6 +4,8 @@
   fetchzip,
 }:
 stdenv.mkDerivation rec {
+  preferLocalBuild = true;
+
   pname = "fonts-dmca-sans-serif";
   version = "9.0-20252"; # 2023-06-08
 

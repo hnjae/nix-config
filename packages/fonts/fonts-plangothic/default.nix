@@ -4,6 +4,8 @@
   fetchFromGitHub,
 }:
 stdenv.mkDerivation rec {
+  preferLocalBuild = true;
+
   pname = "fonts-plangothic";
   version = "0.8.5735"; # 2023-05-14
 

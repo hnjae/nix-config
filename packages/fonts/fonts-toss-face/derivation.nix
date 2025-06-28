@@ -2,13 +2,14 @@
   stdenv,
   lib,
 }:
-stdenv.mkDerivation {
+stdenv.mkDerivation rec {
+  preferLocalBuild = true;
+
   pname = "fonts-toss-face";
   version = "1.6.1"; # 2025-04-30 checked
 
   src = builtins.fetchurl {
-    # url = "https://github.com/toss/tossface/releases/latest/download/TossFaceFontMac.ttf";
-    url = "https://github.com/toss/tossface/releases/download/v1.6.1/TossFaceFontMac.ttf";
+    url = "https://github.com/toss/tossface/releases/download/v${version}/TossFaceFontMac.ttf";
     sha256 = "sha256:10s8bcz2fqscflyffbkc5b31432y8dk0mkxw8h4brid9pqqwyjgc";
   };
   dontUnpack = true;

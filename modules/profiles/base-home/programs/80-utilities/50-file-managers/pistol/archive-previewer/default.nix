@@ -7,6 +7,8 @@ pkgs.callPackage (
     stdenv,
   }:
   stdenv.mkDerivation {
+    preferLocalBuild = true;
+
     name = "archive-previewer";
     propagatedBuildInputs = [
       (python3.withPackages (

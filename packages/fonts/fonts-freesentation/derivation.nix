@@ -8,6 +8,8 @@
   fetchzip,
 }:
 stdenv.mkDerivation rec {
+  preferLocalBuild = true;
+
   pname = "fonts-freesentation";
   version = "2.000"; # 2024-11-12
 
