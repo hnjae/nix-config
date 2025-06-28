@@ -1,6 +1,6 @@
 _: {
   imports = [
-    ./change-battery-threshold.nix
+    ./dynamic-battery-threshold
     ./fprint.nix
     ./ollama.nix
     ./zrepl.nix

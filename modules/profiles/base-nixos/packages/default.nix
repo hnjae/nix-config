@@ -51,7 +51,7 @@
 
       # some "modern" utils
       bat
-      bottom # tops
+      # bottom # tops
       eza
       fd
       hexyl # replace od

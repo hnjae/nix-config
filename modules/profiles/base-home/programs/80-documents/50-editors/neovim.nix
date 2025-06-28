@@ -37,9 +37,5 @@ in
       EDITOR = lib.mkForce "nvim";
       VISUAL = "nvim";
     };
-
-    home.shellAliases = {
-      vi = "nvim";
-    };
   };
 }

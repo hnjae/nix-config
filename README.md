@@ -7,7 +7,7 @@
 
 ### 메모
 
-채널 별 차이점은 다음 링크 참고: <https://nixos.wiki/wiki/Nix_channels>
+채널 별 차이점은 다음 링크 참고: <https://wiki.nixos.org/wiki/Channel_branches>
 
 ## 작성 가이드
 
