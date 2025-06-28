@@ -1,6 +1,3 @@
-# TODO: 여기에 시간을 넣어서, 완충을 할 수 있는 시각을 지정하면 어떨까? <2025-06-26>
-# TODO: 완충을 가능하게할 스크립트 PATH 에 넣기 <2025-06-26>
-
 # NOTE:
 # run `systemctl list-dependencies --all --recursive  <target-name>` to list
 # dependencies
@@ -15,33 +12,10 @@
 let
   inherit (builtins) listToAttrs;
 
-  end_path = "/sys/class/power_supply/BAT0/charge_control_end_threshold";
-  start_path = "/sys/class/power_supply/BAT0/charge_control_start_threshold";
-
-  pkgsRestore = pkgs.writeTextFile {
-    name = "restore-battery-threshold";
-    executable = true;
-    text = ''
-      #!${pkgs.dash}/bin/dash
-      set -eu
-
-      echo 100 >"${end_path}"
-      echo 98 >"${start_path}"
-    '';
-  };
-
-  pkgsLimit = pkgs.writeTextFile {
-    name = "limit-battery-threshold";
-    executable = true;
-    # NOTE: should edit start-path first then end-path
-    text = ''
-      #!${pkgs.dash}/bin/dash
-      set -eu
-
-      echo 90 >"${start_path}"
-      echo 97 >"${end_path}"
-    '';
-  };
+  package = (import ./package { inherit pkgs; });
+  exec = "${package}/bin/set-charge-threshold";
+  execLimit = "${exec} -l 90 -r 4";
+  execRestore = "${exec} -l 70 -r 15";
 
   # NOTE: final.target 은 작동하지 않음. <2024-01-27>
   restoreServices = listToAttrs (
@@ -51,14 +25,14 @@ let
         stem = builtins.replaceStrings [ ".target" ] [ "" ] unit;
       in
       {
-        name = "restore-battery-threshold-${stem}";
+        name = "restore-battery-charge-threshold-${stem}";
         value = {
-          description = "restore battery threshold";
+          description = "restore battery charge threshold";
           before = [ unit ];
           wantedBy = [ unit ];
           serviceConfig = {
             Type = "oneshot";
-            ExecStart = "${pkgsRestore}";
+            ExecStart = execRestore;
           };
         };
       }
@@ -75,14 +49,14 @@ let
           stem = builtins.replaceStrings [ ".target" ] [ "" ] unit;
         in
         {
-          name = "limit-battery-threshold-${stem}";
+          name = "limit-battery-charge-threshold-${stem}";
           value = {
-            description = "limit battery threshold";
+            description = "limit battery charge threshold";
             after = [ unit ];
             wantedBy = [ unit ];
             serviceConfig = {
               Type = "oneshot";
-              ExecStart = "${pkgsLimit}";
+              ExecStart = execLimit;
             };
           };
         }
@@ -92,24 +66,23 @@ let
       # "suspend-then-hibernate.target"
       [ "suspend.target" ]
   );
-
-  multiUserService = {
-    "control-battery-threshold" = {
-      description = "limit/restore battery threshold";
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = "${pkgsLimit}";
-        ExecStop = "${pkgsRestore}";
-      };
-    };
-  };
 in
 {
+  environment.systemPackages = [ package ];
   systemd.services = lib.attrsets.mergeAttrsList [
     limitServices
     restoreServices
-    multiUserService
+    ({
+      "control-battery-charge-threshold" = {
+        description = "limit/restore battery charge threshold";
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = execLimit;
+          ExecStop = execRestore;
+        };
+      };
+    })
   ];
 }
