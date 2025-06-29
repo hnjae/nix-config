@@ -30,6 +30,9 @@ in
           # enable vulkan support
           # NOTE: enabling vulkan disable video play in wavve.com <2024-12-25>
           # "--enable-features=Vulkan"
+
+          # disable global shortcuts portal
+          "--disable-features=GlobalShortcutsPortal" # https://github.com/brave/brave-browser/issues/44886
         ];
         flagStr = builtins.concatStringsSep " " flags;
       in

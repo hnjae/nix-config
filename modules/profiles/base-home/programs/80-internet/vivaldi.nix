@@ -44,7 +44,7 @@ let
         pkgs.kdePackages.wrapQtAppsHook
       ];
       # vivaldi 는 NIX_OZONE_WL=1 플래그가 적용이 안됨 <NixOS 24.11>
-      commandLineARgs = builtins.concatStringsSep " " [
+      commandLineArgs = builtins.concatStringsSep " " [
         # enable wayland
         "--ozone-platform-hint=auto"
         "--enable-features=UseOzonePlatform"

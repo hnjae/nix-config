@@ -1,8 +1,15 @@
 { pkgs, ... }:
 {
   imports = [
-    ./kvantum.nix
+    # ./kvantum.nix
   ];
+
+  qt = {
+    enable = true;
+    # style = "kvantum";
+    style = "breeze";
+    # platformTheme = "qt5ct";
+  };
 
   home-manager.sharedModules = [
     {

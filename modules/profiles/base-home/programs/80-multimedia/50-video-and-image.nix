@@ -41,8 +41,10 @@ in
     builtins.concatLists [
       [
         "org.gimp.GIMP"
-        "org.kde.kolourpaint" # basic painting
         "org.kde.krita"
+        # "org.kde.kolourpaint" # basic painting
+        "com.github.PintaProject.Pinta" # basic painting
+        "com.github.maoschanz.drawing"
 
         "org.kde.kdenlive"
 
@@ -57,9 +59,6 @@ in
         "com.github.rafostar.Clapper"
         "net.base_art.Glide"
         "org.gnome.Showtime"
-
-        "com.github.maoschanz.drawing"
-        "com.github.PintaProject.Pinta"
 
         "page.codeberg.Imaginer.Imaginer" # ai image generator
         "org.gnome.design.Emblem" # generate avatar

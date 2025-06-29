@@ -11,7 +11,6 @@
     ./80-internet
     ./80-multimedia
     ./80-others
-    ./80-security
     ./80-utilities
   ];
 }
