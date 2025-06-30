@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# 배터리 충전을 제한할때, 수명과 관계없이 항상 동일한 배터리 충전량을 유지하기 위한 스크립트
+
 set -eu
 
 CHARGE_CONTROL_END_THRESHOLD_PATH="/sys/class/power_supply/BAT0/charge_control_end_threshold"
@@ -7,21 +9,22 @@ CHARGE_CONTROL_START_THRESHOLD_PATH="/sys/class/power_supply/BAT0/charge_control
 ENERGY_FULL="$(cat "/sys/class/power_supply/BAT0/energy_full")"
 ENERGY_FULL_DESIGN="$(cat "/sys/class/power_supply/BAT0/energy_full_design")"
 
-range=""
+range="5"
 limit=""
 
+##############################
+# Parse command line options #
+##############################
+
 usage() {
-  echo "Usage: $(basename -- "$0") [-l limit] [-r range]"
+  echo "Usage: $(basename -- "$0") [-r range] limit"
   exit 1
 }
 
-while getopts ":l:r:h" opt; do
+while getopts ":r:h" opt; do
   case ${opt} in
   h)
     usage
-    ;;
-  l)
-    limit=$OPTARG
     ;;
   r)
     range=$OPTARG
@@ -38,13 +41,21 @@ while getopts ":l:r:h" opt; do
 done
 shift $((OPTIND - 1))
 
+if [ $# -ne 1 ]; then
+  echo "Error: Exactly one positional argument (limit) is required" 1>&2
+  usage
+fi
+limit="$1"
+
+########################
+# Start business logic #
+########################
+
 set_thresholds() {
   start_threshold="$1"
   end_threshold="$2"
 
   cur_end_threshold="$(cat "$CHARGE_CONTROL_END_THRESHOLD_PATH")"
-
-  echo "[INFO] Set battery charge threshold to {start: ${start_threshold}, end: ${end_threshold}}"
 
   if [ "$cur_end_threshold" -gt "$end_threshold" ]; then
     echo "$start_threshold" >"$CHARGE_CONTROL_START_THRESHOLD_PATH"
@@ -53,6 +64,8 @@ set_thresholds() {
     echo "$end_threshold" >"$CHARGE_CONTROL_END_THRESHOLD_PATH"
     echo "$start_threshold" >"$CHARGE_CONTROL_START_THRESHOLD_PATH"
   fi
+
+  echo "[INFO] Set battery charge threshold to {start: ${start_threshold}, end: ${end_threshold}}"
 }
 
 clamp() {
@@ -70,16 +83,6 @@ clamp() {
 }
 
 main() {
-  if [ $# -ne 0 ]; then
-    echo "Error: Unexpected arguments: $*" 1>&2
-    usage
-  fi
-
-  if [ "$limit" = "" ] || [ "$range" = "" ]; then
-    echo "Error: Both -l and -r options are required." 1>&2
-    usage
-  fi
-
   if [ "$(id -u)" -ne 0 ]; then
     echo "This script must be run as root."
     return 1
@@ -100,4 +103,4 @@ main() {
   set_thresholds "$real_start" "$real_end"
 }
 
-main "$@"
+main

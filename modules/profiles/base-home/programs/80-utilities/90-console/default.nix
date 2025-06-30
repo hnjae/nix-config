@@ -56,7 +56,7 @@ in
     pkgs.navi
 
     pkgs.mprocs # run multiple commands in parallel
-    pkgsUnstable.tinty # https://github.com/tinted-theming/tinty (base24 / base16)
+    # pkgsUnstable.tinty # https://github.com/tinted-theming/tinty (base24 / base16)
 
     # NOTE: trashy is not usable because of following issue: https://github.com/Byron/trash-rs/issues/57 <2023-03-22>
     # pkgs.trashy # trash-cli alternative in rust
