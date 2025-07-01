@@ -24,7 +24,7 @@
       }
 
       self.nixosModules.base-nixos
-      self.nixosModules.gnome
+      self.nixosModules.kde
 
       inputs.lanzaboote.nixosModules.lanzaboote
       self.nixosModules.rollback-zfs-root

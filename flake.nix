@@ -199,8 +199,10 @@
       }
       {
         imports = [
-          treefmt-nix.flakeModule
           git-hooks.flakeModule
+          treefmt-nix.flakeModule
+          # (lib.lists.optional (inputs.git-hooks ? flakeModule) inputs.git-hooks.flakeModule)
+          # (lib.lists.optional (inputs.treefmt-nix ? flakeModule) inputs.treefmt-nix.flakeModule)
 
           ./flake-output-attributes
 
@@ -212,6 +214,7 @@
           ./templates/flake-module.nix
 
           ./modules/gnome/flake-module.nix
+          ./modules/kde/flake-module.nix
           ./modules/nixos-modules/flake-module.nix
           ./modules/profiles/flake-module.nix
         ];

@@ -1,6 +1,6 @@
 {
   flake = {
-    nixosModules.gnome = {
+    nixosModules.kde = {
       imports = [
         ./nixos-module
         {
@@ -10,11 +10,12 @@
         }
       ];
     };
-    /*
-      Module Dependency:
-        * home-manager
-        * base-home
-    */
-    homeManagerModules.gnome = import ./hm-module;
+
+    # /*
+    #   Module Dependency:
+    #     * home-manager
+    #     * base-home
+    # */
+    homeManagerModules.kde = import ./hm-module;
   };
 }

@@ -327,6 +327,7 @@ boot-nixos: update-local-repo
         --option eval-cache false \
         --keep-failed
 
+# --builders "" \
 # [group('self-deploy')]
 # switch-nixos-nh: update-local-repo
 #     nh os switch .

@@ -55,11 +55,6 @@ in
         "io.github.nokse22.asciidraw" # asciidraw, gpl3
       ]
       ([
-        # gstreamer based
-        "com.github.rafostar.Clapper"
-        "net.base_art.Glide"
-        "org.gnome.Showtime"
-
         "page.codeberg.Imaginer.Imaginer" # ai image generator
         "org.gnome.design.Emblem" # generate avatar
 
