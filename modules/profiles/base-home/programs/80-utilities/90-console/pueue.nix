@@ -6,6 +6,9 @@
 }:
 let
   package = pkgsUnstable.pueue;
+  help = pkgs.runCommandLocal "pueued-help" { } ''
+    ${package}/bin/pueued --help >$out
+  '';
 in
 {
   # https://github.com/Nukesor/pueue
@@ -14,7 +17,10 @@ in
   systemd.user.services.pueued = lib.mkIf (pkgs.stdenv.isLinux) {
     Unit = {
       Description = "pueue daemon";
-      Documentation = [ "pueue --help" ];
+      Documentation = [
+        "https://github.com/Nukesor/pueue"
+        "file:${help}"
+      ];
     };
     Service = {
       Type = "simple";

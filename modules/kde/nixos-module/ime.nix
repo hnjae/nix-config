@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   config = {
     # IME
@@ -17,5 +17,24 @@
         ];
       };
     };
+
+    environment.systemPackages = [
+      (lib.hiPrio (
+        pkgs.makeDesktopItem {
+          name = "org.fcitx.fcitx5-migrator";
+          desktopName = "This should not be displayed.";
+          exec = ":";
+          noDisplay = true;
+        }
+      ))
+      (lib.hiPrio (
+        pkgs.makeDesktopItem {
+          name = "org.fcitx.Fcitx5";
+          desktopName = "This should not be displayed.";
+          exec = ":";
+          noDisplay = true;
+        }
+      ))
+    ];
   };
 }

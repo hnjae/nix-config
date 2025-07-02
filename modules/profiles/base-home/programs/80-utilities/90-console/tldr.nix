@@ -11,8 +11,10 @@ let
 
   serviceName = "tldr-update";
   Description = "daily update tldr";
-
-  # Documentation = [""]; no man page for tealdeer <NixOS 23.11; tealdeer 1.6.1>
+  help = pkgs.runCommandLocal "tldr-help" { } ''
+    ${package}/bin/tldr --help >$out
+  '';
+  Documentation = [ "file:${help}" ]; # no man page for tealdeer <NixOS 23.11; tealdeer 1.6.1>
 
   tldrUpdateScript = pkgs.writeScript "tldr-update" ''
     #!${pkgs.dash}/bin/dash
@@ -53,7 +55,7 @@ in
 
   systemd.user.services."${serviceName}" = lib.mkIf isLinux {
     Unit = {
-      inherit Description;
+      inherit Description Documentation;
 
       # NOTE: systemd-user 에서는 network-online 을 알수 없음
       After = [
@@ -74,7 +76,7 @@ in
   };
 
   systemd.user.timers."${serviceName}" = lib.mkIf isLinux {
-    Unit = { inherit Description; };
+    Unit = { inherit Description Documentation; };
 
     Timer = {
       OnCalendar = "*-*-* 04:00:00";

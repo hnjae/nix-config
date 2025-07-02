@@ -5,15 +5,15 @@
   ...
 }:
 let
-  appName = "org.telegram.desktop";
+  appId = "org.telegram.desktop";
   baseHomeCfg = config.base-home;
 in
 {
   config = lib.mkIf (baseHomeCfg.isDesktop && baseHomeCfg.isHome) {
     services.flatpak.packages = [
-      appName # GPL3
+      appId # GPL3
     ];
-    services.flatpak.overrides."${appName}" = {
+    services.flatpak.overrides."${appId}" = {
       Context = {
         filesystems = [
           "xdg-download"

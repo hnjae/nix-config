@@ -12,6 +12,7 @@
     ./hardware.nix
     ./ios.nix
     ./libvirtd.nix
+    ./localsend.nix
     ./locate.nix
     ./packages.nix
     ./portal-pipewire.nix

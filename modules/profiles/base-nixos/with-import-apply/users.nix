@@ -15,7 +15,7 @@ in
 {
   config = {
     users.mutableUsers = false;
-    users.defaultUserShell = lib.mkOverride 999 pkgs.fish;
+    users.defaultUserShell = lib.mkOverride 999 pkgs.zsh;
 
     security.sudo.wheelNeedsPassword = lib.mkOverride 999 false;
 

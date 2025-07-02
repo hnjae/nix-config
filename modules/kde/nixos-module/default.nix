@@ -6,6 +6,7 @@
   imports = [
     ./ime.nix
     ./style.nix
+    ./programs.nix
   ];
 
   config = {
@@ -34,7 +35,7 @@
       dolphin
       baloo-widgets # baloo information in Dolphin
       dolphin-plugins
-      spectacle
+      # spectacle
       ffmpegthumbs
       krdp
       xwaylandvideobridge # exposes Wayland windows to X11 screen capture

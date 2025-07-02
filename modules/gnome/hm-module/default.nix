@@ -2,6 +2,7 @@
 {
   imports = [
     ./dash.nix
+    ./kooha.nix
     ./programs.nix
     ./rectangle.nix
   ];

@@ -21,7 +21,10 @@
 }:
 let
   serviceName = "nix-store-gc";
-  documentation = [ "nix store --help" ];
+  documentation = [
+    "https://nix.dev/manual/nix/2.28/command-ref/new-cli/nix3-store-gc"
+    # "nix store gc --help"
+  ];
   description = "run nix store gc";
   cfg = config.services.${serviceName};
 

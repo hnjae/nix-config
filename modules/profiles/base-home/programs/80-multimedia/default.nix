@@ -5,7 +5,6 @@
   imports = [
     ./cider-2.nix
     ./ffmpeg
-    ./kooha.nix
     ./mpv
     ./yacreader
 

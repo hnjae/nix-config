@@ -10,7 +10,17 @@ let
 in
 {
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
-    home.packages = [ ((import ./package) { inherit pkgs pkgsUnstable; }) ];
+    home.packages = [
+      ((import ./package) { inherit pkgs pkgsUnstable; })
+      (lib.hiPrio (
+        pkgs.makeDesktopItem {
+          name = "YACReaderLibrary.desktop";
+          desktopName = "This should not be displayed.";
+          exec = ":";
+          noDisplay = true;
+        }
+      ))
+    ];
 
     default-app.mime = {
       "application/vnd.comicbook+zip" = "YACReader";
@@ -18,28 +28,5 @@ in
       "application/x-cb7" = "YACReader";
       "application/x-cbt" = "YACReader";
     };
-
-    xdg.dataFile =
-      let
-        desktops = [
-          "YACReaderLibrary.desktop"
-        ];
-
-        desktopEntryText = ''
-          [Desktop Entry]
-          NoDisplay=true
-          Exec=:
-          Name=This should not be displayed
-          Type=Application
-        '';
-      in
-      (builtins.listToAttrs (
-        builtins.map (desktop: {
-          name = "applications/${desktop}";
-          value = {
-            text = desktopEntryText;
-          };
-        }) desktops
-      ));
   };
 }

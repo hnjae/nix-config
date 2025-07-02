@@ -1,21 +1,22 @@
 { pkgs, ... }:
 {
-  programs.fish.enable = true;
-
   programs.zsh = {
     enable = true;
     enableCompletion = false;
     enableLsColors = false;
   };
 
-  # programs.xonsh.enable = true;
-
   environment.shells = with pkgs; [
     bashInteractive
     dash
+    fish
+    # (lib.hiPrio (
+    #   pkgs.makeDesktopItem {
+    #     name = "fish";
+    #     desktopName = "This should not be displayed.";
+    #     exec = ":";
+    #     noDisplay = true;
+    #   }
+    # ))
   ];
-
-  # environment.systemPackages = with pkgs; [
-  #   bashInteractive
-  # ];
 }

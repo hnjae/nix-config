@@ -12,7 +12,6 @@ let
 in
 {
   imports = [
-    ./nushell.nix
     ./pueue.nix
     ./qalc.nix
     ./tldr.nix
@@ -110,15 +109,22 @@ in
     (lib.lists.optionals pkgs.stdenv.isLinux [
       pkgs.convmv
       pkgs.poppler_utils # pdftotext
-      pkgs.clipboard-jh
     ])
-    (lib.lists.optionals baseHomeCfg.isDesktop [ pkgs.handlr-regex ])
+    (lib.lists.optionals (pkgs.stdenv.isLinux && baseHomeCfg.isDesktop) [
+      pkgs.clipboard-jh
+      pkgs.handlr-regex
+      (pkgs.runCommandLocal "gtk-launch" { } ''
+        mkdir -p "$out/bin"
+        ln -s "${pkgs.gtk3}/bin/gtk-launch" "$out/bin/gtk-launch"
+      '')
+    ])
 
     # Fancy
     pkgsUnstable.fastfetch # C, count nix pckage
     pkgsUnstable.cpufetch
     pkgsUnstable.ipfetch
     pkgsUnstable.onefetch # git
-    (lib.lists.optionals pkgs.stdenv.isLinux [ pkgsUnstable.ramfetch ])
+    (lib.lists.optional pkgs.stdenv.isLinux pkgsUnstable.ramfetch)
+
   ];
 }
