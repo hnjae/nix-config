@@ -29,8 +29,8 @@ in
 
     users.users.hnjae = {
       isNormalUser = true;
-      extraGroups = concatLists [
-        [ "wheel" ]
+      extraGroups = lib.flatten [
+        "wheel"
         (lib.lists.optional (
           config.services.locate.enable && (lib.hasPrefix "plocate" config.services.locate.package.name)
         ) "plocate")

@@ -25,21 +25,22 @@
     # NOTE: https://gitlab.freedesktop.org/xorg/xserver/-/issues/1384 <2024-12-12>
     # X11 이나 xwayland 에서 caps:backspace 가 활성화되어 있을시, caps 가 backspace 를 keep-sending 하지 않는 문제 수정
     home-manager.sharedModules = [
-      {
-        xdg.configFile."autostart/fix-xwayland-ctrl-backspace.desktop" = {
-          enable = true;
-          text = ''
-            [Desktop Entry]
-            Exec=sh -c 'sleep 0.2 && xset r 66'
-            Name=fix-xwayland-ctrl-backspace
-            Terminal=false
-            Type=Application
-          '';
-        };
-      }
+      # {
+      #   xdg.configFile."autostart/fix-xwayland-ctrl-backspace.desktop" = {
+      #     enable = true;
+      #     text = ''
+      #       [Desktop Entry]
+      #       Exec=sh -c 'sleep 0.2 && xset r 66'
+      #       Name=fix-xwayland-ctrl-backspace
+      #       Terminal=false
+      #       Type=Application
+      #     '';
+      #   };
+      # }
     ];
 
-    environment.sessionVariables.NIXOS_OZONE_WL = "1";
+    # NOTE: --wayland-text-input-version=3 가 추가되기 전까지는 사용하지 않음. <NixOS 25.05>
+    # environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
     # provides org.freedesktop.upower interface
     services.upower.enable = lib.mkOverride 999 true;

@@ -28,28 +28,28 @@ in
       https://github.com/ghostty-org/ghostty/discussions/3628
       https://github.com/ghostty-org/ghostty/discussions/3279
     */
-    xdg.dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
-      [Desktop Entry]
-      Name=Ghostty
-      Type=Application
-      Comment=A terminal emulator
-      Exec=env GTK_IM_MODULE="wayland" ghostty
-      Icon=com.mitchellh.ghostty
-      Categories=System;TerminalEmulator;
-      Keywords=terminal;tty;pty;
-      StartupNotify=true
-      Terminal=false
-      Actions=new-window;
-      X-GNOME-UsesNotifications=true
-      X-TerminalArgExec=-e
-      X-TerminalArgTitle=--title=
-      X-TerminalArgAppId=--class=
-      X-TerminalArgDir=--working-directory=
-      X-TerminalArgHold=--wait-after-command
-
-      [Desktop Action new-window]
-      Name=New Window
-      Exec=env GTK_IM_MODULE="wayland" ghostty
-    '';
+    #   xdg.dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
+    #     [Desktop Entry]
+    #     Name=Ghostty
+    #     Type=Application
+    #     Comment=A terminal emulator
+    #     Exec=env GTK_IM_MODULE="wayland" ghostty
+    #     Icon=com.mitchellh.ghostty
+    #     Categories=System;TerminalEmulator;
+    #     Keywords=terminal;tty;pty;
+    #     StartupNotify=true
+    #     Terminal=false
+    #     Actions=new-window;
+    #     X-GNOME-UsesNotifications=true
+    #     X-TerminalArgExec=-e
+    #     X-TerminalArgTitle=--title=
+    #     X-TerminalArgAppId=--class=
+    #     X-TerminalArgDir=--working-directory=
+    #     X-TerminalArgHold=--wait-after-command
+    #
+    #     [Desktop Action new-window]
+    #     Name=New Window
+    #     Exec=env GTK_IM_MODULE="wayland" ghostty
+    #   '';
   };
 }

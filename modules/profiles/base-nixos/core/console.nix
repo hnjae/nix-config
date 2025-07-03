@@ -1,14 +1,13 @@
 {
   config,
   pkgs,
-  lib,
   ...
 }:
 {
   console = {
     # Enable setting virtual console options in initrd.
-    earlySetup = lib.mkOverride 999 true;
-    # earlySetup = false;
+    # earlySetup = lib.mkOverride 999 true;
+    earlySetup = false;
     useXkbConfig = true; # use xkbOptions in tty.
 
     # font = "${pkgs.terminus_font}/share/consolefonts/ter-v32n.psf.gz";
@@ -17,7 +16,10 @@
     # font option does not work in NixOS 23.11
     # https://github.com/NixOS/nixpkgs/issues/274545
     # https://github.com/NixOS/nixpkgs/issues/257904
-    font = "latarcyrheb-sun32";
+    # font = "latarcyrheb-sun32";
+    # font = "${pkgs.kbd}/share/consolefonts/Lat2-Terminus16.psfu.gz";
+    font = "${pkgs.kbd}/share/consolefonts/latarcyrheb-sun32.psfu.gz"; # not working <NixOS 25.05>
+
     # font = "ter-132n";
     # packages = with pkgs; [kbd terminus_font]; # for fonts
     # packages = with pkgs; [kbd]; # for fonts

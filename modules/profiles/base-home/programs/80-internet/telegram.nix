@@ -21,7 +21,7 @@ in
       };
     };
 
-    xdg.dataFile."applications/org.telegram.desktop.desktop" = {
+    xdg.dataFile."applications/${appId}" = {
       enable = true;
       text = ''
         [Desktop Entry]

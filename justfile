@@ -267,9 +267,9 @@ _drybuild-nixoses: update-local-repo
         --option eval-cache false \
         --show-trace \
         --keep-failed \
-     --option builders "" \
         ".#nixosConfigurations.${1}.config.system.build.toplevel"
 
+# --option builders "" \
 [group('build')]
 build-iso: update-local-repo
     nix build .#nixosConfigurations.nixos-iso.config.system.build.isoImage

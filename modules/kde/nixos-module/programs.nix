@@ -8,6 +8,7 @@
         "org.kde.okular" # flathub's build lacks rar support
         # "org.kde.konsole"
         "org.kde.kontact"
+        "org.kde.kwrite"
       ];
 
       default-app.image = "org.kde.gwenview";

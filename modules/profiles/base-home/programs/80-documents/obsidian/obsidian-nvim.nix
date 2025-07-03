@@ -19,22 +19,6 @@ let
     cp --reflink=auto \
       "${icon}" \
       "$out/share/icons/hicolor/scalable/apps/${appId}.svg"
-
-    paths=(
-      "$out/share/icons/hicolor/512x512/apps/"
-      "$out/share/icons/hicolor/256x256/apps/"
-      "$out/share/icons/hicolor/128x128/apps/"
-      "$out/share/icons/hicolor/64x64/apps/"
-      "$out/share/icons/hicolor/48x48/apps/"
-      "$out/share/icons/hicolor/32x32/apps/"
-      "$out/share/icons/hicolor/16x16/apps/"
-    )
-    for path in "''${paths[@]}"; do
-      mkdir -p "''$path"
-      ln -s \
-        "$out/share/icons/hicolor/scalable/apps/${appId}.svg" \
-        "''${path}/${appId}.svg"
-    done
   '';
 in
 {
