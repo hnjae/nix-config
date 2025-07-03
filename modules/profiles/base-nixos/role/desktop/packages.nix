@@ -16,13 +16,15 @@
     programs.adb.enable = true;
 
     # managing external displays <https://wiki.archlinux.org/title/Backlight>
-    # services.ddccontrol.enable = true;
     # boot.kernelModules = [ "i2c_dev" ];
     # environment.systemPackages = [
     #   pkgs.ddcutil
     # ];
 
     environment.defaultPackages = with pkgs; [
+      firefox
+      chromium
+
       (appimage-run.override {
         extraPkgs =
           pkgs: with pkgs; [

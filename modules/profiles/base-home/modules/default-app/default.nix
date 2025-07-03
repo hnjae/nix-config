@@ -241,20 +241,6 @@ in
           })
         )
       ];
-
-      home.activation = {
-        # flatpak-set-default-app = lib.mk.dag.entryAfter ["reloadSystemd"] ''
-        #   export PATH=${lib.makeBinPath (with pkgs; [systemd])}:$PATH
-        #
-        #   $DRY_RUN_CMD systemctl is-system-running -q && systemctl --user start flatpak-set-default-app
-        # '';
-
-        # setDefaultBrowser = lib.mkIf (cfg.browser != null) (
-        #   lib.hm.dag.entryAfter ["writeBoundary"] ''
-        #     run --silence "${pkgs.xdg-utils}/bin/xdg-settings" set default-web-browser ${cfg.browser}.desktop
-        #   ''
-        # );
-      };
     }
   );
 }

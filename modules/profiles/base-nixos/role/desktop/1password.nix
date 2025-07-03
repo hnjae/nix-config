@@ -10,20 +10,20 @@
     programs._1password-gui = {
       enable = true;
       polkitPolicyOwners = [ "hnjae" ];
-      package = (
-        pkgs._1password-gui.overrideAttrs (_: {
-          preferLocalBuild = true;
-          # HACK: Temporary fix for NixOS 25.05
-          preFixup = ''
-            makeShellWrapper $out/share/1password/1password $out/bin/1password \
-              "''${gappsWrapperArgs[@]}" \
-              --suffix PATH : ${lib.makeBinPath [ pkgs.xdg-utils ]} \
-              --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ pkgs.udev ]} \
-              --add-flags "\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true --wayland-text-input-version=3}"
-          '';
-
-        })
-      );
+      # package = (
+      #   pkgs._1password-gui.overrideAttrs (_: {
+      #     preferLocalBuild = true;
+      #     # HACK: Temporary fix for NixOS 25.05
+      #     preFixup = ''
+      #       makeShellWrapper $out/share/1password/1password $out/bin/1password \
+      #         "''${gappsWrapperArgs[@]}" \
+      #         --suffix PATH : ${lib.makeBinPath [ pkgs.xdg-utils ]} \
+      #         --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ pkgs.udev ]} \
+      #         --add-flags "\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true --wayland-text-input-version=3}"
+      #     '';
+      #
+      #   })
+      # );
     };
 
     environment.systemPackages = [
@@ -48,6 +48,7 @@
         vivaldi-bin
         librewolf
         zen
+        flatpak-session-helper
       '';
       # NOTE: 0444 로 는 작동 안됨. 왜지. <2024-07-01>
       # https://1password.community/discussion/120954/how-the-browser-integration-works

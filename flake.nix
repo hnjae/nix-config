@@ -48,7 +48,10 @@
         flake-utils.follows = "flake-utils";
       };
     };
-    nix-flatpak.url = "github:hnjae/nix-flatpak/patch-0.6.0";
+    nix-flatpak = {
+      url = "github:hnjae/nix-flatpak/patch-0.6.0";
+      # url = "path:/home/hnjae/Projects/nix-flatpak";
+    };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -123,7 +126,6 @@
     };
     py-utils = {
       # url = "git+ssh://git@github.com/hnjae/py-utils";
-      # 2025-04-19 기준 최신 commit 이 pymediainfo 빌드 에러뜸. <https://github.com/NixOS/nixpkgs/issues/400062>
       url = "path:/home/hnjae/Projects/py-utils";
       inputs = {
         nixpkgs.follows = "nixpkgs-unstable";

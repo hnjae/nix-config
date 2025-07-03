@@ -52,8 +52,8 @@ in
         constants.homeSshPublic
       ];
 
-      # start systemd user unit at boot, not login
-      linger = true;
+      # true: start systemd user unit at boot, not login
+      linger = false;
     };
 
     # your gpg-key should be as same as you user key

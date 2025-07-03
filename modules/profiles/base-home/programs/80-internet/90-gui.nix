@@ -23,8 +23,6 @@ in
     ];
 
     home.packages = lib.flatten [
-      pkgs.firefox
-
       (lib.lists.optionals (pkgs.stdenv.isLinux) ([
         pkgs.virt-manager
 
