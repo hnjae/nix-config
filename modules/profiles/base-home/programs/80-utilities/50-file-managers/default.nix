@@ -1,7 +1,7 @@
 { pkgsUnstable, ... }:
 {
   imports = [
-    ./lf
+    # ./lf
     ./pistol
   ];
 

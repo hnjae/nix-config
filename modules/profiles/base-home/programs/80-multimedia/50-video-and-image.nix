@@ -31,10 +31,8 @@ in
     "org.gimp.GIMP"
 
     # Painting / Drawing
-    "org.kde.krita"
-    # "org.kde.kolourpaint" # basic painting
-    "com.github.PintaProject.Pinta" # basic painting
-    # "com.github.maoschanz.drawing"
+    "org.kde.krita" # Advanced Drawing
+    "com.github.PintaProject.Pinta" # Basic painting
 
     "org.kde.kdenlive"
 
@@ -44,7 +42,6 @@ in
     "org.gnome.Snapshot" # camera
     "io.github.nokse22.asciidraw" # asciidraw, gpl3
 
-    "page.codeberg.Imaginer.Imaginer" # ai image generator
     "org.gnome.design.Emblem" # generate avatar
     "org.gnome.gitlab.YaLTeR.VideoTrimmer" # cut video
     "org.gnome.gitlab.YaLTeR.Identity" # compare image or video

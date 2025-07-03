@@ -20,6 +20,7 @@
     environment.systemPackages = [
       # X 서버를 disable 했으므로, 필요한 패키지를 따로 설치.
       pkgs.xorg.xprop
+      pkgs.kara # pager alternative KDE widget
     ];
 
     environment.plasma6.excludePackages = with pkgs.kdePackages; [

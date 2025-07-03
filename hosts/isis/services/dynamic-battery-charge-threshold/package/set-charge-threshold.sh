@@ -42,7 +42,7 @@ done
 shift $((OPTIND - 1))
 
 if [ $# -ne 1 ]; then
-  echo "Error: Exactly one positional argument (limit) is required" 1>&2
+  echo "Error: One positional argument (limit) is required" 1>&2
   usage
 fi
 limit="$1"

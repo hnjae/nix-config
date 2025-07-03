@@ -1,4 +1,8 @@
 /*
+  README:
+    - `sync-default-apps` 라는 스크립트 제공.
+    - 완전 declarative 하게 선언하는건 시간 낭비로 보임. home-manager activation 시점에 실행해야할텐데, 매부팅마다 이것을 할 수는 없음.
+
   NOTE:
     /run/current-system/sw/share/mime/packages/freedesktop.org.xml
     https://wiki.archlinux.org/title/default_applications
@@ -9,13 +13,6 @@
 
     TODO:
     x-scheme-handler/vscode 같은 x-scheme-handler/* 처리 고민.
-
-  # TODO: flatpak permission-set 이 시간을 엄청 잡아먹으니, systemd-unit 으로
-  # 만들고, activation-unit으로 만들어 실행하기.
-
-  그러면 변형값이 생겼을때만 실행될것으로 기대됨. <2024-07-15>
-
-  성공적으로 종료되었을때, 실행중이라는 속성을 부여해야할 것같다.
 */
 {
   lib,
@@ -151,34 +148,19 @@ in
         ];
       };
 
-      systemd.user.services."flatpak-set-default-app" =
-        let
-          mimeData = builtins.concatLists (
-            map (
-              fromApp:
-              (lib.mapAttrsToList (mime: defaultApp: {
-                inherit mime defaultApp fromApp;
-              }) mimeMerged)
-            ) cfg.fromApps
-          );
-
-          flatpakSetDefaultApp = pkgs.writeShellApplication {
-            name = "flatpak-set-default-app";
-            runtimeInputs = with pkgs; [
-              flatpak
-              coreutils
-              gawk
-            ];
-            text = lib.concatLines (
-              [
-                (lib.strings.optionalString (cfg.resetPrevious) ''
-                  # reset previous
-                  for mime in $(flatpak permissions desktop-used-apps | awk '{print $2}' | uniq); do
-                    flatpak permission-remove desktop-used-apps "$mime"
-                  done
-                '')
-              ]
-              ++ (map (
+      home.packages = [
+        (
+          let
+            mimeData = builtins.concatLists (
+              map (
+                fromApp:
+                (lib.mapAttrsToList (mime: defaultApp: {
+                  inherit mime defaultApp fromApp;
+                }) mimeMerged)
+              ) cfg.fromApps
+            );
+            setDefaultAppCmd = lib.concatLines (
+              map (
                 x:
                 (builtins.concatStringsSep " " [
                   "flatpak"
@@ -190,24 +172,75 @@ in
                   "3"
                   "3"
                 ])
-              ) mimeData)
+              ) mimeData
             );
-          };
-        in
-        {
-          Unit = {
-            After = [ "multi-user.target" ];
-          };
-          Service = {
-            Type = "oneshot";
-            ExecStart = "${flatpakSetDefaultApp}/bin/flatpak-set-default-app";
-            CPUSchedulingPolicy = "idle";
-            IOSchedulingClass = "idle";
-            RemainAfterExit = true;
-            # ExecStart = "${pkgs.dash}/bin/dash -c ':'";
-            # ExecReload = "${flatpakSetDefaultApp}/bin/flatpak-set-default-app";
-          };
-        };
+          in
+          (pkgs.writeShellApplication {
+            name = "sync-default-apps";
+            runtimeInputs = with pkgs; [
+              flatpak
+              uutils-coreutils-noprefix
+              gawk
+            ];
+            text = ''
+              set -euo pipefail
+
+              reset=false
+
+              usage() {
+                echo "Usage: $(basename -- "''$0") [-r]"
+                exit 1
+              }
+
+              while getopts ":rh" opt; do
+              case ''${opt} in
+                h)
+                  usage
+                  ;;
+                r)
+                  reset=true
+                  ;;
+                \?)
+                  echo "Invalid Option: -$OPTARG" 1>&2
+                  usage
+                  ;;
+                :)
+                  echo "Invalid Option: -$OPTARG requires an argument" 1>&2
+                  usage
+                  ;;
+                esac
+              done
+              shift $((OPTIND - 1))
+
+              if [ "''$#" -ne 0 ]; then
+                echo "Error: No positional argument is required" 1>&2
+                usage
+              fi
+
+              reset_previous() {
+                for mime in ''$(flatpak permissions desktop-used-apps | awk '{print $2}' | uniq); do
+                  flatpak permission-remove desktop-used-apps "''$mime"
+                done
+              }
+
+              configure_flatpak() {
+                ${setDefaultAppCmd}
+              }
+
+              main() {
+                if "$reset"; then
+                  echo "Reset previous flatpak desktop-used-apps" >/dev/stderr
+                  reset_previous
+                fi
+
+                configure_flatpak
+              }
+
+              main
+            '';
+          })
+        )
+      ];
 
       home.activation = {
         # flatpak-set-default-app = lib.mk.dag.entryAfter ["reloadSystemd"] ''
