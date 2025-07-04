@@ -14,7 +14,7 @@ in
       ((import ./package) { inherit pkgs pkgsUnstable; })
       (lib.hiPrio (
         pkgs.makeDesktopItem {
-          name = "YACReaderLibrary.desktop";
+          name = "YACReaderLibrary";
           desktopName = "This should not be displayed.";
           exec = ":";
           noDisplay = true;

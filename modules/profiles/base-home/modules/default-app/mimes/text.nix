@@ -41,7 +41,7 @@
   "application/x-cue" # {'*.cue'}
   "text/x-todo-txt" # {'todo.txt'}
 
-  # mardown alike
+  # markdown alike
   "text/markdown" # {'*.md', '*.markdown', '*.mkd'}
   "text/org" # {'*.org'}
   "text/x-rst" # {'*.rst'}
@@ -96,7 +96,7 @@
 
   ## nodejs
   "text/javascript" # {'*.jsm', '*.js', '*.mjs'}
-  "text/vnd.trolltech.linguist" # {'*.ts'}
+  # "text/vnd.trolltech.linguist" # {'*.ts'}
   "application/x-tiled-tsx" # {'*.tsx'}
 
   ## hardware

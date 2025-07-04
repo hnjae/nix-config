@@ -12,6 +12,7 @@
       ];
 
       default-app.image = "org.kde.gwenview";
+      default-app.fromApps = [ "org.kde.dolphin" ];
     }
   ];
 }
