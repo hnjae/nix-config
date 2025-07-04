@@ -8,7 +8,6 @@ _: {
     # ./tabby.nix
     # ./shairport-sync.nix
 
-    # ./restic-backup
     ./rustic-backup
   ];
 

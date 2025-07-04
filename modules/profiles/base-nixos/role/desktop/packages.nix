@@ -15,12 +15,6 @@
     # managing android
     programs.adb.enable = true;
 
-    # managing external displays <https://wiki.archlinux.org/title/Backlight>
-    # boot.kernelModules = [ "i2c_dev" ];
-    # environment.systemPackages = [
-    #   pkgs.ddcutil
-    # ];
-
     environment.defaultPackages = with pkgs; [
       firefox
       chromium
