@@ -4,11 +4,169 @@
 */
 
 { pkgs, lib, ... }:
+let
+  DATASET_ = "isis/safe/home/hnjae";
+  MOUNTPOINT_ = "/home/hnjae";
+  PROFILE_ = "/secrets/rustic-onedrive/rustic";
+
+  ignoreFile = pkgs.writeText "ignore.txt" ''
+    /.*
+    /git
+    /Downloads
+    !/.var
+    /.var/**/.ld.so
+    /.var/**/cache
+    /.var/**/config/**/*Cache
+    /.var/**/config/**/*cache
+    /.var/**/config/*Cache
+    /.var/**/config/*cache
+    /.var/**/config/pluse/cookie
+    /.var/**/data/*.bak
+    /.var/**/data/*.tbcache
+    /.var/**/data/recently-used.xbel
+    !/.mozilla
+    /.mozilla/firefox/**/storage/default/**/cache
+    !/.config/chromium
+    /.config/chromium/**/*Cache
+    /.config/chromium/**/*cache
+    /.config/chromium/*Cache
+    /.config/chromium/*cache
+
+    .direnv
+    .venv
+
+    dist
+    node_modules
+
+    __pycache__
+    *.py[oc]
+    build
+
+    # vi:ft=gitignore
+  '';
+
+  package = pkgs.writeShellApplication {
+    name = "rustic-backup-isis";
+    runtimeInputs = with pkgs; [
+      rustic
+      rclone
+      uutils-coreutils-noprefix # date,
+      inetutils # pgrep
+      procps # pgrep
+      jq
+    ];
+
+    text = ''
+      set -euo pipefail
+
+      DATASET='${DATASET_}'
+      MOUNTPOINT='${MOUNTPOINT_}'
+      ZFS_CMD='/run/booted-system/sw/bin/zfs'
+      PROFILE='${PROFILE_}'
+
+      check_cond() {
+        if [ "$UID" != 0 ]; then
+          echo "[ERROR] This script must be run as root." >&2
+          exit 1
+        fi
+
+        if [ ! -f "$ZFS_CMD" ]; then
+          echo "[ERROR] $ZFS_CMD does not exists." >&2
+          exit 1
+        fi
+
+        if [ ! -f "$PROFILE.toml" ]; then
+          echo "[ERROR] $PROFILE.toml does not exists." >&2
+          exit 1
+        fi
+
+        if pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
+          echo "Another restic(rustic) instance is running."
+          exit 1
+        fi
+
+        if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
+          echo "[ERROR] No Internet connection." >&2
+          exit 1
+        fi
+      }
+
+      cleanup_snapshots() {
+        "$ZFS_CMD" list -t snapshot --json "$DATASET" | jq -r '
+          .datasets[]? |
+          select(.snapshot_name | startswith("rustic_")) |
+          .name
+        ' | while IFS= read -r line; do
+          if "$ZFS_CMD" destroy -- "$line"; then
+            echo "[INFO] Destroyed ZFS snapshot: $line" >&2
+          else
+            echo "[ERROR] Failed to destroy ZFS snapshot: $line" >&2
+            exit 1
+          fi
+        done
+      }
+
+      main() {
+        check_cond
+        cleanup_snapshots
+
+        export RCLONE_MULTI_THREAD_STREAMS=2 # defaults : 4
+        export RUSTIC_DRY_RUN=false
+        export RUSTIC_REPO_OPT_TIMEOUT="10min"
+        export RUSTIC_USE_PROFILE="$PROFILE"
+
+        if [ "$TERM" = "dumb" ]; then
+          export RCLONE_VERBOSE=1
+          export RUSTIC_LOG_LEVEL=info
+          export RUSTIC_NO_PROGRESS=true
+        else
+          # Running in interactive shell
+          export RCLONE_VERBOSE=1
+          export RUSTIC_LOG_LEVEL=info
+          export RUSTIC_NO_PROGRESS=false
+        fi
+
+        local time_
+        local snapshot_dir
+        local snapshot_name
+        local snapshot_dataset
+
+        time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
+        snapshot_name="rustic_''${time_}"
+        snapshot_dataset="''${DATASET}@''${snapshot_name}"
+
+        "$ZFS_CMD" snapshot -r "$snapshot_dataset" &&
+          echo "[INFO] Created ZFS snapshot: $snapshot_dataset" >&2
+
+        snapshot_dir="''${MOUNTPOINT}/.zfs/snapshot/''${snapshot_name}"
+
+        [ -d "$snapshot_dir" ] && rustic backup \
+          --one-file-system \
+          --no-scan \
+          --long \
+          --git-ignore \
+          --no-require-git \
+          --exclude-if-present "CACHEDIR.TAG" \
+          --label 'isis' \
+          --time "$time_" \
+          --custom-ignorefile '${ignoreFile}' \
+          --as-path "$MOUNTPOINT" \
+          -- "$snapshot_dir"
+
+        "$ZFS_CMD" destroy "$snapshot_dataset" &&
+          echo "[INFO] Destroyed ZFS snapshot: $snapshot_dataset" >&2
+      }
+
+      main
+    '';
+  };
+in
 {
-  environment.defaultPackages = with pkgs; [
-    rustic
-    rclone
-    just
+  environment.systemPackages = [
+    package
+    pkgs.rustic
+    pkgs.rclone
+    pkgs.just
   ];
 
   systemd =
@@ -21,9 +179,6 @@
         "https://rustic.cli.rs/docs/commands/backup/intro.html"
       ];
       description = "Rustic off-site backup";
-
-      # workingDirectory = "/secrets/rustic-onedrive";
-      profile = "/secrets/rustic-onedrive/rustic";
     in
     {
       timers."${serviceName}" = {
@@ -34,7 +189,7 @@
           AccuracySec = "1m";
           # OnCalendar = "*-*-* 00:00:00";
           OnStartupSec = "15m";
-          OnUnitInactiveSec = "90m";
+          OnUnitInactiveSec = "120m";
           Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
           WakeSystem = false;
         };
@@ -50,60 +205,48 @@
         };
 
         serviceConfig = {
-          # Type = "oneshot";
           Type = "simple";
 
           PrivateTmp = true;
           IOSchedulingClass = "idle";
           CPUSchedulingPolicy = "idle";
+          Nice = 19;
 
           # systemd.resourced (cgroup)
           CPUWeight = "idle";
+          CPUQuota = "160%";
           # IOWeight = "10";
           # MemoryHigh = "4G";
-          CPUQuota = "200%";
-          # AllowedCPUs = "0";
 
-          ExecStart = (
-            pkgs.writeScript "${serviceName}-start" ''
-              #!${pkgs.dash}/bin/dash
+          # ExecStopPost = pkgs.writeScript "cleanup-zfs-snapshots" ''
+          #   #!${pkgs.dash}/bin/dash
+          #
+          #   set -eu
+          #
+          #   PATH="${pkgs.jq}/bin"
+          #   DATASET='${DATASET}'
+          #   ZFS_CMD='/run/booted-system/sw/bin/zfs'
+          #
+          #   cleanup_snapshots() {
+          #     "$ZFS_CMD" list -t snapshot --json "$DATASET" | jq -r '
+          #       .datasets[]? |
+          #       select(.snapshot_name | startswith("rustic_")) |
+          #       .name
+          #     ' | while IFS= read -r line; do
+          #       if "$ZFS_CMD" destroy -- "$line"; then
+          #         echo "[INFO] Destroyed ZFS snapshot: $line" >&2
+          #       else
+          #         echo "[ERROR] Failed to destroy ZFS snapshot: $line" >&2
+          #         exit 1
+          #       fi
+          #     done
+          #
+          #     cleanup_snapshots
+          #   }
+          # '';
 
-              set -eu
+          ExecStart = "${package}/bin/rustic-backup-isis";
 
-              PATH=${
-                lib.makeBinPath (
-                  with pkgs;
-                  [
-                    rustic
-                    rclone
-                    util-linux
-                    uutils-findutils
-                    uutils-coreutils-noprefix
-                  ]
-                )
-              }
-
-              if [ ! -f "${profile}.toml" ]; then
-                echo "ERROR: ${profile}.toml does not exists."
-                exit 1
-              fi
-
-              rustic backup \
-                --no-progress \
-                --log-level=info \
-                --no-scan \
-                --long \
-                --use-profile="${profile}"
-            ''
-          );
-          # rustic backup --no-progress --log-level=info --as-path=<foo> --git-ignore --glob-file --noscan --time (zrepl time)
-          # (lib.escapeShellArgs [
-          #   "${pkgs.rustic}/bin/rustic"
-          #   "backup"
-          #   "--no-progress"
-          #   "--log-level=info"
-          #   "--use-profile=${profile}"
-          # ])
           ExecCondition = lib.flatten [
             (pkgs.writeScript "${serviceName}-check-other-instance" ''
               #!${pkgs.dash}/bin/dash
@@ -112,12 +255,12 @@
 
               PATH="${pkgs.procps}/bin"
 
-              if pgrep 'restic|rustic' >/dev/null 2>&1; then
+              if pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
                 echo "Another restic(rustic) instance is running."
                 exit 1
               fi
 
-              if pgrep 'zfs|rclone|rsync' >/dev/null 2>&1; then
+              if pgrep --exact '(zfs)|(rclone)|(rsync)' >/dev/null 2>&1; then
                 echo "Another I/O-intensive instance is running."
                 exit 1
               fi
