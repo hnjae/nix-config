@@ -100,22 +100,6 @@
         "type": "github"
       }
     },
-    "dotfiles": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1751698800,
-        "narHash": "sha256-CaUkxJulGokI9nSUmgya5uca67L7XnyMAuEOwEHzGM4=",
-        "owner": "hnjae",
-        "repo": "dotfiles",
-        "rev": "89bfff979868e793b4290979a1ef540528d48278",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hnjae",
-        "repo": "dotfiles",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -439,8 +423,8 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1751537924,
-        "narHash": "sha256-gCKzqD4ucREGX+re1Mnne3xIrX4b1T3MTj+bzRwO7pQ=",
+        "lastModified": 1751716551,
+        "narHash": "sha256-HiX5Wro/0Az2bweqH4r4sfGFOZmQJg911N5/bNpVPbA=",
         "path": "/home/hnjae/Projects/py-utils",
         "type": "path"
       },
@@ -468,7 +452,6 @@
       "inputs": {
         "cargo2nix": "cargo2nix",
         "deploy-rs": "deploy-rs",
-        "dotfiles": "dotfiles",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "git-hooks": "git-hooks",

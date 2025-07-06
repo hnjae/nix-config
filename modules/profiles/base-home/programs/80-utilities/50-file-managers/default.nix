@@ -1,7 +1,7 @@
 { pkgsUnstable, ... }:
 {
   imports = [
-    # ./lf
+    ./lf
     ./pistol
   ];
 
@@ -9,5 +9,7 @@
     # pkgsUnstable.superfile
     pkgsUnstable.glow
     pkgsUnstable.yazi
+    pkgsUnstable.joshuto
+    pkgsUnstable.ranger
   ];
 }

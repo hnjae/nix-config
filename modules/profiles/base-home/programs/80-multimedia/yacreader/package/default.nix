@@ -1,7 +1,7 @@
 # run `nix-build`
 {
-  pkgs ? import <nixpkgs> { },
-  pkgsUnstable ? import <nixpkgs-unstable> { },
+  pkgs ? import <nixpkgs-stable> { },
+  pkgsUnstable ? import <nixpkgs> { },
 }:
 pkgs.libsForQt5.callPackage (
   {
@@ -27,6 +27,7 @@ pkgs.libsForQt5.callPackage (
       qtimageformats
       kimageformats
     ];
+
     qmakeFlags = [ ''CONFIG+=libarchive'' ];
   }
 ) { }

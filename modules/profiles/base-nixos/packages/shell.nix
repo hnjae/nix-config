@@ -77,7 +77,7 @@
     ############################################################################
     # setOptions = [ ];
     histSize = 100;
-    histFile = ''"''${XDG_DATA_HOME:-$HOME/.local/data}/.zsh_history"'';
+    # histFile = ''"''${XDG_DATA_HOME:-$HOME/.local/data}/.zsh_history"'';
     enableGlobalCompInit = false;
     enableBashCompletion = true;
 

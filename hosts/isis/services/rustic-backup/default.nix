@@ -16,10 +16,8 @@ let
     !/.var
     /.var/**/.ld.so
     /.var/**/cache
-    /.var/**/config/**/*Cache
-    /.var/**/config/**/*cache
-    /.var/**/config/*Cache
-    /.var/**/config/*cache
+    /.var/**/config/**/*[Cc]ache
+    /.var/**/config/*[Cc]ache
     /.var/**/config/pluse/cookie
     /.var/**/data/*.bak
     /.var/**/data/*.tbcache
@@ -27,17 +25,58 @@ let
     !/.mozilla
     /.mozilla/firefox/**/storage/default/**/cache
     !/.config/chromium
-    /.config/chromium/**/*Cache
-    /.config/chromium/**/*cache
-    /.config/chromium/*Cache
-    /.config/chromium/*cache
+    /.config/chromium/**/*[Cc]ache
+    /.config/chromium/*[Cc]ache
 
+    # Linux
+    .directory
+    .Trash-*
+    .nfs*
+    .fuse_hidden*
+    .snapshots
+
+    # macOS
+    .DS_Store
+    ._*
+    .localized
+
+    # MS Windows
+    [Tt]humbs.db
+    [Dd]esktop.ini
+    ?RECYCLE.BIN
+
+    # Android
+    .temp
+    .thumbnails
+    .trashed-*
+
+    # Temporary files
+    *.parts
+    *.crdownload
+
+    # vim
+    tags
+    *.swp
+    *~
+
+    # KdenLive
+    # kdenlive/**/proxy
+    # kdenlive/**/audiothumbs
+    # kdenlive/**/preview
+    # kdenlive/**/sequences
+    # kdenlive/**/videothumbs
+    # kdenlive/**/workfiles
+
+    # Misc
+    .cache
     .direnv
-    .venv
 
+    # NodeJS
     dist
     node_modules
 
+    # Python
+    .venv
     __pycache__
     *.py[oc]
     build

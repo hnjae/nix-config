@@ -159,7 +159,7 @@ in
                 }) mimeMerged)
               ) cfg.fromApps
             );
-            setDefaultAppCmd = lib.concatLines (
+            setDefaultFlatpakAppCmd = lib.concatLines (
               map (
                 x:
                 (builtins.concatStringsSep " " [
@@ -171,6 +171,17 @@ in
                   "'${x.defaultApp}'"
                   "3"
                   "3"
+                ])
+              ) mimeData
+            );
+            setDefaultXdgAppCmd = lib.concatLines (
+              map (
+                x:
+                (builtins.concatStringsSep " " [
+                  "xdg-mime"
+                  "default"
+                  "'${x.defaultApp}.desktop'"
+                  "'${x.mime}'"
                 ])
               ) mimeData
             );
@@ -201,11 +212,11 @@ in
                   reset=true
                   ;;
                 \?)
-                  echo "Invalid Option: -$OPTARG" 1>&2
+                  echo "Invalid Option: -$OPTARG" >&2
                   usage
                   ;;
                 :)
-                  echo "Invalid Option: -$OPTARG requires an argument" 1>&2
+                  echo "Invalid Option: -$OPTARG requires an argument" >&2
                   usage
                   ;;
                 esac
@@ -213,27 +224,34 @@ in
               shift $((OPTIND - 1))
 
               if [ "''$#" -ne 0 ]; then
-                echo "Error: No positional argument is required" 1>&2
+                echo "Error: No positional argument is required" >&2
                 usage
               fi
 
               reset_previous() {
                 for mime in ''$(flatpak permissions desktop-used-apps | awk '{print $2}' | uniq); do
+                  echo "Resetting flatpak desktop-used-apps for mime: ''$mime" >&2
                   flatpak permission-remove desktop-used-apps "''$mime"
                 done
               }
 
               configure_flatpak() {
-                ${setDefaultAppCmd}
+                ${setDefaultFlatpakAppCmd}
               }
+
+              configure_xdg() {
+                ${setDefaultXdgAppCmd}
+              }
+
 
               main() {
                 if "$reset"; then
-                  echo "Reset previous flatpak desktop-used-apps" >/dev/stderr
+                  echo "Reset previous flatpak desktop-used-apps" >&2
                   reset_previous
                 fi
 
                 configure_flatpak
+                # configure_xdg
               }
 
               main

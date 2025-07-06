@@ -1,3 +1,7 @@
+/*
+  NOTE:
+  <https://gitlab.gnome.org/GNOME/glib/-/blob/2.78.3/gio/gdesktopappinfo.c#L2702-2713>
+*/
 {
   writeScriptBin,
   alacritty,

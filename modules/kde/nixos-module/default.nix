@@ -5,8 +5,9 @@
 {
   imports = [
     ./ime.nix
-    ./style.nix
+    ./konsave.nix
     ./programs.nix
+    ./style.nix
   ];
 
   config = {
@@ -20,28 +21,6 @@
     environment.systemPackages = [
       # X 서버를 disable 했으므로, 필요한 패키지를 따로 설치.
       pkgs.xorg.xprop
-      pkgs.kara # pager alternative KDE widget
-    ];
-
-    environment.plasma6.excludePackages = with pkgs.kdePackages; [
-      # NixOS 25.05 Updated
-      plasma-browser-integration
-      konsole
-      # (lib.getBin qttools) # Expose qdbus in PATH
-      ark
-      elisa
-      gwenview
-      okular
-      kate
-      khelpcenter
-      dolphin
-      baloo-widgets # baloo information in Dolphin
-      dolphin-plugins
-      # spectacle
-      ffmpegthumbs
-      krdp
-      xwaylandvideobridge # exposes Wayland windows to X11 screen capture
-      discover
     ];
   };
 }
