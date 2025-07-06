@@ -84,13 +84,13 @@ let
     # vi:ft=gitignore
   '';
 
-  package = pkgs.writeShellApplication {
+  rusticBackupIsis = pkgs.writeShellApplication {
     name = "rustic-backup-isis";
     runtimeInputs = with pkgs; [
       rustic
       rclone
       uutils-coreutils-noprefix # date,
-      inetutils # pgrep
+      inetutils # ping
       procps # pgrep
       jq
     ];
@@ -121,12 +121,12 @@ let
 
         if pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
           echo "Another restic(rustic) instance is running."
-          exit 1
+          exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
         fi
 
         if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
-          echo "[ERROR] No Internet connection." >&2
-          exit 1
+          echo "No Internet connection." >&2
+          exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
         fi
       }
 
@@ -199,10 +199,87 @@ let
       main
     '';
   };
+
+  rusticBackupKde = pkgs.writeShellApplication {
+    name = "rustic-backup-kde";
+
+    runtimeInputs = with pkgs; [
+      konsave
+      uuid7
+      uutils-coreutils-noprefix # date,
+      rustic
+      rclone
+      inetutils # ping
+    ];
+
+    text = ''
+      check_cond() {
+        if [ "$UID" != 0 ]; then
+          echo "[ERROR] This script must be run as root." >&2
+          exit 1
+        fi
+
+        if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
+          echo "No Internet connection." >&2
+          exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
+        fi
+      }
+
+      main() {
+        check_cond
+
+        PROFILE='${PROFILE_}'
+
+        export RCLONE_MULTI_THREAD_STREAMS=0 # defaults : 4
+        export RUSTIC_DRY_RUN=false
+        export RUSTIC_REPO_OPT_TIMEOUT="10min"
+        export RUSTIC_USE_PROFILE="$PROFILE"
+
+        if [ "$TERM" = "dumb" ]; then
+          export RCLONE_VERBOSE=1
+          export RUSTIC_LOG_LEVEL=info
+          export RUSTIC_NO_PROGRESS=true
+        else
+          # Running in interactive shell
+          export RCLONE_VERBOSE=1
+          export RUSTIC_LOG_LEVEL=info
+          export RUSTIC_NO_PROGRESS=false
+        fi
+
+        local id_
+        local file_
+
+        id_=$(uuid7)
+        file_="/tmp/''${id_}.knsv"
+
+        # Cleanup existing konsave profile if exists
+        [ -f "$file_" ] && rm "$file_"
+
+        time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
+        sudo -u hnjae konsave --save "$id_"
+        sudo -u hnjae konsave --export-profile "$id_" --export-directory /tmp &&
+          echo "[INFO] konsave profile exported to $file_" >&2
+        sudo -u hnjae konsave --remove "$id_"
+
+        rustic backup \
+          --long \
+          --label "isis-kde.knsv" \
+          --time "$time_" \
+          --stdin-filename "isis-kde.knsv" \
+          "-" < "$file_"
+
+        rm "$file_" &&
+          echo "[INFO] Cleaned up $file_" >&2
+      }
+
+      main
+    '';
+  };
 in
 {
   environment.systemPackages = [
-    package
+    rusticBackupIsis
+    rusticBackupKde
     pkgs.rustic
     pkgs.rclone
     pkgs.just
@@ -244,7 +321,7 @@ in
         };
 
         serviceConfig = {
-          Type = "simple";
+          Type = "oneshot";
 
           PrivateTmp = true;
           IOSchedulingClass = "idle";
@@ -284,7 +361,10 @@ in
           #   }
           # '';
 
-          ExecStart = "${package}/bin/rustic-backup-isis";
+          ExecStart = [
+            "${rusticBackupKde}/bin/rustic-backup-kde"
+            "${rusticBackupIsis}/bin/rustic-backup-isis"
+          ];
 
           ExecCondition = lib.flatten [
             (pkgs.writeScript "${serviceName}-check-other-instance" ''
@@ -294,12 +374,7 @@ in
 
               PATH="${pkgs.procps}/bin"
 
-              if pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
-                echo "Another restic(rustic) instance is running."
-                exit 1
-              fi
-
-              if pgrep --exact '(zfs)|(rclone)|(rsync)' >/dev/null 2>&1; then
+              if pgrep --exact '(restic)|(rustic)|(zfs)|(rclone)|(rsync)' >/dev/null 2>&1; then
                 echo "Another I/O-intensive instance is running."
                 exit 1
               fi

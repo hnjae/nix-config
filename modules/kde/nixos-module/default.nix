@@ -5,7 +5,6 @@
 {
   imports = [
     ./ime.nix
-    ./konsave.nix
     ./programs.nix
     ./style.nix
   ];
