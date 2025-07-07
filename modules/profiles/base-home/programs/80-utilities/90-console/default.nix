@@ -12,6 +12,7 @@ let
 in
 {
   imports = [
+    ./pistol
     ./pueue.nix
     ./qalc.nix
     ./tldr.nix
@@ -21,6 +22,9 @@ in
   programs.direnv.nix-direnv.enable = true;
 
   home.packages = lib.flatten [
+    pkgs.ranger
+    pkgsUnstable.joshuto
+
     pkgs.rsync
     pkgs.oh-my-posh
     pkgs.starship
@@ -61,6 +65,7 @@ in
     # pkgs.trashy # trash-cli alternative in rust
     pkgs.trash-cli
     pkgs.tmux
+    pkgs.tmuxinator
     pkgs.uuid7
 
     # pkgs.du-dust # dust(du)

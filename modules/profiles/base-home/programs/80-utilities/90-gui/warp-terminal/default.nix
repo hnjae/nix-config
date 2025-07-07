@@ -10,7 +10,7 @@ let
 in
 {
   config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.config.allowUnfree) {
-    # home.packages = [ pkgsUnstable.warp-terminal ];
-    # default-app.fromApps = [ "dev.warp.Warp" ];
+    home.packages = [ pkgsUnstable.warp-terminal ];
+    default-app.fromApps = [ "dev.warp.Warp" ];
   };
 }
