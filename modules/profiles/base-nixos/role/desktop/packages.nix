@@ -15,8 +15,15 @@
     # managing android
     programs.adb.enable = true;
 
+    home-manager.sharedModules = [
+      {
+        default-app.browser = "firefox";
+      }
+    ];
+
     environment.defaultPackages = with pkgs; [
       firefox
+      vdhcoapp
       chromium
 
       (appimage-run.override {

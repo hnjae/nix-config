@@ -26,7 +26,6 @@ in
 {
   imports = [
     ./bottles.nix
-    ./ghostty
     ./warp-terminal
   ];
 
@@ -36,12 +35,24 @@ in
         pkgs.qdirstat
         pkgsUnstable.resources
         pkgsUnstable.scrcpy # display and control android
+
+        # pkgs.foot
+        # pkgs.kitty
+        pkgs.wezterm
+        pkgsUnstable.ghostty
+        (pkgs.runCommandLocal "kitten" { } ''
+          mkdir -p "$out/bin"
+          ln -s "${pkgs.kitty}/bin/kitten" "$out/bin/kitten"
+        '')
       ])
 
-      pkgs.alacritty
+      # pkgs.alacritty
     ];
 
-    default-app.fromApps = [ "Alacritty" ];
+    default-app.fromApps = [
+      # "Alacritty"
+      "com.mitchellh.ghostty"
+    ];
 
     services.flatpak.packages = lib.flatten [
       "org.gnome.Logs" # systemd logs, ets

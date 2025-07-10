@@ -13,7 +13,9 @@
       ];
 
       default-app.image = "org.kde.gwenview";
-      default-app.fromApps = [ "org.kde.dolphin" ];
+      # default-app.fromApps = [ "org.kde.dolphin" ];
+      # dolphin 같은 류가 `GTK_USE_PORTAL=1` ,`NIXOS_XDG_OPEN_USE_PORTAL=1` 가
+      # 설정되어 있어도, mimeapps.list 를 따름. <NixOS 24.05>
     }
   ];
 

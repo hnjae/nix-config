@@ -139,7 +139,7 @@ in
       # dolphin 같은 류가 `GTK_USE_PORTAL=1` ,`NIXOS_XDG_OPEN_USE_PORTAL=1` 가
       # 설정되어 있어도, mimeapps.list 를 따름. <NixOS 24.05>
       xdg.mimeApps = {
-        enable = true;
+        enable = lib.mkForce false;
         defaultApplications = lib.attrsets.mergeAttrsList [
           (lib.attrsets.optionalAttrs (cfg.fileManager != null) {
             "inode/directory" = "${cfg.fileManager}.desktop";
@@ -251,7 +251,7 @@ in
                 fi
 
                 configure_flatpak
-                # configure_xdg
+                configure_xdg
               }
 
               main

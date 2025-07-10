@@ -10,7 +10,6 @@ let
 in
 {
   imports = [
-    ./neovide.nix
     ./neovim.nix
     ./vscode.nix
   ];
