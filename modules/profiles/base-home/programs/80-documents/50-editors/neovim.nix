@@ -29,18 +29,41 @@ in
 
         pkgs.page # use neovim as pager
         pkgs.nvimpager # use neovim as pager
+        (lib.hiPrio (
+          pkgs.makeDesktopItem {
+            name = "nvim";
+            desktopName = "Neovim";
+            genericName = "Text Editor";
+            mimeTypes = [
+              "text/plain"
+              "application/x-shellscript" # {'*.sh'}
+              "text/x-tex" # {'*.dtx', '*.tex', '*.sty', '*.cls', '*.ltx', '*.latex', '*.ins'}
+              "text/x-java" # {'*.java'}
+            ];
+            icon = "nvim";
+            exec = ''${pkgs.wezterm}/bin/wezterm start --class=nvim -e nvim %F'';
+            tryExec = ''${pkgs.wezterm}/bin/wezterm start --class=nvim -e nvim'';
+            categories = [
+              "Utility"
+              "TextEditor"
+            ];
+            keywords = [
+              "Text"
+              "editor"
+            ];
+          }
+        ))
+        (pkgs.runCommandLocal "nvim-icon-fix" { } ''
+          mkdir -p "$out/share/icons/hicolor/scalable/apps/"
+
+          cp --reflink=auto \
+            "${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/nvim.svg" \
+            "$out/share/icons/hicolor/scalable/apps/nvim.svg"
+        '')
       ]))
     ];
 
     default-app.text = "nvim";
-
-    # xdg.desktopEntries."nvim" = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
-    #   type = "Application";
-    #   name = "Neovim";
-    #   comment = "this should not be displayed";
-    #   exec = ":";
-    #   noDisplay = true;
-    # };
 
     home.sessionVariables = {
       EDITOR = lib.mkForce "nvim";

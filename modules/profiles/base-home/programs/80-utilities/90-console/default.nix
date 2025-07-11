@@ -24,6 +24,34 @@ in
   home.packages = lib.flatten [
     pkgs.ranger
     pkgsUnstable.joshuto
+    (lib.hiPrio (
+      pkgs.makeDesktopItem {
+        name = "joshuto";
+        desktopName = "joshuto";
+        genericName = "File Manager";
+        icon = "system-file-manager";
+        mimeTypes = [ "inode/directory" ];
+        exec = ''${pkgs.wezterm}/bin/wezterm start --class=joshuto -e joshuto'';
+        categories = [
+          "System"
+          "FileTools"
+          "FileManager"
+        ];
+        keywords = [
+          "File"
+          "Manager"
+          "Browser"
+          "Explorer"
+        ];
+      }
+    ))
+    # (pkgs.runCommandLocal "add-joshuto-icon" { } ''
+    #   mkdir -p "$out/share/icons/hicolor/scalable/apps/"
+    #
+    #   cp --reflink=auto \
+    #     "${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/rpminstall.svg" \
+    #     "$out/share/icons/hicolor/scalable/apps/joshuto.svg"
+    # '')
 
     pkgs.rsync
     pkgs.oh-my-posh
@@ -104,7 +132,47 @@ in
     pkgs.vimv-rs # cyclic-renaming 지원, 엣지 케이스 대응 잘함.
 
     pkgs.kmon # linux kernel activity monitor
+
     pkgs.btop
+    (lib.hiPrio (
+      pkgs.makeDesktopItem {
+        name = "btop";
+        desktopName = "btop++";
+        genericName = "System Monitor";
+        icon = "btop";
+        exec = ''${pkgs.wezterm}/bin/wezterm --config="color_scheme=\\"Kanagawa Dragon (Gogh)\\"" start --class=btop -e btop'';
+        categories = [
+          "System"
+          "Monitor"
+        ];
+        keywords = [
+          "system"
+          "process"
+          "task"
+        ];
+      }
+    ))
+
+    pkgs.htop
+    (lib.hiPrio (
+      pkgs.makeDesktopItem {
+        name = "htop";
+        desktopName = "Htop";
+        genericName = "Process Viewer";
+        icon = "htop";
+        exec = ''${pkgs.wezterm}/bin/wezterm start --class=htop -e htop'';
+        categories = [
+          "System"
+          "Monitor"
+        ];
+        keywords = [
+          "system"
+          "process"
+          "task"
+        ];
+      }
+    ))
+
     pkgsUnstable.lazydocker
 
     pkgsUnstable.yt-dlp

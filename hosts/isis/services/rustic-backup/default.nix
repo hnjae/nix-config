@@ -11,8 +11,11 @@ let
 
   ignoreFile = pkgs.writeText "ignore.txt" ''
     /.*
-    /git
     /Downloads
+    /dwhelper
+    /git
+    /temp
+
     !/.var
     /.var/**/.ld.so
     /.var/**/cache
@@ -54,7 +57,7 @@ let
     *.parts
     *.crdownload
 
-    # vim
+    # Vim
     tags
     *.swp
     *~
@@ -210,6 +213,7 @@ let
       rustic
       rclone
       inetutils # ping
+      sudo
     ];
 
     text = ''
@@ -330,7 +334,7 @@ in
 
           # systemd.resourced (cgroup)
           CPUWeight = "idle";
-          CPUQuota = "160%";
+          CPUQuota = "120%";
           # IOWeight = "10";
           # MemoryHigh = "4G";
 

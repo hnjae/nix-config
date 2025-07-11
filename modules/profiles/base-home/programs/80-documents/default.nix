@@ -30,7 +30,18 @@ in
     "org.gnome.Papers"
   ];
   home.packages = lib.flatten [
-    (lib.lists.optional (baseHomeCfg.isDesktop) pkgs.zathura)
+    (lib.lists.optionals (baseHomeCfg.isDesktop) [
+      pkgs.zathura
+      (lib.hiPrio (
+        pkgs.runCommandLocal "fix-zathura-icon" { } ''
+          mkdir -p "$out/share/icons/hicolor/scalable/apps/"
+
+          cp --reflink=auto \
+            "${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/org.pwmt.zathura.svg" \
+            "$out/share/icons/hicolor/scalable/apps/org.pwmt.zathura.svg"
+        ''
+      ))
+    ])
     (lib.lists.optionals (baseHomeCfg.isDev) ([
       pkgsUnstable.ocrmypdf
       pkgsUnstable.img2pdf
