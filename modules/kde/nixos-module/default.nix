@@ -21,5 +21,8 @@
       # X 서버를 disable 했으므로, 필요한 패키지를 따로 설치.
       pkgs.xorg.xprop
     ];
+    environment.sessionVariables = {
+      GTK_USE_PORTAL = "1"; # gtk-3 app 에서 적용
+    };
   };
 }

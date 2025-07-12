@@ -140,7 +140,8 @@ in
         desktopName = "btop++";
         genericName = "System Monitor";
         icon = "btop";
-        exec = ''${pkgs.wezterm}/bin/wezterm --config="color_scheme=\\"Kanagawa Dragon (Gogh)\\"" start --class=btop -e btop'';
+        # exec = ''${pkgs.wezterm}/bin/wezterm --config="color_scheme=\\"Kanagawa Dragon (Gogh)\\"" start --class=btop -e btop'';
+        exec = ''${pkgs.wezterm}/bin/wezterm start --class=btop -e btop'';
         categories = [
           "System"
           "Monitor"

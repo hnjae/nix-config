@@ -18,6 +18,7 @@ in
         code-minimap
         tree-sitter
         libsecret # to access org.freedesktop.Secret.Service in neovim config
+        tinty
       ])
 
       (lib.lists.optionals baseHomeCfg.isDesktop ([
@@ -34,23 +35,23 @@ in
             name = "nvim";
             desktopName = "Neovim";
             genericName = "Text Editor";
-            mimeTypes = [
-              "text/plain"
-              "application/x-shellscript" # {'*.sh'}
-              "text/x-tex" # {'*.dtx', '*.tex', '*.sty', '*.cls', '*.ltx', '*.latex', '*.ins'}
-              "text/x-java" # {'*.java'}
-            ];
+            # mimeTypes = [
+            #   "text/plain"
+            #   "application/x-shellscript" # {'*.sh'}
+            #   "text/x-tex" # {'*.dtx', '*.tex', '*.sty', '*.cls', '*.ltx', '*.latex', '*.ins'}
+            #   "text/x-java" # {'*.java'}
+            # ];
             icon = "nvim";
             exec = ''${pkgs.wezterm}/bin/wezterm start --class=nvim -e nvim %F'';
             tryExec = ''${pkgs.wezterm}/bin/wezterm start --class=nvim -e nvim'';
-            categories = [
-              "Utility"
-              "TextEditor"
-            ];
-            keywords = [
-              "Text"
-              "editor"
-            ];
+            # categories = [
+            #   "Utility"
+            #   "TextEditor"
+            # ];
+            # keywords = [
+            #   "Text"
+            #   "editor"
+            # ];
           }
         ))
         (pkgs.runCommandLocal "nvim-icon-fix" { } ''
