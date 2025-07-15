@@ -93,7 +93,7 @@ in
     # pkgs.trashy # trash-cli alternative in rust
     pkgs.trash-cli
     pkgs.tmux
-    pkgs.tmuxinator
+    # pkgs.tmuxinator
     pkgs.uuid7
 
     # pkgs.du-dust # dust(du)
@@ -116,7 +116,6 @@ in
     pkgsUnstable.just
 
     pkgs.nh # nix wrapper
-    pkgs.stow
     pkgs.cht-sh
 
     pkgs.xxHash

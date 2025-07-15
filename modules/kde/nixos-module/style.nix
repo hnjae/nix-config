@@ -33,10 +33,9 @@
   ];
   environment.systemPackages = with pkgs; [
     adw-gtk3
-    rose-pine-cursor
-    rose-pine-hyprcursor
-    rose-pine-gtk-theme
-    rose-pine-icon-theme
+    ((import ./packages/fluent-icon-minimal) { inherit pkgs; })
+    kora-icon-theme
+    whitesur-icon-theme
   ];
 
 }

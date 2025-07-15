@@ -33,12 +33,24 @@ in
     (lib.lists.optionals (baseHomeCfg.isDesktop) [
       pkgs.zathura
       (lib.hiPrio (
-        pkgs.runCommandLocal "fix-zathura-icon" { } ''
+        pkgs.runCommandLocal "zathura-icon-fix" { } ''
           mkdir -p "$out/share/icons/hicolor/scalable/apps/"
 
+          icon='${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/org.pwmt.zathura.svg'
+          app_id='org.pwmt.zathura'
+
           cp --reflink=auto \
-            "${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/org.pwmt.zathura.svg" \
-            "$out/share/icons/hicolor/scalable/apps/org.pwmt.zathura.svg"
+            "$icon" \
+            "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
+
+          for size in 16 22 24 32 48 64 96 128 256 512; do
+            mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+            '${pkgs.librsvg}/bin/rsvg-convert' \
+              --keep-aspect-ratio \
+              --height="$size" \
+              --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+              "$icon"
+          done
         ''
       ))
     ])
