@@ -172,6 +172,7 @@ let
         local snapshot_dir
         local snapshot_name
         local snapshot_dataset
+        ZFS_HOLD_TAG="rustic-in-progress"
 
         time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
         snapshot_name="rustic_''${time_}"
@@ -179,6 +180,8 @@ let
 
         "$ZFS_CMD" snapshot -r "$snapshot_dataset" &&
           echo "[INFO] Created ZFS snapshot: $snapshot_dataset" >&2
+        "$ZFS_CMD" hold "$ZFS_HOLD_TAG" "$snapshot_dataset" &&
+          echo "[INFO] Created a hold on ZFS snapshot: $snapshot_dataset" >&2
 
         snapshot_dir="''${MOUNTPOINT}/.zfs/snapshot/''${snapshot_name}"
 
@@ -195,6 +198,8 @@ let
           --as-path "$MOUNTPOINT" \
           -- "$snapshot_dir"
 
+        "$ZFS_CMD" release "$ZFS_HOLD_TAG" "$snapshot_dataset" &&
+          echo "[INFO] Released the hold on ZFS snapshot: $snapshot_dataset" >&2
         "$ZFS_CMD" destroy "$snapshot_dataset" &&
           echo "[INFO] Destroyed ZFS snapshot: $snapshot_dataset" >&2
       }

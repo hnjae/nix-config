@@ -1,5 +1,10 @@
 # NOTE: <https://zrepl.github.io/configuration/jobs.html>
-{ pkgs, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   fileSystems = {
     "isis/safe<" = true;
@@ -78,22 +83,23 @@ in
             regex = ".*";
           }
         ];
+        # NOTE: zrepl send 에서는 보낼 snapshot 지정이 안된다. host 의 모든 snapshot 이 전송됨. 그래서 keep_receiver 의 regex 로 cleanup 할 snapshot 을 제한해서는 안됨. <2025-07-19>
         keep_receiver = [
           {
             type = "grid";
             grid = "1x1h(keep=all) | 24x1h | 7x1d | 3x7d";
-            regex = "^(autosnap|zrepl)_.*";
+            regex = "^(zrepl|autosnap)_.*";
           }
           {
             type = "last_n";
             count = 7;
             regex = "^(zrepl|autosnap)_.*";
           }
-          {
-            type = "regex";
-            negate = true;
-            regex = "^(autosnap|zrepl)_.*";
-          }
+          # {
+          #   type = "regex";
+          #   negate = true;
+          #   regex = "^(zrepl|autosnap)_.*";
+          # }
         ];
       };
     }
@@ -136,7 +142,26 @@ in
         serviceConfig = {
           Type = "oneshot";
           inherit (config.systemd.services.rustic-backup.serviceConfig) ExecCondition;
-          ExecStart = "${pkgs.zrepl}/bin/zrepl signal wakeup ${jobName}";
+          ExecStart = [
+            # zfs send 전에 snapshot 을 찍어, 항상 가장 최신 상태를 보낸다.
+            # NOTE: echo "foo$(date)" 식의 명령어의 경우 date 가 fail 할 경우에 `set -eu` 적용이 되질 않음. <2025-07-19>
+            (pkgs.writeScript "isis-snapshot-before-send" ''
+              #!${pkgs.dash}/bin/dash
+
+              set -eu
+
+              PATH="${
+                lib.makeBinPath [
+                  pkgs.uutils-coreutils-noprefix # date
+                ]
+              }"
+              ZFS_CMD='/run/booted-system/sw/bin/zfs'
+
+              time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
+              "$ZFS_CMD" snapshot -r "isis/safe@zrepl_''${time_}_systemd"
+            '')
+            "${pkgs.zrepl}/bin/zrepl signal wakeup ${jobName}"
+          ];
           SuccessExitStatus = 1; # zrepl prints if job is in progress: "already woken up" and exits with 1.
         };
       };

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
   printMime = pkgs.writeScript "print-mime" ''
     #!${pkgs.dash}/bin/dash
@@ -25,26 +25,26 @@ in
   # NOTE: xlsx2csv too slow for file preview
   programs.pistol = {
     enable = true;
-    associations = builtins.concatLists [
-      [
-        {
-          mime = "inode/directory";
-          command = "eza --all --links --time-style long-iso --color=always --icons=always --git --mounts --extended --group-directories-first -- %pistol-filename%";
-        }
-        {
-          mime = "inode/x-empty";
-          command =
-            # NOTE: %pistol-filename% 가 command 안에 반드시 있어야 한다. <2025-02-10>
-            let
-              p = pkgs.writeScript "p" ''
-                #!${pkgs.dash}/bin/dash
+    associations = lib.flatten [
+      {
+        mime = "inode/directory";
+        command = "eza --all --links --time-style long-iso --color=always --icons=always --git --mounts --extended --group-directories-first -- %pistol-filename%";
+      }
+      {
+        mime = "inode/x-empty";
+        command =
+          # NOTE: %pistol-filename% 가 command 안에 반드시 있어야 한다. <2025-02-10>
+          let
+            p = pkgs.writeScript "p" ''
+              #!${pkgs.dash}/bin/dash
 
-                echo 'inode/x-empty'
-              '';
-            in
-            "${p} %pistol-filename%";
-        }
-      ]
+              set -eu
+
+              echo 'inode/x-empty'
+            '';
+          in
+          "${p} %pistol-filename%";
+      }
       (map
         (mime: {
           inherit mime;
@@ -65,6 +65,10 @@ in
           "audio/*"
         ]
       )
+      {
+        mime = "image/*";
+        command = "${pkgs.exiftool}/bin/exiftool -- %pistol-filename%";
+      }
       (map
         (mime: {
           inherit mime;
@@ -99,6 +103,8 @@ in
               p = pkgs.writeScript "p" ''
                 #!${pkgs.dash}/bin/dash
 
+                set -eu
+
                 ${pkgs.exiftool}/bin/exiftool -- "$1"
                 echo "--------------------"
                 ${pkgs.mupdf-headless}/bin/mutool draw -F txt -i -- "$1" 1-5
@@ -115,6 +121,8 @@ in
             let
               p = pkgs.writeScript "p" ''
                 #!${pkgs.dash}/bin/dash
+
+                set -eu
 
                 ${printMime} "$1"
                 ${pkgs.binutils}/bin/readelf -WCa "$1"
@@ -160,34 +168,27 @@ in
           ".*\.tar\.lz$"
         ]
       )
-      [
-        {
-          mime = "application/x-rpm";
-          command = "${pkgs.rpm}/bin/rpm -qip -sl %pistol-filename%";
-        }
-        {
-          mime = "application/vnd.debian.binary-package";
-          command = "${pkgs.dpkg}/bin/dpkg -I -- %pistol-filename%";
-        }
-        {
-          mime = "application/x-iso9660-image";
-          command = "${pkgs.cdrtools}/bin/isoinfo -d -i %pistol-filename%";
-        }
-        {
-          mime = "application/x-qemu-disk";
-          command = "${pkgs.qemu-utils}/bin/qemu-img info -- %pistol-filename%";
-        }
-        {
-          mime = "application/x-bittorrent";
-          command = "${pkgs.libtransmission_4}}/bin/transmission-show -- %pistol-filename%";
-        }
-      ]
-      [
-        {
-          mime = "image/*";
-          command = "exiftool -- %pistol-filename%";
-        }
-      ]
+      # {
+      #   mime = "application/x-rpm";
+      #   command = "${pkgs.rpm}/bin/rpm -qip -sl %pistol-filename%";
+      # }
+      # {
+      #   mime = "application/vnd.debian.binary-package";
+      #   command = "${pkgs.dpkg}/bin/dpkg -I -- %pistol-filename%";
+      # }
+      {
+        mime = "application/x-iso9660-image";
+        command = "${pkgs.cdrtools}/bin/isoinfo -d -i %pistol-filename%";
+      }
+      {
+        mime = "application/x-qemu-disk";
+        command = "${pkgs.qemu-utils}/bin/qemu-img info -- %pistol-filename%";
+      }
+      {
+        mime = "application/x-bittorrent";
+        command = "${pkgs.libtransmission_4}/bin/transmission-show -- %pistol-filename%";
+      }
+
       # fallback
       (map
         (mime: {
@@ -196,6 +197,8 @@ in
             let
               p = pkgs.writeScript "p" ''
                 #!${pkgs.dash}/bin/dash
+
+                set -eu
 
                 ${printMime} "$1"
                 ${pkgs.hexyl}/bin/hexyl --block-size=4096 --length=2block --border=none -- "$1"

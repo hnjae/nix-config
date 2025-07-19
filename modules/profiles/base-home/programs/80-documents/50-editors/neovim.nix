@@ -55,10 +55,11 @@ in
           }
         ))
         (lib.hiPrio (
+          # icon='${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/io.neovim.nvim.svg'
           pkgs.runCommandLocal "nvim-icon-fix" { } ''
             mkdir -p "$out/share/icons/hicolor/scalable/apps/"
 
-            icon='${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/io.neovim.nvim.svg'
+            icon='${pkgs.whitesur-icon-theme}/share/icons/WhiteSur/apps/scalable/nvim.svg'
             app_id='nvim'
 
             cp --reflink=auto \
