@@ -4,11 +4,12 @@ import binascii
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import cast
 from zipfile import ZipFile
 
-import magic  # type: ignore
-from rarfile import RarFile  # type: ignore
-from tabulate import tabulate  # type: ignore
+import magic
+from rarfile import RarFile  # type: ignore[import]
+from tabulate import tabulate
 
 
 def print_rar(file: Path) -> None:
@@ -42,7 +43,10 @@ def print_rar(file: Path) -> None:
         print(f"Num of files: {len(table)}")
         print(
             tabulate(
-                sorted(table, key=(lambda x: x[-1])),
+                sorted(
+                    table,
+                    key=(lambda x: cast(list, x)[-1]),
+                ),
                 headers=["Size", "Datetime", "Hash", "Filename"],
             )
         )
@@ -63,13 +67,13 @@ def print_zip(file: Path) -> None:
         print(f"Num of files: {len(table)}")
         print(
             tabulate(
-                sorted(table, key=(lambda x: x[-1])),
+                sorted(table, key=(lambda x: cast(list, x)[-1])),
                 headers=["Size", "Datetime", "Hash", "Filename"],
             )
         )
 
 
-def main() -> int:
+def entrypoint():
     if len(sys.argv) != 2:
         print("Usage: <script> <archive_path>")
         return 1
@@ -88,4 +92,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(entrypoint())

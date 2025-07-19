@@ -15,6 +15,7 @@ let
   '';
 
   exiftoolWrapper = "${(import ./exiftool-wrapper { inherit pkgs; })}/bin/exiftool-wrapper";
+  archivePreviewer = "${(import ./archive-previewer { inherit pkgs; })}/bin/archive-previewer";
 in
 {
   # to preview files
@@ -86,7 +87,7 @@ in
       (map
         (mime: {
           inherit mime;
-          command = "${import ./archive-previewer { inherit pkgs; }}/bin/archive-previewer %pistol-filename%";
+          command = "${archivePreviewer} %pistol-filename%";
         })
         [
           "application/x-rar"

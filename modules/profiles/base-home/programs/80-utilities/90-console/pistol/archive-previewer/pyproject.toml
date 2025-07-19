@@ -1,0 +1,25 @@
+[project]
+name = "archive-previewer"
+version = "0.1.0"
+description = ""
+dependencies = ["tabulate==0.9.*", "python-magic==0.4.*", "rarfile==4.*"]
+
+[build-system]
+requires = ["flit_core>=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[dependency-groups]
+dev = ["mypy>=1.17.0", "types-tabulate==0.9.*"]
+
+[project.scripts]
+archive-previewer = "archive_previewer:entrypoint"
+
+[tool.basedpyright]
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
+reportUnknownMemberType = false
+reportMissingTypeStubs = false
+reportMissingTypeArgument = false
+reportUnknownLambdaType = false
+
+# [tool.mypy]
