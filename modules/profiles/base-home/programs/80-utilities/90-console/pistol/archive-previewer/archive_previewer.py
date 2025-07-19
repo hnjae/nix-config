@@ -30,8 +30,8 @@ def print_rar(file: Path) -> None:
                     entry.is_file()
                     and (
                         entry.CRC
-                        and format(entry.CRC, "x")
-                        or format(binascii.crc32(entry.blake2sp_hash), "x")
+                        and format(entry.CRC, "08X")
+                        or format(binascii.crc32(entry.blake2sp_hash), "016X")
                     )
                     or "-"
                 ),
@@ -58,7 +58,7 @@ def print_zip(file: Path) -> None:
             [
                 info.file_size,
                 info.is_dir() and "-" or datetime(*info.date_time),
-                info.is_dir() and "-" or format(info.CRC, "x"),
+                info.is_dir() and "-" or format(info.CRC, "08X"),
                 info.filename,
             ]
             for info in archive.infolist()
