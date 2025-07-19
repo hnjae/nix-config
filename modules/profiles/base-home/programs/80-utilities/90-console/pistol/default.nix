@@ -13,6 +13,8 @@ let
     ${pkgs.file}/bin/file -b -- "$file"
     echo "--------------------"
   '';
+
+  exiftoolWrapper = "${(import ./exiftool-wrapper { inherit pkgs; })}/bin/exiftool-wrapper";
 in
 {
   # to preview files
@@ -67,7 +69,8 @@ in
       )
       {
         mime = "image/*";
-        command = "${pkgs.exiftool}/bin/exiftool -- %pistol-filename%";
+        # command = "${pkgs.exiftool}/bin/exiftool -- %pistol-filename%";
+        command = "${exiftoolWrapper} %pistol-filename%";
       }
       (map
         (mime: {
@@ -105,7 +108,8 @@ in
 
                 set -eu
 
-                ${pkgs.exiftool}/bin/exiftool -- "$1"
+                # ${pkgs.exiftool}/bin/exiftool -- "$1"
+                ${exiftoolWrapper} "$1"
                 echo "--------------------"
                 ${pkgs.mupdf-headless}/bin/mutool draw -F txt -i -- "$1" 1-5
               '';
