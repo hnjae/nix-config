@@ -16,27 +16,43 @@ let
     /git
     /temp
 
-    !/.var
-    /.var/**/.ld.so
-    /.var/**/cache
-    /.var/**/config/**/*[Cc]ache
-    /.var/**/config/*[Cc]ache
-    /.var/**/config/pluse/cookie
-    /.var/**/data/*.bak
-    /.var/**/data/*.tbcache
-    /.var/**/data/recently-used.xbel
+    !/.var/app
+    /.var/app/*/.ld.so
+    /.var/app/*/cache
+    /.var/app/*/config/**/*[Cc]ache
+    /.var/app/*/config/**/CacheStorage
+    /.var/app/*/config/*[Cc]ache
+    /.var/app/*/config/fcitx
+    /.var/app/*/config/ibus
+    /.var/app/*/config/pluse/cookie
+    /.var/app/*/config/trashrc
+    /.var/app/*/config/user-dirs.dirs
+    /.var/app/*/data/recently-used.xbel
+    /.var/app/*/data/user-places.xbel*
+    /.var/app/org.kde.ark/data/ark/ark_recentfiles
+    /.var/app/org.kde.dolphin/config/session
+    /.var/app/org.kde.kontact/data/kontact/kontact_recentfiles
+    /.var/app/org.kde.okular/data/okular/docdata
+    /.var/app/org.kde.kwrite/data/kwrite/anonymous.katesession
+    /.var/app/org.kde.kwrite/data/kwrite/sessions
+    /.var/app/org.onlyoffice.desktopeditors/data/onlyoffice/desktopeditors/recents.xml
     !/.mozilla
-    /.mozilla/firefox/**/storage/default/**/cache
+    /.mozilla/firefox/*/storage/default/*/cache
+    /.mozilla/firefox/firefox-mpris
     !/.config/chromium
     /.config/chromium/**/*[Cc]ache
     /.config/chromium/*[Cc]ache
+    /.config/chromium/**/CacheStorage
+    !/.cert
 
     # Linux
-    .directory
     .Trash-*
     .nfs*
     .fuse_hidden*
     .snapshots
+
+    # KDE
+    .directory
 
     # macOS
     .DS_Store
@@ -58,9 +74,7 @@ let
     *.crdownload
 
     # Vim
-    tags
     *.swp
-    *~
 
     # KdenLive
     # kdenlive/**/proxy
@@ -70,220 +84,245 @@ let
     # kdenlive/**/videothumbs
     # kdenlive/**/workfiles
 
-    # Misc
-    .cache
+    # Direnv
     .direnv
 
     # NodeJS
-    dist
     node_modules
 
-    # Python
+    # Python (NO CACHEDIR.TAG inside)
     .venv
     __pycache__
     *.py[oc]
-    build
+
+    # ZSH
+    *.zwc
+
+    # Things should be excluded by .gitignore
+    # dist
+    # build
 
     # vi:ft=gitignore
   '';
 
-  rusticBackupIsis = pkgs.writeShellApplication {
-    name = "rustic-backup-isis";
-    runtimeInputs = with pkgs; [
-      rustic
-      rclone
-      uutils-coreutils-noprefix # date,
-      inetutils # ping
-      procps # pgrep
-      jq
-    ];
+  rusticBackupIsis =
+    lib.customisation.overrideDerivation
+      (pkgs.writeShellApplication {
+        name = "backup-isis";
+        runtimeInputs = with pkgs; [
+          rustic
+          rclone
+          uutils-coreutils-noprefix # date,
+          inetutils # ping
+          procps # pgrep
+          jq
+        ];
 
-    text = ''
-      set -euo pipefail
+        text = ''
+          DATASET='${DATASET_}'
+          MOUNTPOINT='${MOUNTPOINT_}'
+          ZFS_CMD='/run/booted-system/sw/bin/zfs'
+          PROFILE='${PROFILE_}'
+          ZFS_HOLD_TAG="rustic-in-progress"
 
-      DATASET='${DATASET_}'
-      MOUNTPOINT='${MOUNTPOINT_}'
-      ZFS_CMD='/run/booted-system/sw/bin/zfs'
-      PROFILE='${PROFILE_}'
+          check_cond() {
+            if [ "$UID" != 0 ]; then
+              echo "[ERROR] This script must be run as root." >&2
+              exit 1
+            fi
 
-      check_cond() {
-        if [ "$UID" != 0 ]; then
-          echo "[ERROR] This script must be run as root." >&2
-          exit 1
-        fi
+            if [ ! -f "$ZFS_CMD" ]; then
+              echo "[ERROR] $ZFS_CMD does not exists." >&2
+              exit 1
+            fi
 
-        if [ ! -f "$ZFS_CMD" ]; then
-          echo "[ERROR] $ZFS_CMD does not exists." >&2
-          exit 1
-        fi
+            if [ ! -f "$PROFILE.toml" ]; then
+              echo "[ERROR] $PROFILE.toml does not exists." >&2
+              exit 1
+            fi
 
-        if [ ! -f "$PROFILE.toml" ]; then
-          echo "[ERROR] $PROFILE.toml does not exists." >&2
-          exit 1
-        fi
+            if pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
+              echo "Another restic(rustic) instance is running."
+              exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
+            fi
 
-        if pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
-          echo "Another restic(rustic) instance is running."
-          exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
-        fi
+            if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
+              echo "No Internet connection." >&2
+              exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
+            fi
+          }
 
-        if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
-          echo "No Internet connection." >&2
-          exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
-        fi
-      }
+          cleanup_snapshots() {
+            "$ZFS_CMD" list -t snapshot --json -- "$DATASET" | jq -r '
+            .datasets[]? |
+            select(.snapshot_name | startswith("rustic_")) |
+            .name
+            ' | while IFS= read -r line; do
+              echo "[INFO] Destroying previous ZFS snapshot: $line" >&2
 
-      cleanup_snapshots() {
-        "$ZFS_CMD" list -t snapshot --json "$DATASET" | jq -r '
-          .datasets[]? |
-          select(.snapshot_name | startswith("rustic_")) |
-          .name
-        ' | while IFS= read -r line; do
-          if "$ZFS_CMD" destroy -- "$line"; then
-            echo "[INFO] Destroyed ZFS snapshot: $line" >&2
-          else
-            echo "[ERROR] Failed to destroy ZFS snapshot: $line" >&2
-            exit 1
-          fi
-        done
-      }
+              if  "$ZFS_CMD" release "$ZFS_HOLD_TAG" -- "$snapshot_dataset" 2>/dev/null; then
+                echo "[INFO] Released the hold on ZFS snapshot: $snapshot_dataset" >&2
+              else
+                echo "[WARN] Failed to release hold on ZFS snapshot: $snapshot_dataset" >&2
+              fi
 
-      main() {
-        check_cond
-        cleanup_snapshots
+              if "$ZFS_CMD" destroy -- "$line"; then
+                echo "[INFO] Destroyed ZFS snapshot: $line" >&2
+              else
+                echo "[ERROR] Failed to destroy ZFS snapshot: $line" >&2
+                exit 1
+              fi
+            done
+          }
 
-        export RCLONE_MULTI_THREAD_STREAMS=2 # defaults : 4
-        export RUSTIC_DRY_RUN=false
-        export RUSTIC_REPO_OPT_TIMEOUT="10min"
-        export RUSTIC_USE_PROFILE="$PROFILE"
+          main() {
+            check_cond
+            cleanup_snapshots
 
-        if [ "$TERM" = "dumb" ]; then
-          export RCLONE_VERBOSE=1
-          export RUSTIC_LOG_LEVEL=info
-          export RUSTIC_NO_PROGRESS=true
-        else
-          # Running in interactive shell
-          export RCLONE_VERBOSE=1
-          export RUSTIC_LOG_LEVEL=info
-          export RUSTIC_NO_PROGRESS=false
-        fi
+            export RCLONE_MULTI_THREAD_STREAMS=2 # defaults : 4
+            export RUSTIC_DRY_RUN=false
+            export RUSTIC_REPO_OPT_TIMEOUT="10min"
+            export RUSTIC_USE_PROFILE="$PROFILE"
 
-        local time_
-        local snapshot_dir
-        local snapshot_name
-        local snapshot_dataset
-        ZFS_HOLD_TAG="rustic-in-progress"
+            if [ "$TERM" = "dumb" ]; then
+              export RCLONE_VERBOSE=1
+              export RUSTIC_LOG_LEVEL=info
+              export RUSTIC_NO_PROGRESS=true
+            else
+              # Running in interactive shell
+              export RCLONE_VERBOSE=1
+              export RUSTIC_LOG_LEVEL=info
+              export RUSTIC_NO_PROGRESS=false
+            fi
 
-        time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
-        snapshot_name="rustic_''${time_}"
-        snapshot_dataset="''${DATASET}@''${snapshot_name}"
+            local time_
+            local snapshot_dir
+            local snapshot_name
+            local snapshot_dataset
 
-        "$ZFS_CMD" snapshot -r "$snapshot_dataset" &&
-          echo "[INFO] Created ZFS snapshot: $snapshot_dataset" >&2
-        "$ZFS_CMD" hold "$ZFS_HOLD_TAG" "$snapshot_dataset" &&
-          echo "[INFO] Created a hold on ZFS snapshot: $snapshot_dataset" >&2
+            time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
+            snapshot_name="rustic_''${time_}"
+            snapshot_dataset="''${DATASET}@''${snapshot_name}"
 
-        snapshot_dir="''${MOUNTPOINT}/.zfs/snapshot/''${snapshot_name}"
+            "$ZFS_CMD" snapshot -r -- "$snapshot_dataset" &&
+              echo "[INFO] Created ZFS snapshot: $snapshot_dataset" >&2
+            "$ZFS_CMD" hold "$ZFS_HOLD_TAG" -- "$snapshot_dataset" &&
+              echo "[INFO] Created a hold on ZFS snapshot: $snapshot_dataset" >&2
 
-        [ -d "$snapshot_dir" ] && rustic backup \
-          --one-file-system \
-          --no-scan \
-          --long \
-          --git-ignore \
-          --no-require-git \
-          --exclude-if-present "CACHEDIR.TAG" \
-          --label 'isis' \
-          --time "$time_" \
-          --custom-ignorefile '${ignoreFile}' \
-          --as-path "$MOUNTPOINT" \
-          -- "$snapshot_dir"
+            snapshot_dir="''${MOUNTPOINT}/.zfs/snapshot/''${snapshot_name}"
 
-        "$ZFS_CMD" release "$ZFS_HOLD_TAG" "$snapshot_dataset" &&
-          echo "[INFO] Released the hold on ZFS snapshot: $snapshot_dataset" >&2
-        "$ZFS_CMD" destroy "$snapshot_dataset" &&
-          echo "[INFO] Destroyed ZFS snapshot: $snapshot_dataset" >&2
-      }
+            [ -d "$snapshot_dir" ] && rustic backup \
+                --one-file-system \
+                --no-scan \
+                --long \
+                --git-ignore \
+                --no-require-git \
+                --exclude-if-present "CACHEDIR.TAG" \
+                --label 'isis' \
+                --time "$time_" \
+                --custom-ignorefile '${ignoreFile}' \
+                --as-path "$MOUNTPOINT" \
+                -- "$snapshot_dir"
 
-      main
-    '';
-  };
+            "$ZFS_CMD" release "$ZFS_HOLD_TAG" -- "$snapshot_dataset" &&
+              echo "[INFO] Released the hold on ZFS snapshot: $snapshot_dataset" >&2
+            "$ZFS_CMD" destroy -- "$snapshot_dataset" &&
+              echo "[INFO] Destroyed ZFS snapshot: $snapshot_dataset" >&2
+          }
 
-  rusticBackupKde = pkgs.writeShellApplication {
-    name = "rustic-backup-kde";
+          main
+        '';
+      })
+      (_: {
+        preferLocalBuild = true;
+      });
 
-    runtimeInputs = with pkgs; [
-      konsave
-      uuid7
-      uutils-coreutils-noprefix # date,
-      rustic
-      rclone
-      inetutils # ping
-      sudo
-    ];
+  rusticBackupKde =
+    lib.customisation.overrideDerivation
+      (pkgs.writeShellApplication {
+        name = "backup-kde";
 
-    text = ''
-      check_cond() {
-        if [ "$UID" != 0 ]; then
-          echo "[ERROR] This script must be run as root." >&2
-          exit 1
-        fi
+        runtimeInputs = with pkgs; [
+          konsave
+          uuid7
+          uutils-coreutils-noprefix # date
+          rustic
+          rclone
+          inetutils # ping
+          sudo
+        ];
 
-        if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
-          echo "No Internet connection." >&2
-          exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
-        fi
-      }
+        text = ''
+          PROFILE='${PROFILE_}'
 
-      main() {
-        check_cond
+          check_cond() {
+            if [ "$UID" != 0 ]; then
+              echo "[ERROR] This script must be run as root." >&2
+              exit 1
+            fi
 
-        PROFILE='${PROFILE_}'
+            if [ ! -f "$PROFILE.toml" ]; then
+              echo "[ERROR] $PROFILE.toml does not exists." >&2
+              exit 1
+            fi
 
-        export RCLONE_MULTI_THREAD_STREAMS=0 # defaults : 4
-        export RUSTIC_DRY_RUN=false
-        export RUSTIC_REPO_OPT_TIMEOUT="10min"
-        export RUSTIC_USE_PROFILE="$PROFILE"
+            if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
+              echo "No Internet connection." >&2
+              exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
+            fi
+          }
 
-        if [ "$TERM" = "dumb" ]; then
-          export RCLONE_VERBOSE=1
-          export RUSTIC_LOG_LEVEL=info
-          export RUSTIC_NO_PROGRESS=true
-        else
-          # Running in interactive shell
-          export RCLONE_VERBOSE=1
-          export RUSTIC_LOG_LEVEL=info
-          export RUSTIC_NO_PROGRESS=false
-        fi
+          main() {
+            check_cond
 
-        local id_
-        local file_
+            export RCLONE_MULTI_THREAD_STREAMS=0 # defaults : 4
+            export RUSTIC_DRY_RUN=false
+            export RUSTIC_REPO_OPT_TIMEOUT="10min"
+            export RUSTIC_USE_PROFILE="$PROFILE"
 
-        id_=$(uuid7)
-        file_="/tmp/''${id_}.knsv"
+            if [ "$TERM" = "dumb" ]; then
+              export RCLONE_VERBOSE=1
+              export RUSTIC_LOG_LEVEL=info
+              export RUSTIC_NO_PROGRESS=true
+            else
+              # Running in interactive shell
+              export RCLONE_VERBOSE=1
+              export RUSTIC_LOG_LEVEL=info
+              export RUSTIC_NO_PROGRESS=false
+            fi
 
-        # Cleanup existing konsave profile if exists
-        [ -f "$file_" ] && rm "$file_"
+            local id_
+            local file_
 
-        time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
-        sudo -u hnjae konsave --save "$id_"
-        sudo -u hnjae konsave --export-profile "$id_" --export-directory /tmp &&
-          echo "[INFO] konsave profile exported to $file_" >&2
-        sudo -u hnjae konsave --remove "$id_"
+            id_=$(uuid7)
+            file_="/tmp/''${id_}.knsv"
 
-        rustic backup \
-          --long \
-          --label "isis-kde.knsv" \
-          --time "$time_" \
-          --stdin-filename "isis-kde.knsv" \
-          "-" < "$file_"
+            # Cleanup existing konsave profile if exists
+            [ -f "$file_" ] && rm "$file_"
 
-        rm "$file_" &&
-          echo "[INFO] Cleaned up $file_" >&2
-      }
+            time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
+            sudo -u hnjae konsave --save "$id_"
+            sudo -u hnjae konsave --export-profile "$id_" --export-directory /tmp &&
+              echo "[INFO] konsave profile exported to $file_" >&2
+            sudo -u hnjae konsave --remove "$id_"
 
-      main
-    '';
-  };
+            rustic backup \
+              --long \
+              --label "isis-kde.knsv" \
+              --time "$time_" \
+              --stdin-filename "isis-kde.knsv" \
+              "-" < "$file_"
+
+            rm "$file_" &&
+              echo "[INFO] Cleaned up $file_" >&2
+          }
+
+          main
+        '';
+      })
+      (_: {
+        preferLocalBuild = true;
+      });
 in
 {
   environment.systemPackages = [
@@ -343,36 +382,9 @@ in
           # IOWeight = "10";
           # MemoryHigh = "4G";
 
-          # ExecStopPost = pkgs.writeScript "cleanup-zfs-snapshots" ''
-          #   #!${pkgs.dash}/bin/dash
-          #
-          #   set -eu
-          #
-          #   PATH="${pkgs.jq}/bin"
-          #   DATASET='${DATASET}'
-          #   ZFS_CMD='/run/booted-system/sw/bin/zfs'
-          #
-          #   cleanup_snapshots() {
-          #     "$ZFS_CMD" list -t snapshot --json "$DATASET" | jq -r '
-          #       .datasets[]? |
-          #       select(.snapshot_name | startswith("rustic_")) |
-          #       .name
-          #     ' | while IFS= read -r line; do
-          #       if "$ZFS_CMD" destroy -- "$line"; then
-          #         echo "[INFO] Destroyed ZFS snapshot: $line" >&2
-          #       else
-          #         echo "[ERROR] Failed to destroy ZFS snapshot: $line" >&2
-          #         exit 1
-          #       fi
-          #     done
-          #
-          #     cleanup_snapshots
-          #   }
-          # '';
-
           ExecStart = [
-            "${rusticBackupKde}/bin/rustic-backup-kde"
-            "${rusticBackupIsis}/bin/rustic-backup-isis"
+            "${rusticBackupKde}/bin/backup-kde"
+            "${rusticBackupIsis}/bin/backup-isis"
           ];
 
           ExecCondition = lib.flatten [

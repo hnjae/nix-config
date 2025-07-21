@@ -1,11 +1,26 @@
-{ ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+let
+  baseHomeCfg = config.base-home;
+in
 {
   imports = [
-    ./default-app.nix
-    ./desktop-entries.nix
-    ./home.nix
-    ./systemd.nix
     ./tmpfiles.nix
-    ./xdg.nix
   ];
+
+  default-app.enable = baseHomeCfg.isDesktop && pkgs.stdenv.isLinux;
+  home.preferXdgDirectories = true;
+  systemd.user.startServices = "sd-switch";
+
+  xdg = {
+    enable = true;
+    userDirs = {
+      enable = pkgs.stdenv.isLinux && baseHomeCfg.isDesktop;
+      createDirectories = true;
+    };
+  };
 }
