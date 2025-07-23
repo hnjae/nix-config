@@ -1,7 +1,8 @@
 # 7W konsole 두 탭 + nvim (2024-11-11)
 {
-  # config,
-  # lib,
+  config,
+  lib,
+  pkgs,
   ...
 }:
 let
@@ -38,11 +39,78 @@ in
 
     # https://linrunner.de/tlp/settings/processor.html
     # run `tlp-stat -p` to determine availability on your hardware
-    CPU_SCALING_GOVERNOR_ON_AC = cpuScalingGovernor.schedutil;
+    CPU_SCALING_GOVERNOR_ON_AC = cpuScalingGovernor.performance;
     CPU_SCALING_GOVERNOR_ON_BAT = cpuScalingGovernor.schedutil;
 
     PLATFORM_PROFILE_ON_AC = "performance";
     # PLATFORM_PROFILE_ON_BAT = "balanced";
     PLATFORM_PROFILE_ON_BAT = "low-power";
   };
+
+  environment.systemPackages = [
+    (lib.customisation.overrideDerivation
+      # NOTE: 외부 배터리로 가동 중일때 사용할 스크립트
+      (pkgs.writeShellApplication {
+        name = "sys-bat-mode";
+
+        runtimeInputs = [
+          config.boot.kernelPackages.cpupower
+          pkgs.tlp
+        ];
+
+        text = ''
+          bat_threshold_clamp() {
+            val="$1"
+            min="$2"
+            max="$3"
+
+            if [ "$val" -gt "$max" ]; then
+              echo "$max"
+            elif [ "$val" -lt "$min" ]; then
+              echo "$min"
+            else
+              echo "$val"
+            fi
+          }
+
+          echo "[INFO] Disabling CPU Boost" >&2
+          echo 0 >"/sys/devices/system/cpu/cpufreq/boost"
+
+          echo "[INFO] Setting ACPI platform profile to low-power" >&2
+          echo "low-power" >"/sys/firmware/acpi/platform_profile"
+
+          echo "[INFO] Setting CPU frequency governor to schedutil" >&2
+          cpupower frequency-set -g schedutil
+
+          CHARGE_CONTROL_END_THRESHOLD_PATH="/sys/class/power_supply/BAT0/charge_control_end_threshold"
+          CHARGE_CONTROL_START_THRESHOLD_PATH="/sys/class/power_supply/BAT0/charge_control_start_threshold"
+          bat_capacity="$(cat "/sys/class/power_supply/BAT0/capacity")"
+          cur_end_threshold="$(cat "$CHARGE_CONTROL_END_THRESHOLD_PATH")"
+
+          end_threshold=$((bat_capacity -1))
+          end_threshold="$(bat_threshold_clamp "$end_threshold" 20 100)"
+
+          start_threshold=$((end_threshold -1))
+          start_threshold="$(bat_threshold_clamp "$start_threshold" 0 "$start_threshold")"
+
+          echo "[INFO] STOP CHARGING / Setting charnge end threshold to $end_threshold" >&2
+
+          if [ "$cur_end_threshold" -gt "$end_threshold" ]; then
+            echo "$start_threshold" >"$CHARGE_CONTROL_START_THRESHOLD_PATH"
+            echo "$end_threshold" >"$CHARGE_CONTROL_END_THRESHOLD_PATH"
+          else
+            echo "$end_threshold" >"$CHARGE_CONTROL_END_THRESHOLD_PATH"
+            echo "$start_threshold" >"$CHARGE_CONTROL_START_THRESHOLD_PATH"
+          fi
+
+          echo "------------------" >&2
+          tlp-stat -p
+        '';
+      })
+      (_: {
+        preferLocalBuild = true;
+      })
+    )
+
+  ];
 }

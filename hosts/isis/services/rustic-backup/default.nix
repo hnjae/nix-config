@@ -16,29 +16,48 @@ let
     /git
     /temp
 
+    !/.var
     !/.var/app
     /.var/app/*/.ld.so
     /.var/app/*/cache
+
+    /.var/app/*/config/*[Cc]ache
     /.var/app/*/config/**/*[Cc]ache
     /.var/app/*/config/**/CacheStorage
-    /.var/app/*/config/*[Cc]ache
+    /.var/app/*/data/*[Cc]ache
+    /.var/app/*/data/**/*[Cc]ache
+
     /.var/app/*/config/fcitx
     /.var/app/*/config/ibus
-    /.var/app/*/config/pluse/cookie
+    /.var/app/*/config/pulse/cookie
     /.var/app/*/config/trashrc
     /.var/app/*/config/user-dirs.dirs
     /.var/app/*/data/recently-used.xbel
     /.var/app/*/data/user-places.xbel*
+
+    /.var/app/com.usebottles.bottles/data/bottles/bottles/*/drive_c/users/*/AppData/Local/Temp
     /.var/app/org.kde.ark/data/ark/ark_recentfiles
     /.var/app/org.kde.dolphin/config/session
+    /.var/app/org.kde.gwenview/data/gwenview/recentfolders
+    # /.var/app/org.kde.kontact/data/akonadi_*/*/tmp
     /.var/app/org.kde.kontact/data/kontact/kontact_recentfiles
-    /.var/app/org.kde.okular/data/okular/docdata
     /.var/app/org.kde.kwrite/data/kwrite/anonymous.katesession
     /.var/app/org.kde.kwrite/data/kwrite/sessions
+    /.var/app/org.kde.okular/data/okular/docdata
+    /.var/app/org.libreoffice.LibreOffice/config/libreoffice/4/user/backup
+    /.var/app/org.libreoffice.LibreOffice/config/libreoffice/4/user/extensions/tmp
     /.var/app/org.onlyoffice.desktopeditors/data/onlyoffice/desktopeditors/recents.xml
+
     !/.mozilla
-    /.mozilla/firefox/*/storage/default/*/cache
+    /.mozilla/firefox/Crash Reports
     /.mozilla/firefox/firefox-mpris
+    /.mozilla/firefox/*/datareporting
+    /.mozilla/firefox/*/saved-telemetry-pings
+    /.mozilla/firefox/*/storage/default/*/cache
+    /.mozilla/firefox/*/weave/logs
+    /.mozilla/firefox/*/sessionstore-backups
+    !/.config
+    /.config/*
     !/.config/chromium
     /.config/chromium/**/*[Cc]ache
     /.config/chromium/*[Cc]ache
@@ -157,19 +176,19 @@ let
             .datasets[]? |
             select(.snapshot_name | startswith("rustic_")) |
             .name
-            ' | while IFS= read -r line; do
-              echo "[INFO] Destroying previous ZFS snapshot: $line" >&2
+            ' | while IFS= read -r snapshot; do
+              echo "[INFO] Destroying previous ZFS snapshot: $snapshot" >&2
 
-              if  "$ZFS_CMD" release "$ZFS_HOLD_TAG" -- "$snapshot_dataset" 2>/dev/null; then
-                echo "[INFO] Released the hold on ZFS snapshot: $snapshot_dataset" >&2
+              if  "$ZFS_CMD" release "$ZFS_HOLD_TAG" -- "$snapshot" 2>/dev/null; then
+                echo "[INFO] Released the hold on ZFS snapshot: $snapshot" >&2
               else
-                echo "[WARN] Failed to release hold on ZFS snapshot: $snapshot_dataset" >&2
+                echo "[WARN] Failed to release hold on ZFS snapshot: $snapshot" >&2
               fi
 
-              if "$ZFS_CMD" destroy -- "$line"; then
-                echo "[INFO] Destroyed ZFS snapshot: $line" >&2
+              if "$ZFS_CMD" destroy -- "$snapshot"; then
+                echo "[INFO] Destroyed ZFS snapshot: $snapshot" >&2
               else
-                echo "[ERROR] Failed to destroy ZFS snapshot: $line" >&2
+                echo "[ERROR] Failed to destroy ZFS snapshot: $snapshot" >&2
                 exit 1
               fi
             done
@@ -190,7 +209,7 @@ let
               export RUSTIC_NO_PROGRESS=true
             else
               # Running in interactive shell
-              export RCLONE_VERBOSE=1
+              export RCLONE_VERBOSE=0
               export RUSTIC_LOG_LEVEL=info
               export RUSTIC_NO_PROGRESS=false
             fi
@@ -211,10 +230,12 @@ let
 
             snapshot_dir="''${MOUNTPOINT}/.zfs/snapshot/''${snapshot_name}"
 
+            # NOTE: devid 는 ZFS snapshot 에 따라 다름.
             [ -d "$snapshot_dir" ] && rustic backup \
-                --one-file-system \
-                --no-scan \
+                --ignore-devid \
                 --long \
+                --no-scan \
+                --one-file-system \
                 --git-ignore \
                 --no-require-git \
                 --exclude-if-present "CACHEDIR.TAG" \
