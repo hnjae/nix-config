@@ -234,12 +234,16 @@ main() {
     snapshots+=("${dataset}@${snapshot_name}")
   done
 
-  if "$zfs_cmd" snapshot -- "${snapshots[@]}"; then
-    echo "[INFO] Created ZFS snapshot(s): " "${snapshots[@]}" >&2
-  else
-    echo "[ERROR] Failed to create ZFS snapshot(s): " "${snapshots[@]}" >&2
-    exit 1
-  fi
+  for snapshot in "${snapshots[@]}"; do
+    # NOTE: Consistent snapshot across multiple pools is not allowed.
+    # if "$zfs_cmd" snapshot -- "${snapshots[@]}"; then
+    if "$zfs_cmd" snapshot -- "$snapshot"; then
+      echo "[INFO] Created ZFS snapshot: ${snapshot}" >&2
+    else
+      echo "[ERROR] Failed to create ZFS snapshot: ${snapshot}" >&2
+      exit 1
+    fi
+  done
 
   if "$zfs_cmd" hold "$ZFS_HOLD_TAG" -- "${snapshots[@]}"; then
     echo "[INFO] Created hold(s) on ZFS snapshot(s): " "${snapshots[@]}" >&2
