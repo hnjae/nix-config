@@ -1,0 +1,250 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ZFS_HOLD_TAG="rustic-in-progress"
+
+zfs_cmd='/run/booted-system/sw/bin/zfs'
+[ -f "$zfs_cmd" ] || zfs_cmd="$(command -v zfs 2>/dev/null)" || zfs_cmd=""
+
+_uuid="$(uuidgen --time-v7)"
+declare -A dataset_mountpoint
+snapshot_name="rustic_${_uuid}"
+profile=""
+ignore_file=""
+dry_run=false
+keep=false
+debug=false
+
+usage() {
+  cat <<EOF
+Usage: $(basename -- "$0") [-d] [-n] [-k] [-i ignore_file] -p <profile> [--] <dataset>...
+       $(basename -- "$0") -h
+
+ZFS dataset backup tool using rustic
+
+Arguments:
+  <dataset>         ZFS dataset to backup (e.g., pool/data)
+
+Options:
+  -n                Perform a dry run without making changes in rustic repository
+  -d                Printg debug information
+  -k                Keep the ZFS snapshot after backup (Will use \`zrepl_\` prefix)
+  -i <ignore_file>  Custom ignore file path (Uses .gitignore style)
+  -p <profile>      Rustic profile name (without .toml extension)
+  -h                Show this help message
+EOF
+  exit 1
+}
+
+while getopts ":i:p:nkdh" opt; do
+  case ${opt} in
+  h)
+    usage
+    ;;
+  n)
+    dry_run=true
+    ;;
+  k)
+    keep=true
+    ;;
+  d)
+    debug=true
+    ;;
+  i)
+    ignore_file=$OPTARG
+    ;;
+  p)
+    profile=$OPTARG
+    ;;
+  \?)
+    echo "Invalid Option: -$OPTARG" 1>&2
+    usage
+    ;;
+  :)
+    echo "Invalid Option: -$OPTARG requires an argument" 1>&2
+    usage
+    ;;
+  esac
+done
+shift $((OPTIND - 1))
+datasets=("$@")
+
+[ "${#datasets[@]}" -eq 0 ] && usage
+[ "$profile" == "" ] && usage
+
+check_cond() {
+  if [ "$UID" != 0 ]; then
+    echo "[ERROR] This script must be run as root." >&2
+    exit 1
+  fi
+
+  if [ ! -f "$zfs_cmd" ]; then
+    echo "[ERROR] $zfs_cmd does not exists." >&2
+    exit 1
+  fi
+
+  for dataset in "${datasets[@]}"; do
+    local mp
+    mp="$("$zfs_cmd" get -H -o value mountpoint -- "$dataset")"
+
+    if [ "$mp" == "" ]; then
+      echo "[ERROR] Could not get the mountpoint of dataset $dataset." >&2
+      exit 1
+    fi
+
+    if [ "$mp" == "legacy" ] || [ "$mp" == "none" ]; then
+      echo "[ERROR] The mountpoint of dataset $dataset is $mp. This dataset cannot be processed." >&2
+      exit 1
+    fi
+
+    dataset_mountpoint["$dataset"]="$mp"
+  done
+
+  if [ ! -f "${profile}.toml" ]; then
+    echo "[ERROR] ${profile}.toml does not exists." >&2
+    exit 1
+  fi
+
+  if pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
+    echo "Another restic(rustic) instance is running."
+    exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
+  fi
+}
+
+cleanup_snapshots() {
+  local snapshots_to_cleanup
+  readarray -t snapshots_to_cleanup < <(
+    "$zfs_cmd" list -t snapshot --json -- "${datasets[@]}" 2>/dev/null | jq -r '
+      .datasets[]? |
+      select(.snapshot_name | startswith("rustic_")) |
+      .name
+    ' 2>/dev/null || true
+  )
+
+  local failed=false
+  for snapshot in "${snapshots_to_cleanup[@]}"; do
+    echo "[INFO] Destroying ZFS snapshot: $snapshot" >&2
+
+    if "$zfs_cmd" release "$ZFS_HOLD_TAG" -- "$snapshot" 2>/dev/null; then
+      echo "[INFO] Released the hold on ZFS snapshot: $snapshot" >&2
+    else
+      echo "[WARN] Failed to release hold on ZFS snapshot: $snapshot" >&2
+    fi
+
+    if "$zfs_cmd" destroy -- "$snapshot"; then
+      echo "[INFO] Destroyed ZFS snapshot: $snapshot" >&2
+    else
+      echo "[ERROR] Failed to destroy ZFS snapshot: $snapshot" >&2
+      failed=true
+    fi
+  done
+
+  if "$failed"; then
+    exit 1
+  fi
+}
+
+run_backup() {
+  local snapshot
+  local dataset
+  local snapshot_unixtime
+  local snapshot_time
+  local snapshot_dir
+
+  dataset="$1"
+  snapshot="${dataset}@${snapshot_name}"
+  snapshot_unixtime="$(zfs get -H -p creation -o value -- "$snapshot")"
+  snapshot_time="$(date --date="@${snapshot_unixtime}" --utc '+%Y-%m-%dT%H:%M:%SZ')"
+  snapshot_dir="${dataset_mountpoint[$dataset]}/.zfs/snapshot/${snapshot_name}"
+
+  local rustic_backup_args=(
+    backup
+    # NOTE: devid 는 ZFS snapshot 에 따라 다름.
+    --ignore-devid
+    --long
+    --one-file-system
+    --git-ignore
+    # --no-require-git
+    "--exclude-if-present=CACHEDIR.TAG"
+    "--as-path=/"
+    "--use-profile=${profile}"
+  )
+
+  if [ "$ignore_file" != "" ]; then
+    rustic_backup_args+=("--custom-ignorefile=${ignore_file}")
+  fi
+
+  if "$dry_run"; then
+    rustic_backup_args+=("--dry-run")
+  fi
+
+  if "$debug"; then
+    export RCLONE_VERBOSE="1"
+    export RUSTIC_LOG_LEVEL="debug"
+  fi
+
+  export RCLONE_MULTI_THREAD_STREAMS="${RCLONE_MULTI_THREAD_STREAMS:-2}" # defaults : 4
+  export RUSTIC_REPO_OPT_TIMEOUT="${RUSTIC_REPO_OPT_TIMEOUT:-"10min"}"
+  export RUSTIC_LOG_LEVEL="${RUSTIC_LOG_LEVEL:-"info"}"
+
+  if [ "$TERM" = "dumb" ]; then
+    export RCLONE_VERBOSE="${RCLONE_VERBOSE:-1}"
+    rustic_backup_args+=("--no-scan" "--no-progress")
+  else
+    export RCLONE_VERBOSE="${RCLONE_VERBOSE:-0}"
+  fi
+
+  rustic_backup_args+=(
+    "--label" "$dataset"
+    "--time" "$snapshot_time"
+    "--" "$snapshot_dir"
+  )
+
+  [ -d "$snapshot_dir" ] && rustic "${rustic_backup_args[@]}"
+
+  # Cleanup
+  "$zfs_cmd" release "$ZFS_HOLD_TAG" -- "$snapshot" &&
+    echo "[INFO] Released the hold on ZFS snapshot: $snapshot" >&2
+
+  if "$keep"; then
+    "$zfs_cmd" rename -- "$snapshot" "${dataset}@zrepl_${snapshot_time}" &&
+      echo "[INFO] Renamed ZFS snapshot: ${dataset}@zrepl_${snapshot_time}_rustic" >&2
+  else
+    "$zfs_cmd" destroy -- "$snapshot" &&
+      echo "[INFO] Destroyed ZFS snapshot: $snapshot" >&2
+  fi
+}
+
+main() {
+  trap cleanup_snapshots EXIT
+
+  check_cond
+  cleanup_snapshots
+
+  local snapshots
+  snapshots=()
+
+  for dataset in "${datasets[@]}"; do
+    snapshots+=("${dataset}@${snapshot_name}")
+  done
+
+  if "$zfs_cmd" snapshot -- "${snapshots[@]}"; then
+    echo "[INFO] Created ZFS snapshot(s): " "${snapshots[@]}" >&2
+  else
+    echo "[ERROR] Failed to create ZFS snapshot(s): " "${snapshots[@]}" >&2
+    exit 1
+  fi
+
+  if "$zfs_cmd" hold "$ZFS_HOLD_TAG" -- "${snapshots[@]}"; then
+    echo "[INFO] Created hold(s) on ZFS snapshot(s): " "${snapshots[@]}" >&2
+  else
+    echo "[ERROR] Failed to create hold(s) on ZFS snapshot(s): " "${snapshots[@]}" >&2
+  fi
+
+  for dataset in "${datasets[@]}"; do
+    run_backup "$dataset"
+  done
+}
+
+main
