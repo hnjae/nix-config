@@ -93,9 +93,14 @@ check_cond() {
       exit 1
     fi
 
-    if [ "$mp" == "legacy" ] || [ "$mp" == "none" ]; then
+    if [ "$mp" == "none" ]; then
       echo "[ERROR] The mountpoint of dataset $dataset is $mp. This dataset cannot be processed." >&2
       exit 1
+    fi
+
+    if [ "$mp" == "legacy" ]; then
+      "$debug" && echo "[DEBUG] The mountpoint of dataset $dataset is legacy. Using findmnt to get the mountpoint." >&2
+      mp="$(findmnt --types=zfs --source="$dataset" --output TARGET --noheadings)"
     fi
 
     dataset_mountpoint["$dataset"]="$mp"
