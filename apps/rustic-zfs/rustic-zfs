@@ -7,9 +7,9 @@ ZFS_HOLD_TAG="rustic-in-progress"
 zfs_cmd='/run/booted-system/sw/bin/zfs'
 [ -f "$zfs_cmd" ] || zfs_cmd="$(command -v zfs 2>/dev/null)" || zfs_cmd=""
 
-_uuid="$(uuidgen --time-v7)"
+id_="$(uuidgen --time-v7)"
 declare -A dataset_mountpoint
-snapshot_name="rustic_${_uuid}"
+snapshot_name="__rustic_${id_}"
 profile=""
 ignore_file=""
 dry_run=false
@@ -29,7 +29,7 @@ Arguments:
 Options:
   -n                Perform a dry run without making changes in rustic repository
   -d                Printg debug information
-  -k                Keep the ZFS snapshot after backup (Will use \`zrepl_\` prefix)
+  -k                Keep the ZFS snapshot after backup (Will use \`rustic_\` prefix)
   -i <ignore_file>  Custom ignore file path (Uses .gitignore style)
   -p <profile>      Rustic profile name (without .toml extension)
   -h                Show this help message
@@ -122,7 +122,7 @@ cleanup_snapshots() {
   readarray -t snapshots_to_cleanup < <(
     "$zfs_cmd" list -t snapshot --json -- "${datasets[@]}" 2>/dev/null | jq -r '
       .datasets[]? |
-      select(.snapshot_name | startswith("rustic_")) |
+      select(.snapshot_name | startswith("__rustic_")) |
       .name
     ' 2>/dev/null || true
   )
@@ -170,6 +170,7 @@ run_backup() {
     --long
     --one-file-system
     --git-ignore
+    "--tag=${id_}"
     # --no-require-git
     "--exclude-if-present=CACHEDIR.TAG"
     "--as-path=/"
@@ -190,7 +191,7 @@ run_backup() {
   fi
 
   export RCLONE_MULTI_THREAD_STREAMS="${RCLONE_MULTI_THREAD_STREAMS:-2}" # defaults : 4
-  export RUSTIC_REPO_OPT_TIMEOUT="${RUSTIC_REPO_OPT_TIMEOUT:-"10min"}"
+  # export RUSTIC_REPO_OPT_TIMEOUT="${RUSTIC_REPO_OPT_TIMEOUT:-"10min"}"
   export RUSTIC_LOG_LEVEL="${RUSTIC_LOG_LEVEL:-"info"}"
 
   if [ "$TERM" = "dumb" ]; then
@@ -201,9 +202,10 @@ run_backup() {
   fi
 
   rustic_backup_args+=(
-    "--label" "$dataset"
-    "--time" "$snapshot_time"
-    "--" "$snapshot_dir"
+    "--label=${dataset}"
+    "--time=${snapshot_time}"
+    "--"
+    "$snapshot_dir"
   )
 
   [ -d "$snapshot_dir" ] && rustic "${rustic_backup_args[@]}"
@@ -213,8 +215,8 @@ run_backup() {
     echo "[INFO] Released the hold on ZFS snapshot: $snapshot" >&2
 
   if "$keep"; then
-    "$zfs_cmd" rename -- "$snapshot" "${dataset}@zrepl_${snapshot_time}" &&
-      echo "[INFO] Renamed ZFS snapshot: ${dataset}@zrepl_${snapshot_time}_rustic" >&2
+    "$zfs_cmd" rename -- "$snapshot" "${dataset}@rustic_${id_}" &&
+      echo "[INFO] Renamed ZFS snapshot: ${dataset}@rustic_${id_}" >&2
   else
     "$zfs_cmd" destroy -- "$snapshot" &&
       echo "[INFO] Destroyed ZFS snapshot: $snapshot" >&2
