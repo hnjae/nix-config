@@ -228,19 +228,28 @@ main() {
   cleanup_snapshots
 
   local snapshots
+  local -A pools
   snapshots=()
 
   for dataset in "${datasets[@]}"; do
+    pool="${dataset%%/*}"
+    pools[$pool]+="${dataset}@${snapshot_name}"$'\n'
     snapshots+=("${dataset}@${snapshot_name}")
   done
 
-  for snapshot in "${snapshots[@]}"; do
-    # NOTE: Consistent snapshot across multiple pools is not allowed.
-    # if "$zfs_cmd" snapshot -- "${snapshots[@]}"; then
-    if "$zfs_cmd" snapshot -- "$snapshot"; then
-      echo "[INFO] Created ZFS snapshot: ${snapshot}" >&2
+  for pool in "${!pools[@]}"; do
+    local pool_snapshots
+    readarray -d $'\n' -t pool_snapshots <<<"${pools[$pool]}"
+
+    # 마지막 원소가 빈 문자열이면 제거
+    if [ "${#pool_snapshots[@]}" -gt 0 ] && [ "${pool_snapshots[-1]}" = "" ]; then
+      unset 'pool_snapshots[-1]'
+    fi
+
+    if "$zfs_cmd" snapshot -- "${pool_snapshots[@]}"; then
+      echo "[INFO] Created ZFS snapshot(s): ${pool_snapshots[*]}" >&2
     else
-      echo "[ERROR] Failed to create ZFS snapshot: ${snapshot}" >&2
+      echo "[ERROR] Failed to create ZFS snapshot(s): ${pool_snapshots[*]}" >&2
       exit 1
     fi
   done
