@@ -15,10 +15,11 @@ ignore_file=""
 dry_run=false
 keep=false
 debug=false
+force=false
 
 usage() {
   cat <<EOF
-Usage: $(basename -- "$0") [-d] [-n] [-k] [-i ignore_file] -p <profile> [--] <dataset>...
+Usage: $(basename -- "$0") [-n] [-f] [-d] [-k] [-i ignore_file] -p <profile> [--] <dataset>...
        $(basename -- "$0") -h
 
 ZFS dataset backup tool using rustic
@@ -28,6 +29,7 @@ Arguments:
 
 Options:
   -n                Perform a dry run without making changes in rustic repository
+  -f                Force run. Skips some condition checks.
   -d                Printg debug information
   -k                Keep the ZFS snapshot after backup (Will use \`rustic_\` prefix)
   -i <ignore_file>  Custom ignore file path (Uses .gitignore style)
@@ -37,13 +39,16 @@ EOF
   exit 1
 }
 
-while getopts ":i:p:nkdh" opt; do
+while getopts ":i:p:nkdfh" opt; do
   case ${opt} in
   h)
     usage
     ;;
   n)
     dry_run=true
+    ;;
+  f)
+    force=true
     ;;
   k)
     keep=true
@@ -79,6 +84,11 @@ check_cond() {
     exit 1
   fi
 
+  if [ ! -f "${profile}.toml" ]; then
+    echo "[ERROR] ${profile}.toml does not exists." >&2
+    exit 1
+  fi
+
   if [ ! -f "$zfs_cmd" ]; then
     echo "[ERROR] $zfs_cmd does not exists." >&2
     exit 1
@@ -106,12 +116,7 @@ check_cond() {
     dataset_mountpoint["$dataset"]="$mp"
   done
 
-  if [ ! -f "${profile}.toml" ]; then
-    echo "[ERROR] ${profile}.toml does not exists." >&2
-    exit 1
-  fi
-
-  if pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
+  if ! "$force" && pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
     echo "Another restic(rustic) instance is running."
     exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
   fi
