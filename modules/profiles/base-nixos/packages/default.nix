@@ -64,6 +64,7 @@
       # MISC
       pwgen
       wireguard-tools
+      jq
 
       # (wezterm.overrideAttrs (_: {
       #   passthru.cargoBuildFlags = [

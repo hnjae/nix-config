@@ -27,6 +27,7 @@ in
     home.packages = [
       iconPkg
       (pkgs.makeDesktopItem {
+        genericName = "Obsidian Nvim";
         name = appId;
         desktopName = appId;
         categories = [ "Office" ];

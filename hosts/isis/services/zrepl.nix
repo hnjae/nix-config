@@ -30,17 +30,17 @@ in
           {
             type = "grid";
             grid = "1x1h(keep=all) | 24x1h | 7x1d | 3x7d";
-            regex = "^(zrepl|autosnap)_.*";
+            regex = "^(zrepl|autosnap|rustic)_.*";
           }
           {
             type = "last_n";
             count = 7;
-            regex = "^(zrepl|autosnap)_.*";
+            regex = "^(zrepl|autosnap|rustic)_.*";
           }
           {
             type = "regex";
             negate = true;
-            regex = "^(zrepl|autosnap)_.*";
+            regex = "^(zrepl|autosnap|rustic)_.*";
           }
         ];
       };
@@ -73,7 +73,7 @@ in
         };
       };
       snapshotting = {
-        type = "manual"; # no snapshot managing by this
+        type = "manual"; # no snapshot managing by this zrepl job
       };
       pruning = {
         keep_sender = [
@@ -88,12 +88,12 @@ in
           {
             type = "grid";
             grid = "1x1h(keep=all) | 24x1h | 7x1d | 3x7d";
-            regex = "^(zrepl|autosnap)_.*";
+            regex = "^(zrepl|autosnap|rustic)_.*";
           }
           {
             type = "last_n";
             count = 7;
-            regex = "^(zrepl|autosnap)_.*";
+            regex = "^(zrepl|autosnap|rustic)_.*";
           }
           # {
           #   type = "regex";
@@ -158,7 +158,7 @@ in
               ZFS_CMD='/run/booted-system/sw/bin/zfs'
 
               time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
-              "$ZFS_CMD" snapshot -r "isis/safe@zrepl_''${time_}_systemd"
+              "$ZFS_CMD" snapshot -r -- "isis/safe@autosnap_''${time_}"
             '')
             "${pkgs.zrepl}/bin/zrepl signal wakeup ${jobName}"
           ];
