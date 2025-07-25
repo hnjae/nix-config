@@ -1,9 +1,13 @@
-_: {
+{
   perSystem =
     { pkgs, ... }:
     {
       # Utilized by `nix run .#<name>`
       apps = rec {
+        rustic-zfs = {
+          type = "app";
+          program = (import ./rustic-zfs { inherit pkgs; });
+        };
         default =
           let
             script = pkgs.writeShellScript "benchmark" ''

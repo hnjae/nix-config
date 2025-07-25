@@ -3,11 +3,15 @@
     /secrets/rustic-onedrive/rustic.toml 에 작동하는 설정 파일이 있음.
 */
 
-{ pkgs, lib, ... }:
+{
+  self,
+  pkgs,
+  lib,
+  ...
+}:
 let
-  DATASET_ = "isis/safe/home/hnjae";
-  MOUNTPOINT_ = "/home/hnjae";
-  PROFILE_ = "/secrets/rustic-onedrive/rustic";
+  DATASET = "isis/safe/home/hnjae";
+  PROFILE = "/secrets/rustic-onedrive/rustic";
 
   ignoreFile = pkgs.writeText "ignore.txt" ''
     /.*
@@ -124,141 +128,26 @@ let
     # vi:ft=gitignore
   '';
 
-  rusticBackupIsis =
-    lib.customisation.overrideDerivation
-      (pkgs.writeShellApplication {
-        name = "backup-isis";
-        runtimeInputs = with pkgs; [
-          rustic
-          rclone
-          uutils-coreutils-noprefix # date,
-          inetutils # ping
-          procps # pgrep
-          jq
-        ];
+  backupIsis = (
+    pkgs.writeScriptBin "backup-isis" ''
+      #!${pkgs.dash}/bin/dash
 
-        text = ''
-          DATASET='${DATASET_}'
-          MOUNTPOINT='${MOUNTPOINT_}'
-          ZFS_CMD='/run/booted-system/sw/bin/zfs'
-          PROFILE='${PROFILE_}'
-          ZFS_HOLD_TAG="rustic-in-progress"
+      set -eu
 
-          check_cond() {
-            if [ "$UID" != 0 ]; then
-              echo "[ERROR] This script must be run as root." >&2
-              exit 1
-            fi
+      ${lib.escapeShellArgs [
+        self.apps.${pkgs.stdenv.system}.rustic-zfs.program
+        "-k"
+        "-i"
+        ignoreFile
+        "-p"
+        PROFILE
+        "--"
+        DATASET
+      ]}
+    ''
+  );
 
-            if [ ! -f "$ZFS_CMD" ]; then
-              echo "[ERROR] $ZFS_CMD does not exists." >&2
-              exit 1
-            fi
-
-            if [ ! -f "$PROFILE.toml" ]; then
-              echo "[ERROR] $PROFILE.toml does not exists." >&2
-              exit 1
-            fi
-
-            if pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
-              echo "Another restic(rustic) instance is running."
-              exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
-            fi
-
-            if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
-              echo "No Internet connection." >&2
-              exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
-            fi
-          }
-
-          cleanup_snapshots() {
-            "$ZFS_CMD" list -t snapshot --json -- "$DATASET" | jq -r '
-            .datasets[]? |
-            select(.snapshot_name | startswith("rustic_")) |
-            .name
-            ' | while IFS= read -r snapshot; do
-              echo "[INFO] Destroying previous ZFS snapshot: $snapshot" >&2
-
-              if  "$ZFS_CMD" release "$ZFS_HOLD_TAG" -- "$snapshot" 2>/dev/null; then
-                echo "[INFO] Released the hold on ZFS snapshot: $snapshot" >&2
-              else
-                echo "[WARN] Failed to release hold on ZFS snapshot: $snapshot" >&2
-              fi
-
-              if "$ZFS_CMD" destroy -- "$snapshot"; then
-                echo "[INFO] Destroyed ZFS snapshot: $snapshot" >&2
-              else
-                echo "[ERROR] Failed to destroy ZFS snapshot: $snapshot" >&2
-                exit 1
-              fi
-            done
-          }
-
-          main() {
-            check_cond
-            cleanup_snapshots
-
-            export RCLONE_MULTI_THREAD_STREAMS=2 # defaults : 4
-            export RUSTIC_DRY_RUN=false
-            export RUSTIC_REPO_OPT_TIMEOUT="10min"
-            export RUSTIC_USE_PROFILE="$PROFILE"
-
-            if [ "$TERM" = "dumb" ]; then
-              export RCLONE_VERBOSE=1
-              export RUSTIC_LOG_LEVEL=info
-              export RUSTIC_NO_PROGRESS=true
-            else
-              # Running in interactive shell
-              export RCLONE_VERBOSE=0
-              export RUSTIC_LOG_LEVEL=info
-              export RUSTIC_NO_PROGRESS=false
-            fi
-
-            local time_
-            local snapshot_dir
-            local snapshot_name
-            local snapshot_dataset
-
-            time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
-            snapshot_name="rustic_''${time_}"
-            snapshot_dataset="''${DATASET}@''${snapshot_name}"
-
-            "$ZFS_CMD" snapshot -r -- "$snapshot_dataset" &&
-              echo "[INFO] Created ZFS snapshot: $snapshot_dataset" >&2
-            "$ZFS_CMD" hold "$ZFS_HOLD_TAG" -- "$snapshot_dataset" &&
-              echo "[INFO] Created a hold on ZFS snapshot: $snapshot_dataset" >&2
-
-            snapshot_dir="''${MOUNTPOINT}/.zfs/snapshot/''${snapshot_name}"
-
-            # NOTE: devid 는 ZFS snapshot 에 따라 다름.
-            [ -d "$snapshot_dir" ] && rustic backup \
-                --ignore-devid \
-                --long \
-                --no-scan \
-                --one-file-system \
-                --git-ignore \
-                --no-require-git \
-                --exclude-if-present "CACHEDIR.TAG" \
-                --label 'isis' \
-                --time "$time_" \
-                --custom-ignorefile '${ignoreFile}' \
-                --as-path "$MOUNTPOINT" \
-                -- "$snapshot_dir"
-
-            "$ZFS_CMD" release "$ZFS_HOLD_TAG" -- "$snapshot_dataset" &&
-              echo "[INFO] Released the hold on ZFS snapshot: $snapshot_dataset" >&2
-            "$ZFS_CMD" destroy -- "$snapshot_dataset" &&
-              echo "[INFO] Destroyed ZFS snapshot: $snapshot_dataset" >&2
-          }
-
-          main
-        '';
-      })
-      (_: {
-        preferLocalBuild = true;
-      });
-
-  rusticBackupKde =
+  backupKde =
     lib.customisation.overrideDerivation
       (pkgs.writeShellApplication {
         name = "backup-kde";
@@ -274,7 +163,7 @@ let
         ];
 
         text = ''
-          PROFILE='${PROFILE_}'
+          PROFILE='${PROFILE}'
 
           check_cond() {
             if [ "$UID" != 0 ]; then
@@ -347,8 +236,8 @@ let
 in
 {
   environment.systemPackages = [
-    rusticBackupIsis
-    rusticBackupKde
+    backupIsis
+    backupKde
     pkgs.rustic
     pkgs.rclone
     pkgs.just
@@ -404,8 +293,8 @@ in
           # MemoryHigh = "4G";
 
           ExecStart = [
-            "${rusticBackupKde}/bin/backup-kde"
-            "${rusticBackupIsis}/bin/backup-isis"
+            "${backupKde}/bin/backup-kde"
+            "${backupIsis}/bin/backup-isis"
           ];
 
           ExecCondition = lib.flatten [
