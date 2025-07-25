@@ -117,14 +117,14 @@
     pkgs.dash
     pkgs.fzf
 
-    pkgs.fish
-    (lib.hiPrio (
-      pkgs.makeDesktopItem {
-        name = "fish";
-        desktopName = "This should not be displayed.";
-        exec = ":";
-        noDisplay = true;
-      }
-    ))
+    # pkgs.fish
+    # (lib.hiPrio (
+    #   pkgs.makeDesktopItem {
+    #     name = "fish";
+    #     desktopName = "This should not be displayed.";
+    #     exec = ":";
+    #     noDisplay = true;
+    #   }
+    # ))
   ];
 }

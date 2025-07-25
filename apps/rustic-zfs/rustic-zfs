@@ -7,9 +7,9 @@ ZFS_HOLD_TAG="rustic-in-progress"
 zfs_cmd='/run/booted-system/sw/bin/zfs'
 [ -f "$zfs_cmd" ] || zfs_cmd="$(command -v zfs 2>/dev/null)" || zfs_cmd=""
 
-id_="$(uuidgen --time-v7)"
+id_="$(uuidgen --time-v7 | cut --characters=1-23)"
 declare -A dataset_mountpoint
-snapshot_name="__rustic_${id_}"
+snapshot_name="_rustic_${id_}"
 profile=""
 ignore_file=""
 dry_run=false
@@ -117,8 +117,8 @@ check_cond() {
   done
 
   if ! "$force" && pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
-    echo "Another restic(rustic) instance is running."
-    exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
+    echo "Another restic(rustic) instance is running. Terminating."
+    exit 1
   fi
 }
 
@@ -170,8 +170,7 @@ run_backup() {
 
   local rustic_backup_args=(
     backup
-    # NOTE: devid 는 ZFS snapshot 에 따라 다름.
-    --ignore-devid
+    --ignore-devid # NOTE: devid 는 ZFS snapshot 에 따라 다름.
     --long
     --one-file-system
     --git-ignore
@@ -197,13 +196,12 @@ run_backup() {
 
   export RCLONE_MULTI_THREAD_STREAMS="${RCLONE_MULTI_THREAD_STREAMS:-2}" # defaults : 4
   # export RUSTIC_REPO_OPT_TIMEOUT="${RUSTIC_REPO_OPT_TIMEOUT:-"10min"}"
+  export RUSTIC_NO_PROGRESS="${RUSTIC_NO_PROGRESS:-true}"
   export RUSTIC_LOG_LEVEL="${RUSTIC_LOG_LEVEL:-"info"}"
+  export RCLONE_VERBOSE="${RCLONE_VERBOSE:-1}"
 
   if [ "$TERM" = "dumb" ]; then
-    export RCLONE_VERBOSE="${RCLONE_VERBOSE:-1}"
-    rustic_backup_args+=("--no-scan" "--no-progress")
-  else
-    export RCLONE_VERBOSE="${RCLONE_VERBOSE:-0}"
+    rustic_backup_args+=("--no-scan")
   fi
 
   rustic_backup_args+=(
@@ -234,9 +232,8 @@ main() {
   check_cond
   cleanup_snapshots
 
-  local snapshots
+  local -a snapshots
   local -A pools
-  snapshots=()
 
   for dataset in "${datasets[@]}"; do
     pool="${dataset%%/*}"
@@ -268,6 +265,7 @@ main() {
   fi
 
   for dataset in "${datasets[@]}"; do
+    echo "[INFO] Processing backup on dataset: $dataset" >&2
     run_backup "$dataset"
   done
 }
