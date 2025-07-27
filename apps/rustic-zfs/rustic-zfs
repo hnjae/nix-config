@@ -7,7 +7,7 @@ ZFS_HOLD_TAG="rustic-in-progress"
 zfs_cmd='/run/booted-system/sw/bin/zfs'
 [ -f "$zfs_cmd" ] || zfs_cmd="$(command -v zfs 2>/dev/null)" || zfs_cmd=""
 
-id_="$(uuidgen --time-v7 | cut --characters=1-23)"
+id_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
 declare -A dataset_mountpoint
 snapshot_name="_rustic_${id_}"
 profile=""
@@ -156,6 +156,15 @@ cleanup_snapshots() {
 }
 
 run_backup() {
+  if "$debug"; then
+    export RCLONE_VERBOSE="1"
+  fi
+
+  export RCLONE_MULTI_THREAD_STREAMS="${RCLONE_MULTI_THREAD_STREAMS:-2}" # defaults : 4
+  # export RUSTIC_REPO_OPT_TIMEOUT="${RUSTIC_REPO_OPT_TIMEOUT:-"10min"}"
+  export RUSTIC_LOG_LEVEL="${RUSTIC_LOG_LEVEL:-"info"}"
+  export RCLONE_VERBOSE="${RCLONE_VERBOSE:-1}"
+
   local snapshot
   local dataset
   local snapshot_unixtime
@@ -179,6 +188,7 @@ run_backup() {
     "--exclude-if-present=CACHEDIR.TAG"
     "--as-path=/"
     "--use-profile=${profile}"
+    "--no-progress" # 가끔 zombie 프로세스가 되는 경우가 있는데 no-progress 하면 안 그런 듯.  <2025-07-27>
   )
 
   if [ "$ignore_file" != "" ]; then
@@ -188,17 +198,6 @@ run_backup() {
   if "$dry_run"; then
     rustic_backup_args+=("--dry-run")
   fi
-
-  if "$debug"; then
-    export RCLONE_VERBOSE="1"
-    export RUSTIC_LOG_LEVEL="debug"
-  fi
-
-  export RCLONE_MULTI_THREAD_STREAMS="${RCLONE_MULTI_THREAD_STREAMS:-2}" # defaults : 4
-  # export RUSTIC_REPO_OPT_TIMEOUT="${RUSTIC_REPO_OPT_TIMEOUT:-"10min"}"
-  export RUSTIC_NO_PROGRESS="${RUSTIC_NO_PROGRESS:-true}"
-  export RUSTIC_LOG_LEVEL="${RUSTIC_LOG_LEVEL:-"info"}"
-  export RCLONE_VERBOSE="${RCLONE_VERBOSE:-1}"
 
   if [ "$TERM" = "dumb" ]; then
     rustic_backup_args+=("--no-scan")
@@ -211,7 +210,7 @@ run_backup() {
     "$snapshot_dir"
   )
 
-  [ -d "$snapshot_dir" ] && rustic "${rustic_backup_args[@]}"
+  [ -d "$snapshot_dir" ] && rustic "${rustic_backup_args[@]}" </dev/null
 
   # Cleanup
   "$zfs_cmd" release "$ZFS_HOLD_TAG" -- "$snapshot" &&
