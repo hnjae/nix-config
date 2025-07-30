@@ -13,7 +13,7 @@
   '';
   keymaps = [
     {
-      key = "<Space>p";
+      key = "<Space>k";
       mode = "n";
       action = {
         __raw = ''

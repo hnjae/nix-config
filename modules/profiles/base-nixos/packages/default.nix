@@ -7,14 +7,16 @@
 {
   imports = [
     ./busybox-alike.nix
-    ./editor.nix
     ./filesystem.nix
     ./shell.nix
   ];
 
-  environment.systemPackages = with config.boot.kernelPackages; [
-    cpupower
-    x86_energy_perf_policy
+  programs.nano.enable = false;
+
+  environment.systemPackages = [
+    config.boot.kernelPackages.cpupower
+    config.boot.kernelPackages.x86_energy_perf_policy
+    pkgs.nixvim
   ];
 
   # Set of default packages that aren't strictly necessary for a running system

@@ -30,7 +30,7 @@ Arguments:
 Options:
   -n                Perform a dry run without making changes in rustic repository
   -f                Force run. Skips some condition checks.
-  -d                Printg debug information
+  -d                Print debug information
   -k                Keep the ZFS snapshot after backup (Will use \`rustic_\` prefix)
   -i <ignore_file>  Custom ignore file path (Uses .gitignore style)
   -p <profile>      Rustic profile name (without .toml extension)

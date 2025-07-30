@@ -103,10 +103,10 @@ let
 
         --
         local COLORFGBG = os.getenv("COLORFGBG")
-        if COLORFGBG == "15;0" then
-          vim.opt.background = "dark"
-        else
+        if COLORFGBG == "0;15" then
           vim.opt.background = "light"
+        else
+          vim.opt.background = "dark"
         end
         --
       '';
