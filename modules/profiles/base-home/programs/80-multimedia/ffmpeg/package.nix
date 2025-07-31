@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin isAarch64;
 in
 pkgs.ffmpeg.override {
   withHeadlessDeps = true;
@@ -28,7 +28,7 @@ pkgs.ffmpeg.override {
 
   withAom = true;
   withRav1e = true;
-  withSvtav1 = !pkgs.stdenv.isAarch64;
+  withSvtav1 = !isAarch64;
   withTheora = false;
   withXvid = false;
 
@@ -45,7 +45,7 @@ pkgs.ffmpeg.override {
   withXml2 = true;
   withBluray = true;
 
-  withVmaf = !pkgs.stdenv.isAarch64;
+  withVmaf = !isAarch64;
 
   # filter
   withVidStab = true;

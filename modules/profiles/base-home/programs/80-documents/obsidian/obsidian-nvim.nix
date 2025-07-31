@@ -23,7 +23,7 @@ let
   '';
 in
 {
-  config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [
       iconPkg
       (pkgs.makeDesktopItem {

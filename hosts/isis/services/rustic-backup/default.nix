@@ -94,6 +94,7 @@ let
 
     # Temporary files
     *.parts
+    *.part
     *.crdownload
 
     # Vim
@@ -135,7 +136,7 @@ let
       set -eu
 
       ${lib.escapeShellArgs [
-        self.apps.${pkgs.stdenv.system}.rustic-zfs.program
+        self.apps.${pkgs.system}.rustic-zfs.program
         "-k"
         "-i"
         ignoreFile

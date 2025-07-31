@@ -10,12 +10,10 @@ let
   appId = "com.opera.Opera";
 
   baseHomeCfg = config.base-home;
+  inherit (pkgs.stdenv.hostPlatform) isLinux isx86_64;
+
   cond =
-    baseHomeCfg.isDesktop
-    && baseHomeCfg.isHome
-    && pkgs.stdenv.isLinux
-    && pkgs.stdenv.isx86_64
-    && pkgs.config.allowUnfree;
+    baseHomeCfg.isDesktop && baseHomeCfg.isHome && isLinux && isx86_64 && pkgs.config.allowUnfree;
 in
 {
   config = lib.mkIf (cond) {

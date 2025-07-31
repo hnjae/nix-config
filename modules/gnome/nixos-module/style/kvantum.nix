@@ -26,7 +26,7 @@
 
         # services.flatpak.packages =
         #   let
-        #     arch = pkgs.stdenv.targetPlatform.ubootArch;
+        #     arch = pkgs.stdenv.hostPlatform.ubootArch;
         #   in
         #   [
         #     # NOTE: 2025-01-06 checked

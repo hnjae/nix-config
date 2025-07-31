@@ -23,7 +23,7 @@ in
     ];
 
     home.packages = lib.flatten [
-      (lib.lists.optionals (pkgs.stdenv.isLinux) ([
+      (lib.lists.optionals (pkgs.stdenv.hostPlatform.isLinux) ([
         pkgs.virt-manager
 
         # virt-viewer

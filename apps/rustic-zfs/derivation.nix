@@ -7,6 +7,7 @@
   jq,
   procps,
   uutils-coreutils-noprefix,
+  pwgen,
 }:
 stdenv.mkDerivation rec {
   preferLocalBuild = true;
@@ -23,6 +24,7 @@ stdenv.mkDerivation rec {
     jq
     procps # pgrep
     uutils-coreutils-noprefix # date
+    pwgen
   ];
 
   installPhase = ''

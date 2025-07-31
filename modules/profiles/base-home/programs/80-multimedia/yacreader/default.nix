@@ -7,10 +7,12 @@
 }:
 let
   baseHomeCfg = config.base-home;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
+
   package = ((import ./package) { inherit pkgs pkgsUnstable; });
 in
 {
-  config = lib.mkIf (baseHomeCfg.isDesktop && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (baseHomeCfg.isDesktop && isLinux) {
     home.packages = [
       package
       (lib.hiPrio (

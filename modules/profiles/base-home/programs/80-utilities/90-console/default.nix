@@ -9,6 +9,7 @@
 }:
 let
   baseHomeCfg = config.base-home;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
 in
 {
   imports = [
@@ -179,11 +180,11 @@ in
     pkgsUnstable.rclone
     pkgsUnstable.rustic
 
-    (lib.lists.optionals pkgs.stdenv.isLinux [
+    (lib.lists.optionals isLinux [
       pkgs.convmv
       pkgs.poppler_utils # pdftotext
     ])
-    (lib.lists.optionals (pkgs.stdenv.isLinux && baseHomeCfg.isDesktop) [
+    (lib.lists.optionals (isLinux && baseHomeCfg.isDesktop) [
       pkgs.clipboard-jh
       pkgs.handlr-regex
       (pkgs.runCommandLocal "gtk-launch" { } ''
@@ -197,7 +198,7 @@ in
     pkgsUnstable.cpufetch
     pkgsUnstable.ipfetch
     pkgsUnstable.onefetch # git
-    (lib.lists.optional pkgs.stdenv.isLinux pkgsUnstable.ramfetch)
+    (lib.lists.optional isLinux pkgsUnstable.ramfetch)
 
   ];
 }

@@ -5,7 +5,7 @@
 }:
 let
   inherit (lib.attrsets) optionalAttrs;
-  inherit (pkgs.stdenv) isLinux;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
   serviceName = "nix-gc-user";
   Description = "Run nix-collect-garbage";
 in

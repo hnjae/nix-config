@@ -14,7 +14,7 @@ in
   # https://github.com/Nukesor/pueue
   home.packages = [ package ];
 
-  systemd.user.services.pueued = lib.mkIf (pkgs.stdenv.isLinux) {
+  systemd.user.services.pueued = lib.mkIf (pkgs.stdenv.hostPlatform.isLinux) {
     Unit = {
       Description = "pueue daemon";
       Documentation = [

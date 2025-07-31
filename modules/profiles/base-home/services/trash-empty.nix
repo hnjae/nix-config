@@ -5,7 +5,7 @@
 }:
 let
   inherit (lib.attrsets) optionalAttrs;
-  inherit (pkgs.stdenv) isLinux;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
   serviceName = "trash-empty";
   Description = "trash-empty";
 in

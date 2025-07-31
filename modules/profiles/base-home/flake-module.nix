@@ -26,7 +26,7 @@ in
         {
           _module.args = {
             pkgsUnstable = import flakeArgs.inputs.nixpkgs-unstable {
-              inherit (pkgs.stdenv) system;
+              inherit (pkgs) system;
               config = {
                 inherit (pkgs.config) allowUnfree;
               };

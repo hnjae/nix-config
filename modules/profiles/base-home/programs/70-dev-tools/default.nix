@@ -24,7 +24,7 @@
 
     pkgsUnstable.awscli2
 
-    (lib.lists.optional pkgs.stdenv.isLinux pkgsUnstable.distrobox)
+    (lib.lists.optional pkgs.stdenv.hostPlatform.isLinux pkgsUnstable.distrobox)
   ];
 
   services.flatpak.packages = [

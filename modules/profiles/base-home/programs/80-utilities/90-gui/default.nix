@@ -31,7 +31,7 @@ in
 
   config = lib.mkIf (baseHomeCfg.isDesktop) {
     home.packages = lib.flatten [
-      (optionals (pkgs.stdenv.isLinux) [
+      (optionals (pkgs.stdenv.hostPlatform.isLinux) [
         pkgs.qdirstat
         pkgsUnstable.resources
         pkgsUnstable.scrcpy # display and control android

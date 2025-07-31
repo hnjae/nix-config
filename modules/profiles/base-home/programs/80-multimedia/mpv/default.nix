@@ -6,6 +6,7 @@
 }:
 let
   baseHomeCfg = config.base-home;
+  inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin isx86_64;
 in
 {
   default-app = {
@@ -39,11 +40,11 @@ in
         #
         cddaSupport = true; # default false; play CD
         sixelSupport = true; # default false
-        vapoursynthSupport = pkgs.stdenv.isx86_64; # default false
+        vapoursynthSupport = isx86_64; # default false
       };
       youtubeSupport = true;
       scripts = builtins.concatLists [
-        (lib.lists.optionals pkgs.stdenv.isLinux (
+        (lib.lists.optionals isLinux (
           with pkgs.mpvScripts;
           [
             mpris
@@ -70,8 +71,8 @@ in
     config = {
       geometry = "1920x1080";
       # Video / Audio
-      ao = if pkgs.stdenv.isDarwin then "coreaudio" else "pipewire";
-      pipewire-volume-mode = lib.mkIf (pkgs.stdenv.isLinux) "global";
+      ao = if isDarwin then "coreaudio" else "pipewire";
+      pipewire-volume-mode = lib.mkIf (isLinux) "global";
       replaygain = "track";
 
       # Scaling
