@@ -42,8 +42,8 @@ in
     CPU_SCALING_GOVERNOR_ON_AC = cpuScalingGovernor.performance;
     CPU_SCALING_GOVERNOR_ON_BAT = cpuScalingGovernor.schedutil;
 
-    PLATFORM_PROFILE_ON_AC = "performance";
-    # PLATFORM_PROFILE_ON_BAT = "balanced";
+    # PLATFORM_PROFILE_ON_AC = "performance";
+    PLATFORM_PROFILE_ON_AC = "balanced";
     PLATFORM_PROFILE_ON_BAT = "low-power";
   };
 
