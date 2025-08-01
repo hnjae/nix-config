@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, ... }:
 {
   extraPlugins = with pkgs.vimPlugins; [ nvim-window-picker ];
   extraConfigLua = ''
@@ -13,7 +13,7 @@
   '';
   keymaps = [
     {
-      key = "<Space>k";
+      key = "<Leader>k";
       mode = "n";
       action = {
         __raw = ''
@@ -25,6 +25,9 @@
             vim.api.nvim_set_current_win(picked_window_id)
           end
         '';
+      };
+      options = {
+        desc = "window-picker";
       };
     }
   ];

@@ -9,11 +9,14 @@ let
     (inputs.nixpkgs.lib.attrsets.mergeAttrsList (map (system: withSystem system module) systems));
 in
 {
+  imports = [
+    ./nixvim/flake-module.nix
+  ];
+
   perSystem =
     {
       pkgs,
       system,
-      lib,
       ...
     }:
     {
@@ -25,10 +28,6 @@ in
       };
 
       packages = {
-        nixvim = (import ./tools/nixvim) {
-          inherit (inputs) nixvim;
-          inherit pkgs lib;
-        };
         uuid7 = (import ./tools/uuid7) { inherit pkgs; };
 
         fonts-dmca-sans-serif = (import ./fonts/fonts-dmca-sans-serif) { inherit pkgs; };
