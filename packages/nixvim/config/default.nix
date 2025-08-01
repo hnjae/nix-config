@@ -1,10 +1,10 @@
-{ lib, ... }:
 {
   imports = [
     ./cmp.nix
+    ./lazyvim-keys.nix
     ./ui.nix
-    ./window-picker.nix
     ./which-key.nix
+    ./window-picker.nix
   ];
 
   performance = {
@@ -69,7 +69,7 @@
     end
   '';
 
-  keymaps = lib.flatten [
+  keymaps = [
     {
       key = "<bs>";
       mode = [
@@ -79,23 +79,6 @@
       action = ":";
       options.desc = "cmdline";
     }
-    (builtins.map
-      (key: {
-        mode = [ "n" ];
-        key = "<C-${key}>";
-        action = "<C-w>${key}";
-        options = {
-          remap = true;
-          desc = "<C-w>${key}";
-        };
-      })
-      [
-        "h"
-        "j"
-        "k"
-        "l"
-      ]
-    )
     {
       key = "<F12>";
       mode = [

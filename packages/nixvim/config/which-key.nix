@@ -8,6 +8,19 @@
         mappings = false;
         rules = false;
       };
+      spec = [
+        {
+          __unkeyed-1 = "<leader>w";
+          proxy = "<c-w>";
+          expand = {
+            __raw = ''
+              function()
+                return require("which-key.extras").expand.win()
+              end
+            '';
+          };
+        }
+      ];
     };
   };
   keymaps = [
