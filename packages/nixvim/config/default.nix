@@ -19,6 +19,11 @@
   };
   enableMan = false;
 
+  extraConfigLuaPre = ''
+    vim.g.mapleader = " "
+    vim.g.maplocalleader = "\\"
+  '';
+
   extraConfigLua = ''
     vim.opt.smarttab = true
 
@@ -53,8 +58,6 @@
     vim.g.loaded_perl_provider = 0 -- disable perl
     vim.g.loaded_node_provider = 0 -- disable node
 
-    vim.g.mapleader = " "
-    vim.g.maplocalleader = "\\"
     vim.g.editorconfig = true -- enabled by default
 
     --
