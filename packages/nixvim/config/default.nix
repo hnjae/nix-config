@@ -1,5 +1,9 @@
 { lib, ... }:
 {
+  imports = [
+    ./ui.nix
+  ];
+
   performance = {
     combinePlugins.enable = true;
     byteCompileLua = {
@@ -145,6 +149,7 @@
   plugins = {
     treesitter.enable = false; # 큰 파일 수정할때 매우 느려짐.
     lsp.enable = false;
+
     nvim-surround.enable = true;
 
     sleuth = {
