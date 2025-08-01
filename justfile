@@ -272,7 +272,7 @@ _drybuild-nixoses: update-local-repo
 # --option builders "" \
 [group('build')]
 build-iso: update-local-repo
-    nix build .#nixosConfigurations.nixos-iso.config.system.build.isoImage
+    nix build .#nixosConfigurations.iso.config.system.build.isoImage
 
 [group('check')]
 [positional-arguments]
