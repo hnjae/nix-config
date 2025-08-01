@@ -3,6 +3,7 @@
   imports = [
     ./cmp.nix
     ./ui.nix
+    ./window-picker.nix
   ];
 
   performance = {
