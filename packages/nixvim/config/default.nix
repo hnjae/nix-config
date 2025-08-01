@@ -1,6 +1,7 @@
 { lib, ... }:
 {
   imports = [
+    ./cmp.nix
     ./ui.nix
   ];
 
