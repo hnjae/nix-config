@@ -1,6 +1,7 @@
 {
   imports = [
     ./cmp.nix
+    ./ftplugin.nix
     ./lazyvim-keys.nix
     ./ui.nix
     ./which-key.nix
