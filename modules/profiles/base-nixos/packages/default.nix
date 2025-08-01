@@ -22,6 +22,8 @@
   # Set of default packages that aren't strictly necessary for a running system
   environment.defaultPackages = lib.flatten [
     (with pkgs; [
+      nixvim
+
       # nix CLI wrapper
       nh
 
