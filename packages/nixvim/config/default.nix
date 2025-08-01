@@ -4,6 +4,7 @@
     ./cmp.nix
     ./ui.nix
     ./window-picker.nix
+    ./which-key.nix
   ];
 
   performance = {
