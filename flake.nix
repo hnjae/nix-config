@@ -41,6 +41,13 @@
         pre-commit-hooks-nix.follows = "";
       };
     };
+    disko = {
+      # version checked 2025-08-02 <https://github.com/nix-community/disko/releases>
+      url = "github:nix-community/disko/refs/tags/v1.12.0";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     microvm = {
       url = "github:astro/microvm.nix/refs/tags/v0.5.0";
       inputs = {
