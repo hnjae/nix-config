@@ -1,40 +1,44 @@
 { self, inputs, ... }:
 {
-  flake.homeConfigurations.osiris =
-    let
-      system = inputs.flake-utils.lib.system.x86_64-linux;
-      allowUnfree = true;
-    in
-    inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = import inputs.nixpkgs {
-        inherit system;
-        config.allowUnfree = allowUnfree;
-        overlays = [
-          self.overlays.default
-        ];
-      };
-      modules = [
-        {
-          home = {
-            username = "hnjae";
-            homeDirectory = "/home/hnjae";
-            stateVersion = "24.11";
-          };
-        }
-        self.homeManagerModules.base-home
-        {
-          base-home = {
-            isDesktop = true;
-            base24 = {
-              enable = true;
-              darkMode = false;
-            };
-            installDevPackages = true;
-            installTestApps = false;
-          };
-          stateful.enable = false;
-        }
-      ];
-      extraSpecialArgs = { };
+  flake.nixosConfigurations.osiris = inputs.nixpkgs.lib.nixosSystem {
+    modules = [
+      inputs.disko.nixosModules.disko
+      inputs.lanzaboote.nixosModules.lanzaboote
+      inputs.quadlet-nix.nixosModules.quadlet
+
+      self.nixosModules.base-nixos
+      self.nixosModules.configure-impermanence
+      self.nixosModules.kde
+      self.nixosModules.rollback-zfs-root
+
+      {
+        system.stateVersion = "25.05";
+
+        base-nixos = {
+          role = "desktop";
+          hostType = "baremetal";
+        };
+
+        networking.hostName = "osiris";
+
+        rollback-zfs-root = {
+          enable = true;
+          rollbackDataset = "osiris/local/root@blank";
+        };
+
+        persist = {
+          enable = true;
+          isDesktop = true;
+        };
+      }
+
+      ./configs
+      ./hardware
+    ];
+
+    specialArgs = {
+      inherit inputs;
+      inherit self;
     };
+  };
 }
