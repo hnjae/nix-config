@@ -48,13 +48,3 @@
 
 - dotfiles 는 기본적으로 home-manger 에서 관리하지 않는다.
 - `home-manager` 의 `xdg.desktopEntries` 는 Gnome 에서 패키지 자체의 desktop entry 보다 우선순위를 가지지 않는다. 때문에 `xdg.dataFile."applications/foo.desktop"` 식으로 직접 파일을 작성할 것. 이것이 DE 에 상관 없이 더 범용적으로 작동한다.
-
-## 새 NixOS 인스톨 가이드
-
-1. OS 를 설치할 디스크가 아닌 OS 로 부팅.
-2. Disko 의 `disk-config.nix` 작성
-    - <https://github.com/nix-community/disko/blob/master/docs/quickstart.md>
-    - 위 문서에 나온 커맨드, `sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/latest -- --mode destroy,format,mount /tmp/disk-config.nix` 를 실행해서 실제로 디스크를 포맷할 수 있다.
-3. 다음 가이드를 따름
-    - <https://github.com/nix-community/nixos-anywhere/blob/main/docs/quickstart.md>
-    - `nix run github:nix-community/nixos-anywhere -- --flake <path to configuration>#<configuration name> --target-host root@<ip address>`

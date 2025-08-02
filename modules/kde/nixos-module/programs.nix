@@ -21,6 +21,7 @@
 
   environment.systemPackages = with pkgs; [
     unrar
+    konsave
     kdePackages.qtimageformats # webp, ...
     kdePackages.kimageformats # avif, jxl, heif, ...
 
