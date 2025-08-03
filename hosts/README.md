@@ -1,6 +1,6 @@
 ---
 date: 2025-08-02T23:26:03+0900
-lastmod: 2025-08-02T23:26:40+0900
+lastmod: 2025-08-02T23:56:16+0900
 ---
 
 ## 새 NixOS 인스톨 가이드
@@ -12,6 +12,15 @@ lastmod: 2025-08-02T23:26:40+0900
 3. 다음 가이드를 따름
     - <https://github.com/nix-community/nixos-anywhere/blob/main/docs/quickstart.md>
     - `nix run github:nix-community/nixos-anywhere -- --flake <path to configuration>#<configuration name> --target-host root@<ip address>`
+
+### 인스톨 후 가이드
+
+- 1Password 로그인
+- `~/.ssh/id_ed25519` 설정. 1Password 에서
+- `dotfiles` 리포 복사 후 설정.
+- KDE/Gnome 설정 복구
+- Firefox 로그인 및 설정 복구
+- tailscale 로그인
 
 <!--
 vi:ft:sw=4
