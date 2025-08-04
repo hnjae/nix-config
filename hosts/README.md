@@ -1,6 +1,6 @@
 ---
 date: 2025-08-02T23:26:03+0900
-lastmod: 2025-08-02T23:56:16+0900
+lastmod: 2025-08-03T23:31:13+0900
 ---
 
 ## 새 NixOS 인스톨 가이드
@@ -15,8 +15,11 @@ lastmod: 2025-08-02T23:56:16+0900
 
 ### 인스톨 후 가이드
 
+- Secureboot (Lanzaboote) 설정
 - 1Password 로그인
-- `~/.ssh/id_ed25519` 설정. 1Password 에서
+- `~/.ssh/id_ed25519` 복구
+- GPG Key 임포트
+- `sops` 키 (`secrets/home-age-private`) 복구
 - `dotfiles` 리포 복사 후 설정.
 - KDE/Gnome 설정 복구
 - Firefox 로그인 및 설정 복구

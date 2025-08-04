@@ -3,9 +3,9 @@
 STARTS_WITH=(
   "accessibility" # accessibility- / accessibility_
   "accessories"
-  "applet" # applet_ / applets-
+  "applet"      # applet_ / applets-
   "application" # application- / applications-
-  "user" # user_* /user-* / users*
+  "user"        # user_* /user-* / users*
   "config-"
   "cs-"
   "csd-"
@@ -169,7 +169,7 @@ should_remove() {
   fi
 
   for name in "${STARTS_WITH[@]}"; do
-    if [[ "$filestem" == "$name"* ]]; then
+    if [[ $filestem == "$name"* ]]; then
       replace_symlink "$file_"
       echo 0
       return

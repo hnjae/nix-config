@@ -1,10 +1,10 @@
 {
-  # nix.settings.min-free = ""; # 20% of root zfs pool
-  #
-  # programs.steam = {
-  #   enable = true;
-  #   gamescopeSession = {
-  #     enable = true;
-  #   };
-  # };
+  nix.settings.min-free = "4G";
+
+  programs.steam = {
+    enable = true;
+    gamescopeSession = {
+      enable = true;
+    };
+  };
 }

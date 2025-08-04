@@ -1,6 +1,7 @@
 {
-  fileSystems."/persist" = {
-    neededForBoot = true;
+  fileSystems = {
+    "/persist".neededForBoot = true;
+    "/secrets".neededForBoot = true;
   };
 
   disko.devices = {
@@ -80,6 +81,12 @@
               mountpoint = "none";
             };
           };
+          "safe" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+            };
+          };
           "local/root" = {
             type = "zfs_fs";
             mountpoint = "/";
@@ -87,6 +94,21 @@
               mountpoint = "legacy";
             };
             postCreateHook = "zfs list -t snapshot -H -o name -- 'osiris/local/root' | grep -E '^osiris/local/root@blank$' || zfs snapshot osiris/local/root@blank";
+          };
+          "safe/persist" = {
+            type = "zfs_fs";
+            mountpoint = "/persist";
+            options = {
+              mountpoint = "legacy";
+              recordsize = "16K";
+            };
+          };
+          "safe/secrets" = {
+            type = "zfs_fs";
+            mountpoint = "/secrets";
+            options = {
+              mountpoint = "legacy";
+            };
           };
           "local/nix" = {
             type = "zfs_fs";
@@ -100,20 +122,6 @@
             options = {
               mountpoint = "/var/lib/containers";
               recordsize = "128K";
-            };
-          };
-          "safe" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "none";
-            };
-          };
-          "safe/persist" = {
-            type = "zfs_fs";
-            mountpoint = "/persist";
-            options = {
-              mountpoint = "legacy";
-              recordsize = "16K";
             };
           };
           "safe/home" = {

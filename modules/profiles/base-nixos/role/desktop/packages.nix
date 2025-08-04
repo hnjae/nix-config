@@ -7,9 +7,18 @@
 {
   config = lib.mkIf (config.base-nixos.role == "desktop") {
     # Run unpatched dynamic binaries
-    programs.nix-ld.enable = true;
-    programs.nix-ld.libraries = with pkgs; [
-      icu # marksman requires
+    programs.nix-ld = {
+      enable = true;
+      libraries = with pkgs; [
+        # marksman requires
+        icu
+        vulkan-loader
+      ];
+    };
+
+    # 표준 경로에 링크하여, 프로그램에서 쉽게 참조할 수 있도록 한다.
+    systemd.tmpfiles.rules = [
+      "L /usr/share/vulkan - - - - /run/current-system/sw/share/vulkan"
     ];
 
     # managing android
@@ -56,8 +65,8 @@
       glxinfo
       vulkan-tools
       wayland-utils
-      xorg.xdpyinfo
       libva-utils
+      xorg.xdpyinfo
 
       # gui apps
       xdg-terminal-exec

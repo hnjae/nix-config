@@ -44,12 +44,6 @@
 
     rocmPackages.rocminfo
     rocmPackages.rocm-smi
-
-    # infos
-    clinfo # opencl
-    glxinfo
-    vulkan-tools
-    libva-utils
   ];
 
   # NOTE: 하나의 드라이버만 쓰겠다면 패키지 목록에 추가 안해도 상관 없는데, 여러개의 드라이버를 적재적소에 쓰기 위해서는 **모두** 추가해야 한다. <2025-01-05>
@@ -63,11 +57,6 @@
   #   AMD_VULKAN_ICD = "RADV";
   # };
 
-  # 표준 경로에 링크하여, 프로그램에서 쉽게 참조할 수 있도록 한다.
-  systemd.tmpfiles.rules = [
-    "L /usr/share/vulkan - - - - /run/current-system/sw/share/vulkan"
-  ];
-
   hardware.amdgpu = {
     initrd.enable = false;
     amdvlk = {
@@ -79,8 +68,4 @@
   };
 
   nixpkgs.config.rocmSupport = true;
-
-  programs.nix-ld.libraries = with pkgs; [
-    vulkan-loader
-  ];
 }

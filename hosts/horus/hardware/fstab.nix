@@ -18,7 +18,8 @@ in
         "subvol=@root-latest"
         "noatime"
         "nosuid"
-      ] ++ btrfsOpts;
+      ]
+      ++ btrfsOpts;
     };
     "/nix" = {
       device = rootBlockDevice;
@@ -27,7 +28,8 @@ in
         "subvol=@nix"
         "noatime"
         "nodev"
-      ] ++ btrfsOpts;
+      ]
+      ++ btrfsOpts;
     };
     "/persist" = {
       device = rootBlockDevice;
@@ -38,7 +40,8 @@ in
         "subvol=@persist"
         "noatime"
         "nodev"
-      ] ++ btrfsOpts;
+      ]
+      ++ btrfsOpts;
     };
     "/home" = {
       device = rootBlockDevice;
@@ -48,7 +51,8 @@ in
         "noatime"
         "nodev"
         "nosuid"
-      ] ++ btrfsOpts;
+      ]
+      ++ btrfsOpts;
     };
     "/boot" = {
       device = "/dev/disk/by-partuuid/75402fff-c509-49ef-bf60-b41139242e4a";
@@ -72,7 +76,8 @@ in
         "noatime"
         "nodev"
         "nosuid"
-      ] ++ btrfsOpts;
+      ]
+      ++ btrfsOpts;
     };
   };
 
