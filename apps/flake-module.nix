@@ -1,33 +1,14 @@
 {
+  imports = [
+    ./nixvim/flake-module.nix
+    ./rustic-zfs/flake-module.nix
+  ];
+
   perSystem =
     { pkgs, ... }:
     {
       # Utilized by `nix run .#<name>`
-      apps = rec {
-        rustic-zfs = {
-          type = "app";
-          program = (import ./rustic-zfs { inherit pkgs; });
-        };
-        default =
-          let
-            script = pkgs.writeShellScript "benchmark" ''
-              echo "----"
-              echo "luks benchmark"
-              echo "----"
-              ${luks-benchmark.program}
-
-              echo ""
-              echo "----"
-              echo "btrfs benchmark"
-              echo "----"
-              ${btrfs-benchmark.program}
-            '';
-          in
-          {
-            type = "app";
-            program = "${script}";
-          };
-
+      apps = {
         luks-benchmark = {
           type = "app";
           program = pkgs.writeShellScript "luks-benchmark" ''

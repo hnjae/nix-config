@@ -4,7 +4,12 @@ let
 in
 {
   perSystem =
-    { pkgs, system, ... }:
+    {
+      pkgs,
+      system,
+      config,
+      ...
+    }:
     let
       nixvimLib = nixvim.lib.${system};
       nixvimModule = {
@@ -20,17 +25,23 @@ in
       };
 
       packages = {
-        nixvim = (
+        nixvim =
           let
             package = nixvim.legacyPackages.${system}.makeNixvimWithModule nixvimModule;
           in
-          (pkgs.runCommandLocal "vim" { } ''
+          pkgs.runCommandLocal "vim" { } ''
             mkdir -p "$out/bin"
             ln -s "${package}/bin/nvim" "$out/bin/vi"
             ln -s "${package}/bin/nvim" "$out/bin/vim"
             ln -s "${package}/bin/nvim" "$out/bin/nano"
-          '')
-        );
+          '';
+      };
+
+      apps = {
+        vi = {
+          type = "app";
+          program = "${config.packages.nixvim}/bin/vi";
+        };
       };
     };
 }

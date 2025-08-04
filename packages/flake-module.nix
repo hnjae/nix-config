@@ -9,10 +9,6 @@ let
     (inputs.nixpkgs.lib.attrsets.mergeAttrsList (map (system: withSystem system module) systems));
 in
 {
-  imports = [
-    ./nixvim/flake-module.nix
-  ];
-
   perSystem =
     {
       pkgs,
