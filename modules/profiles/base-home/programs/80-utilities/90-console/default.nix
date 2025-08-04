@@ -95,7 +95,6 @@ in
     pkgs.trash-cli
     pkgs.tmux
     # pkgs.tmuxinator
-    pkgs.uuid7
 
     # pkgs.du-dust # dust(du)
     # pkgs.gping # gping(ping)
