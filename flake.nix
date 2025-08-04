@@ -119,14 +119,6 @@
         nuschtosSearch.follows = "";
       };
     };
-    # nur = {
-    #   url = "github:nix-community/NUR";
-    #   inputs = {
-    #     nixpkgs.follows = "nixpkgs";
-    #     flake-parts.follows = "flake-parts";
-    #     treefmt-nix.follows = "";
-    #   };
-    # };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -181,10 +173,6 @@
     # Misc
     ############################################################################
     # TODO: bundle some configs to nixvim <2025-03-01>
-    # neovim-configs = {
-    #   url = "github:hnjae/neovim-configs";
-    #   flake = false;
-    # };
     # dotfiles = {
     #   url = "github:hnjae/dotfiles";
     #   flake = false;
@@ -316,6 +304,7 @@
                   # by directory pattern
                   "dotfiles/*"
                   "*/*-encrypted/*"
+                  "*-encrypted.*"
                   "*/secrets/*"
 
                   # by suffix pattern

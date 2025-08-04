@@ -5,7 +5,7 @@
     ./nameserver-encrypted.nix
   ];
 
-  nix.settings.min-free = "343597383680"; # 20% of root zfs pool
+  nix.settings.min-free = "4G";
 
   programs.steam = {
     enable = true;

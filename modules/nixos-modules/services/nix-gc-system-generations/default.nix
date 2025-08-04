@@ -49,7 +49,8 @@ let
     "remote-fs.target"
     "multi-user.target"
     "getty.target"
-  ] ++ (lib.lists.optional config.services.xserver.enable "graphical.target");
+  ]
+  ++ (lib.lists.optional config.services.xserver.enable "graphical.target");
 in
 {
   options.services.${serviceName} = {

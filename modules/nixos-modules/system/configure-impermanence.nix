@@ -28,51 +28,65 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # NOTE: `/etc/ssh` 를 persistence 에 추가했다가, 아래 키 생성이 persist 볼륨에 의해 가려질 수 있음. <NixOS 25.05>
+    services.openssh.hostKeys = [
+      {
+        bits = 4096;
+        type = "rsa";
+        path = builtins.concatStringsSep "/" [
+          cfg.path
+          "_openssh-hostkeys"
+          "ssh_host_rsa_key"
+        ];
+      }
+      {
+        type = "ed25519";
+        path = builtins.concatStringsSep "/" [
+          cfg.path
+          "_openssh-hostkeys"
+          "ssh_host_ed25519_key"
+        ];
+      }
+    ];
+
     environment.persistence."${cfg.path}" = {
       hideMounts = true;
-      files = builtins.concatLists [
-        [
-          "/etc/machine-id" # 644
-        ]
+      files = lib.flatten [
+        "/etc/machine-id" # 644
         (
           # 644
           lib.lists.optional (config.services.displayManager.sddm.enable) "/var/lib/sddm/state.conf"
         )
         # "/var/.updated"
       ];
-      directories = builtins.concatLists [
-        [
-          {
-            directory = "/var/log";
-            mode = "0755";
-          }
-          {
-            directory = "/var/lib/nixos";
-            mode = "0755";
-          }
-        ]
-        [
-          {
-            directory = "/etc/ssh";
-            mode = "755";
-          }
-        ]
-        [
-          (
-            if config.persist.isDesktop then
-              {
-                directory = "/var/lib/systemd";
-                mode = "0755";
-              }
-            # persist 가 보존이 안된다.
-            else
-              {
-                directory = "/var/lib/systemd/coredump";
-                mode = "0755";
-              }
-
-          )
-        ]
+      directories = lib.flatten [
+        {
+          directory = "/var/log";
+          mode = "0755";
+        }
+        {
+          directory = "/var/lib/nixos";
+          mode = "0755";
+        }
+        # [
+        #   {
+        #     directory = "/etc/ssh";
+        #     mode = "755";
+        #   }
+        # ]
+        (
+          if config.persist.isDesktop then
+            {
+              directory = "/var/lib/systemd";
+              mode = "0755";
+            }
+          # persist 가 보존이 안된다.
+          else
+            {
+              directory = "/var/lib/systemd/coredump";
+              mode = "0755";
+            }
+        )
         (lib.lists.optional (config.services.accounts-daemon.enable) {
           directory = "/var/lib/AccountsService";
           mode = "0755";
