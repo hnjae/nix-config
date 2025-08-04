@@ -4,6 +4,11 @@
     "/secrets".neededForBoot = true;
   };
 
+  systemd.tmpfiles.rules = [
+    "d /home/hnjae/.cache 0700 hnjae users -"
+    "d /home/hnjae/.local/share/flatpak 0755 hnjae users -"
+  ];
+
   disko.devices = {
     disk = {
       root = {
@@ -117,17 +122,38 @@
               mountpoint = "legacy";
             };
           };
+          # Optional
           "local/containers" = {
             type = "zfs_fs";
             options = {
+              # NOTE: podman volume 은 ZFS 로 관리되지 않음. <2025-08-04>
               mountpoint = "/var/lib/containers";
-              recordsize = "128K";
+            };
+          };
+          "local/usercache" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/home/hnjae/.cache";
+              recordsize = "16K";
+            };
+          };
+          "local/userflatpak" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/home/hnjae/.local/share/flatpak";
             };
           };
           "safe/home" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home";
+            };
+          };
+          "safe/libvirt" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/libvirt";
+              recordsize = "16K";
             };
           };
         };

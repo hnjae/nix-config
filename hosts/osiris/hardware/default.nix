@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   modulesPath,
   ...
@@ -11,6 +12,10 @@
     ./disk-config.nix
     ./gpu.nix
   ];
+
+  ############
+  # initrd
+  ############
 
   boot.initrd.availableKernelModules = [
     "nvme"
@@ -26,12 +31,11 @@
   ############
   nixpkgs.hostPlatform = "x86_64-linux";
   boot.kernelModules = [ "kvm-amd" ];
-  boot.kernelParams = [
-    "amd_pstate=passive"
-  ];
+  boot.kernelParams = [ "amd_pstate=passive" ];
 
   nix.settings.max-jobs = 6;
   nix.settings.cores = 6;
+  hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
 
   ############
   # ZFS

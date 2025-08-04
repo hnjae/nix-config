@@ -44,9 +44,8 @@ in
 
         }
       )
-      ./configs
+      ./config
       ./core
-      ./misc
       ./non-declarative
       ./packages
       ./role
