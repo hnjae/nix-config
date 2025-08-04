@@ -28,8 +28,6 @@ in
       };
 
       packages = {
-        uuid7 = (import ./tools/uuid7) { inherit pkgs; };
-
         fonts-dmca-sans-serif = (import ./fonts/fonts-dmca-sans-serif) { inherit pkgs; };
         fonts-freesentation = (import ./fonts/fonts-freesentation) { inherit pkgs; };
         fonts-plangothic = pkgs.callPackage ./fonts/fonts-plangothic { };

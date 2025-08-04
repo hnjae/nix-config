@@ -155,7 +155,7 @@ let
 
         runtimeInputs = with pkgs; [
           konsave
-          uuid7
+          util-linux
           uutils-coreutils-noprefix # date
           rustic
           rclone
@@ -205,7 +205,7 @@ let
             local id_
             local file_
 
-            id_=$(uuid7)
+            id_=$(uuidgen --time-v7)
             file_="/tmp/''${id_}.knsv"
 
             # Cleanup existing konsave profile if exists
