@@ -63,7 +63,7 @@ in
       self.nixosModules.configure-impermanence
       self.nixosModules.rollback-btrfs-root
       inputs.quadlet-nix.nixosModules.quadlet
-      ./configs
+      ./config
       ./hardware
       ./services
       ./serve-encrypted

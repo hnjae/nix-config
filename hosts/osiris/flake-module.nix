@@ -32,8 +32,9 @@
         };
       }
 
-      ./configs
+      ./config
       ./hardware
+      ./services
     ];
 
     specialArgs = {

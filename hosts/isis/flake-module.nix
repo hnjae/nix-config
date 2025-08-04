@@ -31,7 +31,7 @@
       self.nixosModules.configure-impermanence
       inputs.quadlet-nix.nixosModules.quadlet
 
-      ./configs
+      ./config
       ./hardware
       ./services
     ];

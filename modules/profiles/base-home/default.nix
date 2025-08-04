@@ -30,7 +30,7 @@ in
     };
 
   imports = [
-    ./configs
+    ./config
     ./modules
     ./programs
     ./services

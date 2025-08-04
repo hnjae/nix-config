@@ -16,6 +16,7 @@
     # Low-battery (<20%) 에서 전력 소모를 줄이기 위해, 색상 정확도를 낮추는 기능 끄기.
     # https://discussion.fedoraproject.org/t/update-reduces-color-accuracy-in-favor-of-power-efficiency-amd-gpu/124723
     "amdgpu.abmlevel=0"
+    "amdgpu.aspm=1"
   ];
 
   environment.defaultPackages = with pkgs; [
