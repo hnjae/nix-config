@@ -8,10 +8,34 @@
 let
   fileSystems = {
     "isis/safe<" = true;
-    "isis/safe/home/hnjae/.cache<" = false;
   };
+
+  # zfs send 전에 snapshot 을 찍어, 항상 가장 최신 상태를 보낸다.
+  # NOTE: echo "foo$(date)" 식의 명령어의 경우 date 가 fail 할 경우에 `set -eu` 적용이 되질 않음. <2025-07-19>
+  backupOnsite = pkgs.writeScriptBin "backup-onsite" ''
+    #!${pkgs.dash}/bin/dash
+
+    set -eu
+
+    PATH="${
+      lib.makeBinPath [
+        pkgs.coreutils # date
+        pkgs.zrepl
+      ]
+    }"
+    ZFS_CMD='/run/booted-system/sw/bin/zfs'
+
+    time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
+    "$ZFS_CMD" snapshot -r -- "isis/safe@zrepl_''${time_}"
+    echo "[INFO]: Created snapshot isis/safe@zrepl_''${time_}" >/dev/stderr
+
+    zrepl signal wakeup -- 'isis-push'
+    echo '[INFO]: Wakeup signal sent to zrepl job "isis-push"' >/dev/stderr
+  '';
 in
 {
+  environment.systemPackages = [ backupOnsite ];
+
   services.zrepl.enable = true;
 
   services.zrepl.settings.jobs = [
@@ -30,17 +54,17 @@ in
           {
             type = "grid";
             grid = "1x1h(keep=all) | 24x1h | 7x1d | 3x7d";
-            regex = "^(zrepl|autosnap|rustic)_.*";
+            regex = "^(zrepl|rustic)_.*";
           }
           {
             type = "last_n";
             count = 7;
-            regex = "^(zrepl|autosnap|rustic)_.*";
+            regex = "^(zrepl|rustic)_.*";
           }
           {
             type = "regex";
             negate = true;
-            regex = "^(zrepl|autosnap|rustic)_.*";
+            regex = "^(zrepl|rustic)_.*";
           }
         ];
       };
@@ -88,12 +112,12 @@ in
           {
             type = "grid";
             grid = "1x1h(keep=all) | 24x1h | 7x1d | 3x7d";
-            regex = "^(zrepl|autosnap|rustic)_.*";
+            regex = "^(zrepl|rustic)_.*";
           }
           {
             type = "last_n";
             count = 7;
-            regex = "^(zrepl|autosnap|rustic)_.*";
+            regex = "^(zrepl|rustic)_.*";
           }
           # {
           #   type = "regex";
@@ -143,24 +167,7 @@ in
           Type = "oneshot";
           inherit (config.systemd.services.rustic-backup.serviceConfig) ExecCondition;
           ExecStart = [
-            # zfs send 전에 snapshot 을 찍어, 항상 가장 최신 상태를 보낸다.
-            # NOTE: echo "foo$(date)" 식의 명령어의 경우 date 가 fail 할 경우에 `set -eu` 적용이 되질 않음. <2025-07-19>
-            (pkgs.writeScript "isis-snapshot-before-send" ''
-              #!${pkgs.dash}/bin/dash
-
-              set -eu
-
-              PATH="${
-                lib.makeBinPath [
-                  pkgs.uutils-coreutils-noprefix # date
-                ]
-              }"
-              ZFS_CMD='/run/booted-system/sw/bin/zfs'
-
-              time_="$(date --utc '+%Y-%m-%dT%H:%M:%SZ')"
-              "$ZFS_CMD" snapshot -r -- "isis/safe@autosnap_''${time_}"
-            '')
-            "${pkgs.zrepl}/bin/zrepl signal wakeup ${jobName}"
+            "${backupOnsite}/bin/backup-onsite"
           ];
           SuccessExitStatus = 1; # zrepl prints if job is in progress: "already woken up" and exits with 1.
         };

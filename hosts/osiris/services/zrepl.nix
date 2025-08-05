@@ -31,11 +31,11 @@ let
     ZFS_CMD='/run/booted-system/sw/bin/zfs'
 
     time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
-    "$ZFS_CMD" snapshot -r -- "osiris/safe@zrepl_''${time_}" &&
-      echo "[INFO]: Created snapshot osiris/safe@zrepl_''${time_}"
+    "$ZFS_CMD" snapshot -r -- "osiris/safe@zrepl_''${time_}"
+    echo "[INFO]: Created snapshot osiris/safe@zrepl_''${time_}" /dev/stderr
 
-    zrepl signal wakeup -- 'osiris-push' &&
-      echo '[INFO]: Wakeup signal sent to zrepl job "osiris-push"'
+    zrepl signal wakeup -- 'osiris-push'
+    echo '[INFO]: Wakeup signal sent to zrepl job "osiris-push"' >/dev/stderr
   '';
   #
 in

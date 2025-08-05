@@ -2,23 +2,23 @@
   pkgs ? import <nixpkgs> { },
 }:
 let
-  lib = pkgs.lib;
+  inherit (pkgs) lib;
 in
 pkgs.writeScriptBin "set-charge-threshold" (
   let
     path = lib.makeBinPath (
       with pkgs;
       [
-        uutils-coreutils-noprefix
+        coreutils
       ]
     );
   in
-  (lib.concatLines [
-    (''
+  lib.concatLines [
+    ''
       #!${pkgs.dash}/bin/dash
 
       PATH=${path}
-    '')
+    ''
     (builtins.readFile ./set-charge-threshold.sh)
-  ])
+  ]
 )
