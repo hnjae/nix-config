@@ -68,12 +68,6 @@ in
           directory = "/var/lib/nixos";
           mode = "0755";
         }
-        # [
-        #   {
-        #     directory = "/etc/ssh";
-        #     mode = "755";
-        #   }
-        # ]
         (
           if config.persist.isDesktop then
             {
@@ -116,7 +110,6 @@ in
           directory = "/var/lib/bluetooth";
           mode = "0700";
         })
-
         (lib.lists.optional (config.virtualisation.waydroid.enable) {
           directory = "/var/lib/waydroid";
           mode = "0755";
@@ -137,13 +130,6 @@ in
           directory = "/var/lib/tailscale";
           mode = "0700";
         })
-        # (
-        #   lib.lists.optional (config.services.flatpak.enable)
-        #   {
-        #     directory = "/var/lib/flatpak";
-        #     mode = "0755";
-        #   }
-        # )
       ];
     };
   };

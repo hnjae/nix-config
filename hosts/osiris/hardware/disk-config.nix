@@ -5,8 +5,32 @@
   };
 
   systemd.tmpfiles.rules = [
+    "d /home/hnjae 0700 hnjae users -"
     "d /home/hnjae/.cache 0700 hnjae users -"
+    "d /home/hnjae/.local/share/baloo 0700 hnjae users -"
+    "d /home/hnjae/.local/share/containers 0700 hnjae users -"
     "d /home/hnjae/.local/share/flatpak 0755 hnjae users -"
+  ];
+
+  # run `head -c4 /dev/urandom | od -A none -t x4`
+  networking.hostId = "f648c215"; # for ZFS. hexadecimal characters.
+  virtualisation.docker.storageDriver = "zfs";
+  virtualisation.containers.storage.settings.storage.driver = "zfs";
+  home-manager.sharedModules = [
+    {
+      /*
+        NOTE: <2024-11-28>
+          zfs is not supported in rooltless podman
+          https://github.com/containers/storage/blob/main/docs/containers-storage.conf.5.md
+      */
+      xdg.configFile."containers/storage.conf" = {
+        # podman config
+        text = ''
+          [storage]
+          driver = "overlay"
+        '';
+      };
+    }
   ];
 
   disko.devices = {
@@ -92,13 +116,13 @@
               mountpoint = "none";
             };
           };
-          "local/root" = {
+          "local/rootfs" = {
             type = "zfs_fs";
             mountpoint = "/";
             options = {
               mountpoint = "legacy";
             };
-            postCreateHook = "zfs list -t snapshot -H -o name -- 'osiris/local/root' | grep -E '^osiris/local/root@blank$' || zfs snapshot osiris/local/root@blank";
+            postCreateHook = "zfs list -t snapshot -H -o name -- 'osiris/local/rootfs' | grep -E '^osiris/local/rootfs@blank$' || zfs snapshot osiris/local/root@blank";
           };
           "safe/persist" = {
             type = "zfs_fs";
@@ -130,6 +154,19 @@
               mountpoint = "/var/lib/containers";
             };
           };
+          "safe/libvirt" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/libvirt";
+              recordsize = "16K";
+            };
+          };
+          "safe/userhome" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/home/hnjae";
+            };
+          };
           "local/usercache" = {
             type = "zfs_fs";
             options = {
@@ -137,23 +174,23 @@
               recordsize = "16K";
             };
           };
+          "local/userbaloo" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/home/hnjae/.local/share/baloo";
+              recordsize = "16K";
+            };
+          };
+          "local/usercontainers" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/home/hnjae/.local/share/containers";
+            };
+          };
           "local/userflatpak" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae/.local/share/flatpak";
-            };
-          };
-          "safe/home" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/home";
-            };
-          };
-          "safe/libvirt" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/var/lib/libvirt";
-              recordsize = "16K";
             };
           };
         };

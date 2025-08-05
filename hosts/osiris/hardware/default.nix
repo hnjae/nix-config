@@ -36,28 +36,4 @@
   nix.settings.max-jobs = 6;
   nix.settings.cores = 6;
   hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
-
-  ############
-  # ZFS
-  ############
-  # run `head -c4 /dev/urandom | od -A none -t x4`
-  networking.hostId = "f648c215"; # for ZFS. hexadecimal characters.
-  virtualisation.docker.storageDriver = "zfs";
-  virtualisation.containers.storage.settings.storage.driver = "zfs";
-  home-manager.sharedModules = [
-    {
-      /*
-        NOTE: <2024-11-28>
-          zfs is not supported in rooltless podman
-          https://github.com/containers/storage/blob/main/docs/containers-storage.conf.5.md
-      */
-      xdg.configFile."containers/storage.conf" = {
-        # podman config
-        text = ''
-          [storage]
-          driver = "overlay"
-        '';
-      };
-    }
-  ];
 }
