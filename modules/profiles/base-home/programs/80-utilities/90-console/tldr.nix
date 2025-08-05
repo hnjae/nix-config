@@ -25,7 +25,7 @@ let
       lib.makeBinPath [
         package
         pkgs.inetutils
-        pkgs.uutils-coreutils-noprefix
+        pkgs.coreutils
       ]
     }
 

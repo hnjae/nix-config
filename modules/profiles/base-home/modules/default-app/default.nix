@@ -190,7 +190,7 @@ in
             name = "sync-default-apps";
             runtimeInputs = with pkgs; [
               flatpak
-              uutils-coreutils-noprefix
+              coreutils
               gawk
             ];
             text = ''

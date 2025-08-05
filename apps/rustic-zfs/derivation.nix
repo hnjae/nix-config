@@ -6,7 +6,7 @@
   rclone,
   jq,
   procps,
-  uutils-coreutils-noprefix,
+  coreutils,
   pwgen,
 }:
 stdenv.mkDerivation rec {
@@ -23,7 +23,7 @@ stdenv.mkDerivation rec {
     rclone
     jq
     procps # pgrep
-    uutils-coreutils-noprefix # date
+    coreutils # date
     pwgen
   ];
 

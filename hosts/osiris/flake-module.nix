@@ -23,7 +23,7 @@
 
         rollback-zfs-root = {
           enable = true;
-          rollbackDataset = "osiris/local/root@blank";
+          rollbackDataset = "osiris/local/rootfs@blank";
         };
 
         persist = {
