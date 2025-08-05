@@ -139,7 +139,7 @@ let
         runtimeInputs = with pkgs; [
           konsave
           util-linux
-          uutils-coreutils-noprefix # date
+          coreutils # date
           rustic
           rclone
           inetutils # ping
