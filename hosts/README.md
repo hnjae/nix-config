@@ -1,6 +1,6 @@
 ---
 date: 2025-08-02T23:26:03+0900
-lastmod: 2025-08-04T21:32:52+0900
+lastmod: 2025-08-05T22:03:09+0900
 ---
 
 ## 새 NixOS 인스톨 가이드
@@ -20,7 +20,9 @@ lastmod: 2025-08-04T21:32:52+0900
 - 1Password 로그인
 - `~/.ssh/id_ed25519` 복구
 - GPG Key 임포트
-- `sops` 키 (`secrets/home-age-private`) 복구
+- `sops` 키 복구
+  - `secrets/home-age-private`
+  - `~/.config/sops/age/keys.txt`
 - `dotfiles` 리포 복사 후 설정.
 - KDE/Gnome 설정 복구
 - Firefox 로그인 및 설정 복구
