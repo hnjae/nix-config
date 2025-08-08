@@ -43,8 +43,17 @@ in
         [
           {
             # following code follows following license: https://aur.archlinux.org/cgit/aur.git/tree/LICENSE?h=networkmanager-dispatcher-chrony
-            source = pkgs.writeText "chrony" ''
-              #!/bin/sh
+            source = pkgs.writeScript "chrony" ''
+              #!${pkgs.dash}/bin/dash
+
+              set -eu
+
+              PATH="${
+                lib.makeBinPath [
+                  pkgs.chrony
+                  pkgs.networkmanager
+                ]
+              }"
 
               INTERFACE="$1"
               STATUS="$2"
@@ -54,11 +63,11 @@ in
 
               chrony_cmd() {
                 echo "Chrony going $1."
-                exec "${pkgs.chrony}/bin/chronyc" -a "$1"
+                exec "chronyc" -a "$1"
               }
 
               nm_connected() {
-                [ "$(${pkgs.networkmanager}/bin/nmcli -t --fields STATE g)" = 'connected' ]
+                [ "$(nmcli -t --fields STATE g)" = 'connected' ]
               }
 
               case "$STATUS" in
