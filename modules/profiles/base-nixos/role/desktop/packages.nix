@@ -33,7 +33,16 @@
     environment.defaultPackages = with pkgs; [
       firefox
       vdhcoapp
-      chromium
+      (chromium.override {
+        enableWideVine = pkgs.config.allowUnfree;
+      })
+      (brave.override {
+        commandLineArgs = builtins.concatStringsSep " " [
+          "--enable-features=UseOzonePlatform,WaylandWindowDecorations"
+          "-enable-wayland-ime"
+          "--wayland-text-input-version=1"
+        ];
+      })
 
       (appimage-run.override {
         extraPkgs =
