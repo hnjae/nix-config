@@ -24,6 +24,9 @@
 
     pkgsUnstable.awscli2
 
+    pkgsUnstable.mani # <https://github.com/alajmo/mani>
+    pkgsUnstable.chezmoi
+    pkgsUnstable.dotbot
     (lib.lists.optional pkgs.stdenv.hostPlatform.isLinux pkgsUnstable.distrobox)
   ];
 
