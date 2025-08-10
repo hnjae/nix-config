@@ -51,7 +51,7 @@ in
     (lib.customisation.overrideDerivation
       # NOTE: 외부 배터리로 가동 중일때 사용할 스크립트
       (pkgs.writeShellApplication {
-        name = "sys-bat-mode";
+        name = "set-bat-mode";
 
         runtimeInputs = [
           config.boot.kernelPackages.cpupower

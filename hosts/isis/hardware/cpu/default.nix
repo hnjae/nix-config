@@ -7,9 +7,7 @@
   boot.kernelModules = [ "kvm-amd" ];
 
   imports = [
-    # ./amd-pstate/active
-    # ./amd-pstate/guided.nix
-    ./amd-pstate/passive.nix
+    ./amd-pstate-passive.nix
 
     # includes `updateMicrocoder`
     inputs.nixos-hardware.nixosModules.common-cpu-amd
