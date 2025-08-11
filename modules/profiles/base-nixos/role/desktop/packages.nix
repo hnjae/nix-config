@@ -26,7 +26,7 @@
 
     home-manager.sharedModules = [
       {
-        default-app.browser = "firefox";
+        default-app.browser = "brave-browser";
       }
     ];
 
