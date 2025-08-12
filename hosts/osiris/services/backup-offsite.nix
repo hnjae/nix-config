@@ -111,7 +111,7 @@ in
 
   systemd =
     let
-      serviceName = "rustic-backup";
+      serviceName = "backup-offsite";
       documentation = [
         "https://github.com/rustic-rs/rustic/blob/main/config/README.md"
         "https://github.com/rustic-rs/rustic/blob/main/config/full.toml"
@@ -192,18 +192,8 @@ in
 
               exit 0
             '')
-            (pkgs.writeScript "${serviceName}-check-metered-connection" (
-              lib.concatLines [
-                ''
-                  #!${pkgs.nushell}/bin/nu
 
-                  $env.PATH = [
-                    '${pkgs.networkmanager}/bin'
-                  ]
-                ''
-                (builtins.readFile ./resources/check-metered.nu)
-              ]
-            ))
+            "${self.packages.${pkgs.system}.check-metered}"
 
             (pkgs.writeScript "${serviceName}-check-internet" ''
               #!${pkgs.dash}/bin/dash

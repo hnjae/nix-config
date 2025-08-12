@@ -1,6 +1,6 @@
 {
   imports = [
-    ./backup-offsite
+    ./backup-offsite.nix
     ./zrepl.nix
   ];
 

@@ -1,8 +1,8 @@
 # NOTE: <https://zrepl.github.io/configuration/jobs.html>
 {
   pkgs,
+  self,
   lib,
-  config,
   ...
 }:
 let
@@ -107,7 +107,7 @@ in
             regex = ".*";
           }
         ];
-        # NOTE: zrepl send 에서는 보낼 snapshot 지정이 안된다. host 의 모든 snapshot 이 전송됨. 그래서 keep_receiver 의 regex 로 cleanup 할 snapshot 을 제한해서는 안됨. <2025-07-19>
+        # NOTE: zrepl send 에서는 보낼 snapshot 지정이 안된다. host 의 모든 snapshot 이 전송됨. 그래서 keep_receiver 의 `negate=true` 와 regex 로 cleanup 할 snapshot 을 제한해서는 안됨. <2025-07-19>
         keep_receiver = [
           {
             type = "grid";
@@ -165,7 +165,7 @@ in
 
         serviceConfig = {
           Type = "oneshot";
-          inherit (config.systemd.services.rustic-backup.serviceConfig) ExecCondition;
+          ExecCondition = "${self.packages.${pkgs.system}.check-metered}";
           ExecStart = [
             "${backupOnsite}/bin/backup-onsite"
           ];

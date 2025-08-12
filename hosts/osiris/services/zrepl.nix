@@ -7,7 +7,7 @@
 {
   pkgs,
   lib,
-  config,
+  self,
   ...
 }:
 let
@@ -28,6 +28,7 @@ let
         pkgs.zrepl
       ]
     }"
+
     ZFS_CMD='/run/booted-system/sw/bin/zfs'
 
     time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
@@ -159,7 +160,7 @@ in
 
         serviceConfig = {
           Type = "oneshot";
-          inherit (config.systemd.services.rustic-backup.serviceConfig) ExecCondition;
+          ExecCondition = "${self.packages.${pkgs.system}.check-metered}";
           ExecStart = "${backupOnsite}/bin/backup-onsite";
           SuccessExitStatus = 1; # zrepl prints the following if job is in progress: "already woken up" and exits with 1.
         };

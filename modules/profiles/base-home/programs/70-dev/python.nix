@@ -12,6 +12,7 @@ in
     home.sessionVariables = {
       PYTHON_HISTORY = "${config.xdg.stateHome}/python_history"; # from python 3.13
       PYTHON_COLORS = 1;
+      IPYTHONDIR = "${config.xdg.stateHome}/ipython";
     };
 
     python = {

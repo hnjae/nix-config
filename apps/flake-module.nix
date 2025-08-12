@@ -1,5 +1,6 @@
 {
   imports = [
+    ./check-metered/flake-module.nix
     ./nixvim/flake-module.nix
     ./rustic-zfs/flake-module.nix
   ];
