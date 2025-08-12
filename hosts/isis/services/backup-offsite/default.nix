@@ -13,145 +13,11 @@ let
   DATASET = "isis/safe/home/hnjae";
   PROFILE = "/secrets/rustic-onedrive/rustic";
 
-  ignoreFile = pkgs.writeText "ignore.txt" ''
-    /.*
-    /Downloads
-    /dwhelper
-    /git
-    /temp
-
-    !/.var
-    !/.var/app
-    /.var/app/*/.ld.so
-    /.var/app/*/cache
-
-    /.var/app/*/config/*[Cc]ache
-    /.var/app/*/config/**/*[Cc]ache
-    /.var/app/*/config/**/CacheStorage
-    /.var/app/*/data/*[Cc]ache
-    /.var/app/*/data/**/*[Cc]ache
-
-    /.var/app/*/config/fcitx
-    /.var/app/*/config/ibus
-    /.var/app/*/config/pulse/cookie
-    /.var/app/*/config/trashrc
-    /.var/app/*/config/user-dirs.dirs
-    /.var/app/*/data/recently-used.xbel
-    /.var/app/*/data/user-places.xbel*
-
-    /.var/app/com.usebottles.bottles/data/bottles/bottles/*/drive_c/users/*/AppData/Local/Temp
-    /.var/app/org.kde.ark/data/ark/ark_recentfiles
-    /.var/app/org.kde.dolphin/config/session
-    /.var/app/org.kde.gwenview/data/gwenview/recentfolders
-    # /.var/app/org.kde.kontact/data/akonadi_*/*/tmp
-    /.var/app/org.kde.kontact/data/kontact/kontact_recentfiles
-    /.var/app/org.kde.kwrite/data/kwrite/anonymous.katesession
-    /.var/app/org.kde.kwrite/data/kwrite/sessions
-    /.var/app/org.kde.okular/data/okular/docdata
-    /.var/app/org.libreoffice.LibreOffice/config/libreoffice/4/user/backup
-    /.var/app/org.libreoffice.LibreOffice/config/libreoffice/4/user/extensions/tmp
-    /.var/app/org.onlyoffice.desktopeditors/data/onlyoffice/desktopeditors/recents.xml
-
-    !/.mozilla
-    /.mozilla/firefox/Crash Reports
-    /.mozilla/firefox/firefox-mpris
-    /.mozilla/firefox/*/datareporting
-    /.mozilla/firefox/*/saved-telemetry-pings
-    /.mozilla/firefox/*/storage/default/*/cache
-    /.mozilla/firefox/*/weave/logs
-    /.mozilla/firefox/*/sessionstore-backups
-    !/.config
-    /.config/*
-    !/.config/chromium
-    /.config/chromium/**/*[Cc]ache
-    /.config/chromium/*[Cc]ache
-    /.config/chromium/**/CacheStorage
-    !/.cert
-
-    # Linux
-    .Trash-*
-    .nfs*
-    .fuse_hidden*
-    .snapshots
-
-    # KDE
-    .directory
-
-    # macOS
-    .DS_Store
-    ._*
-    .localized
-
-    # MS Windows
-    [Tt]humbs.db
-    [Dd]esktop.ini
-    ?RECYCLE.BIN
-
-    # Android
-    .temp
-    .thumbnails
-    .trashed-*
-
-    # Temporary files
-    *.parts
-    *.part
-    *.crdownload
-
-    # Vim
-    *.swp
-
-    # KdenLive
-    # kdenlive/**/proxy
-    # kdenlive/**/audiothumbs
-    # kdenlive/**/preview
-    # kdenlive/**/sequences
-    # kdenlive/**/videothumbs
-    # kdenlive/**/workfiles
-
-    # Direnv
-    .direnv
-
-    # NodeJS
-    node_modules
-
-    # Python (NO CACHEDIR.TAG inside)
-    .venv
-    __pycache__
-    *.py[oc]
-
-    # ZSH
-    *.zwc
-
-    # Things should be excluded by .gitignore
-    # dist
-    # build
-
-    # vi:ft=gitignore
-  '';
-
-  backupIsis = (
-    pkgs.writeScriptBin "backup-isis" ''
-      #!${pkgs.dash}/bin/dash
-
-      set -eu
-
-      ${lib.escapeShellArgs [
-        self.apps.${pkgs.system}.rustic-zfs.program
-        "-k"
-        "-i"
-        ignoreFile
-        "-p"
-        PROFILE
-        "--"
-        DATASET
-      ]}
-    ''
-  );
-
-  backupKde =
+  ignoreFile = self.constants.rusticIgnoreFileFactory pkgs;
+  backupOffsite =
     lib.customisation.overrideDerivation
       (pkgs.writeShellApplication {
-        name = "backup-kde";
+        name = "backup-offsite";
 
         runtimeInputs = with pkgs; [
           konsave
@@ -161,6 +27,7 @@ let
           rclone
           inetutils # ping
           sudo
+          self.packages.${pkgs.system}.rustic-zfs
         ];
 
         text = ''
@@ -177,30 +44,20 @@ let
               exit 1
             fi
 
-            if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
-              echo "No Internet connection." >&2
-              exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
-            fi
+            # if ! ping -c 1 1.1.1.1 >/dev/null 2>&1; then
+            #   echo "No Internet connection." >&2
+            #   exit 0 # 따로 Alert를 띄우지 않기 위해 0 으로 종료
+            # fi
           }
 
-          main() {
-            check_cond
-
+          backup_kde() {
             export RCLONE_MULTI_THREAD_STREAMS=0 # defaults : 4
             export RUSTIC_DRY_RUN=false
             export RUSTIC_REPO_OPT_TIMEOUT="10min"
             export RUSTIC_USE_PROFILE="$PROFILE"
-
-            if [ "$TERM" = "dumb" ]; then
-              export RCLONE_VERBOSE=1
-              export RUSTIC_LOG_LEVEL=info
-              export RUSTIC_NO_PROGRESS=true
-            else
-              # Running in interactive shell
-              export RCLONE_VERBOSE=1
-              export RUSTIC_LOG_LEVEL=info
-              export RUSTIC_NO_PROGRESS=false
-            fi
+            export RCLONE_VERBOSE=1
+            export RUSTIC_LOG_LEVEL=info
+            export RUSTIC_NO_PROGRESS=true
 
             local id_
             local file_
@@ -228,6 +85,13 @@ let
               echo "[INFO] Cleaned up $file_" >&2
           }
 
+          main() {
+            check_cond
+            backup_kde
+            rustic-zfs -k -i '${ignoreFile}' -p "$PROFILE" -- '${DATASET}'
+          }
+
+
           main
         '';
       })
@@ -237,8 +101,7 @@ let
 in
 {
   environment.systemPackages = [
-    backupIsis
-    backupKde
+    backupOffsite
     pkgs.rustic
     pkgs.rclone
     pkgs.just
@@ -294,8 +157,7 @@ in
           # MemoryHigh = "4G";
 
           ExecStart = [
-            "${backupKde}/bin/backup-kde"
-            "${backupIsis}/bin/backup-isis"
+            "${backupOffsite}/bin/backup-offsite"
           ];
 
           ExecCondition = lib.flatten [
@@ -329,20 +191,18 @@ in
               exit 0
             '')
 
-            (
-              (pkgs.writeScript "${serviceName}-check-metered-connection" (
-                lib.concatLines [
-                  ''
-                    #!${pkgs.nushell}/bin/nu
+            (pkgs.writeScript "${serviceName}-check-metered-connection" (
+              lib.concatLines [
+                ''
+                  #!${pkgs.nushell}/bin/nu
 
-                    $env.PATH = [
-                      '${pkgs.networkmanager}/bin'
-                    ]
-                  ''
-                  (builtins.readFile ./resources/check-metered.nu)
-                ]
-              ))
-            )
+                  $env.PATH = [
+                    '${pkgs.networkmanager}/bin'
+                  ]
+                ''
+                (builtins.readFile ./resources/check-metered.nu)
+              ]
+            ))
 
             (pkgs.writeScript "${serviceName}-check-internet" ''
               #!${pkgs.dash}/bin/dash

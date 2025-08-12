@@ -8,7 +8,7 @@ _: {
     # ./tabby.nix
     # ./shairport-sync.nix
 
-    ./rustic-backup
+    ./backup-offsite
   ];
 
   # USB 를 autosuspend 해, 마우스 사용에 애로사항이 있음.

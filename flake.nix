@@ -201,7 +201,7 @@
           # (lib.lists.optional (inputs.git-hooks ? flakeModule) inputs.git-hooks.flakeModule)
           # (lib.lists.optional (inputs.treefmt-nix ? flakeModule) inputs.treefmt-nix.flakeModule)
 
-          ./flake-output-attributes
+          ./attributes
 
           ./constants/flake-module.nix
 
