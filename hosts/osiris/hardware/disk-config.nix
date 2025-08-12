@@ -121,6 +121,7 @@
             mountpoint = "/";
             options = {
               mountpoint = "legacy";
+              recordsize = "16K";
             };
             postCreateHook = "zfs list -t snapshot -H -o name -- 'osiris/local/rootfs' | grep -E '^osiris/local/rootfs@blank$' || zfs snapshot osiris/local/root@blank";
           };
