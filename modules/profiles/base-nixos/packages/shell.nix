@@ -20,6 +20,10 @@
         "$character"
       ];
 
+      shell = {
+        disabled = false;
+      };
+
       username = {
         show_always = true;
         format = "[$user]($style)";
@@ -110,6 +114,10 @@
     # Things will be written to `/etc/zprofile` ##
     ##############################################
     # loginShellInit = '''';
+  };
+
+  programs.bash = {
+    blesh.enable = true;
   };
 
   environment.systemPackages = [

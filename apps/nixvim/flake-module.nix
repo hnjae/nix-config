@@ -28,12 +28,20 @@ in
         nixvim =
           let
             package = nixvim.legacyPackages.${system}.makeNixvimWithModule nixvimModule;
+            vimdiff = pkgs.writeScript "vimdiff" ''
+              #!${pkgs.dash}/bin/dash
+
+              exec "${package}/bin/nvim" -d "$@"
+            '';
           in
           pkgs.runCommandLocal "vim" { } ''
             mkdir -p "$out/bin"
+
             ln -s "${package}/bin/nvim" "$out/bin/vi"
             ln -s "${package}/bin/nvim" "$out/bin/vim"
+            ln -s "${package}/bin/nvim" "$out/bin/nvim"
             ln -s "${package}/bin/nvim" "$out/bin/nano"
+            ln -s "${vimdiff}" "$out/bin/vimdiff"
           '';
       };
 

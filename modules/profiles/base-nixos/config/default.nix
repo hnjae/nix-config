@@ -1,4 +1,4 @@
-_: {
+{
   imports = [
     ./chrony.nix
     ./containers.nix

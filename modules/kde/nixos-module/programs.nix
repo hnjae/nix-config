@@ -24,9 +24,9 @@
     konsave
     kdePackages.qtimageformats # webp, ...
     kdePackages.kimageformats # avif, jxl, heif, ...
+    kdePackages.ksystemlog
 
     # pkgs.kara # pager alternative KDE widget
-
     # kdePackages.dolphin
     # kdePackages.dolphin-plugins
   ];
