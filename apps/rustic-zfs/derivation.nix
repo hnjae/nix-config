@@ -5,8 +5,9 @@
   rustic,
   rclone,
   jq,
-  procps,
   coreutils,
+  util-linux,
+  procps,
   pwgen,
 }:
 stdenv.mkDerivation rec {
@@ -22,8 +23,9 @@ stdenv.mkDerivation rec {
     rustic
     rclone
     jq
-    procps # pgrep
     coreutils # date
+    util-linux # findmnt
+    procps # pgrep
     pwgen
   ];
 
