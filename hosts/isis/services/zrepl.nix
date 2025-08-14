@@ -27,10 +27,10 @@ let
 
     time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
     "$ZFS_CMD" snapshot -r -- "isis/safe@zrepl_''${time_}"
-    echo "[INFO]: Created snapshot isis/safe@zrepl_''${time_}" >/dev/stderr
+    echo "[INFO]: Created snapshot isis/safe@zrepl_''${time_}" >&2
 
     zrepl signal wakeup -- 'isis-push'
-    echo '[INFO]: Wakeup signal sent to zrepl job "isis-push"' >/dev/stderr
+    echo '[INFO]: Wakeup signal sent to zrepl job "isis-push"' >&2
   '';
 in
 {
@@ -133,7 +133,7 @@ in
     let
       jobName = "isis-push"; # must-not-change
 
-      serviceName = "zrepl-signal-${jobName}";
+      serviceName = "backup-onsite";
       description = "Zrepl signal ${jobName}";
       documentation = [ "https://zrepl.github.io/configuration.html" ];
     in
@@ -144,7 +144,7 @@ in
         wantedBy = [ "timers.target" ];
         timerConfig = {
           AccuracySec = "1m";
-          OnStartupSec = "30m";
+          OnStartupSec = "16m";
           OnUnitInactiveSec = "90m";
           Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
           WakeSystem = false;
@@ -166,9 +166,7 @@ in
         serviceConfig = {
           Type = "oneshot";
           ExecCondition = "${self.packages.${pkgs.system}.check-metered}";
-          ExecStart = [
-            "${backupOnsite}/bin/backup-onsite"
-          ];
+          ExecStart = "${backupOnsite}/bin/backup-onsite";
           SuccessExitStatus = 1; # zrepl prints if job is in progress: "already woken up" and exits with 1.
         };
       };

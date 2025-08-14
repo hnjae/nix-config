@@ -1,6 +1,7 @@
 pkgs:
 (pkgs.writeText "ignore.txt" ''
-    /.*
+  /.*
+
   /Downloads
   /dwhelper
   /git
@@ -56,7 +57,11 @@ pkgs:
   /.config/BraveSoftware/Brave-Browser/**/*[Cc]ache
   /.config/BraveSoftware/Brave-Browser/*[Cc]ache
   /.config/BraveSoftware/Brave-Browser/**/CacheStorage
+  !/.config/sh.cider.genten
+  /.config/sh.cider.genten/**/*[Cc]ache
+  /.config/sh.cider.genten/*[Cc]ache
   !/.cert
+  !/.pki
 
   # Linux
   .Trash-*
@@ -89,14 +94,7 @@ pkgs:
 
   # Vim
   *.swp
-
-  # KdenLive
-  # kdenlive/**/proxy
-  # kdenlive/**/audiothumbs
-  # kdenlive/**/preview
-  # kdenlive/**/sequences
-  # kdenlive/**/videothumbs
-  # kdenlive/**/workfiles
+  *~
 
   # Direnv
   .direnv
@@ -111,6 +109,14 @@ pkgs:
 
   # ZSH
   *.zwc
+
+  # KdenLive
+  # kdenlive/**/proxy
+  # kdenlive/**/audiothumbs
+  # kdenlive/**/preview
+  # kdenlive/**/sequences
+  # kdenlive/**/videothumbs
+  # kdenlive/**/workfiles
 
   # Things should be excluded by .gitignore
   # dist

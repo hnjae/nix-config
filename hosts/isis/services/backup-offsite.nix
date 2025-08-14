@@ -127,7 +127,7 @@ in
           AccuracySec = "1m";
           # OnCalendar = "*-*-* 00:00:00";
           OnStartupSec = "15m";
-          OnUnitInactiveSec = "120m";
+          OnUnitInactiveSec = "90m";
           Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
           WakeSystem = false;
         };
@@ -139,6 +139,7 @@ in
         unitConfig = rec {
           ConditionACPower = true;
           After = Wants;
+          Before = [ "backup-onsite.service" ];
           Wants = [ "network-online.target" ];
         };
 
@@ -166,7 +167,12 @@ in
 
               set -eu
 
-              PATH="${pkgs.procps}/bin"
+              PATH="${
+                lib.makeBinPath [
+                  # pkgs.coreutils # date
+                  pkgs.procps
+                ]
+              }"
 
               if pgrep --exact '(restic)|(rustic)|(zfs)|(rclone)|(rsync)' >/dev/null 2>&1; then
                 echo "Another I/O-intensive instance is running."

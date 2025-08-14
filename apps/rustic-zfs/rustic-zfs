@@ -175,7 +175,7 @@ run_backup() {
 
   dataset="$1"
   snapshot="${dataset}@${snapshot_name}"
-  snapshot_unixtime="$(zfs get -H -p creation -o value -- "$snapshot")"
+  snapshot_unixtime="$("$zfs_cmd" get -H -p creation -o value -- "$snapshot")"
   snapshot_time="$(date --date="@${snapshot_unixtime}" --utc '+%Y-%m-%dT%H:%M:%SZ')"
   snapshot_dir="${dataset_mountpoint[$dataset]}/.zfs/snapshot/${snapshot_name}"
 

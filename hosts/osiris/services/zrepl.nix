@@ -33,12 +33,11 @@ let
 
     time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
     "$ZFS_CMD" snapshot -r -- "osiris/safe@zrepl_''${time_}"
-    echo "[INFO]: Created snapshot osiris/safe@zrepl_''${time_}" /dev/stderr
+    echo "[INFO]: Created snapshot osiris/safe@zrepl_''${time_}" >&2
 
     zrepl signal wakeup -- 'osiris-push'
-    echo '[INFO]: Wakeup signal sent to zrepl job "osiris-push"' >/dev/stderr
+    echo '[INFO]: Wakeup signal sent to zrepl job "osiris-push"' >&2
   '';
-  #
 in
 {
   environment.systemPackages = [ backupOnsite ];
@@ -139,7 +138,7 @@ in
         wantedBy = [ "timers.target" ];
         timerConfig = {
           AccuracySec = "1m";
-          OnStartupSec = "30m";
+          OnStartupSec = "20m";
           OnUnitInactiveSec = "90m";
           Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
           WakeSystem = false;
