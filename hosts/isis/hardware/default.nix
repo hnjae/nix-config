@@ -6,7 +6,6 @@
     ./cpu
     ./fstab.nix
     ./gpu.nix
-    ./kernel.nix
     ./suspend.nix
     ./swap.nix
   ];

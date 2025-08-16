@@ -21,8 +21,7 @@ let
   mkProfileDefault = lib.mkOverride 999;
 in
 {
-  config = lib.mkIf (config.base-nixos.role == "desktop") {
-    boot.kernelPackages = lib.mkOverride 950 pkgs.linuxPackages_zen;
+  config = lib.mkIf (cfg.role == "desktop") {
     services.libinput = {
       enable = mkProfileDefault true;
       # mouse.accelProfile = "flat";
