@@ -39,64 +39,64 @@ in
     };
 
     networking.networkmanager.dispatcherScripts =
-      lib.lists.optionals (isDesktop && config.services.chrony.enable)
-        [
-          {
-            # following code follows following license: https://aur.archlinux.org/cgit/aur.git/tree/LICENSE?h=networkmanager-dispatcher-chrony
-            source = pkgs.writeScript "chrony" ''
-              #!${pkgs.dash}/bin/dash
+      # TODO: FIX THIS, positional argument 건내지지 않고 실행되는 것 같다. <2025-08-18>
+      lib.lists.optionals (isDesktop && config.services.chrony.enable && false) [
+        {
+          # following code follows following license: https://aur.archlinux.org/cgit/aur.git/tree/LICENSE?h=networkmanager-dispatcher-chrony
+          source = pkgs.writeScript "chrony" ''
+            #!${pkgs.dash}/bin/dash
 
-              # set -eu
+            # set -eu
 
-              PATH="${
-                lib.makeBinPath [
-                  pkgs.chrony
-                  pkgs.networkmanager
-                ]
-              }"
+            PATH="${
+              lib.makeBinPath [
+                pkgs.chrony
+                pkgs.networkmanager
+              ]
+            }"
 
-              INTERFACE="$1"
-              STATUS="$2"
+            INTERFACE="$1"
+            STATUS="$2"
 
-              # Make sure we're always getting the standard response strings
-              LANG='C'
+            # Make sure we're always getting the standard response strings
+            LANG='C'
 
-              chrony_cmd() {
-                echo "Chrony going $1." >&2
-                exec "chronyc" -a "$1"
-              }
+            chrony_cmd() {
+              echo "Chrony going $1." >&2
+              exec "chronyc" -a "$1"
+            }
 
-              nm_connected() {
-                [ "$(nmcli -t --fields STATE g)" = 'connected' ]
-              }
+            nm_connected() {
+              [ "$(nmcli -t --fields STATE g)" = 'connected' ]
+            }
 
-              if [ "$INTERFACE" = "lo" ]; then
-                # Local interface
-                exit 0
-              fi
+            if [ "$INTERFACE" = "lo" ]; then
+              # Local interface
+              exit 0
+            fi
 
-              echo "TEST: $STATUS"
+            echo "TEST: $STATUS"
 
-              case "$STATUS" in
-                up)
-                  chrony_cmd online
-                ;;
-                vpn-up)
-                  chrony_cmd online
-                ;;
-                down)
-                  # Check for active interface, take offline if none is active
-                  nm_connected || chrony_cmd offline
-                ;;
-                vpn-down)
-                  # Check for active interface, take offline if none is active
-                  nm_connected || chrony_cmd offline
-                ;;
-              esac
-            '';
-            type = "basic";
-          }
-        ];
+            case "$STATUS" in
+              up)
+                chrony_cmd online
+              ;;
+              vpn-up)
+                chrony_cmd online
+              ;;
+              down)
+                # Check for active interface, take offline if none is active
+                nm_connected || chrony_cmd offline
+              ;;
+              vpn-down)
+                # Check for active interface, take offline if none is active
+                nm_connected || chrony_cmd offline
+              ;;
+            esac
+          '';
+          type = "basic";
+        }
+      ];
 
     # disable timesyncd
     services.timesyncd.enable = mkOverride 999 (!config.services.chrony.enable);
