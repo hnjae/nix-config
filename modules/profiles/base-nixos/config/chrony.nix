@@ -46,7 +46,7 @@ in
             source = pkgs.writeScript "chrony" ''
               #!${pkgs.dash}/bin/dash
 
-              set -eu
+              # set -eu
 
               PATH="${
                 lib.makeBinPath [
@@ -62,13 +62,20 @@ in
               LANG='C'
 
               chrony_cmd() {
-                echo "Chrony going $1."
+                echo "Chrony going $1." >&2
                 exec "chronyc" -a "$1"
               }
 
               nm_connected() {
                 [ "$(nmcli -t --fields STATE g)" = 'connected' ]
               }
+
+              if [ "$INTERFACE" = "lo" ]; then
+                # Local interface
+                exit 0
+              fi
+
+              echo "TEST: $STATUS"
 
               case "$STATUS" in
                 up)

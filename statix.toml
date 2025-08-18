@@ -4,5 +4,6 @@ disabled = [
   "repeated_keys",
   "useless_parens",
   "empty_pattern",
+  "manual_inherit",
   "manual_inherit_from",
 ]

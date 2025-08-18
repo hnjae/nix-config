@@ -19,10 +19,12 @@ in
 
   virtualisation.podman = {
     enable = lib.mkOverride 999 isPodman;
-    dockerSocket.enable = lib.mkOverride 999 isDesktop;
+    dockerSocket.enable = lib.mkOverride 999 true;
     dockerCompat = lib.mkOverride 999 isDesktop;
+    # https://github.com/containers/common/blob/main/docs/containers.conf.5.md
     defaultNetwork.settings = lib.mkOverride 999 {
       dns_enabled = false;
+      ipv6_enabled = false;
     };
   };
 
