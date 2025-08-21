@@ -13,11 +13,6 @@
     mode = "0400";
   };
 
-  environment.etc."ssh/ssh_host_ed25519_key.pub" = {
-    text = self.constants.hosts.horus.sshPublicKey;
-    mode = "0644";
-  };
-
   services.openssh.hostKeys = lib.mkForce [
     {
       path = config.sops.secrets.ssh-host-key-prv.path;

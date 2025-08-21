@@ -4,13 +4,13 @@
   ...
 }:
 let
-  enableSecrueboot = true;
+  enableSecrueboot = false;
 in
 {
   boot = {
     lanzaboote = {
       enable = enableSecrueboot;
-      pkiBundle = "/persist/etc/secureboot";
+      pkiBundle = "/etc/secureboot";
       settings.console-mode = "keep"; # use vendor's firmware's default
     };
     loader = {
@@ -26,11 +26,6 @@ in
     };
 
     kernelParams = [
-      # https://forum.proxmox.com/threads/realtek-usb-2-5-gbe-random-usb-disconnect.138253/
-
-      # > Bus 002 Device 002: ID 0bda:8156 Realtek Semiconductor Corp. USB 10/100/1G/2.5G LAN
-      "usbcore.autosuspend=-1"
-      "usbcore.quirks=0bda:8156:k"
     ];
   };
 

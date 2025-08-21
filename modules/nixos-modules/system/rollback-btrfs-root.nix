@@ -74,10 +74,11 @@ in
             description = "List of authorized keys for SSH in initrd.";
             example = [ "ssh-ed25519 xxxxxxxxxxxxxxxxxxxxxx" ];
           };
+
           hostKeys = mkOption {
             type = types.nonEmptyListOf types.path;
             description = "List of path of host keys for SSH in initrd.";
-            example = [ "/persist/@/initrd-ssh-host-prviate" ];
+            example = [ "/persist/@/initrd-ssh-host-private" ];
           };
 
           port = mkOption {
@@ -87,6 +88,12 @@ in
               Port number for SSH in initrd.
               It is recommended to configure the different port with the OS port, as conflicts may occur in known hosts.
             '';
+          };
+
+          ip = mkOption {
+            type = types.string;
+            default = 2222;
+            example = "192.168.0.200";
           };
         };
       };

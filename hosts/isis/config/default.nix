@@ -1,8 +1,9 @@
 {
   imports = [
-    ./systemd.nix
-    ./pipewire.nix
     ./nameserver-encrypted.nix
+    ./pipewire.nix
+    ./ssh-host-key.nix
+    ./systemd.nix
   ];
 
   nix.settings.min-free = "4G";

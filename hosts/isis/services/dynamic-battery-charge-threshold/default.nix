@@ -15,7 +15,7 @@ let
   package = (import ./package { inherit pkgs; });
   exec = "${package}/bin/set-charge-threshold";
   execLimit = "${exec} -r 10 75";
-  execRestore = "${exec} -r 10 90";
+  execRestore = "${exec} -r 10 95";
 
   # NOTE: final.target 은 작동하지 않음. <2024-01-27>
   restoreServices = listToAttrs (

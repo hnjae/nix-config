@@ -44,7 +44,7 @@ in
 
     # PLATFORM_PROFILE_ON_AC = "performance";
     PLATFORM_PROFILE_ON_AC = "balanced";
-    PLATFORM_PROFILE_ON_BAT = "low-power";
+    PLATFORM_PROFILE_ON_BAT = "balanced";
   };
 
   environment.systemPackages = [
@@ -76,8 +76,8 @@ in
           echo "[INFO] Disabling CPU Boost" >&2
           echo 0 >"/sys/devices/system/cpu/cpufreq/boost"
 
-          echo "[INFO] Setting ACPI platform profile to low-power" >&2
-          echo "low-power" >"/sys/firmware/acpi/platform_profile"
+          echo "[INFO] Setting ACPI platform profile to balanced" >&2
+          echo "balanced" >"/sys/firmware/acpi/platform_profile"
 
           echo "[INFO] Setting CPU frequency governor to schedutil" >&2
           cpupower frequency-set -g schedutil
