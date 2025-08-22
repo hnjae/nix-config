@@ -5,6 +5,8 @@
     * <https://discourse.nixos.org/t/impermanence-vs-systemd-initrd-w-tpm-unlocking/25167/6>
 */
 {
+  config,
+  self,
   pkgs,
   ...
 }:
@@ -18,9 +20,13 @@
       "usb_storage"
       "sd_mod"
       "sr_mod"
+
+      "r8169" # network drive. run `lsmod` to list loaded kernel modules
     ];
     systemd = {
       enable = true;
+
+      # users.root.shell = "";
 
       initrdBin = with pkgs; [
         zfs
@@ -46,21 +52,26 @@
       };
 
       network = {
-        enable = false;
-        config = {
-
-        };
-        networks = {
-
-        };
+        enable = true;
+        networks."10-lan" = config.systemd.network.networks."10-lan";
       };
     };
 
-    # network = {
-    #   ssh = {
-    #     enable = true;
-    #     authorizedKeys = [ ];
-    #   };
-    # };
+    network = {
+      enable = false;
+      ssh = {
+        enable = true;
+        authorizedKeys = [
+          self.shared.keys.ssh.home
+        ];
+        hostKeys = [
+          config.sops.secrets.ssh-host-ed25519-key.path
+        ];
+      };
+      #   postCommands = ''
+      #   zpool import -a
+      #   echo "zfs load-key -a; killall zfs" >> /root/.profile
+      # '';
+    };
   };
 }

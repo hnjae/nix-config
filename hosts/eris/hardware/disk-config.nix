@@ -261,12 +261,27 @@
               mountpoint = "/var/lib/containers";
             };
           };
+          "local/lib/nixos" = {
+            # keep uid/gid of auto-generated users (e.g. avahi)
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/nixos";
+            };
+          };
+          "local/lib/systemd.coredump" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/systemd/coredump";
+              compression = "zstd-6";
+            };
+          };
           "local/lib/tailscale" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/tailscale";
             };
           };
+
           "local/log" = {
             type = "zfs_fs";
             options = {
@@ -377,14 +392,9 @@
 
   environment.persistence."/persist" = {
     hideMounts = true;
+    enableWarnings = false;
     files = [
       "/etc/machine-id"
-    ];
-    directories = [
-      {
-        directory = "/var/lib/systemd/coredump";
-        mode = "0755";
-      }
     ];
   };
 }

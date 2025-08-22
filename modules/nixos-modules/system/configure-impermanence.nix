@@ -65,6 +65,7 @@ in
           mode = "0755";
         }
         {
+          # keep uid/gid e.g. avahi/dhcpcd
           directory = "/var/lib/nixos";
           mode = "0755";
         }
