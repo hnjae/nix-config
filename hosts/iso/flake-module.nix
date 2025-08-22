@@ -1,7 +1,6 @@
 # https://nix.dev/tutorials/nixos/building-bootable-iso-image
 # https://wiki.nixos.org/wiki/Creating_a_NixOS_live_CD
 {
-  config,
   self,
   inputs,
   ...
@@ -14,9 +13,7 @@
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares-plasma6.nix"
       (
         {
-          config,
           lib,
-          pkgs,
           ...
         }:
         {
@@ -32,7 +29,6 @@
           };
         }
       )
-
       "${self}/modules/profiles/base-nixos/core/keyboard.nix"
       "${self}/modules/profiles/base-nixos/packages"
       (
@@ -63,6 +59,12 @@
           ];
 
           nixpkgs.config.allowUnfree = true;
+          systemd.sleep.extraConfig = ''
+            AllowSuspend=no
+            AllowHibernation=no
+            AllowSuspendThenHibernate=no
+            AllowHybridSleep=no
+          '';
         }
       )
     ];

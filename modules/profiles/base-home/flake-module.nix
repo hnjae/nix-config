@@ -17,9 +17,9 @@ in
       (importApply ./with-import-apply/inputs-packages { inherit inputs; })
 
       inputs.nix-index-database.homeModules.nix-index
-      ({
+      {
         programs.nix-index-database.comma.enable = true;
-      })
+      }
 
       (
         { pkgs, ... }:

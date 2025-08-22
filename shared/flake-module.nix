@@ -10,7 +10,7 @@
     hosts = import ./hosts-encrypted.nix;
 
     lib = {
-      rusticIgnoreFileFactory = import ./lib/rustic-ignorefile.nix;
+      rusticIgnoreFileFactory = import ./lib/rustic-ignorefile-factory.nix;
     };
   };
 }

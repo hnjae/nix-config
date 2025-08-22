@@ -32,7 +32,7 @@
         serviceConfig.Type = "oneshot";
         script = ''
           set -e
-          zfs rollback -r -- 'atum/local/rootfs@blank'
+          zfs rollback -r -- 'eris/local/rootfs@blank'
         '';
       };
 

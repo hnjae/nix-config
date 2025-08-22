@@ -9,11 +9,13 @@
     "d /home/hnjae 0700 hnjae users -"
     "d /home/hnjae/.cache 0700 hnjae users -"
     "d /home/hnjae/.local/share/containers 0700 hnjae users -"
+    "d /srv/storage/music 0700 hnjae users -"
+    ''f /srv/selfhost/readcache/CACHEDIR.TAG 0400 root root - "Signature: 8a477f597d28d172789f06886806bc55"''
   ];
 
   # 8 hexadecimal characters.
   # run `head -c4 /dev/urandom | od -A none -t x4`
-  # `echo 'atum' | cksum | awk '{printf "%08x\n", $1}'`
+  # `echo 'eris' | cksum | awk '{printf "%08x\n", $1}'`
   networking.hostId = "eed1b792"; # for ZFS. hexadecimal characters.
   virtualisation.docker.storageDriver = "zfs";
   virtualisation.containers.storage.settings.storage.driver = "zfs";
@@ -43,7 +45,7 @@
           type = "gpt";
           partitions = {
             esp = {
-              name = "ATUM_ESP_A";
+              name = "ERIS_ESP_A";
               size = "512M";
               type = "EF00";
               content = {
@@ -69,12 +71,12 @@
                 priority = 1;
               };
             };
-            atum_a = {
-              name = "ATUM_ZFS_A";
+            eris_a = {
+              name = "ERIS_ZFS_A";
               size = "100%";
               content = {
                 type = "zfs";
-                pool = "atum";
+                pool = "eris";
               };
             };
           };
@@ -87,7 +89,7 @@
           type = "gpt";
           partitions = {
             esp_b = {
-              name = "ATUM_ESP_B";
+              name = "ERIS_ESP_B";
               size = "512M";
               type = "EF00";
               content = {
@@ -114,12 +116,12 @@
                 priority = 1;
               };
             };
-            atum_b = {
-              name = "ATUM_ZFS_B";
+            eris_b = {
+              name = "ERIS_ZFS_B";
               size = "100%";
               content = {
                 type = "zfs";
-                pool = "atum";
+                pool = "eris";
               };
             };
           };
@@ -128,7 +130,7 @@
       };
     };
     zpool = {
-      atum = {
+      eris = {
         type = "zpool";
         mode = {
           topology = {
@@ -137,8 +139,8 @@
               {
                 mode = "mirror";
                 members = [
-                  "/dev/disk/by-partlabel/ATUM_ZFS_A"
-                  "/dev/disk/by-partlabel/ATUM_ZFS_B"
+                  "/dev/disk/by-partlabel/ERIS_ZFS_A"
+                  "/dev/disk/by-partlabel/ERIS_ZFS_B"
                 ];
               }
             ];
@@ -189,14 +191,16 @@
             };
           };
 
+          # includes /tmp
           "local/rootfs" = {
             type = "zfs_fs";
             mountpoint = "/";
             options = {
               mountpoint = "legacy";
               recordsize = "16K";
+              compression = "lz4";
             };
-            postCreateHook = "zfs list -t snapshot -H -o name -- 'atum/local/rootfs' | grep -E '^atum/local/rootfs@blank$' || zfs snapshot atum/local/root@blank";
+            postCreateHook = "zfs list -t snapshot -H -o name -- 'eris/local/rootfs' | grep -E '^eris/local/rootfs@blank$' || zfs snapshot eris/local/root@blank";
           };
           "safe/persist" = {
             type = "zfs_fs";
@@ -228,20 +232,25 @@
               mountpoint = "/var/lib/containers";
             };
           };
+
           "safe/libvirt" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/libvirt";
               recordsize = "16K";
+              compression = "lz4";
             };
           };
+
           "safe/userhome" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae";
               recordsize = "16K";
+              compression = "lz4";
             };
           };
+
           "local/usercache" = {
             type = "zfs_fs";
             options = {
@@ -250,6 +259,7 @@
               compression = "lz4";
             };
           };
+
           "local/usercontainers" = {
             type = "zfs_fs";
             options = {
@@ -266,7 +276,10 @@
           # NOTE: 나중에 metadata special device 추가해서 분리할 때를 위해 분리 <2025-08-22>
           "safe/selfhost/slow" = {
             type = "zfs_fs";
-            options = { };
+            options = {
+              compression = "zstd";
+              recordsize = "128K";
+            };
           };
 
           "safe/selfhost/fast" = {
@@ -283,6 +296,7 @@
               primarycache = "metadata";
               recordsize = "16K";
               xattr = "sa";
+              compression = "lz4";
             };
           };
 
@@ -297,14 +311,17 @@
           "safe/storage" = {
             type = "zfs_fs";
             options = {
-              mountpoint = "/srv/storage";
+              mountpoint = "none";
+              recordsize = "1M";
+              compression = "zstd";
             };
           };
 
           "safe/storage/music" = {
             type = "zfs_fs";
             options = {
-              mountpoint = "zle";
+              mountpoint = "/srv/storage/music";
+              compression = "zle";
             };
           };
         };
