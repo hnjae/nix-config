@@ -1,18 +1,14 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
   inherit (lib) mkOverride;
   cfg = config.base-nixos;
-  isDesktop = config.base-nixos.role == "desktop";
 in
 {
   boot.kernelModules = [ "wireguard" ];
-
-  networking.useDHCP = lib.mkOverride 999 (!isDesktop);
 
   # The list of nameservers. It can be left empty if it is auto-detected through DHCP.
   networking.nameservers = lib.mkIf (cfg.hostType == "baremetal") (
@@ -45,8 +41,8 @@ in
   };
 
   services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    # nssmdns6 = true;
+    enable = mkOverride 999 true;
+    nssmdns4 = mkOverride 999 true;
+    # nssmdns6 = false;
   };
 }

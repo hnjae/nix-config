@@ -22,10 +22,12 @@ let
   package = pkgs.appimageTools.wrapType2 rec {
     pname = "Cider";
     inherit (pkgsUnstable.cider-2)
-      version
+      # version
       # src
       meta
       ;
+
+    version = "3.0.2";
 
     # NOTE: 2025-05-29 기준 nixos-unstable-small 에서 `cider-2` 의 src 가 잘못 선언되어 있음.
     src = pkgs.requireFile {

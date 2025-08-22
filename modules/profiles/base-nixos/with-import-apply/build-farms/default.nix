@@ -27,7 +27,6 @@ in
   # Distributed Builds
   #############################################################################
   nix.distributedBuilds = true;
-  nix.settings.max-jobs = lib.mkOverride 999 4;
 
   # when the builder has a faster internet connection then yours
   nix.settings.builders-use-substitutes = true;

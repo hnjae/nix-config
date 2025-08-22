@@ -275,7 +275,18 @@ deploy-horus: update-local-repo
         --keep-failed \
         ".#nixosConfigurations.${1}.config.system.build.toplevel"
 
-# --option builders "" \
+[group('build')]
+[positional-arguments]
+@build-local host: update-local-repo
+    @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
+    nix build \
+        --no-link \
+        --option eval-cache false \
+        --show-trace \
+        --option builders "" \
+        --keep-failed \
+        ".#nixosConfigurations.${1}.config.system.build.toplevel"
+
 [group('build')]
 build-iso: update-local-repo
     nix build .#nixosConfigurations.iso.config.system.build.isoImage

@@ -34,6 +34,5 @@
   boot.kernelParams = [ "amd_pstate=passive" ];
 
   nix.settings.max-jobs = 6;
-  nix.settings.cores = 6;
   hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
 }

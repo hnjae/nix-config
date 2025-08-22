@@ -29,9 +29,8 @@
     "gccarch-znver4" # amd zen4 (7840U)
   ];
 
-  # 8c16t cpu
+  # 8c16t cpu / concurrent build
   nix.settings.max-jobs = 8;
-  nix.settings.cores = 8;
 
   boot.kernelParams = [
     # "nosmt"

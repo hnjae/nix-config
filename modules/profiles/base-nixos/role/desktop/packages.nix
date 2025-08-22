@@ -34,7 +34,8 @@
       firefox
       vdhcoapp
       (chromium.override {
-        enableWideVine = pkgs.config.allowUnfree;
+        # NOTE: 이거 빌드 안될 때 많다. <2025-08-21>
+        enableWideVine = false;
       })
       (brave.override {
         commandLineArgs = builtins.concatStringsSep " " [

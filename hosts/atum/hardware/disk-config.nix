@@ -148,10 +148,11 @@
         rootFsOptions = {
           acltype = "posixacl";
           dnodesize = "auto";
-          compression = "lz4";
+          compression = "zstd";
           recordsize = "64K";
-          special_small_blocks = "4K";
+          # special_small_blocks = "4K";
           xattr = "sa";
+          redundant_metadata = "most"; # mirrored-vdevs
           # --
           atime = "off";
           relatime = "off";
@@ -187,6 +188,7 @@
               mountpoint = "none";
             };
           };
+
           "local/rootfs" = {
             type = "zfs_fs";
             mountpoint = "/";
@@ -216,8 +218,7 @@
             mountpoint = "/nix";
             options = {
               mountpoint = "legacy";
-              recordsize = "64K";
-              special_small_blocks = "64K";
+              # special_small_blocks = "64K";
             };
           };
           "local/containers" = {
@@ -246,12 +247,64 @@
             options = {
               mountpoint = "/home/hnjae/.cache";
               recordsize = "16K";
+              compression = "lz4";
             };
           };
           "local/usercontainers" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae/.local/share/containers";
+            };
+          };
+
+          "safe/selfhost" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/srv/selfhost";
+            };
+          };
+          # NOTE: 나중에 metadata special device 추가해서 분리할 때를 위해 분리 <2025-08-22>
+          "safe/selfhost/slow" = {
+            type = "zfs_fs";
+            options = { };
+          };
+
+          "safe/selfhost/fast" = {
+            type = "zfs_fs";
+            options = {
+              compression = "lz4";
+            };
+          };
+
+          "safe/selfhost/dblike" = {
+            type = "zfs_fs";
+            options = {
+              atime = "off";
+              primarycache = "metadata";
+              recordsize = "16K";
+              xattr = "sa";
+            };
+          };
+
+          "safe/selfhost/readcache" = {
+            type = "zfs_fs";
+            options = {
+              compression = "zle";
+              recordsize = "1M";
+            };
+          };
+
+          "safe/storage" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/srv/storage";
+            };
+          };
+
+          "safe/storage/music" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "zle";
             };
           };
         };
