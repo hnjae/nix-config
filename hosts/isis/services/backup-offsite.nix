@@ -13,7 +13,7 @@ let
   DATASET = "isis/safe/home/hnjae";
   PROFILE = "/secrets/rustic-onedrive/rustic";
 
-  ignoreFile = self.constants.rusticIgnoreFileFactory pkgs;
+  ignoreFile = self.shraed.lib.rusticIgnoreFileFactory pkgs;
   backupOffsite =
     lib.customisation.overrideDerivation
       (pkgs.writeShellApplication {

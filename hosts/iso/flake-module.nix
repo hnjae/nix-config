@@ -46,13 +46,13 @@
           systemd.services.sshd.wantedBy = lib.mkForce [ "multi-user.target" ];
           users.users.root = {
             openssh.authorizedKeys.keys = [
-              self.constants.homeSshPublic
+              self.shared.keys.ssh.home
             ];
             initialHashedPassword = lib.mkForce "$y$j9T$HNGnCeOFmjNWzc5K7Dnh51$QNWhudURk9C/iJ/KOhJAjHRj3aadSROs50wO/SqaoED"; # nixos
           };
           users.users.nixos = {
             openssh.authorizedKeys.keys = [
-              self.constants.homeSshPublic
+              self.shared.keys.ssh.home
             ];
             # default: no password
             initialHashedPassword = lib.mkForce "$y$j9T$HNGnCeOFmjNWzc5K7Dnh51$QNWhudURk9C/iJ/KOhJAjHRj3aadSROs50wO/SqaoED";

@@ -15,7 +15,7 @@ let
   DATASET = "osiris/safe/userhome";
   PROFILE = "/secrets/rustic-onedrive/rustic";
 
-  ignoreFile = (self.constants.rusticIgnoreFileFactory pkgs);
+  ignoreFile = self.shared.lib.rusticIgnoreFileFactory pkgs;
 
   backupOffsite =
     lib.customisation.overrideDerivation

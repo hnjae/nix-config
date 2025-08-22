@@ -19,7 +19,7 @@ in
     write = true;
     protocol = "ssh-ng";
     keys = [
-      localFlake.constants.nixSshPublic
+      localFlake.shared.keys.ssh.nix-ssh
     ];
   };
 

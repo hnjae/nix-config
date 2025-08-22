@@ -26,7 +26,7 @@
 
     nix.buildMachines = [
       (
-        localFlake.constants.hosts.horus.buildMachine
+        localFlake.shared.hosts.horus.buildMachine
         // {
           sshUser = "nix-ssh";
           /*

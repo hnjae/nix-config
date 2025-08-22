@@ -15,7 +15,7 @@
     shell = pkgs.dash;
     openssh.authorizedKeys.keys = [
       # 다른 키 사용?
-      localFlake.constants.homeSshPublic
+      localFlake.keys.ssh.home
     ];
     # To use deploy-rs, a home directory must be set up.
     home = "/var/lib/deploy";

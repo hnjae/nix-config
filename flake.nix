@@ -203,7 +203,7 @@
 
           ./attributes
 
-          ./constants/flake-module.nix
+          ./shared/flake-module.nix
 
           ./apps/flake-module.nix
           ./hosts/flake-module.nix
