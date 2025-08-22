@@ -1,32 +1,22 @@
 {
-  lib,
   pkgs,
   ...
 }:
-let
-  enableSecrueboot = false;
-in
 {
-  boot = {
-    lanzaboote = {
-      enable = enableSecrueboot;
-      pkiBundle = "/etc/secureboot";
-      settings.console-mode = "keep"; # use vendor's firmware's default
+  boot.loader = {
+    limine = {
+      enable = true;
+      efiSupport = true;
     };
-    loader = {
-      # NOTE: lanzaboote replace the systemd-boot module
-      systemd-boot = {
-        enable = lib.mkForce (!enableSecrueboot);
-        memtest86.enable = true;
-      };
-      efi = {
-        canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot";
-      };
+    # # NOTE: lanzaboote replace the systemd-boot module
+    # systemd-boot = {
+    #   enable = true;
+    #   memtest86.enable = true;
+    # };
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot";
     };
-
-    kernelParams = [
-    ];
   };
 
   environment.systemPackages = [

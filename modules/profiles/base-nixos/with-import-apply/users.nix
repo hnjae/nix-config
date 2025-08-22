@@ -21,7 +21,7 @@ in
     users.users.root = {
       openssh.authorizedKeys.keys = [
         # TODO: disable ssh login? <2025-02-03>
-        localFlake.keys.ssh.home
+        localFlake.shared.keys.ssh.home
       ];
       hashedPassword = "$y$j9T$s.YA/IM9krcOc4J..OIke1$s0tKPmYDPljrwee8fho0q5w6bMq1YhG9uKDk.O5S6U2";
     };
@@ -48,7 +48,7 @@ in
       hashedPassword = "$y$j9T$sWlQsKkeQ0haWP/7Ki4Jh.$rTiCZXpbBixRPOdSZqki6EoIEcvfKOAPn1iUaBSm5.6";
       description = "KIM Hyunjae";
       openssh.authorizedKeys.keys = [
-        localFlake.keys.ssh.home
+        localFlake.shared.keys.ssh.home
       ];
 
       # true: start systemd user unit at boot, not login

@@ -13,13 +13,12 @@
 
       {
         system.stateVersion = "25.05";
+        networking.hostName = "osiris";
 
         base-nixos = {
           role = "desktop";
           hostType = "baremetal";
         };
-
-        networking.hostName = "osiris";
 
         rollback-zfs-root = {
           enable = true;

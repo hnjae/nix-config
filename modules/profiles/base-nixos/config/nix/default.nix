@@ -29,7 +29,7 @@ in
       ];
 
       # HELP: run `man 5 nix.conf`
-      min-free = lib.mkOverride 999 "${fromGiBtoB 16}";
+      min-free = lib.mkOverride 999 "${fromGiBtoB 4}";
     };
   };
 

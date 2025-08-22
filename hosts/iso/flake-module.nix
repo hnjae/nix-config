@@ -26,13 +26,14 @@
             vim.enable = false;
             nano.enable = false;
             neovim.enable = false;
+            zsh.enable = true;
           };
         }
       )
       "${self}/modules/profiles/base-nixos/core/keyboard.nix"
       "${self}/modules/profiles/base-nixos/packages"
       (
-        { lib, ... }:
+        { lib, pkgs, ... }:
         {
           isoImage = {
             squashfsCompression = "zstd -Xcompression-level 4";
@@ -40,18 +41,26 @@
           };
 
           systemd.services.sshd.wantedBy = lib.mkForce [ "multi-user.target" ];
-          users.users.root = {
-            openssh.authorizedKeys.keys = [
-              self.shared.keys.ssh.home
-            ];
-            initialHashedPassword = lib.mkForce "$y$j9T$HNGnCeOFmjNWzc5K7Dnh51$QNWhudURk9C/iJ/KOhJAjHRj3aadSROs50wO/SqaoED"; # nixos
-          };
-          users.users.nixos = {
-            openssh.authorizedKeys.keys = [
-              self.shared.keys.ssh.home
-            ];
-            # default: no password
-            initialHashedPassword = lib.mkForce "$y$j9T$HNGnCeOFmjNWzc5K7Dnh51$QNWhudURk9C/iJ/KOhJAjHRj3aadSROs50wO/SqaoED";
+
+          users = {
+            defaultUserShell = pkgs.zsh;
+
+            users.root = {
+              useDefaultShell = true;
+              openssh.authorizedKeys.keys = [
+                self.shared.keys.ssh.home
+              ];
+              initialHashedPassword = lib.mkForce "$y$j9T$HNGnCeOFmjNWzc5K7Dnh51$QNWhudURk9C/iJ/KOhJAjHRj3aadSROs50wO/SqaoED"; # nixos
+            };
+
+            users.nixos = {
+              useDefaultShell = true;
+              openssh.authorizedKeys.keys = [
+                self.shared.keys.ssh.home
+              ];
+              # default: no password
+              initialHashedPassword = lib.mkForce "$y$j9T$HNGnCeOFmjNWzc5K7Dnh51$QNWhudURk9C/iJ/KOhJAjHRj3aadSROs50wO/SqaoED";
+            };
           };
 
           nixpkgs.overlays = [
@@ -59,6 +68,7 @@
           ];
 
           nixpkgs.config.allowUnfree = true;
+
           systemd.sleep.extraConfig = ''
             AllowSuspend=no
             AllowHibernation=no

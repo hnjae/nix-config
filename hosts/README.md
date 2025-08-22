@@ -1,6 +1,6 @@
 ---
 date: 2025-08-02T23:26:03+0900
-lastmod: 2025-08-22T16:08:22+0900
+lastmod: 2025-08-23T00:34:24+0900
 ---
 
 
@@ -20,13 +20,14 @@ lastmod: 2025-08-22T16:08:22+0900
 
 ### 인스톨 후 가이드
 
-- Secureboot (Lanzaboote) 설정
-  - <https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md>
+- `/secrets/home-age-private` 복구
+- Secureboot 설정
+  - Lanzaboote: <https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md>
+  - Limine: <https://wiki.nixos.org/wiki/Limine>
 - 1Password 로그인
-- `~/.ssh/id_ed25519` 복구
-- GPG Key 임포트
+  - `~/.ssh/id_ed25519` 복구
+  - GPG Key 임포트
 - `dotfiles` 리포 복사 후 설정.
-  - `sops` 키 (`secrets/home-age-private`) 복구
 - KDE/Gnome 설정 복구
 - Firefox 로그인 및 설정 복구
 - tailscale 로그인

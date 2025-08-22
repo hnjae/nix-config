@@ -37,7 +37,7 @@
     disk = {
       root = {
         type = "disk";
-        device = "/dev/disk/by-id/nvme-WD_BLACK_SN850X_HS_2000GB_23011N802482";
+        device = "/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b4ecd71f5";
         content = {
           type = "gpt";
           partitions = {
@@ -123,7 +123,7 @@
               mountpoint = "legacy";
               recordsize = "16K";
             };
-            postCreateHook = "zfs list -t snapshot -H -o name -- 'osiris/local/rootfs' | grep -E '^osiris/local/rootfs@blank$' || zfs snapshot osiris/local/root@blank";
+            postCreateHook = "zfs list -t snapshot -H -o name -- 'osiris/local/rootfs' | grep -E '^osiris/local/rootfs@blank$' || zfs snapshot osiris/local/rootfs@blank";
           };
           "safe/persist" = {
             type = "zfs_fs";

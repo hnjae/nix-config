@@ -10,6 +10,15 @@
 }:
 {
   boot.initrd = {
+    availableKernelModules = [
+      "nvme"
+      "xhci_pci"
+      "ahci"
+      "usbhid"
+      "usb_storage"
+      "sd_mod"
+      "sr_mod"
+    ];
     systemd = {
       enable = true;
 
@@ -37,7 +46,7 @@
       };
 
       network = {
-        enable = true;
+        enable = false;
         config = {
 
         };
@@ -47,12 +56,11 @@
       };
     };
 
-    network = {
-      enable = true;
-      ssh = {
-        enable = true;
-        authorizedKeys = [ ];
-      };
-    };
+    # network = {
+    #   ssh = {
+    #     enable = true;
+    #     authorizedKeys = [ ];
+    #   };
+    # };
   };
 }

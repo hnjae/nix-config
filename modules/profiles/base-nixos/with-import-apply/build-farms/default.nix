@@ -5,7 +5,7 @@ let
 in
 {
   imports = [
-    (importApply ./horus.nix { inherit localFlake; })
+    # (importApply ./horus.nix { inherit localFlake; })
   ];
 
   #############################################################################

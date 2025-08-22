@@ -1,7 +1,7 @@
 { self, inputs, ... }:
 {
   imports = [
-    ./horus/flake-module.nix
+    ./eris/flake-module.nix
     ./isis/flake-module.nix
     ./osiris/flake-module.nix
 

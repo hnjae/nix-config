@@ -1,29 +1,16 @@
 {
   config,
-  inputs,
   modulesPath,
   ...
 }:
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-    inputs.nixos-hardware.nixosModules.common-cpu-amd # includes `updateMicrocoder`
+
     ./bootloader.nix
     ./disk-config.nix
-    ./gpu.nix
-  ];
-
-  ############
-  # initrd
-  ############
-
-  boot.initrd.availableKernelModules = [
-    "nvme"
-    "xhci_pci"
-    "ahci"
-    "usbhid"
-    "usb_storage"
-    "sd_mod"
+    ./initrd.nix
+    ./network.nix
   ];
 
   ############

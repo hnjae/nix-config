@@ -70,6 +70,8 @@
       wireguard-tools
       jq
 
+      python3
+      starship
       # (wezterm.overrideAttrs (_: {
       #   passthru.cargoBuildFlags = [
       #     "--package"

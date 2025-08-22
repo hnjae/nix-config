@@ -1,4 +1,3 @@
-# l2arc_exclude_special
 {
   fileSystems = {
     "/persist".neededForBoot = true;
@@ -8,15 +7,17 @@
   systemd.tmpfiles.rules = [
     "d /home/hnjae 0700 hnjae users -"
     "d /home/hnjae/.cache 0700 hnjae users -"
+    "d /home/hnjae/.local 0700 hnjae users -"
+    "d /home/hnjae/.local/share 0700 hnjae users -"
     "d /home/hnjae/.local/share/containers 0700 hnjae users -"
     "d /srv/storage/music 0700 hnjae users -"
-    ''f /srv/selfhost/readcache/CACHEDIR.TAG 0400 root root - "Signature: 8a477f597d28d172789f06886806bc55"''
+    ''f /srv/selfhost/readcache/CACHEDIR.TAG 0444 root root - "Signature: 8a477f597d28d172789f06886806bc55"''
   ];
 
   # 8 hexadecimal characters.
   # run `head -c4 /dev/urandom | od -A none -t x4`
   # `echo 'eris' | cksum | awk '{printf "%08x\n", $1}'`
-  networking.hostId = "eed1b792"; # for ZFS. hexadecimal characters.
+  networking.hostId = "5508701d"; # for ZFS. hexadecimal characters.
   virtualisation.docker.storageDriver = "zfs";
   virtualisation.containers.storage.settings.storage.driver = "zfs";
   home-manager.sharedModules = [
@@ -38,14 +39,14 @@
 
   disko.devices = {
     disk = {
-      a = {
+      ERIS_A = {
         type = "disk";
-        device = "/dev/disk/by-id/nvme-WD_BLACK_SN850X_xxxxxxxxxxxxxxxxxxxxxx";
+        # NVMe Future
+        device = "/dev/disk/by-id/nvme-nvme.1e4b-3330313632333433393236-48532d5353442d465554555245203430393647-00000001";
         content = {
           type = "gpt";
           partitions = {
-            esp = {
-              name = "ERIS_ESP_A";
+            ESP = {
               size = "512M";
               type = "EF00";
               content = {
@@ -63,33 +64,44 @@
                 ];
               };
             };
-            swap_a = {
+            SWAP = {
               size = "4G";
+              type = "8200";
               content = {
                 type = "swap";
                 randomEncryption = true;
                 priority = 1;
               };
             };
-            eris_a = {
-              name = "ERIS_ZFS_A";
-              size = "100%";
+            ZFS = {
+              size = "1904G";
+              type = "a504";
               content = {
                 type = "zfs";
                 pool = "eris";
               };
             };
+            LVM = {
+              size = "100%";
+              type = "8E00";
+              content = {
+                type = "lvm_pv";
+                vg = "pool";
+              };
+            };
           };
         };
       };
-      b = {
+
+      ERIS_B = {
         type = "disk";
-        device = "/dev/disk/by-id/nvme-WD_BLACK_SN850X_xxxxxxxxxxxxxxxxxxxxxx";
+        # NVMe SPCC
+        device = "/dev/disk/by-id/nvme-nvme.10ec-323330303530373435313531303139-53504343204d2e32205043496520535344-00000001";
         content = {
           type = "gpt";
           partitions = {
-            esp_b = {
-              name = "ERIS_ESP_B";
+            ESP = {
+              name = "ESP";
               size = "512M";
               type = "EF00";
               content = {
@@ -108,17 +120,18 @@
                 ];
               };
             };
-            swap_b = {
+            SWAP = {
               size = "4G";
+              type = "8200";
               content = {
                 type = "swap";
                 randomEncryption = true;
                 priority = 1;
               };
             };
-            eris_b = {
-              name = "ERIS_ZFS_B";
+            ZFS = {
               size = "100%";
+              type = "a504";
               content = {
                 type = "zfs";
                 pool = "eris";
@@ -129,6 +142,7 @@
 
       };
     };
+
     zpool = {
       eris = {
         type = "zpool";
@@ -139,8 +153,9 @@
               {
                 mode = "mirror";
                 members = [
-                  "/dev/disk/by-partlabel/ERIS_ZFS_A"
-                  "/dev/disk/by-partlabel/ERIS_ZFS_B"
+                  # PART LABEL
+                  "/dev/disk/by-partlabel/disk-ERIS_A-ZFS"
+                  "/dev/disk/by-partlabel/disk-ERIS_B-ZFS"
                 ];
               }
             ];
@@ -178,6 +193,13 @@
           # --
         };
         datasets = {
+          "reserved" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+              reservation = "378G";
+            };
+          };
           "local" = {
             type = "zfs_fs";
             options = {
@@ -200,7 +222,7 @@
               recordsize = "16K";
               compression = "lz4";
             };
-            postCreateHook = "zfs list -t snapshot -H -o name -- 'eris/local/rootfs' | grep -E '^eris/local/rootfs@blank$' || zfs snapshot eris/local/root@blank";
+            postCreateHook = "zfs list -t snapshot -H -o name -- 'eris/local/rootfs' | grep -E '^eris/local/rootfs@blank$' || zfs snapshot eris/local/rootfs@blank";
           };
           "safe/persist" = {
             type = "zfs_fs";
@@ -222,14 +244,34 @@
             mountpoint = "/nix";
             options = {
               mountpoint = "legacy";
+              quota = "256G";
               # special_small_blocks = "64K";
             };
           };
-          "local/containers" = {
+          "local/lib" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+            };
+          };
+          "local/lib/containers" = {
             type = "zfs_fs";
             options = {
               # NOTE: podman volume 은 ZFS 로 관리되지 않음. <2025-08-04>
               mountpoint = "/var/lib/containers";
+            };
+          };
+          "local/lib/tailscale" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/tailscale";
+            };
+          };
+          "local/log" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/log";
+              recordsize = "16K";
             };
           };
 
@@ -270,15 +312,16 @@
           "safe/selfhost" = {
             type = "zfs_fs";
             options = {
-              mountpoint = "/srv/selfhost";
+              mountpoint = "none";
             };
           };
+
           # NOTE: 나중에 metadata special device 추가해서 분리할 때를 위해 분리 <2025-08-22>
           "safe/selfhost/slow" = {
             type = "zfs_fs";
             options = {
               compression = "zstd";
-              recordsize = "128K";
+              mountpoint = "/srv/selfhost/slow";
             };
           };
 
@@ -286,12 +329,14 @@
             type = "zfs_fs";
             options = {
               compression = "lz4";
+              mountpoint = "/srv/selfhost/fast";
             };
           };
 
           "safe/selfhost/dblike" = {
             type = "zfs_fs";
             options = {
+              mountpoint = "/srv/selfhost/dblike";
               atime = "off";
               primarycache = "metadata";
               recordsize = "16K";
@@ -303,6 +348,7 @@
           "safe/selfhost/readcache" = {
             type = "zfs_fs";
             options = {
+              mountpoint = "/srv/selfhost/readcache";
               compression = "zle";
               recordsize = "1M";
             };
@@ -327,5 +373,18 @@
         };
       };
     };
+  };
+
+  environment.persistence."/persist" = {
+    hideMounts = true;
+    files = [
+      "/etc/machine-id"
+    ];
+    directories = [
+      {
+        directory = "/var/lib/systemd/coredump";
+        mode = "0755";
+      }
+    ];
   };
 }
