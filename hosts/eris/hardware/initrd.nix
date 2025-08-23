@@ -1,4 +1,3 @@
-# NOTE: ${cfg.zfsRootPoolName}@blank 이 있어야 함.
 /*
   NOTE:
     * <https://www.freedesktop.org/software/systemd/man/latest/bootup.html>
@@ -25,8 +24,6 @@
     ];
     systemd = {
       enable = true;
-
-      # users.root.shell = "";
 
       initrdBin = with pkgs; [
         zfs
@@ -57,21 +54,21 @@
       };
     };
 
-    network = {
-      enable = false;
-      ssh = {
-        enable = true;
-        authorizedKeys = [
-          self.shared.keys.ssh.home
-        ];
-        hostKeys = [
-          config.sops.secrets.ssh-host-ed25519-key.path
-        ];
-      };
-      #   postCommands = ''
-      #   zpool import -a
-      #   echo "zfs load-key -a; killall zfs" >> /root/.profile
-      # '';
-    };
+    # network = {
+    #   enable = false;
+    #   ssh = {
+    #     enable = true;
+    #     authorizedKeys = [
+    #       self.shared.keys.ssh.home
+    #     ];
+    #     hostKeys = [
+    #       config.sops.secrets.ssh-host-ed25519-key.path
+    #     ];
+    #   };
+    # };
   };
 }
+#   postCommands = ''
+#   zpool import -a
+#   echo "zfs load-key -a; killall zfs" >> /root/.profile
+# '';

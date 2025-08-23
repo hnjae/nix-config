@@ -3,16 +3,17 @@
   ...
 }:
 {
+  # boot.lanzaboote = {
+  #   enable = true;
+  #   pkiBundle = "/persist/lanzaboote.pki-bundle";
+  #   settings.console-mode = "keep"; # use vendor's firmware's default
+  # };
+
   boot.loader = {
     limine = {
       enable = true;
       efiSupport = true;
     };
-    # # NOTE: lanzaboote replace the systemd-boot module
-    # systemd-boot = {
-    #   enable = true;
-    #   memtest86.enable = true;
-    # };
     efi = {
       canTouchEfiVariables = true;
       efiSysMountPoint = "/boot";

@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   modulesPath,
   ...
@@ -12,6 +13,8 @@
     ./initrd.nix
     ./network.nix
   ];
+
+  boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
 
   ############
   # CPU

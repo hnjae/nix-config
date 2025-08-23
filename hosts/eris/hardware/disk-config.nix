@@ -390,7 +390,7 @@
     };
   };
 
-  environment.persistence."/persist" = {
+  environment.persistence."/persist/@" = {
     hideMounts = true;
     enableWarnings = false;
     files = [
