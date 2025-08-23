@@ -78,6 +78,8 @@
       #     "wezterm-mux-server"
       #   ];
       # }))
+
+      nfs-utils
     ])
 
     # archives

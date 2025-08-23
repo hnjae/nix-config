@@ -164,15 +164,15 @@ in
           SuccessExitStatus = 1; # zrepl prints the following if job is in progress: "already woken up" and exits with 1.
         };
       };
-
-      services.zfs = {
-        autoScrub = {
-          enable = true;
-          pools = [ "osiris" ];
-        };
-        trim = {
-          enable = true;
-        };
-      };
     };
+
+  services.zfs = {
+    autoScrub = {
+      enable = true;
+      pools = [ "osiris" ];
+    };
+    trim = {
+      enable = true;
+    };
+  };
 }
