@@ -433,6 +433,33 @@
         "type": "github"
       }
     },
+    "proxmox-nixos": {
+      "inputs": {
+        "flake-compat": [],
+        "nixpkgs-stable": [
+          "nixpkgs"
+        ],
+        "nixpkgs-unstable": [
+          "nixpkgs-unstable"
+        ],
+        "utils": [
+          "flake-utils"
+        ]
+      },
+      "locked": {
+        "lastModified": 1754428470,
+        "narHash": "sha256-Sxf8gf+vfGeFaJMW3D+8pwH/+WwYTQOg47Lrm42+kTc=",
+        "owner": "SaumonNet",
+        "repo": "proxmox-nixos",
+        "rev": "6faed2845ef5f0bb05c9519b75097bbe7fb39327",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SaumonNet",
+        "repo": "proxmox-nixos",
+        "type": "github"
+      }
+    },
     "py-utils": {
       "inputs": {
         "flake-parts": [
@@ -488,6 +515,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
+        "proxmox-nixos": "proxmox-nixos",
         "py-utils": "py-utils",
         "quadlet-nix": "quadlet-nix",
         "rust-overlay": "rust-overlay",
