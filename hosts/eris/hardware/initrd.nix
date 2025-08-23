@@ -11,7 +11,7 @@
 }:
 {
   boot.initrd = {
-    compressor = "cat";
+    compressor = "zstd"; # stored in EFI
     availableKernelModules = [
       "nvme"
       "xhci_pci"
@@ -52,7 +52,20 @@
 
       network = {
         enable = true;
-        inherit (config.systemd.network) networks netdevs;
+        # NOTE: stage2 에서는 작동하는 브릿지 네트워크 설정이 stage1 에서는 작동하지 않음. <NixOS 25.05>
+        networks."10-lan" = {
+          matchConfig = {
+            Name = "eno1";
+          };
+          networkConfig = {
+            DHCP = "no";
+            Gateway = "192.168.0.1";
+            Address = "192.168.0.200/16";
+
+            LLMNR = "resolve";
+            MulticastDNS = true;
+          };
+        };
       };
     };
 

@@ -46,8 +46,9 @@
         content = {
           type = "gpt";
           partitions = {
+            # initrd 가 은근히 커서 크게 잡음.
             ESP = {
-              size = "512M";
+              size = "4G";
               type = "EF00";
               content = {
                 type = "filesystem";
@@ -74,7 +75,7 @@
               };
             };
             ZFS = {
-              size = "1904G";
+              size = "1902G";
               type = "a504";
               content = {
                 type = "zfs";
@@ -102,7 +103,7 @@
           partitions = {
             ESP = {
               name = "ESP";
-              size = "512M";
+              size = "4G";
               type = "EF00";
               content = {
                 type = "filesystem";

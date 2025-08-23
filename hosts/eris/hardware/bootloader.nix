@@ -33,7 +33,10 @@
       pkiBundle = "/var/lib/sbctl";
       settings.console-mode = "keep"; # use vendor's firmware's default
     };
-    loader.systemd-boot.enable = lib.mkForce false;
+    loader.systemd-boot = {
+      enable = lib.mkForce false;
+      configurationLimit = 50;
+    };
     loader.efi = {
       canTouchEfiVariables = true;
       efiSysMountPoint = "/boot";

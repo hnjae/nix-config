@@ -18,7 +18,7 @@
       };
     };
 
-    networks."11-lan-bridge" = {
+    networks."10-lan-bridge" = {
       matchConfig.Name = "br0";
       networkConfig = {
         DHCP = "no";
@@ -44,6 +44,5 @@
     #       MulticastDNS = true; # avahi 필요함. 되었다가 안되었다가 함.
     #     };
     #   };
-
   };
 }

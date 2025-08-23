@@ -9,8 +9,6 @@
     # home = import ./home-encrypted.nix;
     hosts = import ./hosts-encrypted.nix;
 
-    lib = {
-      rusticIgnoreFileFactory = import ./lib/rustic-ignorefile-factory.nix;
-    };
+    lib = import ./lib;
   };
 }
