@@ -16,10 +16,8 @@
 
         # check `services.resolved`.  run `resolvectl status`
         LLMNR = "resolve";
-        MulticastDNS = true; # 이걸로 동작. avahi 필요 없음
+        MulticastDNS = true; # avahi 필요함. 되었다가 안되었다가 함.
       };
     };
   };
-
-  services.avahi.enable = false;
 }

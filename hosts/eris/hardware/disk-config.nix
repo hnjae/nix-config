@@ -248,49 +248,48 @@
               # special_small_blocks = "64K";
             };
           };
-          "local/lib" = {
+          "local/varlib" = {
             type = "zfs_fs";
             options = {
               mountpoint = "none";
             };
           };
-          "local/lib/containers" = {
+          "local/varlib/containers" = {
             type = "zfs_fs";
             options = {
               # NOTE: podman volume 은 ZFS 로 관리되지 않음. <2025-08-04>
               mountpoint = "/var/lib/containers";
             };
           };
-          "local/lib/nixos" = {
+          "local/varlib/nixos" = {
             # keep uid/gid of auto-generated users (e.g. avahi)
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/nixos";
             };
           };
-          "local/lib/systemd.coredump" = {
+          "local/varlib/systemd.coredump" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/systemd/coredump";
               compression = "zstd-6";
             };
           };
-          "local/lib/tailscale" = {
+          "local/varlib/tailscale" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/tailscale";
             };
           };
 
-          "local/log" = {
+          "safe/varlib" = {
             type = "zfs_fs";
             options = {
-              mountpoint = "/var/log";
-              recordsize = "16K";
+              mountpoint = "none";
             };
           };
 
-          "safe/libvirt" = {
+          "safe/varlib/libvirt" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/libvirt";
@@ -308,7 +307,7 @@
             };
           };
 
-          "local/usercache" = {
+          "local/user/cache" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae/.cache";
@@ -317,7 +316,7 @@
             };
           };
 
-          "local/usercontainers" = {
+          "local/user/containers" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae/.local/share/containers";
@@ -396,5 +395,16 @@
     files = [
       "/etc/machine-id"
     ];
+    directories = [
+      {
+        # NOTE: /var/log 를 zfs dataset 으로 관리하면 poweroff 할때 unmount fail issue 뜸. <2025-08-23>
+        directory = "/var/log";
+        mode = "0755";
+      }
+    ];
   };
+
+  # Use FS feature insteaad
+  nix.settings.compress-build-log = false;
+  hardware.firmwareCompression = "none";
 }

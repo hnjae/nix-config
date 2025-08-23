@@ -116,6 +116,7 @@
               mountpoint = "none";
             };
           };
+
           "local/rootfs" = {
             type = "zfs_fs";
             mountpoint = "/";
@@ -145,6 +146,7 @@
             mountpoint = "/nix";
             options = {
               mountpoint = "legacy";
+              compression = "zstd";
             };
           };
           # Optional
@@ -168,6 +170,7 @@
               mountpoint = "/home/hnjae";
             };
           };
+
           "local/usercache" = {
             type = "zfs_fs";
             options = {

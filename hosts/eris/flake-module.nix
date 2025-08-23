@@ -21,7 +21,7 @@
 
       ./config
       ./hardware
-      # ./services
+      ./services
     ];
 
     specialArgs = {

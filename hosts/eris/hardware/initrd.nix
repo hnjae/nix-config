@@ -11,6 +11,7 @@
 }:
 {
   boot.initrd = {
+    compressor = "cat";
     availableKernelModules = [
       "nvme"
       "xhci_pci"
@@ -24,6 +25,8 @@
     ];
     systemd = {
       enable = true;
+
+      users.root.shell = "/bin/systemd-tty-ask-password-agent";
 
       initrdBin = with pkgs; [
         zfs
@@ -54,21 +57,15 @@
       };
     };
 
-    # network = {
-    #   enable = false;
-    #   ssh = {
-    #     enable = true;
-    #     authorizedKeys = [
-    #       self.shared.keys.ssh.home
-    #     ];
-    #     hostKeys = [
-    #       config.sops.secrets.ssh-host-ed25519-key.path
-    #     ];
-    #   };
-    # };
+    network.ssh = {
+      enable = true;
+      port = 22;
+      authorizedKeys = [
+        self.shared.keys.ssh.home
+      ];
+      hostKeys = [
+        config.sops.secrets.ssh-host-ed25519-key.path
+      ];
+    };
   };
 }
-#   postCommands = ''
-#   zpool import -a
-#   echo "zfs load-key -a; killall zfs" >> /root/.profile
-# '';

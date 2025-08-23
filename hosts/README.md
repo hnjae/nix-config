@@ -1,6 +1,6 @@
 ---
 date: 2025-08-02T23:26:03+0900
-lastmod: 2025-08-23T00:34:24+0900
+lastmod: 2025-08-23T15:19:51+0900
 ---
 
 
@@ -20,17 +20,19 @@ lastmod: 2025-08-23T00:34:24+0900
 
 ### 인스톨 후 가이드
 
-- `/secrets/home-age-private` 복구
+- `dotfiles` 리포 클론 후 `install.sh` 실행
+- `/secrets/home-age-private` 복구 후 재부팅
+- tailscale 로그인
+  - 일부 기기는 key expiry 끄기
+  - 고정 ip
 - Secureboot 설정
   - Lanzaboote: <https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md>
   - Limine: <https://wiki.nixos.org/wiki/Limine>
 - 1Password 로그인
   - `~/.ssh/id_ed25519` 복구
   - GPG Key 임포트
-- `dotfiles` 리포 복사 후 설정.
 - KDE/Gnome 설정 복구
 - Firefox 로그인 및 설정 복구
-- tailscale 로그인
 
 <!--
 vi:ft:sw=4
