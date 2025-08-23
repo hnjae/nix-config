@@ -46,14 +46,13 @@
         unitConfig.DefaultDependencies = "no";
         serviceConfig.Type = "oneshot";
         script = ''
-          set -e
           zfs rollback -r -- 'eris/local/rootfs@blank'
         '';
       };
 
       network = {
         enable = true;
-        networks."10-lan" = config.systemd.network.networks."10-lan";
+        inherit (config.systemd.network) networks netdevs;
       };
     };
 

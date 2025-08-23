@@ -9,6 +9,10 @@
     # KVM 에서 copy-and-paste 하기 위해, qwerty 사용
     layout = "us";
     variant = lib.mkForce "";
-    # options = lib.mkForce "";
+    options = lib.mkForce (
+      builtins.concatStringsSep "," [
+        "caps:backspace"
+      ]
+    );
   };
 }
