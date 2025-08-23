@@ -254,6 +254,13 @@
               mountpoint = "none";
             };
           };
+          "local/varlib/sbctl" = {
+            # secure boot
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/sbctl";
+            };
+          };
           "local/varlib/containers" = {
             type = "zfs_fs";
             options = {

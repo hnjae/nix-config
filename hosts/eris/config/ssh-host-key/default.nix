@@ -6,7 +6,7 @@
 {
   sops.secrets.ssh-host-ed25519-key = {
     format = "binary";
-    sopsFile = ./secrets/isis.ssh_host_ed25519_key;
+    sopsFile = ./secrets/ssh_host_ed25519_key;
     mode = "0400";
   };
 

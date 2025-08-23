@@ -1,6 +1,6 @@
 ---
 date: 2025-08-02T23:26:03+0900
-lastmod: 2025-08-23T15:19:51+0900
+lastmod: 2025-08-23T15:42:31+0900
 ---
 
 
@@ -28,6 +28,7 @@ lastmod: 2025-08-23T15:19:51+0900
 - Secureboot 설정
   - Lanzaboote: <https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md>
   - Limine: <https://wiki.nixos.org/wiki/Limine>
+    - Limine 는 NixOS 25.05 기준 initrd-secrets 에 버그가 있다.
 - 1Password 로그인
   - `~/.ssh/id_ed25519` 복구
   - GPG Key 임포트

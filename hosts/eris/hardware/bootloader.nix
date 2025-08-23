@@ -27,12 +27,13 @@
 }:
 {
   boot = {
-    # lanzaboote = {
-    #   enable = true;
-    #   pkiBundle = "/persist/lanzaboote.pki-bundle"; # /var/lib/sbctl
-    #   settings.console-mode = "keep"; # use vendor's firmware's default
-    # };
-    loader.systemd-boot.enable = lib.mkForce true;
+    # enable lanzaboote after creating keys (`sbctl create-keys`)
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/var/lib/sbctl";
+      settings.console-mode = "keep"; # use vendor's firmware's default
+    };
+    loader.systemd-boot.enable = lib.mkForce false;
     loader.efi = {
       canTouchEfiVariables = true;
       efiSysMountPoint = "/boot";
