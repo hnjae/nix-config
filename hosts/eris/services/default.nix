@@ -1,4 +1,8 @@
 {
+  imports = [
+    ./zfs-replication.nix
+  ];
+
   services.zfs = {
     trim.enable = true;
     autoScrub = {
