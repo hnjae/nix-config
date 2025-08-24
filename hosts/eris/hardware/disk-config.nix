@@ -66,20 +66,11 @@
               };
             };
             ZFS = {
-              size = "1902G";
+              size = "1899G";
               type = "a504";
               content = {
                 type = "zfs";
                 pool = "eris";
-              };
-            };
-            SWAP = {
-              size = "4G";
-              type = "8200";
-              content = {
-                type = "swap";
-                randomEncryption = true;
-                priority = 1;
               };
             };
             LVM = {
@@ -88,6 +79,17 @@
               content = {
                 type = "lvm_pv";
                 vg = "pool";
+              };
+            };
+            SWAP = {
+              size = "4G";
+              type = "8200";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+                mountOptions = [ "nofail" ];
+                discardPolicy = "once";
+                priority = 1;
               };
             };
           };
@@ -102,7 +104,6 @@
           type = "gpt";
           partitions = {
             ESP = {
-              name = "ESP";
               size = "4G";
               type = "EF00";
               content = {
@@ -122,7 +123,7 @@
               };
             };
             ZFS = {
-              size = "100%";
+              size = "1899G";
               type = "a504";
               content = {
                 type = "zfs";
@@ -130,11 +131,13 @@
               };
             };
             SWAP = {
-              size = "4G";
+              size = "100%";
               type = "8200";
               content = {
                 type = "swap";
                 randomEncryption = true;
+                mountOptions = [ "nofail" ];
+                discardPolicy = "once";
                 priority = 1;
               };
             };
@@ -197,7 +200,7 @@
             type = "zfs_fs";
             options = {
               mountpoint = "none";
-              reservation = "378G";
+              reservation = "379.8G";
             };
           };
           "local" = {
@@ -300,15 +303,6 @@
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/libvirt";
-              recordsize = "16K";
-              compression = "lz4";
-            };
-          };
-
-          "safe/varlib/pve-cluster" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/var/lib/pve-cluster";
               recordsize = "16K";
               compression = "lz4";
             };
