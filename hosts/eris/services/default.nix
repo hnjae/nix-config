@@ -7,4 +7,6 @@
       pools = [ "eris" ];
     };
   };
+
+  services.fail2ban.enable = true;
 }
