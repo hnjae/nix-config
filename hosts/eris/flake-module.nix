@@ -6,7 +6,6 @@
       inputs.impermanence.nixosModules.impermanence
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.quadlet-nix.nixosModules.quadlet
-
       self.nixosModules.base-nixos
 
       {
@@ -17,6 +16,9 @@
           role = "none";
           hostType = "baremetal";
         };
+
+        nixpkgs.overlays = [
+        ];
       }
 
       ./config

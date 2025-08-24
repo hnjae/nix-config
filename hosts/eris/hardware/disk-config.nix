@@ -65,6 +65,14 @@
                 ];
               };
             };
+            ZFS = {
+              size = "1902G";
+              type = "a504";
+              content = {
+                type = "zfs";
+                pool = "eris";
+              };
+            };
             SWAP = {
               size = "4G";
               type = "8200";
@@ -72,14 +80,6 @@
                 type = "swap";
                 randomEncryption = true;
                 priority = 1;
-              };
-            };
-            ZFS = {
-              size = "1902G";
-              type = "a504";
-              content = {
-                type = "zfs";
-                pool = "eris";
               };
             };
             LVM = {
@@ -121,6 +121,14 @@
                 ];
               };
             };
+            ZFS = {
+              size = "100%";
+              type = "a504";
+              content = {
+                type = "zfs";
+                pool = "eris";
+              };
+            };
             SWAP = {
               size = "4G";
               type = "8200";
@@ -130,17 +138,8 @@
                 priority = 1;
               };
             };
-            ZFS = {
-              size = "100%";
-              type = "a504";
-              content = {
-                type = "zfs";
-                pool = "eris";
-              };
-            };
           };
         };
-
       };
     };
 
