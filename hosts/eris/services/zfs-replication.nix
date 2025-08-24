@@ -114,9 +114,9 @@ in
 
   systemd =
     let
-      jobName = "eris-push";
-      serviceName = "zrepl-signal-${jobName}";
-      description = "Zrepl signal ${jobName}";
+      jobName = "eris-push"; # must-not-change
+      serviceName = "zfs-replication-eris";
+      description = "Create snapshot and send signal to zrepl job ${jobName}";
       documentation = [ "https://zrepl.github.io/configuration.html" ];
     in
     {
@@ -146,54 +146,52 @@ in
 
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = (
-            pkgs.writeShellScript "${dataset}-replication" ''
-              set -euo pipefail
+          ExecStart = pkgs.writeShellScript "zfs-replication-${dataset}" ''
+            set -euo pipefail
 
-              JOBNAME='${jobName}'
-              ZFS_CMD='/run/booted-system/sw/bin/zfs'
-              PATH="${
-                lib.makeBinPath [
-                  pkgs.coreutils # date
-                  pkgs.zrepl
-                  pkgs.jq
-                ]
-              }"
+            JOBNAME='${jobName}'
+            ZFS_CMD='/run/booted-system/sw/bin/zfs'
+            PATH="${
+              lib.makeBinPath [
+                pkgs.coreutils # date
+                pkgs.zrepl
+                pkgs.jq
+              ]
+            }"
 
-              is_push_running() {
-                local result
-                # result: true(done) or false(running)
-                result=$(zrepl status --mode raw | jq -r --arg job "$JOBNAME" '
-                  .Jobs[$job].push as $push |
-                  ($push.PruningSender != null and $push.PruningSender.State == "Done")
-                  and ($push.PruningReceiver != null and $push.PruningReceiver.State == "Done")
-                  and (($push.Replication != null) and ($push.Replication.Attempts | all(.State == "done")))
-                ')
+            is_push_running() {
+              local result
+              # result: true(done) or false(running)
+              result=$(zrepl status --mode raw | jq -r --arg job "$JOBNAME" '
+                .Jobs[$job].push as $push |
+                ($push.PruningSender != null and $push.PruningSender.State == "Done")
+                and ($push.PruningReceiver != null and $push.PruningReceiver.State == "Done")
+                and (($push.Replication != null) and ($push.Replication.Attempts | all(.State == "done")))
+              ')
 
-                if "$result"; then
-                  return 1
-                else
-                  return 0
-                fi
-              }
+              if "$result"; then
+                return 1
+              else
+                return 0
+              fi
+            }
 
-              main() {
-                time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
+            main() {
+              time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
 
-                echo "[INFO]: Creating snapshot ${dataset}@zrepl_''${time_}" >&2
-                "$ZFS_CMD" snapshot -r -- "${dataset}@zrepl_''${time_}"
+              echo "[INFO]: Creating snapshot ${dataset}@zrepl_''${time_}" >&2
+              "$ZFS_CMD" snapshot -r -- "${dataset}@zrepl_''${time_}"
 
-                if is_push_running; then
-                  echo "[INFO]: Previous zrepl job ${jobName} is still running" >&2
-                else
-                  echo '[INFO]: Sending wakeup signal to zrepl job "${jobName}"' >&2
-                  zrepl signal wakeup -- "$JOBNAME"
-                fi
-              }
+              if is_push_running; then
+                echo "[INFO]: Previous zrepl job ${jobName} is still running" >&2
+              else
+                echo '[INFO]: Sending wakeup signal to zrepl job "${jobName}"' >&2
+                zrepl signal wakeup -- "$JOBNAME"
+              fi
+            }
 
-              main
-            ''
-          );
+            main
+          '';
         };
       };
     };

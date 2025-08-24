@@ -49,7 +49,7 @@
       "directory mask" = "0755";
 
       #
-      "guest ok" = "no";
+      # "guest ok" = "no";
     };
   };
 }

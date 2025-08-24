@@ -146,6 +146,8 @@
             mountpoint = "/nix";
             options = {
               mountpoint = "legacy";
+              quota = "256G";
+              reservation = "64G";
               compression = "zstd";
             };
           };

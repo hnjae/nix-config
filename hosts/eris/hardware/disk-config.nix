@@ -4,7 +4,21 @@
     "/secrets".neededForBoot = true;
   };
 
+  /*
+    - 아래가 잘 작동하려면, stage1 에서 zfs 가 import/mount 되어야하는 듯.
+    - `zfs.target` 은 `sysinit.target` 을 의존성으로 가지니 추가 X
+    - stage 2 에서 import 하는 zfs pool 은 `zfs-import.target` 을 의존성으로 가지면 안됨.
+  */
+  systemd.targets.local-fs = {
+    after = [ "zfs-import.target" ]; # 기본 local-fs-pre.target
+    wants = [ "zfs-mount.service" ];
+  };
+
   systemd.tmpfiles.rules = [
+    # 아래는 이미 포함되어 있음.
+    # "d /var/empty 0555 root root -"
+    # "h /var/empty - - - - +i"
+
     "d /home/hnjae 0700 hnjae users -"
     "d /home/hnjae/.cache 0700 hnjae users -"
     "d /home/hnjae/.local 0700 hnjae users -"
@@ -248,6 +262,7 @@
             options = {
               mountpoint = "legacy";
               quota = "256G";
+              reservation = "32G";
               # special_small_blocks = "64K";
             };
           };

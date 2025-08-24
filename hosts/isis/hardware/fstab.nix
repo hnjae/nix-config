@@ -72,8 +72,6 @@
       what = "/dev/disk/by-partuuid/0d0c92ae-52da-422a-b8be-487a713d7aa3";
       type = "ntfs";
       where = "/run/media/windows";
-      # wantedBy = [ "local-fs.target" ];
-      # before = [ "local-fs.target" ];
       mountConfig = {
         Options = builtins.concatStringsSep "," [
           # https://docs.kernel.org/filesystems/ntfs3.html
@@ -88,8 +86,6 @@
       what = "//horus/music";
       type = "smb3";
       where = "/run/media/music";
-      # wantedBy = [ "remote-fs.target" ];
-      # before = [ "remote-fs.target" ];
       after = [
         "tailscaled.service"
         "network-online.target"

@@ -12,5 +12,5 @@
     };
   };
 
-  # services.fail2ban.enable = true;
+  # services.fail2ban.enable = true; # 사용하니 ssh 를 그냥 막아버리는데?
 }

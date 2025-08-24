@@ -41,6 +41,10 @@
       canTouchEfiVariables = true;
       efiSysMountPoint = "/boot";
     };
+
+    kernelParams = [
+      "nohibernate"
+    ];
   };
 
   environment.systemPackages = [
