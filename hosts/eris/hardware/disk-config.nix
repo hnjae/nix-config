@@ -306,6 +306,15 @@
             };
           };
 
+          "safe/varlib/pve-cluster" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/pve-cluster";
+              recordsize = "16K";
+              compression = "lz4";
+            };
+          };
+
           "safe/userhome" = {
             type = "zfs_fs";
             options = {

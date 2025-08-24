@@ -28,5 +28,4 @@
   systemd.coredump.extraConfig = ''
     Compress=no
   '';
-
 }
