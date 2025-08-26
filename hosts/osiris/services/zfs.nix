@@ -80,7 +80,7 @@ in
       type = "push";
       connect = {
         type = "tcp";
-        address = "horus:65535";
+        address = "eris:65535";
         dial_timeout = "12s"; # optional, 0 for no timeout
       };
       filesystems = fileSystems;

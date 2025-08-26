@@ -160,16 +160,13 @@ in
             }"
 
             is_push_running() {
-              local result
-              # result: true(done) or false(running)
-              result=$(zrepl status --mode raw | jq -r --arg job "$JOBNAME" '
+              local is_done
+              is_done=$(zrepl status --mode raw | jq -r --arg job "$JOBNAME" '
                 .Jobs[$job].push as $push |
-                ($push.PruningSender != null and $push.PruningSender.State == "Done")
-                and ($push.PruningReceiver != null and $push.PruningReceiver.State == "Done")
-                and (($push.Replication != null) and ($push.Replication.Attempts | all(.State == "done")))
+                ($push.PruningSender == null) and ($push.PruningReceiver == null) and ($push.Replication ==null)
               ')
 
-              if "$result"; then
+              if "$is_done"; then
                 return 1
               else
                 return 0

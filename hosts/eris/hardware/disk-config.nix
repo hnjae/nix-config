@@ -397,16 +397,24 @@
             type = "zfs_fs";
             options = {
               mountpoint = "none";
-              recordsize = "1M";
-              compression = "zstd";
             };
           };
 
           "safe/storage/music" = {
             type = "zfs_fs";
             options = {
-              mountpoint = "/srv/storage/music";
+              mountpoint = "/srv/nfs/music";
               compression = "zle";
+              recordsize = "64K";
+            };
+          };
+
+          "safe/storage/vault" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/srv/nfs/vault";
+              compression = "zstd";
+              recordsize = "1M";
             };
           };
         };

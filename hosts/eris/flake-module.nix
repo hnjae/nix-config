@@ -1,5 +1,15 @@
 { self, inputs, ... }:
 {
+  flake.deploy.nodes.eris = {
+    # hostname = "${deviceName}.local";
+    hostname = "eris";
+    profiles.system = {
+      sshUser = "deploy";
+      user = "root";
+      path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.eris;
+    };
+  };
+
   flake.nixosConfigurations.eris = inputs.nixpkgs.lib.nixosSystem {
     modules = [
       inputs.disko.nixosModules.disko
