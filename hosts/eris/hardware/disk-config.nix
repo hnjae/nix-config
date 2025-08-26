@@ -5,14 +5,24 @@
   };
 
   /*
+     NixOS 25.05:
+
     - 아래가 잘 작동하려면, stage1 에서 zfs 가 import/mount 되어야하는 듯.
     - `zfs.target` 은 `sysinit.target` 을 의존성으로 가지니 추가 X
     - stage 2 에서 import 하는 zfs pool 은 `zfs-import.target` 을 의존성으로 가지면 안됨.
   */
   systemd.targets.local-fs = {
-    after = [ "zfs-import.target" ]; # 기본 local-fs-pre.target
+    after = [ "zfs-import.target" ]; # 기본: local-fs-pre.target
     wants = [ "zfs-mount.service" ];
   };
+
+  /*
+     NixOS 25.05:
+
+    - `root` 가 disposable 하니, `/etc/vconsole.conf` 생성 전에 vconsole 설정이 완료되는 일이 생김.
+    - `local-fs.target` 후에 서비스 시작하도록 함.
+  */
+  systemd.services.systemd-vconsole-setup.after = [ "local-fs.target" ];
 
   systemd.tmpfiles.rules = [
     # 아래는 이미 포함되어 있음.
