@@ -12,6 +12,7 @@ in
     home.packages = with pkgs; [
       mongosh
       sqlite
+      postgresql_17
     ];
 
     services.flatpak.packages = lib.flatten [
