@@ -55,15 +55,6 @@
         flake-utils.follows = "flake-utils";
       };
     };
-    proxmox-nixos = {
-      url = "github:SaumonNet/proxmox-nixos";
-      inputs = {
-        nixpkgs-stable.follows = "nixpkgs";
-        nixpkgs-unstable.follows = "nixpkgs-unstable";
-        utils.follows = "flake-utils";
-        flake-compat.follows = "";
-      };
-    };
     nix-flatpak = {
       url = "github:hnjae/nix-flatpak/patch-0.6.0";
       # url = "path:/home/hnjae/Projects/nix-flatpak";
