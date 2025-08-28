@@ -394,14 +394,14 @@
             };
           };
 
-          "safe/selfhost/readcache" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/srv/selfhost/readcache";
-              compression = "zle";
-              recordsize = "1M";
-            };
-          };
+          # "safe/selfhost/readcache" = {
+          #   type = "zfs_fs";
+          #   options = {
+          #     mountpoint = "/srv/selfhost/readcache";
+          #     compression = "zle";
+          #     recordsize = "1M";
+          #   };
+          # };
 
           "safe/storage" = {
             type = "zfs_fs";
@@ -425,6 +425,53 @@
               mountpoint = "/srv/nfs/vault";
               compression = "zstd";
               recordsize = "1M";
+            };
+          };
+
+          "safe/apps" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/srv/apps";
+            };
+          };
+
+          ################
+          # postgresql   #
+          ################
+
+          "safe/apps/postgresql" = {
+            type = "zfs_fs";
+            options = {
+              primarycache = "metadata";
+              recordsize = "16K";
+              compression = "lz4";
+              #     atime = "off";
+              #     xattr = "sa";
+            };
+          };
+
+          ################
+          # garage       #
+          ################
+
+          "safe/apps/garage" = {
+            type = "zfs_fs";
+            options = { };
+          };
+
+          "safe/apps/garage/data" = {
+            type = "zfs_fs";
+            options = {
+              compression = "zstd";
+              recordsize = "1M";
+            };
+          };
+
+          "safe/apps/garage/meta" = {
+            type = "zfs_fs";
+            options = {
+              compression = "lz4";
+              recordsize = "16k";
             };
           };
         };
