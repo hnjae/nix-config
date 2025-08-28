@@ -16,6 +16,8 @@
       inputs.impermanence.nixosModules.impermanence
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.quadlet-nix.nixosModules.quadlet
+      # inputs.nixvirt.nixosModules.default
+
       self.nixosModules.base-nixos
 
       {
