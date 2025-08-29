@@ -499,6 +499,33 @@
               #     xattr = "sa";
             };
           };
+
+          ################
+          # readeck      #
+          ################
+
+          "safe/apps/readeck" = {
+            type = "zfs_fs";
+            options = { };
+          };
+
+          "safe/apps/readeck/readeck" = {
+            type = "zfs_fs";
+            options = {
+              compression = "lz4";
+            };
+          };
+
+          "safe/apps/readeck/postgresql" = {
+            type = "zfs_fs";
+            options = {
+              primarycache = "metadata";
+              recordsize = "16K";
+              compression = "lz4";
+              #     atime = "off";
+              #     xattr = "sa";
+            };
+          };
         };
       };
     };
