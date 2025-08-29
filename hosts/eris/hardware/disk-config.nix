@@ -474,6 +474,31 @@
               recordsize = "16k";
             };
           };
+
+          ################
+          # freshrss    #
+          ################
+
+          "safe/apps/freshrss" = {
+            type = "zfs_fs";
+            options = { };
+          };
+
+          "safe/apps/freshrss/freshrss" = {
+            type = "zfs_fs";
+            options = { };
+          };
+
+          "safe/apps/freshrss/postgresql" = {
+            type = "zfs_fs";
+            options = {
+              primarycache = "metadata";
+              recordsize = "16K";
+              compression = "lz4";
+              #     atime = "off";
+              #     xattr = "sa";
+            };
+          };
         };
       };
     };
