@@ -239,6 +239,12 @@
               mountpoint = "none";
             };
           };
+          "untracked" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+            };
+          };
 
           # includes /tmp
           "local/rootfs" = {
@@ -357,51 +363,6 @@
               mountpoint = "/home/hnjae/.local/share/containers";
             };
           };
-
-          "safe/selfhost" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "none";
-            };
-          };
-
-          # NOTE: 나중에 metadata special device 추가해서 분리할 때를 위해 분리 <2025-08-22>
-          "safe/selfhost/slow" = {
-            type = "zfs_fs";
-            options = {
-              compression = "zstd";
-              mountpoint = "/srv/selfhost/slow";
-            };
-          };
-
-          "safe/selfhost/fast" = {
-            type = "zfs_fs";
-            options = {
-              compression = "lz4";
-              mountpoint = "/srv/selfhost/fast";
-            };
-          };
-
-          "safe/selfhost/dblike" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/srv/selfhost/dblike";
-              atime = "off";
-              primarycache = "metadata";
-              recordsize = "16K";
-              xattr = "sa";
-              compression = "lz4";
-            };
-          };
-
-          # "safe/selfhost/readcache" = {
-          #   type = "zfs_fs";
-          #   options = {
-          #     mountpoint = "/srv/selfhost/readcache";
-          #     compression = "zle";
-          #     recordsize = "1M";
-          #   };
-          # };
 
           "safe/storage" = {
             type = "zfs_fs";
