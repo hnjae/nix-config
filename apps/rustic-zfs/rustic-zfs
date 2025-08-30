@@ -17,7 +17,6 @@ ignore_file=""
 dry_run=false
 keep=false
 debug=false
-force=false
 
 usage() {
   cat <<EOF
@@ -31,7 +30,6 @@ Arguments:
 
 Options:
   -n                Perform a dry run without making changes in rustic repository
-  -f                Force run. Skips some condition checks.
   -d                Print debug information
   -k                Keep the ZFS snapshot after backup (Will use \`rustic_\` prefix)
   -i <ignore_file>  Custom ignore file path (Uses .gitignore style)
@@ -48,9 +46,6 @@ while getopts ":i:p:nkdfh" opt; do
     ;;
   n)
     dry_run=true
-    ;;
-  f)
-    force=true
     ;;
   k)
     keep=true
@@ -117,11 +112,6 @@ check_cond() {
 
     dataset_mountpoint["$dataset"]="$mp"
   done
-
-  if ! "$force" && pgrep --exact '(restic)|(rustic)' >/dev/null 2>&1; then
-    echo "Another restic(rustic) instance is running. Terminating."
-    exit 1
-  fi
 }
 
 cleanup_snapshots() {

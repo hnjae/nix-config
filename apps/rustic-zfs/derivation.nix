@@ -7,7 +7,6 @@
   jq,
   coreutils,
   util-linux,
-  procps,
   pwgen,
 }:
 stdenv.mkDerivation rec {
@@ -25,7 +24,6 @@ stdenv.mkDerivation rec {
     jq
     coreutils # date
     util-linux # findmnt
-    procps # pgrep
     pwgen
   ];
 
