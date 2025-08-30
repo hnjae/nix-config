@@ -113,7 +113,7 @@ let
 
     wait_for_job_done() {
       local initial_interval=10
-      local max_interval=60
+      local max_interval=90
       local current_interval=$initial_interval
       local elapsed=40
 
