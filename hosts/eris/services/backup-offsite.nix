@@ -6,8 +6,6 @@
 {
   self,
   pkgs,
-  lib,
-  config,
   ...
 }:
 let
@@ -40,8 +38,8 @@ let
         local fd="''${!fdvar-}"
 
         if [ "$fd" != "" ]; then
-          log INFO "Releasing lock: {lock: '$lock', fd: '$fd'}"
           flock -u "$fd" 2>/dev/null || true
+          log INFO "Released lock: {lock: '$lock', fd: '$fd'}"
 
           # Close file descriptor $fd ( `>&-` 구문에 변수 사용이 불가하므로 eval 사용)
           eval "exec ''${fd}>&-" 2>/dev/null || true
@@ -68,11 +66,11 @@ let
         local lock="$1" fdvar="$2"
 
         if ! exec {fd}>"$lock"; then
-          log ERROR "Cannot create lock file: $lock"
+          log ERROR "Cannot create lock file: $lock'"
           exit 1
         fi
 
-        log INFO "Acquiring lock: $lock (timeout: ''${LOCK_TIMEOUT}s)"
+        log INFO "Acquiring lock: '$lock' (timeout: ''${LOCK_TIMEOUT}s)"
         if ! flock -w "$LOCK_TIMEOUT" "$fd"; then
           log ERROR "Lock not acquired for '$lock' within ''${LOCK_TIMEOUT}s"
           exit 75 # EX_TEMPFAIL (Temporaryfailure,  indicating something that is not really an error.)
@@ -129,6 +127,7 @@ let
         #   log INFO "Running rustic-zfs for dataset(s): ''${ds[*]}"
         #   rustic-zfs -k -p "$PROFILE" --  "''${ds[@]}"
         # done
+
         rustic-zfs -k -p "$PROFILE" -- eris/safe/storage/music
         rustic-zfs -k -p "$PROFILE" -- eris/safe/storage/vault
 
@@ -143,8 +142,6 @@ let
   };
 in
 {
-  # environment.systemPackages = [ backupOffsite ];
-
   systemd =
     let
       serviceName = "backup-offsite";

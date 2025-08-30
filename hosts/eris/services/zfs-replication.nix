@@ -15,8 +15,9 @@ let
   };
 
   jobName = "eris-push"; # must-not-change
+  serviceName = "zfs-replication-eris";
 
-  script = pkgs.writeShellScript "zfs-replication-${dataset}" ''
+  script = pkgs.writeShellScript serviceName ''
     set -Eeuo pipefail
 
     PATH="${
@@ -29,7 +30,8 @@ let
     }"
     readonly ZFS_CMD='/run/booted-system/sw/bin/zfs'
     readonly LOCK_TIMEOUT="3600"
-    readonly LOCKFILE="/var/lock/zpool-eris.lock" # eris pool lock
+    readonly LOCKFILE_1="/var/lock/zpool-cobalt.lock"
+    readonly LOCKFILE_2="/var/lock/zpool-eris.lock" # eris pool lock
 
     log() { printf '[%s] %s\n' "$1" "$2" >&2; }
 
@@ -39,8 +41,8 @@ let
       local fd="''${!fdvar-}"
 
       if [ "$fd" != "" ]; then
-        log INFO "Releasing lock: {lock: '$lock', fd: '$fd'}"
         flock -u "$fd" 2>/dev/null || true
+        log INFO "Released lock: {lock: '$lock', fd: '$fd'}"
 
         # Close file descriptor $fd ( `>&-` 구문에 변수 사용이 불가하므로 eval 사용)
         eval "exec ''${fd}>&-" 2>/dev/null || true
@@ -56,7 +58,8 @@ let
       local rc=$?
 
       log INFO "Cleaning up locks"
-      release_lock "$LOCKFILE" fd
+      release_lock "$LOCKFILE_2" fd_2
+      release_lock "$LOCKFILE_1" fd_1
 
       log INFO "Script finished with exit code: $rc"
       exit "$rc"
@@ -66,11 +69,11 @@ let
       local lock="$1" fdvar="$2"
 
       if ! exec {fd}>"$lock"; then
-        log ERROR "Cannot create lock file: $lock"
+        log ERROR "Cannot create lock file: '$lock'"
         exit 1
       fi
 
-      log INFO "Acquiring lock: $lock (timeout: ''${LOCK_TIMEOUT}s)"
+      log INFO "Acquiring lock: '$lock' (timeout: ''${LOCK_TIMEOUT}s)"
       if ! flock -w "$LOCK_TIMEOUT" "$fd"; then
         log ERROR "Lock not acquired for '$lock' within ''${LOCK_TIMEOUT}s"
         exit 75 # EX_TEMPFAIL (Temporaryfailure,  indicating something that is not really an error.)
@@ -108,27 +111,28 @@ let
     }
 
     wait_for_job_done() {
-      local initial_interval=40
+      local initial_interval=10
       local max_interval=60
       local current_interval=$initial_interval
-      local elapsed=0
+      local elapsed=40
 
-      log INFO "Monitoring job 'eris-push' with adaptive polling..."
+      log INFO "Monitoring job '${jobName}' with adaptive polling..."
 
+      sleep "$elapsed"
       while is_push_running; do
+        log INFO "Job '${jobName}' still running... (checking every ''${current_interval}s)"
+
         sleep "$current_interval"
         elapsed=$((elapsed + current_interval))
 
         # 점진적으로 폴링 간격 증가
         if [ "$current_interval" -lt "$max_interval" ]; then
-          current_interval=$((current_interval + 2))
+          current_interval=$((current_interval + 4))
         fi
-
-        log INFO "Job '${jobName}' still running... (checking every ''${current_interval}s)"
       done
 
       local halv=$((current_interval/2))
-      log INFO "Job '${jobName}' completed with $((elapsed - halv))±''${halv}s"
+      log INFO "Job '${jobName}' completed in $((elapsed - halv))±''${halv}s"
     }
 
     main() {
@@ -138,18 +142,21 @@ let
       fi
 
       if is_push_running; then
-        log INFO "Previous zrepl job '${jobName}' is still running"
+        # 유저가 zrepl signal 을 직접 보내거나 했을 경우, 이 분기로 들어갈 수 있음.
+        log INFO "Previous job still running: '${jobName}'"
         return 0
       fi
 
       trap cleanup_lock EXIT INT TERM ERR
-      acquire_lock "$LOCKFILE" fd
+      acquire_lock "$LOCKFILE_1" fd_1
+      acquire_lock "$LOCKFILE_2" fd_2
 
+      # Replication 직전에 snapshot 을 찍어, 최신의 snapshot 을 보냄.
       time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
       "$ZFS_CMD" snapshot -r -- "${dataset}@zrepl_''${time_}"
       log INFO "Created snapshot: ${dataset}@zrepl_''${time_}"
 
-      log INFO 'Sending wakeup signal to zrepl job "${jobName}"'
+      log INFO "Sending wakeup signal to zrepl: '${jobName}'"
       zrepl signal wakeup -- '${jobName}'
       wait_for_job_done
     }
@@ -257,7 +264,6 @@ in
 
   systemd =
     let
-      serviceName = "zfs-replication-eris";
       description = "Create snapshot and send signal to zrepl job ${jobName}";
       documentation = [ "https://zrepl.github.io/configuration.html" ];
     in
