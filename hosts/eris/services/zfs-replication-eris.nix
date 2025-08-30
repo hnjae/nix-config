@@ -46,9 +46,10 @@ let
 
         # Close file descriptor $fd ( `>&-` 구문에 변수 사용이 불가하므로 eval 사용)
         eval "exec ''${fd}>&-" 2>/dev/null || true
-      fi
 
-      [ -f "$lock" ] && rm -f "$lock" 2>/dev/null
+        # lock 을 acquired 하지 않을 경우 삭제 안함.
+        [ -f "$lock" ] && rm -f "$lock" 2>/dev/null
+      fi
     }
 
     cleanup_lock() {

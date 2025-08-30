@@ -10,9 +10,10 @@
 }:
 let
   PROFILE = "/secrets/rustic-onedrive/rustic";
+  serviceName = "backup-offsite-eris";
 
-  backupOffsite = pkgs.writeShellApplication {
-    name = "backup-offsite";
+  script = pkgs.writeShellApplication {
+    name = serviceName;
 
     runtimeInputs = with pkgs; [
       util-linux # flock
@@ -43,9 +44,10 @@ let
 
           # Close file descriptor $fd ( `>&-` 구문에 변수 사용이 불가하므로 eval 사용)
           eval "exec ''${fd}>&-" 2>/dev/null || true
-        fi
 
-        [ -f "$lock" ] && rm -f "$lock" 2>/dev/null
+          # lock 을 acquired 하지 않을 경우 삭제 안함.
+          [ -f "$lock" ] && rm -f "$lock" 2>/dev/null
+        fi
       }
 
       cleanup_lock() {
@@ -144,7 +146,6 @@ in
 {
   systemd =
     let
-      serviceName = "backup-offsite";
       documentation = [
         "https://github.com/rustic-rs/rustic/blob/main/config/README.md"
         "https://github.com/rustic-rs/rustic/blob/main/config/full.toml"
@@ -159,12 +160,13 @@ in
 
         wantedBy = [ "timers.target" ];
         timerConfig = {
-          # OnCalendar = "*-*-* 00:00:00";
-          OnStartupSec = "540m";
-          OnUnitInactiveSec = "1080m"; # 18h
-          RandomizedDelaySec = "54m";
+          OnCalendar = "*-*-* 04:00:00";
+          RandomizedDelaySec = "5m";
+
+          # OnStartupSec = "360m";
+          # OnUnitInactiveSec = "720m"; # 12h
+          # RandomizedDelaySec = "36m";
           Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
-          WakeSystem = false;
         };
       };
 
@@ -192,7 +194,7 @@ in
           MemoryMax = "20G";
           IOWeight = "10"; # default 100
 
-          ExecStart = [ "${backupOffsite}/bin/backup-offsite" ];
+          ExecStart = [ "${script}/bin/${serviceName}" ];
         };
       };
     };

@@ -1,8 +1,8 @@
 {
   imports = [
-    ./backup-offsite.nix
-    ./zfs-replication.nix
-    ./rustic-onedrive-maintenance.nix
+    ./backup-offsite-eris.nix
+    ./zfs-replication-eris.nix
+    ./rustic-maintenance-onedrive.nix
   ];
 
   services.zfs = {
