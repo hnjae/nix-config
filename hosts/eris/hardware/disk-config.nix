@@ -323,6 +323,14 @@
             };
           };
 
+          "local/cache" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/srv/cache";
+              compression = "off";
+            };
+          };
+
           "safe/varlib" = {
             type = "zfs_fs";
             options = {
@@ -385,6 +393,15 @@
             options = {
               mountpoint = "/srv/nfs/vault";
               compression = "zstd";
+              recordsize = "1M";
+            };
+          };
+
+          "safe/storage/rustic-repo-head" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/srv/rustic";
+              compression = "off";
               recordsize = "1M";
             };
           };
