@@ -13,41 +13,184 @@ let
   fileSystems = {
     "${dataset}<" = true;
   };
+
+  jobName = "eris-push"; # must-not-change
+
+  script = pkgs.writeShellScript "zfs-replication-${dataset}" ''
+    set -Eeuo pipefail
+
+    PATH="${
+      lib.makeBinPath [
+        pkgs.util-linux # flock
+        pkgs.coreutils # date
+        pkgs.zrepl
+        pkgs.jq
+      ]
+    }"
+    readonly ZFS_CMD='/run/booted-system/sw/bin/zfs'
+    readonly LOCK_TIMEOUT="3600"
+    readonly LOCKFILE="/var/lock/zpool-eris.lock" # eris pool lock
+
+    log() { printf '[%s] %s\n' "$1" "$2" >&2; }
+
+    release_lock() {
+      local lock="$1" fdvar="$2"
+
+      local fd="''${!fdvar-}"
+
+      if [ "$fd" != "" ]; then
+        log INFO "Releasing lock: {lock: '$lock', fd: '$fd'}"
+        flock -u "$fd" 2>/dev/null || true
+
+        # Close file descriptor $fd ( `>&-` 구문에 변수 사용이 불가하므로 eval 사용)
+        eval "exec ''${fd}>&-" 2>/dev/null || true
+      fi
+
+      [ -f "$lock" ] && rm -f "$lock" 2>/dev/null
+    }
+
+    cleanup_lock() {
+      # 트랩 재진입 방지
+      trap - EXIT ERR INT TERM
+
+      local rc=$?
+
+      log INFO "Cleaning up locks"
+      release_lock "$LOCKFILE" fd
+
+      log INFO "Script finished with exit code: $rc"
+      exit "$rc"
+    }
+
+    acquire_lock() {
+      local lock="$1" fdvar="$2"
+
+      if ! exec {fd}>"$lock"; then
+        log ERROR "Cannot create lock file: $lock"
+        exit 1
+      fi
+
+      log INFO "Acquiring lock: $lock (timeout: ''${LOCK_TIMEOUT}s)"
+      if ! flock -w "$LOCK_TIMEOUT" "$fd"; then
+        log ERROR "Lock not acquired for '$lock' within ''${LOCK_TIMEOUT}s"
+        exit 75 # EX_TEMPFAIL (Temporaryfailure,  indicating something that is not really an error.)
+      fi
+      log INFO "Lock acquired: {lock: '$lock', fd: '$fd'}"
+
+      # 호출자에게 FD 번호를 넘겨줌
+      printf -v "$fdvar" '%s' "$fd"
+    }
+
+    is_push_running() {
+      local is_done
+      is_done=$(zrepl status --mode raw | jq -r --arg job "${jobName}" '
+        .Jobs[$job].push as $push |
+        (
+          (
+            ($push.PruningSender == null)
+            and ($push.PruningReceiver == null)
+            and ($push.Replication ==null)
+          )
+          or
+          (
+            ($push.PruningSender != null and $push.PruningSender.State == "Done")
+            and ($push.PruningReceiver != null and $push.PruningReceiver.State == "Done")
+            and (($push.Replication != null) and ($push.Replication.Attempts | all(.State == "done")))
+          )
+        )
+      ')
+
+      if "$is_done"; then
+        return 1
+      else
+        return 0
+      fi
+    }
+
+    wait_for_job_done() {
+      local initial_interval=40
+      local max_interval=60
+      local current_interval=$initial_interval
+      local elapsed=0
+
+      log INFO "Monitoring job 'eris-push' with adaptive polling..."
+
+      while is_push_running; do
+        sleep "$current_interval"
+        elapsed=$((elapsed + current_interval))
+
+        # 점진적으로 폴링 간격 증가
+        if [ "$current_interval" -lt "$max_interval" ]; then
+          current_interval=$((current_interval + 2))
+        fi
+
+        log INFO "Job '${jobName}' still running... (checking every ''${current_interval}s)"
+      done
+
+      local halv=$((current_interval/2))
+      log INFO "Job '${jobName}' completed with $((elapsed - halv))±''${halv}s"
+    }
+
+    main() {
+      if [ "''${EUID:-$UID}" != 0 ]; then
+        log ERROR "This script must be run as root"
+        exit 1
+      fi
+
+      if is_push_running; then
+        log INFO "Previous zrepl job '${jobName}' is still running"
+        return 0
+      fi
+
+      trap cleanup_lock EXIT INT TERM ERR
+      acquire_lock "$LOCKFILE" fd
+
+      time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
+      "$ZFS_CMD" snapshot -r -- "${dataset}@zrepl_''${time_}"
+      log INFO "Created snapshot: ${dataset}@zrepl_''${time_}"
+
+      log INFO 'Sending wakeup signal to zrepl job "${jobName}"'
+      zrepl signal wakeup -- '${jobName}'
+      wait_for_job_done
+    }
+
+    main
+  '';
 in
 {
   services.zrepl.enable = true;
 
   services.zrepl.settings.jobs = [
-    # {
-    #   name = "eris-snap"; # must not change
-    #   type = "snap";
-    #   filesystems = fileSystems;
-    #   snapshotting = {
-    #     type = "periodic";
-    #     prefix = "zrepl_";
-    #     interval = "1h";
-    #     timestamp_format = "iso-8601";
-    #   };
-    #   pruning = {
-    #     keep = [
-    #       {
-    #         type = "grid";
-    #         grid = "1x1h(keep=all) | 24x1h | 10x1d | 4x7d";
-    #         regex = "^(zrepl|rustic)_.*";
-    #       }
-    #       {
-    #         type = "last_n";
-    #         count = 8;
-    #         regex = "^(zrepl|rustic)_.*";
-    #       }
-    #       {
-    #         type = "regex";
-    #         negate = true;
-    #         regex = "^(zrepl|rustic)_.*";
-    #       }
-    #     ];
-    #   };
-    # }
+    {
+      name = "eris-snap"; # must not change
+      type = "snap";
+      filesystems = fileSystems;
+      snapshotting = {
+        type = "periodic";
+        prefix = "zrepl_";
+        interval = "1h";
+        timestamp_format = "iso-8601";
+      };
+      pruning = {
+        keep = [
+          {
+            type = "grid";
+            grid = "1x1h(keep=all) | 24x1h | 10x1d | 4x7d";
+            regex = "^(zrepl|rustic)_.*";
+          }
+          {
+            type = "last_n";
+            count = 8;
+            regex = "^(zrepl|rustic)_.*";
+          }
+          {
+            type = "regex";
+            negate = true;
+            regex = "^(zrepl|rustic)_.*";
+          }
+        ];
+      };
+    }
     {
       name = "eris-push"; # must-not-change
       type = "push";
@@ -75,25 +218,25 @@ in
       pruning = {
         keep_sender = [
           # KEEP ALL
-          # {
-          #   type = "regex";
-          #   regex = ".*";
-          # }
-          {
-            type = "grid";
-            grid = "1x1h(keep=all) | 24x1h | 10x1d | 4x7d";
-            regex = "^(zrepl|rustic)_.*";
-          }
-          {
-            type = "last_n";
-            count = 8;
-            regex = "^(zrepl|rustic)_.*";
-          }
           {
             type = "regex";
-            negate = true;
-            regex = "^(zrepl|rustic)_.*";
+            regex = ".*";
           }
+          # {
+          #   type = "grid";
+          #   grid = "1x1h(keep=all) | 24x1h | 10x1d | 4x7d";
+          #   regex = "^(zrepl|rustic)_.*";
+          # }
+          # {
+          #   type = "last_n";
+          #   count = 8;
+          #   regex = "^(zrepl|rustic)_.*";
+          # }
+          # {
+          #   type = "regex";
+          #   negate = true;
+          #   regex = "^(zrepl|rustic)_.*";
+          # }
         ];
         # NOTE: zrepl send 에서는 보낼 snapshot 지정이 안된다. host 의 모든 snapshot 이 전송됨. 그래서 keep_receiver 의 regex 로 cleanup 할 snapshot 을 제한해서는 안됨. <2025-07-19>
         keep_receiver = [
@@ -114,7 +257,6 @@ in
 
   systemd =
     let
-      jobName = "eris-push"; # must-not-change
       serviceName = "zfs-replication-eris";
       description = "Create snapshot and send signal to zrepl job ${jobName}";
       documentation = [ "https://zrepl.github.io/configuration.html" ];
@@ -125,9 +267,9 @@ in
 
         wantedBy = [ "timers.target" ];
         timerConfig = {
-          OnStartupSec = "30m";
-          OnUnitInactiveSec = "60m";
-          RandomizedDelaySec = "5m";
+          OnStartupSec = "150m";
+          OnUnitInactiveSec = "300m"; # 5h
+          RandomizedDelaySec = "15m";
           Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
           # OnCalendar = "hourly";
         };
@@ -146,49 +288,7 @@ in
 
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = pkgs.writeShellScript "zfs-replication-${dataset}" ''
-            set -euo pipefail
-
-            JOBNAME='${jobName}'
-            ZFS_CMD='/run/booted-system/sw/bin/zfs'
-            PATH="${
-              lib.makeBinPath [
-                pkgs.coreutils # date
-                pkgs.zrepl
-                pkgs.jq
-              ]
-            }"
-
-            is_push_running() {
-              local is_done
-              is_done=$(zrepl status --mode raw | jq -r --arg job "$JOBNAME" '
-                .Jobs[$job].push as $push |
-                ($push.PruningSender == null) and ($push.PruningReceiver == null) and ($push.Replication ==null)
-              ')
-
-              if "$is_done"; then
-                return 1
-              else
-                return 0
-              fi
-            }
-
-            main() {
-              time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
-
-              echo "[INFO]: Creating snapshot ${dataset}@zrepl_''${time_}" >&2
-              "$ZFS_CMD" snapshot -r -- "${dataset}@zrepl_''${time_}"
-
-              if is_push_running; then
-                echo "[INFO]: Previous zrepl job ${jobName} is still running" >&2
-              else
-                echo '[INFO]: Sending wakeup signal to zrepl job "${jobName}"' >&2
-                zrepl signal wakeup -- "$JOBNAME"
-              fi
-            }
-
-            main
-          '';
+          ExecStart = script;
         };
       };
     };
