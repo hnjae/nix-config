@@ -12,6 +12,7 @@
     ./disk-config.nix
     ./initrd.nix
     ./network.nix
+    ./power.nix
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;

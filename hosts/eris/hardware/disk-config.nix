@@ -397,10 +397,10 @@
             };
           };
 
-          "safe/storage/rustic-repo-head" = {
+          "safe/storage/rustic-local-head" = {
             type = "zfs_fs";
             options = {
-              mountpoint = "/srv/rustic";
+              mountpoint = "/srv/rustic-local";
               compression = "off";
               recordsize = "1M";
             };

@@ -32,6 +32,7 @@ let
     readonly LOCK_TIMEOUT="3600"
     readonly LOCKFILE_1="/var/lock/zpool-cobalt.lock"
     readonly LOCKFILE_2="/var/lock/zpool-eris.lock" # eris pool lock
+    readonly WAIT_TIMEOUT="21600" # 6h
 
     log() { printf '[%s] %s\n' "$1" "$2" >&2; }
 
@@ -111,6 +112,8 @@ let
       fi
     }
 
+    # TODO: job fail 모니터링? <2025-08-30>
+
     wait_for_job_done() {
       local initial_interval=10
       local max_interval=90
@@ -129,6 +132,11 @@ let
         # 점진적으로 폴링 간격 증가
         if [ "$current_interval" -lt "$max_interval" ]; then
           current_interval=$((current_interval + 4))
+        fi
+
+        if [ "$elapsed" -gt "$WAIT_TIMEOUT" ]; then
+          log WARN "Job '${jobName}' still running after ''${WAIT_TIMEOUT}s. Giving up monitoring."
+          exit 75
         fi
       done
 
@@ -213,6 +221,7 @@ in
         large_blocks = true; # must-not-change after initial replication
         compressed = false;
         embedded_data = true;
+        send_properties = true;
       };
       replication = {
         protection = {

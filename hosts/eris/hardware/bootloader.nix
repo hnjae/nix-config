@@ -43,7 +43,6 @@
     };
 
     kernelParams = [
-      "nohibernate"
     ];
   };
 
