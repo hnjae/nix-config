@@ -11,6 +11,12 @@
 }:
 let
   inherit (flake-parts-lib) importApply;
+  flakeArgs = {
+    localFlake = self;
+    inherit flake-parts-lib;
+    inherit importApply;
+    inherit inputs;
+  };
 in
 {
   flake.nixosModules.base-nixos = {
@@ -44,11 +50,13 @@ in
 
         }
       )
-      ./config
+
+      (importApply ./config flakeArgs)
       ./core
       ./non-declarative
       ./packages
       ./role
+      ./services
 
       (importApply ./with-import-apply/build-farms {
         localFlake = self;
@@ -56,15 +64,6 @@ in
       })
       (importApply ./with-import-apply/deploy-account.nix { localFlake = self; })
       (importApply ./with-import-apply/home-manager.nix { localFlake = self; })
-      (importApply ./with-import-apply/nix-registry.nix {
-        inherit inputs;
-        localFlake = self;
-      })
-      (importApply ./with-import-apply/nixpkgs.nix {
-        inherit inputs;
-        localFlake = self;
-      })
-      (importApply ./with-import-apply/users.nix { localFlake = self; })
 
       self.nixosModules.nix-gc-system-generations
       self.nixosModules.nix-store-gc

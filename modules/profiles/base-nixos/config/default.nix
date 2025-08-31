@@ -1,3 +1,4 @@
+flakeArgs@{ importApply, ... }:
 {
   imports = [
     ./chrony.nix
@@ -8,7 +9,6 @@
     ./locale.nix
     ./lofree-keyboard-fix.nix
     ./login-defs.nix
-    ./nix
     ./polkit.nix
     ./samba.nix
     ./sops.nix
@@ -17,5 +17,8 @@
     ./time.nix
     ./tmpfiles.nix
     ./zram.nix
+    (importApply ./users.nix flakeArgs)
+    (importApply ./nix.nix flakeArgs)
+    (importApply ./nixpkgs.nix flakeArgs)
   ];
 }
