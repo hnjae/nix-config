@@ -250,9 +250,9 @@ _drybuild-nixoses: update-local-repo
         --target-host "deploy@${1}" \
         --sudo
 
-deploy-horus: update-local-repo
+deploy-eris: update-local-repo
     nixos-rebuild switch \
-        --flake ".#horus" \
+        --flake ".#eris" \
         --target-host "deploy@192.168.0.200" \
         --sudo
 

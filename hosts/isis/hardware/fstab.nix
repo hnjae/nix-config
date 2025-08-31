@@ -82,11 +82,11 @@
 
   systemd.automounts = [
     {
-      where = "/run/media/windows";
+      where = "/media/windows";
       wantedBy = [ "multi-user.target" ]; # runlevel4
     }
     {
-      where = "/run/media/music";
+      where = "/media/music";
       wantedBy = [ "multi-user.target" ];
     }
   ];
@@ -95,7 +95,7 @@
     {
       what = "/dev/disk/by-partuuid/0d0c92ae-52da-422a-b8be-487a713d7aa3";
       type = "ntfs";
-      where = "/run/media/windows";
+      where = "/media/windows";
       mountConfig = {
         Options = builtins.concatStringsSep "," [
           # https://docs.kernel.org/filesystems/ntfs3.html

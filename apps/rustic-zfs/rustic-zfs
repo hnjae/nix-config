@@ -39,7 +39,7 @@ EOF
   exit 1
 }
 
-while getopts ":i:p:nkdfh" opt; do
+while getopts ":i:p:nkdh" opt; do
   case ${opt} in
   h)
     usage
@@ -178,6 +178,7 @@ run_backup() {
     "--tag=${id_}"
     # --no-require-git
     "--exclude-if-present=CACHEDIR.TAG"
+    "--group-by=label" # zfs dataset 명이 label 이 되는데, 이것만을 기준점으로 삼자.
     "--as-path=/"
     "--use-profile=${profile}"
     "--no-progress" # 가끔 zombie 프로세스가 되는 경우가 있는데 no-progress 하면 안 그런 듯.  <2025-07-27>
