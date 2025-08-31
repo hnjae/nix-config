@@ -6,28 +6,27 @@
 }:
 let
   isDesktop = config.base-nixos.role == "desktop";
-  isPodman = config.virtualisation.oci-containers.backend == "podman";
+  isPodman = config.virtualisation.podman.enable;
 in
 {
-  virtualisation.oci-containers.backend = lib.mkOverride 999 "podman";
+  virtualisation = {
+    podman = {
+      enable = lib.mkOverride 999 true;
+      dockerSocket.enable = lib.mkOverride 999 true;
+      dockerCompat = lib.mkOverride 999 isDesktop;
 
-  virtualisation.docker = {
-    enable = lib.mkOverride 999 (!isPodman);
-  };
-
-  virtualisation.podman = {
-    enable = lib.mkOverride 999 isPodman;
-    dockerSocket.enable = lib.mkOverride 999 true;
-    dockerCompat = lib.mkOverride 999 isDesktop;
-    # https://github.com/containers/common/blob/main/docs/containers.conf.5.md
-    defaultNetwork.settings = lib.mkOverride 999 {
-      dns_enabled = true;
-      ipv6_enabled = false;
+      # https://github.com/containers/common/blob/main/docs/containers.conf.5.md
+      defaultNetwork.settings = lib.mkOverride 999 {
+        dns_enabled = true;
+        ipv6_enabled = false;
+      };
     };
+    oci-containers.backend = lib.mkOverride 999 "podman";
+    docker.enable = lib.mkOverride 999 false;
   };
 
   environment.systemPackages = lib.flatten [
-    (lib.lists.optionals isPodman (
+    (lib.lists.optional isPodman (
       with pkgs;
       [
         podlet
@@ -35,10 +34,10 @@ in
         podman-tui
       ]
     ))
-    (lib.lists.optional ((!isPodman) || config.virtualisation.podman.dockerCompat) pkgs.docker-compose)
+    (lib.lists.optional (isPodman && config.virtualisation.podman.dockerCompat) pkgs.docker-compose)
   ];
 
-  virtualisation.containers.storage.settings.storage = lib.mkIf isPodman {
+  virtualisation.containers.storage.settings.storage = {
     graphroot = "/var/lib/containers/storage";
     runroot = "/run/containers/storage";
   };

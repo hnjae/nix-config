@@ -1,7 +1,6 @@
 flakeArgs@{ importApply, ... }:
 {
   imports = [
-    ./chrony.nix
     ./containers.nix
     ./davfs2.nix
     ./env.nix
@@ -20,5 +19,7 @@ flakeArgs@{ importApply, ... }:
     (importApply ./users.nix flakeArgs)
     (importApply ./nix.nix flakeArgs)
     (importApply ./nixpkgs.nix flakeArgs)
+    (importApply ./users-deploy.nix flakeArgs)
+    (importApply ./home-manager.nix flakeArgs)
   ];
 }

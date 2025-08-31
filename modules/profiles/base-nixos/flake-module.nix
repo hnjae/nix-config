@@ -53,17 +53,9 @@ in
 
       (importApply ./config flakeArgs)
       ./core
-      ./non-declarative
       ./packages
       ./role
       ./services
-
-      (importApply ./with-import-apply/build-farms {
-        localFlake = self;
-        inherit flake-parts-lib;
-      })
-      (importApply ./with-import-apply/deploy-account.nix { localFlake = self; })
-      (importApply ./with-import-apply/home-manager.nix { localFlake = self; })
 
       self.nixosModules.nix-gc-system-generations
       self.nixosModules.nix-store-gc
