@@ -30,21 +30,12 @@
     vulkan-tools
     libva-utils
   ];
+
   hardware.amdgpu = {
     initrd.enable = false;
-    # NOTE: amdvlk has issue with gnome libadwaita shadow rendering <NixOS 24.11>
-    amdvlk = {
-      enable = true;
-    };
-    opencl = {
-      enable = true;
-    };
+    amdvlk.enable = true;
+    opencl.enable = false;
   };
 
   nixpkgs.config.rocmSupport = false;
-  # environment.variables = {
-  #   ROC_ENABLE_PRE_VEGA = "1";
-  # };
-
-  # amdgpu.virtual_display=xxxx:xx:xx.x,y
 }

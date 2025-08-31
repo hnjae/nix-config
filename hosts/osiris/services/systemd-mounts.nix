@@ -1,4 +1,9 @@
+{ config, ... }:
 {
+  sops.secrets."eris-samba-credential" = {
+    sopsFile = ./secrets/eris-samba-credential;
+    format = "binary";
+  };
   systemd.automounts = [
     {
       where = "/media/music";
@@ -8,6 +13,10 @@
       where = "/media/vault";
       wantedBy = [ "multi-user.target" ];
     }
+    # {
+    #   where = "/media/tan";
+    #   wantedBy = [ "multi-user.target" ];
+    # }
   ];
 
   systemd.mounts = [
@@ -57,6 +66,31 @@
         ];
       };
     }
-
+    # {
+    #   what = "//tan/assets";
+    #   type = "smb";
+    #   where = "/media/tan";
+    #   after = [
+    #     "tailscaled.service"
+    #     "network-online.target"
+    #     "systemd-resolved.service"
+    #   ];
+    #   wants = [
+    #     "tailscaled.service"
+    #     "network-online.target"
+    #     "systemd-resolved.service"
+    #   ];
+    #   mountConfig = {
+    #     Options = builtins.concatStringsSep "," [
+    #       "credentials=${config.sops.secrets.eris-samba-credential.path}"
+    #       "uid=1000"
+    #       "gid=100"
+    #       "file_mode=0600"
+    #       "dir_mode=0700"
+    #       "cache=strict"
+    #       "noacl"
+    #     ];
+    #   };
+    # }
   ];
 }
