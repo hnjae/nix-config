@@ -55,7 +55,15 @@ in
       # true: start systemd user unit at boot, not login
       linger = false;
 
-      packages = (localFlake.packageSets.dev pkgs);
+      packages = lib.flatten [
+        (lib.lists.optionals (cfg.role == "desktop") (concatLists [
+          (localFlake.packageSets.dev pkgs)
+          (localFlake.packageSets.desktop pkgs)
+        ]))
+
+        (localFlake.packageSets.user pkgs)
+        (localFlake.packageSets.home pkgs)
+      ];
     };
 
     # your gpg-key should be as same as you user key

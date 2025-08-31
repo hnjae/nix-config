@@ -1,21 +1,49 @@
 flakeArgs@{
-  flake-parts-lib,
   inputs,
   ...
 }:
-let
-  inherit (flake-parts-lib) importApply;
-in
 {
   flake.homeManagerModules.base-home = {
     imports = [
-      ./.
+      (
+        {
+          lib,
+          ...
+        }:
+        let
+          moduleName = "base-home";
+        in
+        {
+          options.${moduleName} =
+            let
+              inherit (lib) mkOption types;
+            in
+            {
+              isDesktop = mkOption {
+                type = types.bool;
+                default = false;
+                description = "Is this a desktop system with GUI enabled?";
+              };
+              isDev = mkOption {
+                type = types.bool;
+                default = false;
+                description = "Should I install development tools?";
+              };
+              isHome = mkOption {
+                type = types.bool;
+                default = false;
+              };
+            };
+        }
+      )
+
+      ./config
+      ./modules
+      ./programs
+      ./services
       inputs.impermanence.nixosModules.home-manager.impermanence
       inputs.nix-flatpak.homeManagerModules.nix-flatpak
       inputs.nix-web-app.homeManagerModules.default
-
-      (importApply ./with-import-apply/inputs-packages { inherit inputs; })
-
       inputs.nix-index-database.homeModules.nix-index
       {
         programs.nix-index-database.comma.enable = true;
@@ -30,11 +58,6 @@ in
               config = {
                 inherit (pkgs.config) allowUnfree;
               };
-              overlays = [
-                (_: prev: {
-                  ghostty-tip = inputs.ghostty.packages.${prev.system}.default;
-                })
-              ];
             };
           };
         }
