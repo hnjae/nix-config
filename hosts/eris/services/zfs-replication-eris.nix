@@ -129,18 +129,18 @@ let
         sleep "$current_interval"
         elapsed=$((elapsed + current_interval))
 
-        # 점진적으로 폴링 간격 증가
-        if [ "$current_interval" -lt "$max_interval" ]; then
-          current_interval=$((current_interval + 4))
-        fi
-
         if [ "$elapsed" -gt "$WAIT_TIMEOUT" ]; then
           log WARN "Job '${jobName}' still running after ''${WAIT_TIMEOUT}s. Giving up monitoring."
           exit 75
         fi
+
+        # 점진적으로 폴링 간격 증가
+        if [ "$current_interval" -lt "$max_interval" ]; then
+          current_interval=$((current_interval + 4))
+        fi
       done
 
-      local halv=$((current_interval/2))
+      local halv=$(( (current_interval - 4) / 2 ))
       log INFO "Job '${jobName}' completed in $((elapsed - halv))±''${halv}s"
     }
 
@@ -159,6 +159,10 @@ let
       trap cleanup_lock EXIT INT TERM ERR
       acquire_lock "$LOCKFILE_1" fd_1
       acquire_lock "$LOCKFILE_2" fd_2
+
+      # Replication 직전에 snapshot pruning 함.
+      # log INFO "Sending wakeup signal to zrepl: 'eris-snap'"
+      # zrepl signal wakeup -- 'eris-snap'
 
       # Replication 직전에 snapshot 을 찍어, 최신의 snapshot 을 보냄.
       time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
@@ -221,7 +225,7 @@ in
         large_blocks = true; # must-not-change after initial replication
         compressed = false;
         embedded_data = true;
-        send_properties = true;
+        send_properties = false;
       };
       replication = {
         protection = {

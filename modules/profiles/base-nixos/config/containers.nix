@@ -6,15 +6,13 @@
 }:
 let
   isDesktop = config.base-nixos.role == "desktop";
-
-  isDocker = config.virtualisation.oci-containers.backend == "docker";
   isPodman = config.virtualisation.oci-containers.backend == "podman";
 in
 {
   virtualisation.oci-containers.backend = lib.mkOverride 999 "podman";
 
   virtualisation.docker = {
-    enable = lib.mkOverride 999 isDocker;
+    enable = lib.mkOverride 999 (!isPodman);
   };
 
   virtualisation.podman = {
@@ -23,7 +21,7 @@ in
     dockerCompat = lib.mkOverride 999 isDesktop;
     # https://github.com/containers/common/blob/main/docs/containers.conf.5.md
     defaultNetwork.settings = lib.mkOverride 999 {
-      dns_enabled = false;
+      dns_enabled = true;
       ipv6_enabled = false;
     };
   };
@@ -32,11 +30,12 @@ in
     (lib.lists.optionals isPodman (
       with pkgs;
       [
-        podman-compose
         podlet
+        podman-compose
+        podman-tui
       ]
     ))
-    (lib.lists.optional (isDocker || config.virtualisation.podman.dockerCompat) pkgs.docker-compose)
+    (lib.lists.optional ((!isPodman) || config.virtualisation.podman.dockerCompat) pkgs.docker-compose)
   ];
 
   virtualisation.containers.storage.settings.storage = lib.mkIf isPodman {
