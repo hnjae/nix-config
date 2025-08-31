@@ -24,6 +24,7 @@ in
         localFlake.shared.keys.ssh.home
       ];
       hashedPassword = "$y$j9T$s.YA/IM9krcOc4J..OIke1$s0tKPmYDPljrwee8fho0q5w6bMq1YhG9uKDk.O5S6U2";
+
     };
 
     users.users.hnjae = {
@@ -53,6 +54,8 @@ in
 
       # true: start systemd user unit at boot, not login
       linger = false;
+
+      packages = (localFlake.packageSets.dev pkgs);
     };
 
     # your gpg-key should be as same as you user key

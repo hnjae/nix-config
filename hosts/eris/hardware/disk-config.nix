@@ -34,8 +34,6 @@
     "d /home/hnjae/.local 0700 hnjae users -"
     "d /home/hnjae/.local/share 0700 hnjae users -"
     "d /home/hnjae/.local/share/containers 0700 hnjae users -"
-    "d /srv/storage/music 0700 hnjae users -"
-    ''f /srv/selfhost/readcache/CACHEDIR.TAG 0444 root root - "Signature: 8a477f597d28d172789f06886806bc55"''
   ];
 
   # 8 hexadecimal characters.

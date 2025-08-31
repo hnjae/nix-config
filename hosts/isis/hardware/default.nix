@@ -2,7 +2,6 @@
 {
   imports = [
     ./bootloader.nix
-    ./containers-dirver.nix
     ./cpu
     ./fstab.nix
     ./gpu.nix

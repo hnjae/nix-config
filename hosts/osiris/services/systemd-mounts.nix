@@ -20,7 +20,7 @@
         "network-online.target"
         "systemd-resolved.service"
       ];
-      requires = [
+      wants = [
         "tailscaled.service"
         "network-online.target"
         "systemd-resolved.service"
@@ -28,8 +28,8 @@
       mountConfig = {
         Options = builtins.concatStringsSep "," [
           "nfsvers=4"
-          "rsize=65536"
-          "wsize=65536"
+          "rsize=1048576"
+          "wsize=1048576"
         ];
       };
     }
@@ -42,7 +42,7 @@
         "network-online.target"
         "systemd-resolved.service"
       ];
-      requires = [
+      wants = [
         "tailscaled.service"
         "network-online.target"
         "systemd-resolved.service"
@@ -50,8 +50,10 @@
       mountConfig = {
         Options = builtins.concatStringsSep "," [
           "nfsvers=4"
-          "rsize=65536"
-          "wsize=65536"
+          # "rsize=65536"
+          # "wsize=65536"
+          "rsize=1048576"
+          "wsize=1048576"
         ];
       };
     }

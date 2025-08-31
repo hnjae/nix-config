@@ -2,7 +2,7 @@
   imports = [
     ./nameserver-encrypted.nix
     ./pipewire.nix
-    ./ssh-host-key.nix
+    ./ssh-host-key
     ./systemd.nix
   ];
 

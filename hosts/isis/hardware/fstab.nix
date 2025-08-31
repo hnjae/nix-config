@@ -5,7 +5,31 @@
 { config, lib, ... }:
 {
   boot.supportedFilesystems.zfs = lib.mkForce true;
+  virtualisation.docker.storageDriver = "zfs";
+  virtualisation.containers.storage.settings.storage.driver = "zfs";
 
+  systemd.targets.local-fs = {
+    after = [ "zfs-import.target" ]; # 기본: local-fs-pre.target
+    wants = [ "zfs-mount.service" ];
+  };
+  systemd.services.systemd-vconsole-setup.after = [ "local-fs.target" ];
+
+  home-manager.sharedModules = [
+    {
+      /*
+        NOTE: <2024-11-28>
+          zfs is not supported in rooltless podman
+          https://github.com/containers/storage/blob/main/docs/containers-storage.conf.5.md
+      */
+      xdg.configFile."containers/storage.conf" = {
+        # podman config
+        text = ''
+          [storage]
+          driver = "overlay"
+        '';
+      };
+    }
+  ];
   boot.tmp.useTmpfs = false; # for large build
   fileSystems = {
     "/" = {
@@ -83,28 +107,38 @@
       };
     }
     {
-      what = "//horus/music";
-      type = "smb3";
-      where = "/run/media/music";
+      # what = "//eris/music";
+      what = "eris:music";
+      type = "nfs";
+      where = "/media/music";
       after = [
         "tailscaled.service"
         "network-online.target"
         "systemd-resolved.service"
       ];
-      requires = [
+      wants = [
         "tailscaled.service"
         "network-online.target"
         "systemd-resolved.service"
       ];
       mountConfig = {
         Options = builtins.concatStringsSep "," [
-          "credentials=${config.sops.secrets.horus-samba-credential.path}"
-          "uid=1000"
-          "gid=100"
-          "file_mode=0600"
-          "dir_mode=0700"
-          "cache=strict"
-          "noacl"
+          "vers=4"
+          "nfsvers=4"
+          # "rsize=16384"
+          # "wsize=16384"
+          # "rsize=1048576"
+          # "wsize=1048576"
+          "rsize=524288"
+          "wsize=524288"
+          "ac" # cache
+          # "credentials=${config.sops.secrets.horus-samba-credential.path}"
+          # "uid=1000"
+          # "gid=100"
+          # "file_mode=0600"
+          # "dir_mode=0700"
+          # "cache=strict"
+          # "noacl"
         ];
       };
     }
