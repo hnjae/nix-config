@@ -504,6 +504,24 @@
               #     xattr = "sa";
             };
           };
+
+          ################
+          # readeck      #
+          ################
+
+          "safe/apps/seafile" = {
+            type = "zfs_fs";
+            options = { };
+          };
+
+          "safe/apps/seafile/mysql" = {
+            type = "zfs_fs";
+            options = {
+              compression = "lz4";
+              recordsize = "16K";
+              primarycache = "metadata";
+            };
+          };
         };
       };
     };
