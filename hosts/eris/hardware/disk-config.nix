@@ -520,6 +520,12 @@
               primarycache = "metadata";
             };
           };
+
+          "safe/apps/seafile/seafile" = {
+            type = "zfs_fs";
+            options = {
+            };
+          };
         };
       };
     };
