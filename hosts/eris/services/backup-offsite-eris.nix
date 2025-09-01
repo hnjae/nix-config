@@ -137,6 +137,8 @@ let
 
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/freshrss/postgresql eris/safe/apps/freshrss/freshrss
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/readeck/postgresql eris/safe/apps/readeck/readeck
+
+        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/iason/config eris/safe/apps/iason/resources
       }
 
       main

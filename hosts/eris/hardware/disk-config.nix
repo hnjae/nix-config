@@ -526,6 +526,32 @@
             options = {
             };
           };
+
+          ################
+          # iason        #
+          ################
+
+          "safe/apps/iason" = {
+            type = "zfs_fs";
+            options = {
+            };
+          };
+
+          "safe/apps/iason/config" = {
+            type = "zfs_fs";
+            options = {
+              recordsize = "16K";
+              compression = "lz4";
+            };
+          };
+
+          "safe/apps/resources" = {
+            type = "zfs_fs";
+            options = {
+              recordsize = "1M";
+              compression = "zstd-6";
+            };
+          };
         };
       };
     };
