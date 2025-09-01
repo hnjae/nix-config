@@ -1,0 +1,6 @@
+{
+  boot.kernel.sysctl = {
+    # https://wiki.archlinux.org/title/Power_management#Disabling_NMI_watchdog
+    "kernel.nmi_watchdog" = 0;
+  };
+}

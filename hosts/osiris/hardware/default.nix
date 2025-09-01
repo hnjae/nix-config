@@ -11,6 +11,7 @@
     ./bootloader.nix
     ./disk-config.nix
     ./gpu.nix
+    ./power.nix
   ];
 
   ############

@@ -504,7 +504,7 @@
           };
 
           ################
-          # readeck      #
+          # seafile      #
           ################
 
           "safe/apps/seafile" = {

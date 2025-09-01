@@ -60,8 +60,6 @@
         "--device=/dev/kfd"
         "--device=/dev/dri"
       ];
-
     };
-
   };
 }

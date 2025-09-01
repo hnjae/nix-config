@@ -1,7 +1,7 @@
 {
   imports = [
     ./wol.nix
-    ./power.nix
+    ./systemd.nix
   ];
 
   programs.steam = {

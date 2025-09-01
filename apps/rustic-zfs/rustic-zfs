@@ -172,7 +172,6 @@ run_backup() {
   local rustic_backup_args=(
     backup
     --ignore-devid # NOTE: devid 는 ZFS snapshot 에 따라 다름.
-    --long
     --one-file-system
     --git-ignore
     "--tag=${id_}"
@@ -182,6 +181,8 @@ run_backup() {
     "--as-path=/"
     "--use-profile=${profile}"
     "--no-progress" # 가끔 zombie 프로세스가 되는 경우가 있는데 no-progress 하면 안 그런 듯.  <2025-07-27>
+    "--no-scan"     # progress 안보이니 scan 을 할 필요가 없음.
+    "--json"        # 출력 결과 json 으로 (`--long` 대신 사용)
   )
 
   if [ "$ignore_file" != "" ]; then
@@ -190,10 +191,6 @@ run_backup() {
 
   if "$dry_run"; then
     rustic_backup_args+=("--dry-run")
-  fi
-
-  if [ "$TERM" = "dumb" ]; then
-    rustic_backup_args+=("--no-scan")
   fi
 
   rustic_backup_args+=(
