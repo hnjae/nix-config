@@ -192,8 +192,8 @@ in
           # systemd.resourced (cgroup)
           CPUWeight = "idle";
           CPUQuota = "400%";
-          MemoryHigh = "16G";
-          MemoryMax = "20G";
+          MemoryHigh = "10G";
+          MemoryMax = "12G";
           IOWeight = "10"; # default 100
 
           ExecStart = [ "${script}/bin/${serviceName}" ];
