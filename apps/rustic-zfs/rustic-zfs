@@ -14,16 +14,24 @@ declare -A dataset_mountpoint
 snapshot_name="_rustic_${id_}"
 profile=""
 ignore_file=""
+glob_file=""
+iglob_file=""
 dry_run=false
 keep=false
 debug=false
 
 usage() {
   cat <<EOF
-Usage: $(basename -- "$0") [-n] [-f] [-d] [-k] [-i ignore_file] -p <profile> [--] <dataset>...
+Usage: $(basename -- "$0") [-n] [-f] [-d] [-k] [-g glob-file] [-i iglob-file] [-c ignore-file] -p <profile> [--] <dataset>...
        $(basename -- "$0") -h
 
 ZFS dataset backup tool using rustic
+
+File path with glob patterns to exclude/include files
+File path with ignored-case glob patterns to exclude/include files
+
+File path with glob patterns to exclude/include backup files
+File path with glob patterns that ignore latin-case to exclude/include backup files
 
 Arguments:
   <dataset>         ZFS dataset to backup (e.g., pool/data)
@@ -32,14 +40,16 @@ Options:
   -n                Perform a dry run without making changes in rustic repository
   -d                Print debug information
   -k                Keep the ZFS snapshot after backup (Will use \`rustic_\` prefix)
-  -i <ignore_file>  Custom ignore file path (Uses .gitignore style)
+  -c <ignore-file>  Custom ignore-file path (Uses .gitignore-like style)
+  -g <glob-file>    File with glob patterns for including/excluding backup files
+  -i <iglob-bfile>  File with case-insensitive glob patterns for including/excluding backup files
   -p <profile>      Rustic profile name (without .toml extension)
   -h                Show this help message
 EOF
   exit 1
 }
 
-while getopts ":i:p:nkdh" opt; do
+while getopts ":c:i:g:p:nkdh" opt; do
   case ${opt} in
   h)
     usage
@@ -53,7 +63,13 @@ while getopts ":i:p:nkdh" opt; do
   d)
     debug=true
     ;;
+  g)
+    glob_file=$OPTARG
+    ;;
   i)
+    iglob_file=$OPTARG
+    ;;
+  c)
     ignore_file=$OPTARG
     ;;
   p)
@@ -182,11 +198,20 @@ run_backup() {
     "--use-profile=${profile}"
     "--no-progress" # 가끔 zombie 프로세스가 되는 경우가 있는데 no-progress 하면 안 그런 듯.  <2025-07-27>
     "--no-scan"     # progress 안보이니 scan 을 할 필요가 없음.
-    "--json"        # 출력 결과 json 으로 (`--long` 대신 사용)
+    "--long"
+    # "--json"        # 출력 결과 json 으로 (`--long` 대신 사용)
   )
 
   if [ "$ignore_file" != "" ]; then
     rustic_backup_args+=("--custom-ignorefile=${ignore_file}")
+  fi
+
+  if [ "$glob_file" != "" ]; then
+    rustic_backup_args+=("--glob-file=${ignore_file}")
+  fi
+
+  if [ "$iglob_file" != "" ]; then
+    rustic_backup_args+=("--iglob-file=${ignore_file}")
   fi
 
   if "$dry_run"; then

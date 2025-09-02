@@ -105,7 +105,7 @@ let
         rustic forget --use-profile='${PROFILE}' --log-level=info --no-progress
 
         # max-repack 805MiB 에서 갑자기 저속 걸림. 1.21 GiB 에서 timeout 발생 2025-07-25
-        rustic prune --use-profile='${PROFILE}' --log-level=info --no-progress --max-unused=5GiB --max-repack=100MiB
+        rustic prune --use-profile='${PROFILE}' --log-level=info --no-progress --max-unused=5GiB --max-repack=200MiB
 
         # TODO: run scrub (check --read-data) <2025-08-30>
       }

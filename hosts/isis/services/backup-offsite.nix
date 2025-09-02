@@ -88,7 +88,7 @@ let
           main() {
             check_cond
             backup_kde
-            rustic-zfs -k -i '${ignoreFile}' -p "$PROFILE" -- '${DATASET}'
+            rustic-zfs -k -c '${ignoreFile}' -p "$PROFILE" -- '${DATASET}'
           }
 
 
