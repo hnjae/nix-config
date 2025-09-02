@@ -2,114 +2,118 @@ let
   PROFILE = "/secrets/rustic-onedrive/rustic";
   serviceName = "rustic-maintenance-onedrive";
 in
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 let
-  script = pkgs.writeShellScript "${serviceName}" ''
-    set -Eeuo pipefail
+  script = pkgs.writeShellApplication {
+    name = serviceName;
 
-    PATH="${
-      lib.makeBinPath [
-        pkgs.util-linux # flock
-        # pkgs.coreutils # date
-        pkgs.rustic
-        pkgs.rclone # used in rustic
-        pkgs.inetutils # ping
-      ]
-    }"
-    readonly LOCK_TIMEOUT="3600"
-    readonly LOCKFILE="/var/lock/rustic-onedrive.lock" # eris pool lock
-    readonly PROFILE="${PROFILE}"
+    runtimeInputs = with pkgs; [
+      util-linux # flock
+      # coreutils # date
+      rustic
+      rclone # used in rustic
+      inetutils # ping
+    ];
 
-    log() { printf '[%s] %s\n' "$1" "$2" >&2; }
+    text = ''
+      set -Eeuo pipefail
 
-    release_lock() {
-      local lock="$1" fdvar="$2"
+      readonly LOCK_TIMEOUT="3600"
+      readonly LOCKFILE="/var/lock/rustic-onedrive.lock" # eris pool lock
+      readonly PROFILE="${PROFILE}"
 
-      local fd="''${!fdvar-}"
+      log() { printf '[%s] %s\n' "$1" "$2" >&2; }
 
-      if [ "$fd" != "" ]; then
-        flock -u "$fd" 2>/dev/null || true
-        log INFO "Released lock: {lock: '$lock', fd: '$fd'}"
+      release_lock() {
+        local lock="$1" fdvar="$2"
 
-        # Close file descriptor $fd ( `>&-` 구문에 변수 사용이 불가하므로 eval 사용)
-        eval "exec ''${fd}>&-" 2>/dev/null || true
+        local fd="''${!fdvar-}"
 
-        # lock 을 acquired 하지 않을 경우 삭제 안함.
-        [ -f "$lock" ] && rm -f "$lock" 2>/dev/null
-      fi
-    }
+        if [ "$fd" != "" ]; then
+          flock -u "$fd" 2>/dev/null || true
+          log INFO "Released lock: {lock: '$lock', fd: '$fd'}"
 
-    cleanup_lock() {
-      # 트랩 재진입 방지
-      trap - EXIT ERR INT TERM
+          # Close file descriptor $fd ( `>&-` 구문에 변수 사용이 불가하므로 eval 사용)
+          eval "exec ''${fd}>&-" 2>/dev/null || true
 
-      local rc=$?
+          # lock 을 acquired 하지 않을 경우 삭제 안함.
+          [ -f "$lock" ] && rm -f "$lock" 2>/dev/null
+        fi
+      }
 
-      log INFO "Cleaning up locks"
-      release_lock "$LOCKFILE" fd
+      cleanup_lock() {
+        # 트랩 재진입 방지
+        trap - EXIT ERR INT TERM
 
-      log INFO "Script finished with exit code: $rc"
-      exit "$rc"
-    }
+        local rc=$?
 
-    acquire_lock() {
-      local lock="$1" fdvar="$2"
+        log INFO "Cleaning up locks"
+        release_lock "$LOCKFILE" fd
 
-      if ! exec {fd}>"$lock"; then
-        log ERROR "Cannot create lock file: $lock"
-        exit 1
-      fi
+        log INFO "Script finished with exit code: $rc"
+        exit "$rc"
+      }
 
-      log INFO "Acquiring lock: '$lock' (timeout: ''${LOCK_TIMEOUT}s)"
-      if ! flock -w "$LOCK_TIMEOUT" "$fd"; then
-        log ERROR "Lock not acquired for '$lock' within ''${LOCK_TIMEOUT}s"
-        exit 75 # EX_TEMPFAIL (Temporaryfailure,  indicating something that is not really an error.)
-      fi
-      log INFO "Lock acquired: {lock: '$lock', fd: '$fd'}"
+      acquire_lock() {
+        local lock="$1" fdvar="$2"
 
-      # 호출자에게 FD 번호를 넘겨줌
-      printf -v "$fdvar" '%s' "$fd"
-    }
+        if ! exec {fd}>"$lock"; then
+          log ERROR "Cannot create lock file: $lock"
+          exit 1
+        fi
 
-    check_cond() {
-      # if [ "''${EUID:-$UID}" != 0 ]; then
-      #   log ERROR "This script must be run as root"
-      #   exit 1
-      # fi
+        log INFO "Acquiring lock: '$lock' (timeout: ''${LOCK_TIMEOUT}s)"
+        if ! flock -w "$LOCK_TIMEOUT" "$fd"; then
+          log ERROR "Lock not acquired for '$lock' within ''${LOCK_TIMEOUT}s"
+          exit 75 # EX_TEMPFAIL (Temporaryfailure,  indicating something that is not really an error.)
+        fi
+        log INFO "Lock acquired: {lock: '$lock', fd: '$fd'}"
 
-      if [ ! -f "$PROFILE.toml" ]; then
-        log ERROR "$PROFILE.toml does not exists"
-        exit 1
-      fi
+        # 호출자에게 FD 번호를 넘겨줌
+        printf -v "$fdvar" '%s' "$fd"
+      }
 
-      if ! ping -c 1 -W 5 1.1.1.1 >/dev/null 2>&1; then
-        log INFO "No Internet connection"
-        exit 1 # eris 는 항상 인터넷에 연결되어 있어야 함.
-      fi
+      check_cond() {
+        # if [ "''${EUID:-$UID}" != 0 ]; then
+        #   log ERROR "This script must be run as root"
+        #   exit 1
+        # fi
 
-      if ! ping -c 1 -W 5 'onedrive.live.com' >/dev/null 2>&1; then
-        log WARN "Cannot connect to 'onedrive.live.com'. Skipping..."
-        # onedrive 쪽 이슈
-        exit 75 # EX_TEMPFAIL (Temporaryfailure,  indicating something that is not really an error.)
-      fi
-    }
+        if [ ! -f "$PROFILE.toml" ]; then
+          log ERROR "$PROFILE.toml does not exists"
+          exit 1
+        fi
 
-    main() {
-      check_cond
+        if ! ping -c 1 -W 5 1.1.1.1 >/dev/null 2>&1; then
+          log INFO "No Internet connection"
+          exit 1 # eris 는 항상 인터넷에 연결되어 있어야 함.
+        fi
 
-      trap cleanup_lock EXIT INT TERM ERR
-      acquire_lock "$LOCKFILE" fd
+        if ! ping -c 1 -W 5 'onedrive.live.com' >/dev/null 2>&1; then
+          log WARN "Cannot connect to 'onedrive.live.com'. Skipping..."
+          # onedrive 쪽 이슈
+          exit 75 # EX_TEMPFAIL (Temporaryfailure,  indicating something that is not really an error.)
+        fi
+      }
 
-      rustic forget --use-profile='${PROFILE}' --log-level=info --no-progress
+      main() {
+        check_cond
 
-      # max-repack 805MiB 에서 갑자기 저속 걸림. 1.21 GiB 에서 timeout 발생 2025-07-25
-      rustic prune --use-profile='${PROFILE}' --log-level=info --no-progress --max-unused=100MiB --max-repack=500MiB
+        trap cleanup_lock EXIT INT TERM ERR
+        acquire_lock "$LOCKFILE" fd
 
-      # TODO: run scrub (check --read-data) <2025-08-30>
-    }
+        rustic forget --use-profile='${PROFILE}' --log-level=info --no-progress
 
-    main
-  '';
+        # max-repack 805MiB 에서 갑자기 저속 걸림. 1.21 GiB 에서 timeout 발생 2025-07-25
+        rustic prune --use-profile='${PROFILE}' --log-level=info --no-progress --max-unused=5GiB --max-repack=100MiB
+
+        # TODO: run scrub (check --read-data) <2025-08-30>
+      }
+
+      main
+
+    '';
+  };
 in
 {
 
@@ -158,9 +162,14 @@ in
           # PrivateDevices = true;
           # RestrictSUIDSGID = true;
 
-          IOSchedulingClass = "idle";
           CPUSchedulingPolicy = "idle";
-          ExecStart = script;
+
+          # systemd.resourced (cgroup)
+          CPUWeight = "idle";
+          CPUQuota = "400%";
+          MemoryHigh = "10G";
+          MemoryMax = "12G";
+          ExecStart = "${script}/bin/${serviceName}";
         };
       };
     };

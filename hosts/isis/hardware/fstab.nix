@@ -74,8 +74,8 @@
   boot.supportedFilesystems.ntfs = true;
 
   sops.secrets = {
-    "horus-samba-credential" = {
-      sopsFile = ./secrets/horus-samba-credential;
+    "eris-samba-credential" = {
+      sopsFile = ./secrets/eris-samba-credential;
       format = "binary";
     };
   };

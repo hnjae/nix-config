@@ -39,7 +39,7 @@ in
 
     # https://linrunner.de/tlp/settings/processor.html
     # run `tlp-stat -p` to determine availability on your hardware
-    CPU_SCALING_GOVERNOR_ON_AC = cpuScalingGovernor.performance;
+    CPU_SCALING_GOVERNOR_ON_AC = cpuScalingGovernor.schedutil;
     CPU_SCALING_GOVERNOR_ON_BAT = cpuScalingGovernor.schedutil;
 
     # PLATFORM_PROFILE_ON_AC = "performance";
