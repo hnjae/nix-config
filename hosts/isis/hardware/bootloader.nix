@@ -32,6 +32,8 @@ in
       # > Bus 002 Device 002: ID 0bda:8156 Realtek Semiconductor Corp. USB 10/100/1G/2.5G LAN
       "usbcore.autosuspend=-1"
       "usbcore.quirks=0bda:8156:k"
+
+      "zswap.enabled=1"
     ];
   };
 

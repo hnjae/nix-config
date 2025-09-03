@@ -15,7 +15,6 @@ flakeArgs@{ importApply, ... }:
     ./systemd.nix
     ./time.nix
     ./tmpfiles.nix
-    ./zram.nix
     (importApply ./users.nix flakeArgs)
     (importApply ./nix.nix flakeArgs)
     (importApply ./nixpkgs.nix flakeArgs)

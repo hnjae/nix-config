@@ -43,6 +43,7 @@
     };
 
     kernelParams = [
+      "zswap.enabled=1"
     ];
   };
 

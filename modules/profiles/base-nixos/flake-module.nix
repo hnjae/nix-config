@@ -59,7 +59,6 @@ in
 
       self.nixosModules.nix-gc-system-generations
       self.nixosModules.nix-store-gc
-      self.nixosModules.oci-container-auto-update
       inputs.home-manager.nixosModules.home-manager
       inputs.sops-nix.nixosModules.sops
 
