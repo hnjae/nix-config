@@ -44,6 +44,8 @@
 
     kernelParams = [
       "zswap.enabled=1"
+      # "pcie_aspm=off" # 일시적
+      "amdgpu.dc=0" # fix amdgpu - flip_done timed out <https://forum.manjaro.org/t/system-freeze-amdgpu-flip-done-timed-out-after-switch-to-kernel-6-12/176608> (Kernel 6.12)
     ];
   };
 
