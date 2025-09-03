@@ -102,10 +102,19 @@ let
         trap cleanup_lock EXIT INT TERM ERR
         acquire_lock "$LOCKFILE" fd
 
-        rustic forget --use-profile='${PROFILE}' --log-level=info --no-progress
+        rustic forget --use-profile='${PROFILE}' --log-level=info --no-progress \
+          --group-by label \
+          --keep-last 3 \
+          --keep-within-minutely 1h \
+          --keep-within-hourly 1d \
+          --keep-within-daily 7d \
+          --keep-within-weekly 30d
+
 
         # max-repack 805MiB 에서 갑자기 저속 걸림. 1.21 GiB 에서 timeout 발생 2025-07-25
-        rustic prune --use-profile='${PROFILE}' --log-level=info --no-progress --max-unused=5GiB --max-repack=200MiB
+        rustic prune --use-profile='${PROFILE}' --log-level=info --no-progress \
+          --max-unused='1%' \
+          --max-repack=200MiB
 
         # TODO: run scrub (check --read-data) <2025-08-30>
       }

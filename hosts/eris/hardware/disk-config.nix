@@ -521,9 +521,11 @@
             };
           };
 
-          "safe/apps/seafile/seafile" = {
+          # shared directory among seafile-related services (akin `/opt/seafile-data` in examples)
+          "safe/apps/seafile/data" = {
             type = "zfs_fs";
             options = {
+              compression = "zstd";
             };
           };
 

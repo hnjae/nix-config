@@ -19,6 +19,7 @@ let
       util-linux # flock
       coreutils # date
       inetutils # ping
+      podman
       self.packages.${pkgs.system}.rustic-zfs
     ];
 
@@ -139,6 +140,11 @@ let
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/readeck/postgresql eris/safe/apps/readeck/readeck
 
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/iason/config eris/safe/apps/iason/resources
+
+        # GC seafile before backup
+        if podman container exists -- 'seafile-app'; then
+          podman exec -- 'seafile-app' '/opt/seafile/seafile-server-latest/seaf-gc.sh'
+        fi
       }
 
       main
