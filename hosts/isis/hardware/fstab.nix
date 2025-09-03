@@ -13,7 +13,10 @@
     after = [ "zfs-import.target" ]; # 기본: local-fs-pre.target
     wants = [ "zfs-mount.service" ];
   };
-  systemd.services.systemd-vconsole-setup.after = [ "local-fs.target" ];
+  systemd.services.systemd-vconsole-setup = {
+    after = [ "local-fs.target" ];
+    wants = [ "local-fs.target" ];
+  };
 
   # run `head -c4 /dev/urandom | od -A none -t x4`
   networking.hostId = "e177869e"; # for ZFS. hexadecimal characters.
