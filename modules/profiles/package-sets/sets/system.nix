@@ -1,6 +1,6 @@
 _: pkgs: with pkgs; [
   # Basic features
-  coreutil # cp/mv/chown ...
+  coreutils # cp/mv/chown ...
   psmisc # killall
   bc # bc
   iputils # ping

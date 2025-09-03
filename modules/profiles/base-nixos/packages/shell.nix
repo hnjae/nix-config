@@ -117,7 +117,7 @@
   };
 
   programs.bash = {
-    blesh.enable = true;
+    blesh.enable = false;
   };
 
   environment.systemPackages = [

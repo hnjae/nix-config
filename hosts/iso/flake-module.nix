@@ -31,7 +31,7 @@
         }
       )
       "${self}/modules/profiles/base-nixos/core/keyboard.nix"
-      "${self}/modules/profiles/base-nixos/packages"
+      # "${self}/modules/profiles/base-nixos/packages"
       (
         { lib, pkgs, ... }:
         {
@@ -46,7 +46,6 @@
             defaultUserShell = pkgs.zsh;
 
             users.root = {
-              useDefaultShell = true;
               openssh.authorizedKeys.keys = [
                 self.shared.keys.ssh.home
               ];
@@ -54,7 +53,6 @@
             };
 
             users.nixos = {
-              useDefaultShell = true;
               openssh.authorizedKeys.keys = [
                 self.shared.keys.ssh.home
               ];
@@ -63,18 +61,26 @@
             };
           };
 
-          nixpkgs.overlays = [
-            self.overlays.default
-          ];
-
-          nixpkgs.config.allowUnfree = true;
-
           systemd.sleep.extraConfig = ''
             AllowSuspend=no
             AllowHibernation=no
             AllowSuspendThenHibernate=no
             AllowHybridSleep=no
           '';
+
+          nixpkgs = {
+            overlays = [
+              self.overlays.default
+              self.overlays.unstable
+            ];
+            config.allowUnfree = true;
+          };
+
+          environment.systemPackages = lib.flatten [
+            (self.packageSets.system pkgs)
+            (self.packageSets.user pkgs)
+            (self.packageSets.home pkgs)
+          ];
         }
       )
     ];
