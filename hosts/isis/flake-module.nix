@@ -11,24 +11,14 @@
         };
 
         networking.hostName = "isis";
-
-        rollback-zfs-root = {
-          enable = true;
-          rollbackDataset = "isis/local/root@blank";
-        };
-
-        persist = {
-          enable = true;
-          isDesktop = true;
-        };
       }
 
       self.nixosModules.base-nixos
       self.nixosModules.kde
-
-      inputs.lanzaboote.nixosModules.lanzaboote
       self.nixosModules.rollback-zfs-root
-      self.nixosModules.configure-impermanence
+
+      inputs.impermanence.nixosModules.impermanence
+      inputs.lanzaboote.nixosModules.lanzaboote
       inputs.quadlet-nix.nixosModules.quadlet
 
       ./config

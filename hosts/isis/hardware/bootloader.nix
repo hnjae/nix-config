@@ -4,13 +4,14 @@
   ...
 }:
 let
-  enableSecrueboot = true;
+  enableSecrueboot = false;
 in
 {
   boot = {
     lanzaboote = {
       enable = enableSecrueboot;
-      pkiBundle = "/persist/etc/secureboot";
+      # pkiBundle = "/persist/etc/secureboot";
+      pkiBundle = "/var/lib/sbctl";
       settings.console-mode = "keep"; # use vendor's firmware's default
     };
     loader = {

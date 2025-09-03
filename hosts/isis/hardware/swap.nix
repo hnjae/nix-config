@@ -9,7 +9,7 @@ in
       device = swapDevice;
       priority = 1;
       # discardPolicy = "once"; # whole swapspace is discarded
-      discardPolicy = "pages";
+      discardPolicy = "pages"; # asynchronously discard freed swap pages
       options = [ "nofail" ];
       randomEncryption = false; # isis uses opal nvme
     }

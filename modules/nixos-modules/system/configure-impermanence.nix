@@ -127,7 +127,7 @@ in
           directory = "/var/lib/libvirt";
           mode = "0755";
         })
-        (lib.lists.optional (config.services.tailscale.enable) {
+        (lib.lists.optional (config.services.tailscale.enable && cfg.isRootNotZFS) {
           directory = "/var/lib/tailscale";
           mode = "0700";
         })

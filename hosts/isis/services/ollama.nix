@@ -61,5 +61,10 @@
         "--device=/dev/dri"
       ];
     };
+    serviceConfig = {
+      # Restart = "on-abnormal";
+      Restart = "no";
+      TimeoutStartSec = "120";
+    };
   };
 }

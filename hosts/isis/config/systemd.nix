@@ -22,4 +22,9 @@ _: {
   systemd.extraConfig = ''
     RuntimeWatchdogSec=off
   '';
+
+  # Extra config options for systemd-coredump. See coredump.conf(5) man page for available options.
+  systemd.coredump.extraConfig = ''
+    Compress=no
+  '';
 }
