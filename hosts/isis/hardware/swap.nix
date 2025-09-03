@@ -25,6 +25,5 @@ in
   boot.zfs.allowHibernation = true;
   boot.zfs.forceImportRoot = false;
 
-  boot.kernel.sysctl."vm.swappiness" = 80;
-
+  boot.kernel.sysctl."vm.swappiness" = 60;
 }

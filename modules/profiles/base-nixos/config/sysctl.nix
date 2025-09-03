@@ -8,8 +8,8 @@ in
   boot.kernel.sysctl = lib.attrsets.mergeAttrsList [
     {
       # kernel default: 3 (6.6)
-      "vm.page-cluster" = mkOverride 999 2;
-      "vm.swappiness" = mkOverride 999 1;
+      "vm.page-cluster" = mkOverride 999 1; # for nvme
+      "vm.swappiness" = mkOverride 999 60;
     }
     {
       # "vm.watermark_boost_factor" = 0;
