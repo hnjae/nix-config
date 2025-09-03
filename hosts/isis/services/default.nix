@@ -8,7 +8,6 @@ _: {
 
     # ./tabby.nix
     # ./shairport-sync.nix
-
     # ./backup-offsite.nix
   ];
 
@@ -20,27 +19,13 @@ _: {
     enable = true;
   };
 
-  services.zfs.autoScrub = {
-    enable = true;
-    pools = [ "isis" ];
+  services.zfs = {
+    trim.enable = true;
+    autoScrub = {
+      enable = true;
+      pools = [ "isis" ];
+    };
   };
 
-  # 아래 켰을때, /persist 에 링크하기
-  # services.fwupd.enable = true;
-
   virtualisation.waydroid.enable = false;
-
-  # services.resilio = {
-  #   enable = true;
-  #   enableWebUI = true;
-  # };
-  #
-  # environment.persistence."/persist" = {
-  #   directories = [
-  #     {
-  #       directory = "/var/lib/resilio-sync";
-  #       mode = "0700";
-  #     }
-  #   ];
-  # };
 }

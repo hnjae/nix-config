@@ -7,9 +7,7 @@ in
     {
       # https://access.redhat.com/ko/solutions/744483
       device = swapDevice;
-      priority = 1;
-      # discardPolicy = "once"; # whole swapspace is discarded
-      discardPolicy = "pages"; # asynchronously discard freed swap pages
+      discardPolicy = "pages";
       options = [ "nofail" ];
       randomEncryption = false; # isis uses opal nvme
     }
@@ -26,4 +24,7 @@ in
   security.protectKernelImage = lib.mkForce false;
   boot.zfs.allowHibernation = true;
   boot.zfs.forceImportRoot = false;
+
+  boot.kernel.sysctl."vm.swappiness" = 80;
+
 }

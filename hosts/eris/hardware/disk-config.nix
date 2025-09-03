@@ -110,8 +110,7 @@
                 type = "swap";
                 randomEncryption = true;
                 mountOptions = [ "nofail" ];
-                discardPolicy = "once";
-                priority = 1;
+                discardPolicy = "pages";
               };
             };
           };
@@ -159,8 +158,7 @@
                 type = "swap";
                 randomEncryption = true;
                 mountOptions = [ "nofail" ];
-                discardPolicy = "once";
-                priority = 1;
+                discardPolicy = "pages";
               };
             };
           };
