@@ -1,3 +1,4 @@
+# TODO: 파일 동기화 프로그램을 사용하므로, 경과 보고 지우자. <2025-09-04>
 # NOTE: <https://zrepl.github.io/configuration/jobs.html>
 {
   pkgs,
@@ -144,7 +145,7 @@ in
         wantedBy = [ "timers.target" ];
         timerConfig = {
           AccuracySec = "1m";
-          OnStartupSec = "16m";
+          OnStartupSec = "45m";
           OnUnitInactiveSec = "90m";
           Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
           WakeSystem = false;
