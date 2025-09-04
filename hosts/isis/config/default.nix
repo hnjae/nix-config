@@ -1,5 +1,6 @@
 {
   imports = [
+    ./packages.nix
     ./pipewire.nix
     ./ssh-host-key
     ./systemd.nix

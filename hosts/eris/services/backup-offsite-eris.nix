@@ -138,13 +138,13 @@ let
 
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/freshrss/postgresql eris/safe/apps/freshrss/freshrss
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/readeck/postgresql eris/safe/apps/readeck/readeck
-
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/iason/config eris/safe/apps/iason/resources
 
         # GC seafile before backup
         if podman container exists -- 'seafile-app'; then
           podman exec -- 'seafile-app' '/opt/seafile/seafile-server-latest/seaf-gc.sh'
         fi
+        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/seafile/data eris/safe/apps/seafile/mysql
       }
 
       main
@@ -152,6 +152,8 @@ let
   };
 in
 {
+  environment.defaultPackages = [ script ];
+
   systemd =
     let
       documentation = [
