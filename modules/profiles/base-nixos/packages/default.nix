@@ -1,3 +1,4 @@
+{ localFlake, ... }:
 {
   pkgs,
   config,
@@ -16,8 +17,8 @@
   environment.systemPackages = [
     config.boot.kernelPackages.cpupower
     config.boot.kernelPackages.x86_energy_perf_policy
-    pkgs.nixvim
-  ];
+  ]
+  ++ (localFlake.packageSets.user pkgs);
 
   # Set of default packages that aren't strictly necessary for a running system
   environment.defaultPackages = lib.flatten [

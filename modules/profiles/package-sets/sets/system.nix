@@ -19,4 +19,6 @@ _: pkgs: with pkgs; [
   # Misc
   rsbkb # crc32
   beep # Advanced PC speaker beeper
+
+  nixvim
 ]
