@@ -43,11 +43,6 @@ in
     # bluetooth
     hardware.bluetooth = {
       enable = mkProfileDefault true;
-      # settings = {
-      #   General = {
-      #     Experimental = true;
-      #   };
-      # };
     };
 
     # sound

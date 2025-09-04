@@ -3,7 +3,9 @@
   # TODO: set aspm to l1 or l0s <2025-08-30>
   boot.kernelParams = [
     "nohibernate"
-    "pcie_aspm.policy=powersupersave"
+    # "pcie_aspm=off" # 일시적
+    # "pcie_aspm.policy=powersupersave" # 이 옵션 Silconpower NVMe 에서 말썽.
+    "pcie_aspm.policy=powersave"
   ];
 
   boot.kernel.sysctl = {

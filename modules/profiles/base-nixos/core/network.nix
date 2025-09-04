@@ -24,11 +24,23 @@ in
     ]
   );
 
+  /*
+    NOTE:
+
+    captive-portal 관련 링크 들?
+
+    - <https://first.wifi.olleh.com/starbucks/index_en.html>
+    - <http://detectportal.firefox.com/>
+  */
+
+  # DoH not supported: <2024-08-20>
+  # https://github.com/systemd/systemd/issues/8639
   services.resolved = {
-    # DoH not supported: <2024-08-20>
-    # https://github.com/systemd/systemd/issues/8639
     enable = mkOverride 999 (cfg.hostType == "baremetal");
-    dnsovertls = mkOverride 999 "true";
+    # dnsovertls = mkOverride 999 "true";
+
+    # NOTE: captive-portal 관련 테스트 <2025-09-04>
+    dnsovertls = mkOverride 999 "opportunistic"; # "true" 대신 "opportunistic" 사용
     dnssec = mkOverride 999 "allow-downgrade";
     fallbackDns = mkOverride 999 [
       # NOTE: nameserver 가 없고 fallbackDns 가 없으면 resolve 되지 않음.
