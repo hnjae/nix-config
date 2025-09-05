@@ -151,21 +151,55 @@
               compression = "zstd";
             };
           };
-          # Optional
-          "local/containers" = {
+
+          ############
+          # Optional #
+          ############
+
+          "local/user" = {
             type = "zfs_fs";
             options = {
-              # NOTE: podman volume 은 ZFS 로 관리되지 않음. <2025-08-04>
+              mountpoint = "none";
+            };
+          };
+
+          "local/varlib" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+            };
+          };
+
+          "safe/varlib" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+            };
+          };
+
+          "local/varlib/tailscale" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/tailscale";
+            };
+          };
+
+          # NOTE: podman volume 은 ZFS 로 관리되지 않음. <2025-08-04>
+          "local/varlib/containers" = {
+            type = "zfs_fs";
+            options = {
               mountpoint = "/var/lib/containers";
             };
           };
-          "safe/libvirt" = {
+
+          "safe/varlib/libvirt" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/libvirt";
               recordsize = "16K";
             };
           };
+
           "safe/userhome" = {
             type = "zfs_fs";
             options = {

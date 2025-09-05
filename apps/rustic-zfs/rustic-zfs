@@ -207,11 +207,11 @@ run_backup() {
   fi
 
   if [ "$glob_file" != "" ]; then
-    rustic_backup_args+=("--glob-file=${ignore_file}")
+    rustic_backup_args+=("--glob-file=${glob_file}")
   fi
 
   if [ "$iglob_file" != "" ]; then
-    rustic_backup_args+=("--iglob-file=${ignore_file}")
+    rustic_backup_args+=("--iglob-file=${iglob_file}")
   fi
 
   if "$dry_run"; then
@@ -225,7 +225,11 @@ run_backup() {
     "$snapshot_dir"
   )
 
-  [ -d "$snapshot_dir" ] && rustic "${rustic_backup_args[@]}" </dev/null
+  if [ -d "$snapshot_dir" ]; then
+    rustic "${rustic_backup_args[@]}" </dev/null
+  else
+    echo "[ERROR] Snapshot directory '${snapshot_dir}' does not exists" >&2
+  fi
 
   # Cleanup
   "$zfs_cmd" release "$ZFS_HOLD_TAG" -- "$snapshot" &&

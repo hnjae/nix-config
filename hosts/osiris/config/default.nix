@@ -1,7 +1,8 @@
 {
   imports = [
-    ./wol.nix
+    ./seafile.nix
     ./systemd.nix
+    ./wol.nix
   ];
 
   programs.steam = {
