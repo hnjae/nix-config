@@ -463,8 +463,8 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1756971886,
-        "narHash": "sha256-egFuk6FhdzVBU9tvqUvf+J5Jt8gfyrLNFDYLWWxtA9g=",
+        "lastModified": 1757047567,
+        "narHash": "sha256-Ns6uwqTA30fgtUv9301R+C2kNtYcZyjZSfuFTNGGkGo=",
         "path": "/home/hnjae/Projects/py-utils",
         "type": "path"
       },

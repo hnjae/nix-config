@@ -123,7 +123,6 @@
   environment.systemPackages = [
     pkgs.bashInteractive
     pkgs.dash
-    pkgs.fzf
 
     # pkgs.fish
     # (lib.hiPrio (

@@ -53,7 +53,6 @@ in
 
       (importApply ./config flakeArgs)
       ./core
-      (importApply ./packages flakeArgs)
       ./role
       ./services
 

@@ -9,7 +9,6 @@
 let
   cfg = config.base-nixos;
   inherit (lib.lists) optional;
-  inherit (builtins) concatLists;
 in
 {
   security.sudo.wheelNeedsPassword = lib.mkOverride 999 false;
@@ -32,13 +31,15 @@ in
       (lib.lists.optional (
         config.services.locate.enable && (lib.hasPrefix "plocate" config.services.locate.package.name)
       ) "plocate")
-      (lib.lists.optionals (cfg.role == "desktop") (concatLists [
-        # NOTE: docker/podman 을 유저가 sudo 없이 실행하는건 bad practice 임
-        (optional config.networking.networkmanager.enable "networkmanager")
-        (optional config.hardware.i2c.enable "i2c")
-        (optional config.programs.adb.enable "adbusers")
-        (optional config.virtualisation.libvirtd.enable "libvirtd")
-      ]))
+      (lib.lists.optionals (cfg.role == "desktop") (
+        builtins.concatLists [
+          # NOTE: docker/podman 을 유저가 sudo 없이 실행하는건 bad practice 임
+          (optional config.networking.networkmanager.enable "networkmanager")
+          (optional config.hardware.i2c.enable "i2c")
+          (optional config.programs.adb.enable "adbusers")
+          (optional config.virtualisation.libvirtd.enable "libvirtd")
+        ]
+      ))
     ];
     uid = 1000;
     shell = pkgs.zsh;
@@ -52,16 +53,6 @@ in
 
     # true: start systemd user unit at boot, not login
     linger = false;
-
-    packages = lib.flatten [
-      (lib.lists.optionals (cfg.role == "desktop") (concatLists [
-        (localFlake.packageSets.dev pkgs)
-        (localFlake.packageSets.desktop pkgs)
-      ]))
-
-      (localFlake.packageSets.user pkgs)
-      (localFlake.packageSets.home pkgs)
-    ];
   };
 
   # your gpg-key should be as same as you user key
