@@ -30,7 +30,7 @@ _: pkgs: with pkgs; [
   sysstat # iostat
   file
 
-  nixvim
+  my.nixvim
 
   nh # nix CLI wrapper
   # nix-shell -c, nix-index wrapper

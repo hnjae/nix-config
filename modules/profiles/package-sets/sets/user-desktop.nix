@@ -28,7 +28,6 @@ lib.flatten [
     libvmaf
     libwebp
     mozjpeg
-    # cavif-rs
     imagemagick
 
     pandoc

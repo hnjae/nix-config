@@ -330,24 +330,5 @@
               };
             };
           };
-
-        flake = {
-          overlays.default =
-            _: prev:
-            (
-              if (builtins.hasAttr prev.stdenv.system self.packages) then
-                (builtins.mapAttrs (_: drv: drv)
-                  # 다음 방법을 사용하면 packages 를 선언하는 `pkgs` 는 `allowUnfree` 가 되어야한다.
-                  # 다만, overlays 단에서 unfree 를 필터링함으로, 의도하지 않은 unfree 패키지가 설치될 일은 없을것으로 기대된다.
-                  (
-                    prev.lib.filterAttrs (
-                      _: drv: (prev.config.allowUnfree || (!drv.meta.unfree))
-                    ) self.packages.${prev.stdenv.system}
-                  )
-                )
-              else
-                { }
-            );
-        };
       };
 }

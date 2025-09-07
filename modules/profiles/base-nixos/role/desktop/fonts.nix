@@ -30,17 +30,14 @@
     };
 
     packages = lib.flatten [
-      (lib.lists.optionals pkgs.config.allowUnfree (
-        with pkgs;
-        [
-          fonts-kopub-world
-        ]
-      ))
+      (lib.lists.optionals pkgs.config.allowUnfree [
+        pkgs.my.fonts-kopub-world
+      ])
 
       (with pkgs; [
         pretendard
         pretendard-jp
-        fonts-freesentation
+        my.fonts-freesentation
 
         # noto-fonts
         noto-fonts-extra
@@ -53,16 +50,16 @@
 
         # chinese character
         jigmo # 일본 자형 Sans-Serif (hanazono successor)
-        fonts-plangothic # ofl
+        my.fonts-plangothic # ofl
 
         # others
-        fonts-ridibatang # ofl
+        my.fonts-ridibatang # ofl
         d2coding
 
         # https://wiki.archlinux.org/title/Metric-compatible_fonts
         liberation_ttf # replace: Times New Roman, Arial, and Courier New / fontconfig 의 default system-wide config 에 의해 자동 설정. <NixOS 24.11>
         liberation-sans-narrow # replace: Arial Narrow / fontconfig 의 default system-wide config 에 의해 자동 설정. <NixOS 24.11>
-        fonts-dmca-sans-serif # replace: consolas
+        my.fonts-dmca-sans-serif # replace: consolas
         # carlito # replace: calibri
         # caladea # replace: campria
 

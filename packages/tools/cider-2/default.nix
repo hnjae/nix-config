@@ -9,7 +9,9 @@
       - <https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/by-name/ci/cider-2/package.nix>
       - "Cider" 이라는 이름을 어거지로 `cider-2` 로 재명명하려다가 생긴 이슈 같다.
 */
-pkgs:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 pkgs.appimageTools.wrapType2 rec {
   pname = "Cider";
   inherit (pkgs.cider-2)

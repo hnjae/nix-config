@@ -26,7 +26,7 @@ lib.flatten [
     xorg.xwininfo # prints xwindow info
 
     # gui apps
-    xdg-terminal-exec
+    my.xdg-terminal-exec
     kdiskmark
 
     (appimage-run.override {
@@ -54,6 +54,6 @@ lib.flatten [
 
   (lib.lists.optionals pkgs.config.allowUnfree [
     pkgs.davinci-resolve
-    (import ./packages/cider-2.nix pkgs)
+    pkgs.my.cider-2
   ])
 ]
