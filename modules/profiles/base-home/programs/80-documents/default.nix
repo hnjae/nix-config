@@ -18,7 +18,6 @@ in
     ./logseq.nix
     ./obsidian
     ./onlyoffice.nix
-    ./typst.nix
     ./zotero.nix
   ];
 

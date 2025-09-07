@@ -2,7 +2,6 @@
   lib,
   config,
   pkgs,
-  pkgsUnstable,
   ...
 }:
 let
@@ -13,25 +12,6 @@ in
     ./neovim.nix
     ./vscode.nix
   ];
-
-  home.packages =
-    let
-      inherit (lib.lists) optionals;
-    in
-    (builtins.concatLists [
-      # --
-      (optionals baseHomeCfg.isDesktop [
-        pkgsUnstable.jetbrains.idea-community
-
-        # lapce
-        # emacs related
-        # emacs29-pgtk
-        # graphviz-nox
-
-        pkgsUnstable.zed-editor
-        # pkgsUnstable.code-cursor
-      ])
-    ]);
 
   services.flatpak.packages =
     lib.lists.optionals (pkgs.stdenv.hostPlatform.isLinux && baseHomeCfg.isDesktop)

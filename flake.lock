@@ -458,13 +458,13 @@
           "flake-parts"
         ],
         "nixpkgs": [
-          "nixpkgs-unstable"
+          "nixpkgs"
         ],
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1757217070,
-        "narHash": "sha256-lgqy4sxxfJ/4UeBFnZcp4Aj1NHex9g/zg6/q/kLddCY=",
+        "lastModified": 1757225840,
+        "narHash": "sha256-mlmVK4i7dfGY+UjtQVlxqJzWvLQXzfW1qrbc3KZIPsA=",
         "path": "/home/hnjae/Projects/py-utils",
         "type": "path"
       },

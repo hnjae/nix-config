@@ -21,7 +21,7 @@ in
         tinty
       ])
 
-      (lib.lists.optionals baseHomeCfg.isDesktop ([
+      (lib.lists.optionals baseHomeCfg.isDesktop [
         # pkgsUnstable.glrnvim
         # pkgs.gnvim
         # neovim-qt # 한글 입력 별로. 사용하지 말것 (2024-04-18)
@@ -63,20 +63,20 @@ in
             app_id='nvim'
 
             cp --reflink=auto \
-              "$icon" \
-              "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
+            "$icon" \
+            "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
 
             for size in 16 22 24 32 48 64 96 128 256 512; do
-              mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
-              '${pkgs.librsvg}/bin/rsvg-convert' \
-                --keep-aspect-ratio \
-                --height="$size" \
-                --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
-                "$icon"
+            mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+            '${pkgs.librsvg}/bin/rsvg-convert' \
+            --keep-aspect-ratio \
+            --height="$size" \
+            --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+            "$icon"
             done
           ''
         ))
-      ]))
+      ])
     ];
 
     default-app.text = "nvim";

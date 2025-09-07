@@ -33,9 +33,8 @@
   ];
   environment.systemPackages = with pkgs; [
     adw-gtk3
-    ((import ./packages/fluent-icon-minimal) { inherit pkgs; })
-    kora-icon-theme
-    whitesur-icon-theme
+    # ((import ./packages/fluent-icon-minimal) { inherit pkgs; })
+    # kora-icon-theme
+    # whitesur-icon-theme
   ];
-
 }

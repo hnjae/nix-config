@@ -131,7 +131,7 @@
       # url = "git+ssh://git@github.com/hnjae/py-utils";
       url = "path:/home/hnjae/Projects/py-utils";
       inputs = {
-        nixpkgs.follows = "nixpkgs-unstable";
+        nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
         treefmt-nix.follows = "";
       };

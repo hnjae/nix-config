@@ -1,5 +1,6 @@
 /*
   NOTE:
+
   #### nix-collect-garbage -d vs nix-store --gc
   <https://discourse.nixos.org/t/what-is-the-difference-if-any-between-nix-collect-garbage-and-nix-store-gc/45078/2>
 
@@ -16,7 +17,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let

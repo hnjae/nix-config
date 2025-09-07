@@ -21,6 +21,7 @@ in
     user-home = (import ./sets/user-home.nix) arg;
     user-desktop = (import ./sets/user-home.nix) arg;
     user-desktop-nixos = (import ./sets/user-desktop-nixos.nix) arg;
+    user-dev-desktop-nixos = (import ./sets/user-dev-desktop-nixos.nix) arg;
   };
   flake.overlays.unstable = _: prev: {
     unstable = import inputs.nixpkgs-unstable {

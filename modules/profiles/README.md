@@ -1,6 +1,6 @@
 ---
 date: 2025-01-08
-lastmod: 2025-07-02T15:48:59+0900
+lastmod: 2025-09-07T15:03:10+0900
 ---
 
 ## 알아두어야 할 것
@@ -25,3 +25,7 @@ lastmod: 2025-07-02T15:48:59+0900
 #### 특정 desktop entry 의 icon 설정
 
 Desktop Entry 에서 `icon=/nix/store/<foo>.svg` 식으로 전체 경로를 지정하는것은 Gnome 에서는 잘 대응이 되나, KDE 에서는 대응이 안된다. (NixOS 25.05; Gnome 48; KDE 6.3.5)
+
+## TODO
+
+- 특별한 이유가 없다면, 설치할 패키지들을 package-sets 안에 정리할 것. 이는 한 시스템에서는 하나의 `base-xxx` 를 사용하기 위함임.

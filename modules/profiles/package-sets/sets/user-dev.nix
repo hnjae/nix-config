@@ -29,7 +29,8 @@ pkgs:
     # comma # run nixpkgs' pkg with , (comma) (use nix-index-database's)
   ])
   pkgs.sops
-  pkgs.deploy-rs
+  # pkgs.deploy-rs
+  inputs.deploy-rs.packages.${pkgs.system}.default
   inputs.yaml2nix.packages.${pkgs.system}.default
 
   ######################
@@ -125,6 +126,11 @@ pkgs:
   '')
   pkgs.unstable.k6 # A modern load testing tool, using Go and JavaScript
   pkgs.unstable.hurl
+  pkgs.texlivePackages.tex
+
+  pkgs.unstable.typst
+  pkgs.unstable.tinymist
+  pkgs.unstable.typstfmt
 
   pkgs.unstable.leetcode-cli
 ])

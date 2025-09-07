@@ -24,6 +24,9 @@
   boot.kernelModules = [ "kvm-amd" ];
   boot.kernelParams = [ "amd_pstate=passive" ];
 
-  nix.settings.max-jobs = 6;
+  # 6C12T
+  nix.settings.max-jobs = 4;
+  nix.settings.cores = 6;
+
   hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
 }

@@ -84,7 +84,7 @@ in
           "${package}/bin/nix-gc-sysgen"
           "--run"
           "--delete-older-than-days"
-          (toString (cfg.keepDays))
+          (toString cfg.keepDays)
         ];
       };
     };

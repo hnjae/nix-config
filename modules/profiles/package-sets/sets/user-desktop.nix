@@ -23,6 +23,7 @@ lib.flatten [
     libheif
     libavif
     libjxl
+    librsvg
 
     zopfli
     libvmaf
@@ -32,10 +33,7 @@ lib.flatten [
 
     pandoc
 
-    librsvg
-
-    # ai
-    realesrgan-ncnn-vulkan
-    # openai-whisper
+    realesrgan-ncnn-vulkan # ai
+    # openai-whisper # ai
   ])
 ]
