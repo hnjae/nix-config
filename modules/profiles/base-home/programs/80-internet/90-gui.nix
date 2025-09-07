@@ -1,14 +1,13 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
   baseHomeCfg = config.base-home;
 in
 {
-  config = lib.mkIf (baseHomeCfg.isDesktop) {
+  config = lib.mkIf baseHomeCfg.isDesktop {
     services.flatpak.packages = builtins.concatLists [
       [
         "org.gnome.Maps"
@@ -21,15 +20,5 @@ in
         "com.ticktick.TickTick" # Proprietary, Offline Support 지원 안함. text-input-v3 지원 X <2025-03-21>
       ])
     ];
-
-    home.packages = lib.flatten [
-      (lib.lists.optionals (pkgs.stdenv.hostPlatform.isLinux) ([
-        pkgs.virt-manager
-
-        # virt-viewer
-        # rustdesk
-      ]))
-    ];
-
   };
 }

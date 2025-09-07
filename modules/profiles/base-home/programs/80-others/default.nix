@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgsUnstable,
   ...
 }:
 let
@@ -18,7 +17,5 @@ in
         "net.ankiweb.Anki"
       ])
     ];
-
-    home.packages = lib.lists.optionals baseHomeCfg.isHome [ pkgsUnstable.leetcode-cli ];
   };
 }

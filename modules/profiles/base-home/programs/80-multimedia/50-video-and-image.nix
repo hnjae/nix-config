@@ -1,6 +1,4 @@
 {
-  pkgs,
-  pkgsUnstable,
   config,
   lib,
   ...
@@ -9,26 +7,12 @@ let
   baseHomeCfg = config.base-home;
 in
 {
-  home.packages = lib.flatten [
-    (if baseHomeCfg.isDesktop then pkgs.mkvtoolnix else pkgs.mkvtoolnix-cli)
-
-    # QT
-    # qview # flathub's build lacks heif support
-    # qimgv
-    # mpc-qt
-    # smplayer
-
-    (lib.lists.optionals (baseHomeCfg.isDesktop && pkgs.config.allowUnfree) [
-      pkgs.davinci-resolve
-    ])
-  ];
-
   default-app.mime = {
     "image/x-xcf" = "org.gimp.GIMP"; # {'*.xcf'}
     "image/vnd.adobe.photoshop" = "org.gimp.GIMP"; # {'*.psd'}
   };
 
-  services.flatpak.packages = lib.lists.optionals baseHomeCfg.isDesktop ([
+  services.flatpak.packages = lib.lists.optionals baseHomeCfg.isDesktop [
     "org.gimp.GIMP"
 
     # Painting / Drawing
@@ -48,7 +32,5 @@ in
     "org.gnome.gitlab.YaLTeR.Identity" # compare image or video
 
     "org.inkscape.Inkscape"
-  ]
-
-  );
+  ];
 }

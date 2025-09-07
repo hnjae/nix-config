@@ -12,6 +12,11 @@
     inputs.nixos-hardware.nixosModules.common-gpu-amd
   ];
 
+  # 표준 경로에 링크하여, 프로그램에서 쉽게 참조할 수 있도록 한다.
+  systemd.tmpfiles.rules = [
+    "L /usr/share/vulkan - - - - /run/current-system/sw/share/vulkan"
+  ];
+
   boot.kernelParams = [
     # 백라이트가 갑자기 꺼지는 문제 해결 (WIP; 테스트 안됨; 6.12.19; NixOS 24.11)
     # https://forums.lenovo.com/t5/Other-Linux-Discussions/ThinkPad-T16-Gen-1-on-Linux-backlight-switches-off-once-in-a-while/m-p/5260463

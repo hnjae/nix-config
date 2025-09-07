@@ -19,6 +19,11 @@
     "amdgpu.aspm=1"
   ];
 
+  # 표준 경로에 링크하여, 프로그램에서 쉽게 참조할 수 있도록 한다.
+  systemd.tmpfiles.rules = [
+    "L /usr/share/vulkan - - - - /run/current-system/sw/share/vulkan"
+  ];
+
   environment.defaultPackages = with pkgs; [
     amdgpu_top
     nvtopPackages.amd

@@ -1,11 +1,9 @@
-{
-  pkgs,
-  pkgsUnstable,
-  lib,
-  ...
-}:
-{
-  home.packages = with pkgsUnstable; [
+{ lib, ... }:
+pkgs:
+lib.flatten [
+  pkgs.mkvtoolnix
+
+  (with pkgs.unstable; [
     gpac # modify mp4
     # hide gpac's desktop file
     (lib.hiPrio (
@@ -40,5 +38,5 @@
     # ai
     realesrgan-ncnn-vulkan
     # openai-whisper
-  ];
-}
+  ])
+]

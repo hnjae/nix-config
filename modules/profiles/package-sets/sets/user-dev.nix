@@ -126,4 +126,5 @@ pkgs:
   pkgs.unstable.k6 # A modern load testing tool, using Go and JavaScript
   pkgs.unstable.hurl
 
+  pkgs.unstable.leetcode-cli
 ])

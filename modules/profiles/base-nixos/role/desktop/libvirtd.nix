@@ -10,6 +10,7 @@ let
 in
 {
   config = lib.mkIf (cfg.role == "desktop") {
+    users.users.hnjae.packages = [ pkgs.virt-manager ];
     virtualisation.libvirtd = {
       enable = mkOverride 999 true;
       qemu.swtpm.enable = true;
