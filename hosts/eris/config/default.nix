@@ -17,7 +17,6 @@
   };
 
   boot.kernel.sysctl = {
-    "vm.overcommit_memory" = 1; # redis
+    "vm.overcommit_memory" = 1; # for redis
   };
-
 }
