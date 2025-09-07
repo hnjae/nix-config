@@ -2,9 +2,16 @@
   description = "my nix-config";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs = {
+      url = "github:nixos/nixpkgs/nixos-25.05";
+
+      # https://hydra.nixos.org/job/nixos/release-25.05/tested#tabs-status
+      # 2025-08-23 build
+      # url = "github:nixos/nixpkgs/?ref=b1b329146965";
+    };
+
     nixpkgs-unstable = {
-      url = "github:nixos/nixpkgs/nixpkgs-unstable";
+      url = "github:nixos/nixpkgs/nixos-unstable";
     };
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
