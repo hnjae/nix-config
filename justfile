@@ -124,11 +124,12 @@ update-except-stable:
 
 [group('update')]
 [private]
-update-local-repo:
+update-locals:
     nix flake update py-utils
+    ./hosts/eris/serve-encrypted/services/traefik/shared/update-cloudflare-ips.sh
 
 [group('check')]
-remote-build-test: update-local-repo
+remote-build-test: update-locals
     nix build \
         --no-link \
         --option eval-cache false \
@@ -141,7 +142,7 @@ remote-build-test: update-local-repo
 # check recipes
 
 [group('check')]
-check: update-local-repo _check-flake _drybuild-homes
+check: update-locals _check-flake _drybuild-homes
 
 [group('check')]
 _check-flake:
@@ -207,7 +208,7 @@ _drybuild-homes:
 # slower than nix flake check
 
 [group('check')]
-_drybuild-nixoses: update-local-repo
+_drybuild-nixoses: update-locals
     #!/bin/sh
 
     set -eu
@@ -238,19 +239,19 @@ _drybuild-nixoses: update-local-repo
 [doc('deploy to host using deplory-rs (will rollback if error)')]
 [group('deploy')]
 [positional-arguments]
-@deploy host: update-local-repo
+@deploy host: update-locals
     deploy --keep-result --skip-checks ".#$1"
 
 [doc('deploy to host using nixos-rebuild (will NOT rollback)')]
 [group('deploy')]
 [positional-arguments]
-@deploy-switch host: update-local-repo
+@deploy-switch host: update-locals
     nixos-rebuild switch \
         --flake ".#$1" \
         --target-host "deploy@${1}" \
         --sudo
 
-deploy-eris: update-local-repo
+deploy-eris: update-locals
     nixos-rebuild switch \
         --flake ".#eris" \
         --target-host "deploy@192.168.0.200" \
@@ -258,7 +259,7 @@ deploy-eris: update-local-repo
 
 [group('deploy')]
 [positional-arguments]
-@deploy-boot host: update-local-repo
+@deploy-boot host: update-locals
     nixos-rebuild boot \
         --flake ".#$1" \
         --target-host "deploy@${1}" \
@@ -266,7 +267,7 @@ deploy-eris: update-local-repo
 
 [group('build')]
 [positional-arguments]
-@build host: update-local-repo
+@build host: update-locals
     @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
     nix build \
         --no-link \
@@ -277,7 +278,7 @@ deploy-eris: update-local-repo
 
 [group('build')]
 [positional-arguments]
-@build-local host: update-local-repo
+@build-local host: update-locals
     @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
     nix build \
         --no-link \
@@ -288,12 +289,12 @@ deploy-eris: update-local-repo
         ".#nixosConfigurations.${1}.config.system.build.toplevel"
 
 [group('build')]
-build-iso: update-local-repo
+build-iso: update-locals
     nix build .#nixosConfigurations.iso.config.system.build.isoImage
 
 [group('check')]
 [positional-arguments]
-@drybuild host: update-local-repo
+@drybuild host: update-locals
     @echo "Dry-building .#nixosConfigurations.${1}.config.system.build.toplevel"
     nix build \
         --dry-run \
@@ -330,14 +331,14 @@ show-hm-configurations:
 # switch/boot local nixos
 
 [group('self-deploy')]
-switch-nixos: update-local-repo
+switch-nixos: update-locals
     @echo "Switch .#{{ hostname }}"
     sudo nixos-rebuild switch \
         --flake ".#{{ hostname }}" \
         --keep-failed
 
 [group('self-deploy')]
-boot-nixos: update-local-repo
+boot-nixos: update-locals
     @echo "Build .#{{ hostname }} and register to bootloader"
     sudo nixos-rebuild boot \
         --flake ".#{{ hostname }}" \
@@ -346,16 +347,16 @@ boot-nixos: update-local-repo
 
 # --builders "" \
 # [group('self-deploy')]
-# switch-nixos-nh: update-local-repo
+# switch-nixos-nh: update-locals
 #     nh os switch .
 # [group('build')]
-# build-nixos-nh: update-local-repo
+# build-nixos-nh: update-locals
 #     nh os build .
 ################################################################################
 # home-manager build/switch
 
 [group('build')]
-build-home: update-local-repo
+build-home: update-locals
     @echo "Switch home-manager .#{{ hostname }}"
     nix build \
         --no-print-missing \
@@ -365,7 +366,7 @@ build-home: update-local-repo
         ".#homeConfigurations.{{ hostname }}.activationPackage"
 
 [group('self-deploy')]
-switch-home: update-local-repo
+switch-home: update-locals
     #!/bin/sh
     set -eu
 
