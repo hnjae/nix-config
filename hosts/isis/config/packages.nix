@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  environment.defaultPackages = [
+  users.users.hnjae.packages = [
     pkgs.seafile-client
   ];
 }

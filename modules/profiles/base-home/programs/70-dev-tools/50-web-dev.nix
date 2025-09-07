@@ -9,14 +9,6 @@ let
 in
 {
   config = lib.mkIf baseHomeCfg.isDev {
-    home.packages = with pkgsUnstable; [
-      # A modern load testing tool, using Go and JavaScript
-      k6
-
-      # xh # friendly and fast tool for sending HTTP requests.
-      hurl
-    ];
-
     services.flatpak.packages = builtins.concatLists [
       [
         "com.usebruno.Bruno" # Proprietary in flathub but MIT license in repo <https://github.com/usebruno/bruno>

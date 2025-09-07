@@ -9,12 +9,6 @@ let
 in
 {
   config = lib.mkIf (baseHomeCfg.isDev && baseHomeCfg.isDesktop) {
-    home.packages = with pkgs; [
-      mongosh
-      sqlite
-      postgresql_17
-    ];
-
     services.flatpak.packages = lib.flatten [
       # db client
       "io.dbeaver.DBeaverCommunity" # Apache-2.0

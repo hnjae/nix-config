@@ -76,11 +76,11 @@
       vulkan-tools
       wayland-utils
       libva-utils
-      xorg.xdpyinfo
+      xorg.xdpyinfo # prints display
+      xorg.xwininfo # prints xwindow info
 
       # gui apps
       xdg-terminal-exec
-
       kdiskmark
 
       # webp support in various programs

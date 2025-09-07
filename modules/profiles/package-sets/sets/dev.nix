@@ -5,7 +5,6 @@
 }:
 pkgs:
 (lib.flatten [
-  inputs.yaml2nix.packages.${pkgs.system}.default
   pkgs.gcc
   pkgs.gnumake
   pkgs.cmake
@@ -18,20 +17,20 @@ pkgs:
   # nix                #
   ######################
   (with pkgs.unstable; [
-    # LSPs
-    # rnix-lsp -- dead 2024-03-16
-    nixd
-    nil
-
-    # nix lintter
-    nixpkgs-lint
-    statix
-    deadnix
-
-    # nix formatter
-    nixfmt-rfc-style
+    nil # lsp
+    nixpkgs-lint # nix linter
+    statix # nix linter
+    deadnix # nix linter
+    nixfmt-rfc-style # nix formatter
     hydra-check
+    shellify # make shell.nix, flake.nix based on nix-shell
+    nurl # create nix fetche calls from repository URLs
+    nix-init # auto-generate nix stderivation
+    # comma # run nixpkgs' pkg with , (comma) (use nix-index-database's)
   ])
+  pkgs.sops
+  pkgs.deploy-rs
+  inputs.yaml2nix.packages.${pkgs.system}.default
 
   ######################
   # bash
@@ -41,9 +40,7 @@ pkgs:
     shellharden
     shfmt
     beautysh
-    shellcheck
-
-    # shellcheck deprecated over bashls in none-ls
+    shellcheck # shellcheck is deprecated over bashls in none-ls
     bash-language-server
   ])
 
@@ -56,7 +53,6 @@ pkgs:
       mypy
     ]
   ))
-  # pkgs.unstable.basedpyright
   pkgs.unstable.ruff # includes lsp via `ruff server`
   pkgs.unstable.uv
 
@@ -65,7 +61,6 @@ pkgs:
   ######################
   (with pkgs.unstable; [
     lua
-    # lua
     selene
     stylua
     sumneko-lua-language-server
@@ -76,7 +71,7 @@ pkgs:
   ######################
   pkgs.unstable.biome # linters, formatters
   pkgs.unstable.pnpm
-  pkgs.nodejs_20 # current LTS (2024-02-29)
+  pkgs.nodePackages.nodejs
   pkgs.unstable.nest-cli
   pkgs.deno
   pkgs.bun
@@ -109,6 +104,13 @@ pkgs:
   ])
 
   ######################
+  # DB                 #
+  ######################
+  pkgs.mongosh
+  pkgs.sqlite
+  pkgs.postgresql_17
+
+  ######################
   # Misc               #
   ######################
   pkgs.go
@@ -121,4 +123,7 @@ pkgs:
     mkdir -p $out/bin
     ln -s "${pkgs.unstable.vscode-langservers-extracted}/bin/vscode-json-language-server" "$out/bin/vscode-json-language-server"
   '')
+  pkgs.unstable.k6 # A modern load testing tool, using Go and JavaScript
+  pkgs.unstable.hurl
+
 ])

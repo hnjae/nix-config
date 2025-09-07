@@ -1,4 +1,6 @@
 _: pkgs: with pkgs; [
+  git # for flake.nix
+
   # Basic features
   coreutils # cp/mv/chown ...
   psmisc # killall
@@ -65,12 +67,6 @@ _: pkgs: with pkgs; [
   tree
   viddy # replace watch
   fzf
-
-  # for NixOS/nix
-  perl
-  rsync
-  strace
-  git # for flake.nix
 
   # archives
   pkgs.unrar
