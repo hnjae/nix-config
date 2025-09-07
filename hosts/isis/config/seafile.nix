@@ -12,10 +12,10 @@
         [Desktop Entry]
         Categories=Network;FileTransfer;
         Comment=Seafile desktop sync client
+        Exec=sh -c 'sleep 1 && exec seafile-applet'
         Exec=seafile-applet
         Icon=seafile
         Name=Seafile
-        TryExec=seafile-applet
         Type=Application
       '';
     };
