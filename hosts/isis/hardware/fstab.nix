@@ -33,35 +33,8 @@
       "zfs-mount.service"
     ];
     # default after: local-fs-pre.target (NixOS 25.05)
-    # After 에 zfs-mount.service 추가 안하면, mount 가 local-fs 이후에 일어나는 경우도 있다.
-    # 근데 원래 `.target` 을 wants 가 전부 만족한 후에 Reach 하는 것 아니었나?
     after = [
-      "zfs-mount.service"
       "zfs-import.target"
-    ];
-  };
-
-  #############################
-  # Impermanence fixed        #
-  #############################
-  # NOTE: systemd-vconsole-setup 이 여전히 너무 빠르게 실행됨. <2025-09-03>
-  # `/etc/vconsole.conf` 는 initrd-nixos-activation.service 에 의해 생성되어서, 딱히 문제가 없을텐데.. 왜 안되냐.
-  # vconsole 은 local-fs 와는 관계 없을 것.
-  systemd.services.systemd-vconsole-setup = {
-    wants = [
-      "local-fs.target"
-    ];
-    after = [
-      "local-fs.target"
-    ];
-  };
-
-  systemd.services.display-manager = {
-    wants = [
-      "systemd-vconsole-setup.service"
-    ];
-    after = [
-      "systemd-vconsole-setup.service"
     ];
   };
 
