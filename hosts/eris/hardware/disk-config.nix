@@ -287,6 +287,7 @@
             type = "zfs_fs";
             options = {
               mountpoint = "none";
+              exec = "off";
             };
           };
           "local/varlib/sbctl" = {
@@ -329,6 +330,7 @@
             options = {
               mountpoint = "/srv/cache";
               compression = "off";
+              exec = "off";
             };
           };
 
@@ -336,6 +338,7 @@
             type = "zfs_fs";
             options = {
               mountpoint = "none";
+              exec = "off";
             };
           };
 
@@ -377,6 +380,7 @@
             type = "zfs_fs";
             options = {
               mountpoint = "none";
+              exec = "off";
             };
           };
 

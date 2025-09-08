@@ -70,6 +70,7 @@ _: pkgs: with pkgs; [
 
   # archives
   pkgs.unrar
+  pkgs.unzipNLS
   (
     let
       package7z = pkgs._7zz.override { enableUnfree = pkgs.config.allowUnfree; };
@@ -80,7 +81,6 @@ _: pkgs: with pkgs; [
         mkdir -p "$out/bin"
         ln -s "${package7z}/bin/7zz" "$out/bin/7z"
       '')
-      pkgs.unzipNLS
     ]
   )
 
@@ -90,11 +90,11 @@ _: pkgs: with pkgs; [
   jq
   python3
   starship
+  htop
   # (wezterm.overrideAttrs (_: {
   #   passthru.cargoBuildFlags = [
   #     "--package"
   #     "wezterm-mux-server"
   #   ];
   # }))
-  htop
 ]
