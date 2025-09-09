@@ -21,14 +21,6 @@
     ];
   };
 
-  /*
-     NixOS 25.05:
-
-    - `root` 가 disposable 하니, `/etc/vconsole.conf` 생성 전에 vconsole 설정이 완료되는 일이 생김.
-    - `local-fs.target` 후에 서비스 시작하도록 함.
-  */
-  systemd.services.systemd-vconsole-setup.after = [ "local-fs.target" ];
-
   systemd.tmpfiles.rules = [
     # 아래는 이미 포함되어 있음.
     # "d /var/empty 0555 root root -"

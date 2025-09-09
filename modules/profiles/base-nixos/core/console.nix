@@ -1,28 +1,31 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }:
 {
   console = {
-    # Enable setting virtual console options in initrd.
-    # earlySetup = lib.mkOverride 999 true;
-    earlySetup = false;
+    earlySetup = false; # Disable virtual console setup in initrd.
     useXkbConfig = true; # use xkbOptions in tty.
+    font = "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz";
+  };
 
-    # font = "${pkgs.terminus_font}/share/consolefonts/ter-v32n.psf.gz";
-    # font = "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz"; # this does not work in NixOS 25.05
-
-    # font option does not work in NixOS 23.11
-    # https://github.com/NixOS/nixpkgs/issues/274545
-    # https://github.com/NixOS/nixpkgs/issues/257904
-    # font = "latarcyrheb-sun32";
-    # font = "${pkgs.kbd}/share/consolefonts/Lat2-Terminus16.psfu.gz";
-    font = "${pkgs.kbd}/share/consolefonts/latarcyrheb-sun32.psfu.gz"; # not working <NixOS 25.05>
-
-    # font = "ter-132n";
-    # packages = with pkgs; [kbd terminus_font]; # for fonts
-    # packages = with pkgs; [kbd]; # for fonts
+  #############################
+  # vconsole fixed            #
+  #############################
+  /*
+     NixOS 25.05 기준:
+      - `/etc/vconsole.conf` 는 initrd-nixos-activation.service 에 의해 생성.
+      - `systemd-udev-settle.service` 를 추가하여, GPU 를 setup 하고 vconsole 을 설정하도록 함.
+  */
+  systemd.services.systemd-vconsole-setup = lib.mkIf (!config.services.kmscon.enable) {
+    wants = [
+      "systemd-udev-settle.service"
+    ];
+    after = [
+      "systemd-udev-settle.service"
+    ];
   };
 
   services.kmscon = {
@@ -34,7 +37,7 @@
       xkb-layout=${config.services.xserver.xkb.layout}
       xkb-variant=${config.services.xserver.xkb.variant}
       xkb-options=${config.services.xserver.xkb.options}
-      font-dpi=168
+      font-dpi=192
     '';
 
     # NOTE: fonts 옵션 넣으면 동작 안함. <2023-06-14>
