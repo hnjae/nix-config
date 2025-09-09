@@ -107,7 +107,7 @@ in
           directory = "/etc/lact";
           mode = "0755"; # checked lact's default <NixOS 24.05>
         })
-        (lib.lists.optional (config.hardware.bluetooth.enable) {
+        (lib.lists.optional (config.hardware.bluetooth.enable && cfg.isRootNotZFS) {
           directory = "/var/lib/bluetooth";
           mode = "0700";
         })

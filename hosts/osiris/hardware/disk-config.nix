@@ -184,6 +184,13 @@
             };
           };
 
+          "local/varlib/bluetooth" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/bluetooth";
+            };
+          };
+
           # NOTE: podman volume 은 ZFS 로 관리되지 않음. <2025-08-04>
           "local/varlib/containers" = {
             type = "zfs_fs";
