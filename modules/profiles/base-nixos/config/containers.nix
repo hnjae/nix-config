@@ -17,8 +17,8 @@ in
 
       # https://github.com/containers/common/blob/main/docs/containers.conf.5.md
       defaultNetwork.settings = lib.mkOverride 999 {
-        dns_enabled = true;
         ipv6_enabled = false;
+        # default_subnet = "10.88.0.0/16";
       };
     };
     oci-containers.backend = lib.mkOverride 999 "podman";
