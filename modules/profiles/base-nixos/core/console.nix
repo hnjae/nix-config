@@ -17,7 +17,8 @@
   /*
      NixOS 25.05 기준:
       - `/etc/vconsole.conf` 는 initrd-nixos-activation.service 에 의해 생성.
-      - `systemd-udev-settle.service` 를 추가하여, GPU 를 setup 하고 vconsole 을 설정하도록 함.
+      - `systemd-udev-settle.service` 를 의존성 목록에 추가하여, GPU 를 setup 하고 vconsole 을 설정하도록 함.
+        - ※ `after` 뿐만 아니라 `wants` 에도 넣어야 정상 작동.
   */
   systemd.services.systemd-vconsole-setup = lib.mkIf (!config.services.kmscon.enable) {
     wants = [

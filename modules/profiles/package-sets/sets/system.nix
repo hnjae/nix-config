@@ -91,6 +91,7 @@ _: pkgs: with pkgs; [
   python3
   starship
   htop
+  nushell
   # (wezterm.overrideAttrs (_: {
   #   passthru.cargoBuildFlags = [
   #     "--package"

@@ -56,12 +56,13 @@ pkgs:
   ))
   pkgs.unstable.ruff # includes lsp via `ruff server`
   pkgs.unstable.uv
+  pkgs.unstable.basedpyright
 
   ######################
   # Lua                #
   ######################
+  pkgs.lua
   (with pkgs.unstable; [
-    lua
     selene
     stylua
     sumneko-lua-language-server
@@ -103,6 +104,7 @@ pkgs:
     # asciidoctor
     asciidoctor-with-extensions
   ])
+  pkgs.texlivePackages.tex
 
   ######################
   # DB                 #
@@ -158,12 +160,12 @@ pkgs:
       "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
 
       for size in 16 22 24 32 48 64 96 128 256 512; do
-      mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
-      '${pkgs.librsvg}/bin/rsvg-convert' \
-      --keep-aspect-ratio \
-      --height="$size" \
-      --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
-      "$icon"
+        mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+          '${pkgs.librsvg}/bin/rsvg-convert' \
+          --keep-aspect-ratio \
+          --height="$size" \
+          --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+          "$icon"
       done
     ''
   ))
@@ -188,11 +190,16 @@ pkgs:
     mkdir -p $out/bin
     ln -s "${pkgs.unstable.vscode-langservers-extracted}/bin/vscode-json-language-server" "$out/bin/vscode-json-language-server"
   '')
-  pkgs.unstable.k6 # A modern load testing tool, using Go and JavaScript
   pkgs.unstable.hurl
-  pkgs.texlivePackages.tex
 
   pkgs.unstable.leetcode-cli
   pkgs.unstable.tinty # Base16 and base24 color scheme manager
+
+  ######################
+  # 테스트 中
+  ######################
+  pkgs.unstable.k6 # A modern load testing tool, using Go and JavaScript
+  pkgs.unstable.gtt # can use chatgpt to translate <https://github.com/eeeXun/gtt>
+  pkgs.unstable.tgpt # support openai, ollma https://github.com/aandrew-me/tgpt
 
 ])
