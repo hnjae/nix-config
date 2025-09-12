@@ -19,7 +19,7 @@ in
     user = (import ./sets/user.nix) arg;
     user-dev = (import ./sets/user-dev.nix) arg;
     user-home = (import ./sets/user-home.nix) arg;
-    user-desktop = (import ./sets/user-home.nix) arg;
+    user-desktop = (import ./sets/user-desktop.nix) arg;
     user-desktop-nixos = (import ./sets/user-desktop-nixos.nix) arg;
     user-dev-desktop-nixos = (import ./sets/user-dev-desktop-nixos.nix) arg;
   };

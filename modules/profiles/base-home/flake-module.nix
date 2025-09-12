@@ -1,5 +1,6 @@
 flakeArgs@{
   inputs,
+  self,
   ...
 }:
 {
@@ -36,14 +37,6 @@ flakeArgs@{
             };
         }
       )
-
-      ./config
-      ./modules
-      ./programs
-      ./services
-      inputs.impermanence.nixosModules.home-manager.impermanence
-      inputs.nix-flatpak.homeManagerModules.nix-flatpak
-      inputs.nix-web-app.homeManagerModules.default
       inputs.nix-index-database.homeModules.nix-index
       {
         programs.nix-index-database.comma.enable = true;
@@ -64,11 +57,10 @@ flakeArgs@{
       )
       {
         # NOTE: HomeManager 가 NixOS 모듈로 사용되고, useGlobalPackages 가 설정되어 있으면 아래 값은 무시된다. <2025-02-06>
-        # FIXME: 아래 값은 homeManager 가 NixOS 모듈로 사용될 때, 허용되지 않게 됨. <HomeManager 25.05>
-        # nixpkgs.overlays = [
-        #   self.overlays.default
-        #   inputs.rust-overlay.overlays.default
-        # ];
+        nixpkgs.overlays = [
+          self.overlays.default
+          inputs.rust-overlay.overlays.default
+        ];
       }
     ];
   };

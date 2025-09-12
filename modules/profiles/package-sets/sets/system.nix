@@ -1,74 +1,150 @@
-_: pkgs: with pkgs; [
-  git # for flake.nix
-
-  # Basic features
-  coreutils # cp/mv/chown ...
-  psmisc # killall
-  bc # bc
-  iputils # ping
-  sysstat # iostat
-
-  # lsxxx
-  lsof
-  pciutils # lspci
-  usbutils # lsusb
-
-  # Get hardware info
-  dmidecode
-  lm_sensors
-  lshw
-
-  # Requires root privilege
-  hdparm # access physical device's firmware, ...
-  dosfstools # mkfs.vfat
-  powertop
-
-  # Misc
-  rsbkb # crc32
-  beep # Advanced PC speaker beeper
-  lsb-release
-  sysstat # iostat
-  file
-
-  my.nixvim
-
-  nh # nix CLI wrapper
+{
+  inputs,
+  lib,
+  ...
+}:
+pkgs:
+(lib.flatten [
+  pkgs.git # for flake.nix
+  pkgs.nh # nix CLI wrapper
   # nix-shell -c, nix-index wrapper
   # comma
 
+  # Basic features
+  pkgs.coreutils # cp/mv/chown ...
+  pkgs.psmisc # killall
+  pkgs.bc # bc
+  pkgs.iputils # ping
+  pkgs.sysstat # iostat
+  pkgs.python3 # ansible / etc
+
+  # lsxxx
+  pkgs.lsof
+  pkgs.pciutils # lspci
+  pkgs.usbutils # lsusb
+
+  # Get hardware info
+  pkgs.dmidecode
+  pkgs.lm_sensors
+  pkgs.lshw
+
+  ###############
+  # Requires root privilege
+  ###############
+  pkgs.hdparm # access physical device's firmware, ...
+  pkgs.dosfstools # mkfs.vfat
+  pkgs.powertop
+
+  ###############
+  # Misc
+  ###############
+  pkgs.rsbkb # crc32
+  pkgs.xxHash
+  pkgs.beep # Advanced PC speaker beeper
+  pkgs.lsb-release
+  pkgs.sysstat # iostat
+  pkgs.file
+
+  ###############
   # filesystems/progs
-  cryptsetup
-  gptfdisk # cgdisk
-  btrfs-progs
-  e2fsprogs
-  exfatprogs
-  f2fs-tools
-  udftools
-  dosfstools # mkfs.vfat
-  nfs-utils
-  cifs-utils
-  sshfs
-  compsize # calculate btrfs compressed size
+  ###############
+  pkgs.cryptsetup
+  pkgs.gptfdisk # cgdisk
+  pkgs.btrfs-progs
+  pkgs.e2fsprogs
+  pkgs.exfatprogs
+  pkgs.f2fs-tools
+  pkgs.udftools
+  pkgs.dosfstools # mkfs.vfat
+  pkgs.nfs-utils
+  pkgs.cifs-utils
+  pkgs.sshfs
+  pkgs.compsize # calculate btrfs compressed size
 
+  ###############
   # access physical device's firmware, ...
-  smartmontools
-  hddtemp
-  nvme-cli
-  sedutil # for OPAL NVMe
+  ###############
+  pkgs.smartmontools
+  pkgs.hddtemp
+  pkgs.nvme-cli
+  pkgs.sedutil # for OPAL NVMe
 
-  # some "modern" utils
-  bat
-  eza
-  fd
-  hexyl # replace od
-  just
-  procs # replace ps
-  ripgrep
-  tree
-  viddy # replace watch
-  fzf
+  ###############
+  # Monitor
+  ###############
+  pkgs.kmon # linux kernel activity monitor
+  pkgs.htop
+  (lib.hiPrio (
+    pkgs.makeDesktopItem {
+      name = "htop";
+      desktopName = "Htop";
+      genericName = "Process Viewer";
+      icon = "htop";
+      exec = ''${pkgs.wezterm}/bin/wezterm start --class=htop -e htop'';
+      categories = [
+        "System"
+        "Monitor"
+      ];
+      keywords = [
+        "system"
+        "process"
+        "task"
+      ];
+    }
+  ))
 
-  # archives
+  ###############
+  # some "modern" utils (https://github.com/ibraheemdev/modern-unix)
+  ###############
+  pkgs.bat
+  pkgs.eza # lsd 는 ANSI color 안써서 eza 쓰자. <2023-10-05; lsd v0.23.1>
+  pkgs.fd
+  pkgs.hexyl # replace od
+  pkgs.just
+  pkgs.procs # replace ps
+  pkgs.viddy # replace watch
+  pkgs.fzf
+  pkgs.ripgrep
+  pkgs.my.nixvim
+  pkgs.nushell
+  pkgs.unstable.lazydocker
+  pkgs.starship
+  pkgs.unstable.just
+  pkgs.duf # fancy df
+  pkgs.unstable.joshuto
+  (lib.hiPrio (
+    pkgs.makeDesktopItem {
+      name = "joshuto";
+      desktopName = "joshuto";
+      genericName = "File Manager";
+      icon = "system-file-manager";
+      mimeTypes = [ "inode/directory" ];
+      exec = ''${pkgs.wezterm}/bin/wezterm start --class=joshuto -e joshuto'';
+      categories = [
+        "System"
+        "FileTools"
+        "FileManager"
+      ];
+      keywords = [
+        "File"
+        "Manager"
+        "Browser"
+        "Explorer"
+      ];
+    }
+  ))
+  pkgs.jq
+  pkgs.yq # sed for json/yaml
+  pkgs.fio
+  pkgs.tree
+  # pkgs.du-dust # dust(du)
+  # pkgs.gping # gping(ping)
+  # pkgs.doggo # doggo(dig)
+
+  ###############
+  # Archives
+  ###############
+  pkgs.ouch # archive handler
   pkgs.unrar
   pkgs.unzipNLS
   (
@@ -84,18 +160,14 @@ _: pkgs: with pkgs; [
     ]
   )
 
+  ###############
   # MISC
-  pwgen
-  wireguard-tools
-  jq
-  python3
-  starship
-  htop
-  nushell
-  # (wezterm.overrideAttrs (_: {
-  #   passthru.cargoBuildFlags = [
-  #     "--package"
-  #     "wezterm-mux-server"
-  #   ];
-  # }))
-]
+  ###############
+  pkgs.pwgen
+  pkgs.wireguard-tools
+  pkgs.rclone
+  pkgs.rustic
+  pkgs.rsync
+  pkgs.man-pages
+  pkgs.man-pages-posix
+])

@@ -1,4 +1,4 @@
-{ localFlake, ... }:
+{ ... }:
 { config, ... }:
 let
   cfg = config.base-nixos;
@@ -9,16 +9,17 @@ in
     useUserPackages = false;
     backupFileExtension = "backup";
     sharedModules = [
-      localFlake.homeManagerModules.base-home
+      {
+        home.preferXdgDirectories = true;
+        xdg = {
+          enable = true;
+          userDirs.createDirectories = cfg.role == "desktop";
+        };
+      }
     ];
     extraSpecialArgs = { };
     users.hnjae = _: {
-      home.stateVersion = "24.05";
-      base-home = {
-        isDesktop = cfg.role == "desktop";
-        isDev = cfg.role == "desktop";
-        isHome = true;
-      };
+      home.stateVersion = config.system.stateVersion;
     };
   };
 }

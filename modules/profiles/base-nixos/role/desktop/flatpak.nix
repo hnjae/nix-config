@@ -17,18 +17,5 @@
       "L /usr/share/fonts - - - - /run/current-system/sw/share/X11/fonts"
     ];
     # "L /usr/share/mime - - - - /run/current-system/sw/share/mime"
-
-    home-manager.sharedModules = lib.mkIf (config.services.flatpak.enable) [
-      {
-        # ~/.local/share/flatpak/overrides
-        services.flatpak.overrides = {
-          "global" = {
-            Context = {
-              filesystems = [ "/nix/store:ro" ];
-            };
-          };
-        };
-      }
-    ];
   };
 }

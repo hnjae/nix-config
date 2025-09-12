@@ -292,22 +292,6 @@
         "type": "github"
       }
     },
-    "nix-flatpak": {
-      "locked": {
-        "lastModified": 1749389379,
-        "narHash": "sha256-wkPZT1AD5OQsRRjfK98TiLKtglPjNWuJI96G6y/jt94=",
-        "owner": "hnjae",
-        "repo": "nix-flatpak",
-        "rev": "8a469687de8d1e34fd48c94bc6d196902d15345f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hnjae",
-        "ref": "patch-0.6.0",
-        "repo": "nix-flatpak",
-        "type": "github"
-      }
-    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -500,7 +484,6 @@
         "impermanence": "impermanence",
         "lanzaboote": "lanzaboote",
         "microvm": "microvm",
-        "nix-flatpak": "nix-flatpak",
         "nix-index-database": "nix-index-database",
         "nix-web-app": "nix-web-app",
         "nixos-hardware": "nixos-hardware",

@@ -1,24 +1,5 @@
 { pkgs, ... }:
 {
-  home-manager.sharedModules = [
-    {
-      services.flatpak.packages = [
-        "org.kde.ark"
-        # "org.kde.dolphin" # lacks mtp/sftp support <2025-07-05>
-        # "org.kde.konsole"
-        "org.kde.gwenview" # it supports HEIC
-        "org.kde.okular" # flathub's build lacks rar support
-        "org.kde.kontact"
-        "org.kde.kwrite"
-      ];
-
-      default-app.image = "org.kde.gwenview";
-      # default-app.fromApps = [ "org.kde.dolphin" ];
-      # dolphin 같은 류가 `GTK_USE_PORTAL=1` ,`NIXOS_XDG_OPEN_USE_PORTAL=1` 가
-      # 설정되어 있어도, mimeapps.list 를 따름. <NixOS 24.05>
-    }
-  ];
-
   environment.systemPackages = with pkgs; [
     unrar
     konsave

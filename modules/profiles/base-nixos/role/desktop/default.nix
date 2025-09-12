@@ -35,6 +35,12 @@
       #     '';
       #   };
       # }
+      {
+        programs.direnv = {
+          enable = true;
+          nix-direnv.enable = true;
+        };
+      }
     ];
 
     # NOTE: --wayland-text-input-version=3 가 추가되기 전까지는 사용하지 않음. <NixOS 25.05>

@@ -14,11 +14,20 @@ pkgs:
   pkgs.unstable.vale
 
   ######################
+  # Git                #
+  ######################
+  pkgs.git-open
+  pkgs.git-filter-repo
+  pkgs.git-crypt
+  pkgs.git-lfs
+  pkgs.unstable.lazygit
+
+  ######################
   # nix                #
   ######################
   (with pkgs.unstable; [
     nil # lsp
-    nixpkgs-lint # nix linter
+    # nixpkgs-lint # nix linter
     statix # nix linter
     deadnix # nix linter
     nixfmt-rfc-style # nix formatter
@@ -81,6 +90,7 @@ pkgs:
   #######################
   # Markdown/TeX/etc... #
   #######################
+  pkgs.texlivePackages.tex
   (with pkgs.unstable; [
     # markdown
     marksman
@@ -104,7 +114,13 @@ pkgs:
     # asciidoctor
     asciidoctor-with-extensions
   ])
-  pkgs.texlivePackages.tex
+
+  ######################
+  # typst              #
+  ######################
+  pkgs.unstable.typst
+  pkgs.unstable.tinymist
+  pkgs.unstable.typstfmt
 
   ######################
   # DB                 #
@@ -121,6 +137,7 @@ pkgs:
   pkgs.unstable.neovim-remote
   pkgs.unstable.code-minimap
   pkgs.unstable.tree-sitter
+  pkgs.unstable.universal-ctags
   pkgs.libsecret # to access org.freedesktop.Secret.Service in neovim config
   # pkgsUnstable.glrnvim
   # pkgs.gnvim
@@ -171,16 +188,15 @@ pkgs:
   ))
 
   ######################
-  # typst              #
+  # Vscode             #
   ######################
-  pkgs.unstable.typst
-  pkgs.unstable.tinymist
-  pkgs.unstable.typstfmt
+  pkgs.unstable.vscode-fhs
 
   ######################
   # Misc               #
   ######################
   pkgs.go
+  pkgs.ansible
   pkgs.unstable.nufmt
   pkgs.rust-bin.stable.latest.default
   pkgs.unstable.taplo # lsp for toml written in rust
@@ -194,12 +210,21 @@ pkgs:
 
   pkgs.unstable.leetcode-cli
   pkgs.unstable.tinty # Base16 and base24 color scheme manager
+  pkgs.unstable.mani # <https://github.com/alajmo/mani>
+  pkgs.unstable.awscli2
+  pkgs.unstable.dotbot
+  pkgs.unstable.buildah
+  pkgs.unstable.openssl
 
   ######################
   # 테스트 中
   ######################
   pkgs.unstable.k6 # A modern load testing tool, using Go and JavaScript
+  pkgs.unstable.hyperfine # command-line benchmarking tool
   pkgs.unstable.gtt # can use chatgpt to translate <https://github.com/eeeXun/gtt>
   pkgs.unstable.tgpt # support openai, ollma https://github.com/aandrew-me/tgpt
+  pkgs.unstable.gh # github cli
+  pkgs.unstable.gh-copilot
+  pkgs.unstable.patchelfStable
 
 ])

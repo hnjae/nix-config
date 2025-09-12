@@ -44,4 +44,9 @@ in
       vulkan-loader
     ];
   };
+
+  home-manager.sharedModules = lib.flatten [
+    (lib.lists.optional (cfg.role == "desktop") localFlake.homeManagerModules.mpv)
+    localFlake.homeManagerModules.pistol
+  ];
 }

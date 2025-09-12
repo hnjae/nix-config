@@ -66,10 +66,6 @@
       url = "https://flakehub.com/f/AshleyYakeley/NixVirt/*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-flatpak = {
-      url = "github:hnjae/nix-flatpak/patch-0.6.0";
-      # url = "path:/home/hnjae/Projects/nix-flatpak";
-    };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -222,6 +218,7 @@
           ./templates/flake-module.nix
 
           ./modules/gnome/flake-module.nix
+          ./modules/hm-modules/flake-module.nix
           ./modules/kde/flake-module.nix
           ./modules/nixos-modules/flake-module.nix
           ./modules/profiles/flake-module.nix

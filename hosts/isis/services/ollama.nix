@@ -5,14 +5,6 @@
 # run `sudo podman exec -it ollama ollama pull llama3.2` to pull image
 { pkgs, ... }:
 {
-  home-manager.sharedModules = [
-    {
-      services.flatpak.packages = [
-        "com.jeffser.Alpaca" # ollama
-      ];
-    }
-  ];
-
   environment.defaultPackages = [
     (pkgs.writeScriptBin "ollama" ''
       #!${pkgs.dash}/bin/dash
