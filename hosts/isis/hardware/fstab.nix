@@ -1,5 +1,10 @@
 { lib, ... }:
 {
+  systemd.tmpfiles.rules = [
+    # flatpak ns ZFS dataset 이라 생기는 경로 삭제
+    "R /home/hnjae/.local/share/flatpak/.Trash-1000 - - - - "
+  ];
+
   ###############
   # ZFS-related #
   ###############

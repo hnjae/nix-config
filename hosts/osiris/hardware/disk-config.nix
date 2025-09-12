@@ -10,6 +10,9 @@
     "d /home/hnjae/.local/share/baloo 0700 hnjae users -"
     "d /home/hnjae/.local/share/containers 0700 hnjae users -"
     "d /home/hnjae/.local/share/flatpak 0755 hnjae users -"
+
+    # flatpak ns ZFS dataset 이라 생기는 경로 삭제
+    "R /home/hnjae/.local/share/flatpak/.Trash-1000 - - - - "
   ];
 
   # run `head -c4 /dev/urandom | od -A none -t x4`
