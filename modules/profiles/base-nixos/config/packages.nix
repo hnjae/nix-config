@@ -22,6 +22,7 @@ in
   users.users.hnjae.packages = lib.flatten [
     (lib.lists.optionals (cfg.role == "desktop") (
       builtins.concatLists [
+        (localFlake.packageSets.user-desktop pkgs)
         (localFlake.packageSets.user-desktop-nixos pkgs)
 
         (localFlake.packageSets.user-dev pkgs)

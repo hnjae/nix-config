@@ -39,19 +39,8 @@ lib.flatten [
   pkgs.unstable.ocrmypdf
   pkgs.unstable.img2pdf
 
-  pkgs.qdirstat
   pkgs.resources
   pkgs.unstable.scrcpy # display and control android
-
-  (lib.lists.optionals pkgs.hostPlatform.isLinux [
-    pkgs.wezterm
-    pkgs.unstable.ghostty
-    (pkgs.runCommandLocal "kitten" { } ''
-      mkdir -p "$out/bin"
-      ln -s "${pkgs.kitty}/bin/kitten" "$out/bin/kitten"
-    '')
-  ])
-  (lib.lists.optional pkgs.config.allowUnfree pkgs.unstable.spotify.warp-terminal)
 
   pkgs.zathura
   (lib.hiPrio (
@@ -82,7 +71,6 @@ lib.flatten [
   (
     let
       appId = "obsidian-nvim";
-
       # icon = "${pkgs.pantheon.elementary-icon-theme}/share/icons/elementary/apps/128/utilities-system-monitor.svg";
       # icon = "${pkgs.whitesur-icon-theme}/share/icons/WhiteSur/apps/scalable/accessories-notes.svg";
       icon = "${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/org.standardnotes.standardnotes.svg";
@@ -100,14 +88,9 @@ lib.flatten [
         name = appId;
         desktopName = appId;
         categories = [ "Office" ];
-        exec = lib.escapeShellArgs [
-          "sh"
-          "-c"
-          ''exec ${pkgs.wezterm}/bin/wezterm start --class=${appId} --cwd="$HOME/Projects/obsidian/home" -e nvim .''
-        ];
+        exec = ''sh -c "exec ${pkgs.wezterm}/bin/wezterm start --class=${appId} --cwd=\"\\$HOME/Projects/obsidian/home\" -e nvim ."'';
         icon = appId;
       })
-
     ]
   )
 

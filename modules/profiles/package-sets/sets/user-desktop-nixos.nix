@@ -1,3 +1,8 @@
+/*
+  README:
+
+  GUI 앱들. 이들은 다른 배포판에서 사용하면 이슈생길 가능성이 높다.
+*/
 { lib, ... }:
 pkgs:
 lib.flatten [
@@ -51,9 +56,19 @@ lib.flatten [
     libnotify # notify-send command
 
   ])
+  pkgs.qdirstat
 
   (lib.lists.optionals pkgs.config.allowUnfree [
     pkgs.davinci-resolve
     pkgs.my.cider-2
+    pkgs.unstable.warp-terminal
+  ])
+  (lib.lists.optionals pkgs.hostPlatform.isLinux [
+    pkgs.wezterm
+    pkgs.unstable.ghostty
+    (pkgs.runCommandLocal "kitten" { } ''
+      mkdir -p "$out/bin"
+      ln -s "${pkgs.kitty}/bin/kitten" "$out/bin/kitten"
+    '')
   ])
 ]

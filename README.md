@@ -4,6 +4,7 @@
 - 만일 nixpkgs 를 고정할 필요가 있다면 다음 링크를 참고하여, hydra 빌드가 제공 되는 커밋을 사용할 것.
   - [nixos-unstable hydra build](https://hydra.nixos.org/job/nixos/trunk-combined/tested)
   - [nixos-unstable-small hydra build](https://hydra.nixos.org/job/nixos/unstable-small/tested)
+  - [NixOS 25.05](https://hydra.nixos.org/job/nixos/release-25.05/tested#tabs-status)
 
 ### 메모
 
