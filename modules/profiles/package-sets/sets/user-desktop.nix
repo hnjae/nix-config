@@ -88,7 +88,7 @@ lib.flatten [
         name = appId;
         desktopName = appId;
         categories = [ "Office" ];
-        exec = ''sh -c "exec ${pkgs.wezterm}/bin/wezterm start --class=${appId} --cwd=\"\\$HOME/Projects/obsidian/home\" -e nvim ."'';
+        exec = ''sh -c "exec wezterm start --class=${appId} --cwd=\"\\$HOME/Projects/obsidian/home\" -e nvim ."'';
         icon = appId;
       })
     ]

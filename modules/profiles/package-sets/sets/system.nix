@@ -6,6 +6,8 @@
 pkgs:
 (lib.flatten [
   pkgs.git # for flake.nix
+  pkgs.git-lfs # lfs 쓰는 git clone 할때 필요함.
+
   pkgs.nh # nix CLI wrapper
   # nix-shell -c, nix-index wrapper
   # comma
@@ -80,7 +82,8 @@ pkgs:
       desktopName = "Htop";
       genericName = "Process Viewer";
       icon = "htop";
-      exec = ''${pkgs.wezterm}/bin/wezterm start --class=htop -e htop'';
+      # exec = ''${pkgs.wezterm}/bin/wezterm start --class=htop -e htop'';
+      exec = ''wezterm start --class=htop -e htop'';
       categories = [
         "System"
         "Monitor"
@@ -119,7 +122,8 @@ pkgs:
       genericName = "File Manager";
       icon = "system-file-manager";
       mimeTypes = [ "inode/directory" ];
-      exec = ''${pkgs.wezterm}/bin/wezterm start --class=joshuto -e joshuto'';
+      # exec = ''${pkgs.wezterm}/bin/wezterm start --class=joshuto -e joshuto'';
+      exec = ''wezterm start --class=joshuto -e joshuto'';
       categories = [
         "System"
         "FileTools"

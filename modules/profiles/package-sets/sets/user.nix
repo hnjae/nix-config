@@ -74,13 +74,12 @@ pkgs:
           "scientific"
           "financial"
         ];
-        exec = "${pkgs.alacritty}/bin/alacritty --class ${appId},${appId} --title Qalculate -e qalc %F";
+        # exec = "${pkgs.alacritty}/bin/alacritty --class ${appId},${appId} --title Qalculate -e qalc %F";
+        exec = ''wezterm start --class=${appId} -e qalc %F'';
         terminal = false;
         startupNotify = false;
         type = "Application";
-        # icon = "accessories-calculator";
-        icon = appId;
-
+        icon = appId; # icon = "accessories-calculator";
         # NOTE: icon=<full-path-to-icon> 식으로 지정하면, Gnome 에서는 잘 처리하나, KDE 에서는 처리하지 못함 <NixOS 25.05; KDE 6.3>.
       })
     ]
@@ -99,6 +98,7 @@ pkgs:
   ######################
   # Misc
   ######################
+  pkgs.ansible # 내 dotfiles repo 에서 사용
   pkgs.rmlint
   pkgs.unstable.yt-dlp
   pkgs.exiftool
@@ -110,8 +110,7 @@ pkgs:
       desktopName = "btop++";
       genericName = "System Monitor";
       icon = "btop";
-      # exec = ''${pkgs.wezterm}/bin/wezterm --config="color_scheme=\\"Kanagawa Dragon (Gogh)\\"" start --class=btop -e btop'';
-      exec = ''${pkgs.wezterm}/bin/wezterm start --class=btop -e btop'';
+      exec = ''wezterm start --class=btop -e btop'';
       categories = [
         "System"
         "Monitor"

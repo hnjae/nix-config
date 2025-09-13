@@ -152,8 +152,9 @@ pkgs:
       desktopName = "Neovim";
       genericName = "Text Editor";
       icon = "nvim";
-      exec = ''${pkgs.wezterm}/bin/wezterm start --class=nvim -e nvim %F'';
-      # tryExec = ''${pkgs.wezterm}/bin/wezterm start --class=nvim -e nvim''; # 이유는 모르겠으나, tryExec 이 있으면 KDE 가 인식을 못함. <NixOS 25.05>
+      # exec = ''${pkgs.wezterm}/bin/wezterm start --class=nvim -e nvim %F'';
+      exec = ''wezterm start --class=nvim -e nvim %F'';
+      # tryExec: 이유는 모르겠으나, tryExec 이 있으면 KDE 가 인식을 못함. <NixOS 25.05>
       categories = [
         "Utility"
         "TextEditor"
@@ -191,7 +192,6 @@ pkgs:
   # Misc               #
   ######################
   pkgs.go
-  pkgs.ansible
   pkgs.unstable.nufmt
   pkgs.rust-bin.stable.latest.default
   pkgs.unstable.taplo # lsp for toml written in rust
