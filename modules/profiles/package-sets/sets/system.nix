@@ -113,7 +113,18 @@ pkgs:
   pkgs.unstable.lazydocker
   pkgs.starship
   pkgs.unstable.just
-  pkgs.duf # fancy df
+  (pkgs.symlinkJoin {
+    # duf: fancy du
+    name = "duf-ansi";
+    paths = [
+      (pkgs.writeScriptBin "duf" ''
+        #!${pkgs.dash}/bin/dash
+
+        exec "${pkgs.duf}/bin/duf" --theme=ansi "$@"
+      '')
+      pkgs.duf # for man page
+    ];
+  })
   pkgs.unstable.joshuto
   (lib.hiPrio (
     pkgs.makeDesktopItem {

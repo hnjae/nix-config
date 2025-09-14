@@ -147,14 +147,25 @@ pkgs:
   # pkgs.page # use neovim as pager; not working 2025-07-13
   # pkgs.nvimpager # use neovim as pager
   (lib.hiPrio (
+    let
+      # NOTE: 여기서 PATH 가 user 가 사용하는 PATH 를 지정하고 싶은데 방법이 읎는 것 같음. <2025-09-14>
+      # wrapper = pkgs.writeScript "nvim-terminal-wrapper" ''
+      #   #!${pkgs.dash}/bin/dash
+      #
+      #   PATH="$1"
+      #
+      #   [ "$1" != "" ] && cwd="$1" || cwd="$HOME"
+      #   [ -f "$1" ] && cwd="$(dirname "$1")"
+      #
+      #   exec wezterm start --class=nvim --cwd="$path" -e nvim "$1"
+      # '';
+    in
     pkgs.makeDesktopItem {
       name = "nvim";
       desktopName = "Neovim";
       genericName = "Text Editor";
       icon = "nvim";
-      # exec = ''${pkgs.wezterm}/bin/wezterm start --class=nvim -e nvim %F'';
       exec = ''wezterm start --class=nvim -e nvim %F'';
-      # tryExec: 이유는 모르겠으나, tryExec 이 있으면 KDE 가 인식을 못함. <NixOS 25.05>
       categories = [
         "Utility"
         "TextEditor"
@@ -164,6 +175,8 @@ pkgs:
         "editor"
       ];
     }
+    # tryExec: 이유는 모르겠으나, tryExec 이 있으면 KDE 가 인식을 못함. <NixOS 25.05>
+
   ))
   (lib.hiPrio (
     pkgs.runCommandLocal "nvim-icon-fix" { } ''

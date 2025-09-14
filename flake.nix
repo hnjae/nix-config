@@ -279,7 +279,7 @@
                 mdformat.enable = false; # forces indentation to 2 spaces; does not support frontmatter
                 taplo.enable = true;
                 ruff-format.enable = true;
-                yamlfmt.enable = true;
+                yamlfmt.enable = false;
                 shellcheck.enable = true;
                 shfmt = {
                   enable = true;

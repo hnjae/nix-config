@@ -1,6 +1,7 @@
 {
   imports = [
     ./backup-offsite-eris.nix
+    ./plocate.nix
     ./rustic-maintenance-onedrive.nix
     ./tailscale.nix
     ./zfs-maintenance.nix
