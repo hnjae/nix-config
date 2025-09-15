@@ -47,15 +47,33 @@ in
           in
           "${p} %pistol-filename%";
       }
-      (map
-        (mime: {
-          inherit mime;
-          command = "bat --style=plain --color=always --paging=never --italic-text=always --wrap=character -- %pistol-filename%";
-        })
-        [
-          "text/*"
-          "application/javascript"
-        ]
+      (
+        (
+          attrs:
+          (
+            let
+              command = "bat --style=plain --color=always --paging=never --italic-text=always --wrap=character -- %pistol-filename%";
+            in
+            (map (mime: {
+              inherit mime;
+              inherit command;
+            }) attrs.mimes)
+            ++ (map (fpath: {
+              inherit fpath;
+              inherit command;
+            }) attrs.fpathes)
+          )
+        )
+        {
+          mimes = [
+            "text/*"
+            "application/javascript"
+            "application/postscript" # NOTE: tex 파일이 가끔 application/postscript 로 인식됨. <2025-09-15>
+          ];
+          fpathes = [
+            ".*.adoc$" # NOTE: 가끔 octet-stream 으로 인식됨 <2025-09-15>
+          ];
+        }
       )
       (map
         (mime: {
