@@ -11,7 +11,6 @@ pkgs:
 
   pkgs.unstable.editorconfig-checker
   pkgs.unstable.harper # grammar checker for developers
-  pkgs.unstable.vale
 
   ######################
   # Git                #
@@ -209,13 +208,12 @@ pkgs:
   pkgs.rust-bin.stable.latest.default
   pkgs.unstable.taplo # lsp for toml written in rust
   pkgs.unstable.yaml-language-server
-  pkgs.unstable.yamlfmt
-  (pkgs.runCommandLocal "vscode-json-language-server" { } ''
-    mkdir -p $out/bin
-    ln -s "${pkgs.unstable.vscode-langservers-extracted}/bin/vscode-json-language-server" "$out/bin/vscode-json-language-server"
-  '')
+  # pkgs.unstable.yamlfmt # `>-` 구문 처리에 버그 있는 듯. <2025-09-16>
+  # (pkgs.runCommandLocal "vscode-json-language-server" { } ''
+  #   mkdir -p $out/bin
+  #   ln -s "${pkgs.unstable.vscode-langservers-extracted}/bin/vscode-json-language-server" "$out/bin/vscode-json-language-server"
+  # '')
   pkgs.unstable.hurl
-
   pkgs.unstable.leetcode-cli
   pkgs.unstable.tinty # Base16 and base24 color scheme manager
   pkgs.unstable.mani # <https://github.com/alajmo/mani>
@@ -234,5 +232,5 @@ pkgs:
   pkgs.unstable.gh # github cli
   pkgs.unstable.gh-copilot
   pkgs.unstable.patchelfStable
-
+  pkgs.unstable.gemini-cli-bin
 ])

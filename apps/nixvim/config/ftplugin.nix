@@ -13,12 +13,12 @@ in
     "ftplugin/just.lua".text = sw4;
     "ftplugin/python.lua".text = sw4;
 
+    "ftplugin/markdown.lua".text = sw2;
     "ftplugin/asciidoc.lua".text = sw2;
     "ftplugin/asciidoctor.lua".text = sw2;
     "ftplugin/json.lua".text = sw2;
     "ftplugin/kdl.lua".text = sw2;
     "ftplugin/lua.lua".text = sw2;
-    "ftplugin/markdown.lua".text = sw2;
     "ftplugin/nix.lua".text = sw2;
     "ftplugin/sh.lua".text = sw2;
     "ftplugin/yaml.lua".text = sw2;

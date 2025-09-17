@@ -39,7 +39,7 @@ in
 
             ln -s "${package}/bin/nvim" "$out/bin/vi"
             ln -s "${package}/bin/nvim" "$out/bin/vim"
-            ln -s "${package}/bin/nvim" "$out/bin/nvim"
+            # ln -s "${package}/bin/nvim" "$out/bin/nvim"
             ln -s "${package}/bin/nvim" "$out/bin/nano"
             ln -s "${vimdiff}" "$out/bin/vimdiff"
           '';

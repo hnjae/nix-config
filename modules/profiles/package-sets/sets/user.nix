@@ -6,7 +6,8 @@ pkgs:
   pkgs.dig
   pkgs.wget
 
-  ((import ./packages/ffmpeg.nix) pkgs)
+  # ((import ./packages/ffmpeg.nix) pkgs)
+  pkgs.ffmpeg-full
   (lib.lists.optionals pkgs.hostPlatform.isLinux [
     pkgs.convmv
   ])

@@ -24,18 +24,18 @@ pkgs.ffmpeg.override {
   # withPlacebo = ! isDarwin;
 
   withVulkan = !isDarwin;
-  withOpencl = true;
+  withOpencl = false;
 
   withAom = true;
-  withRav1e = true;
+  withRav1e = false;
   withSvtav1 = !isAarch64;
   withTheora = false;
   withXvid = false;
 
-  withVoAmrwbenc = true;
-  withOpencoreAmrnb = true;
-  withGsm = true;
-  withGme = true;
+  withVoAmrwbenc = false;
+  withOpencoreAmrnb = false;
+  withGsm = false;
+  withGme = false;
   withFdkAac = true;
 
   withWebp = true;
