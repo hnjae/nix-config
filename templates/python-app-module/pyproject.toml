@@ -1,0 +1,53 @@
+[project]
+name = "zfs-prune"
+version = "0.1.0"
+description = "Prune zfs snapshot based on policy"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["typer-slim==0.15.*"]
+
+[dependency-groups]
+dev = [
+  "basedpyright==1.*",
+  "ipython==9.*",
+  "mypy==1.*",
+  "pytest==8.*",
+  "typer==0.15.*",
+]
+
+[build-system]
+requires = ["flit_core>=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project.scripts]
+zfs-prune = "zfs_prune.__main__:app"
+
+[tool.basedpyright]
+reportMissingTypeStubs = false
+reportUnusedImport = false     # handled by ruff
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = ["ALL"]
+ignore = [
+  "D",    # pydocstyle
+  "FIX",  # flake8-fixme
+  "TD",   # flake8-todos
+  "ERA",  # eradicate
+  "S603", # subprocess-without-shell-equals-true
+
+  # Following rule should be fixed by formatter:
+  "COM", # flake8-commas
+  "Q",   # flake8-quotes
+  "E",   # pycodestyle
+  "I",   # isort
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/**/*.py" = [
+  "S101",   # assert
+  "ANN201", # missing-return-type-undocumented-public-function
+]
