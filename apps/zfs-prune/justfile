@@ -1,0 +1,15 @@
+#!/usr/bin/env -S just --justfile
+
+set fallback := true
+
+_:
+    @just --list
+
+help:
+    python3 zfs_prune --help
+
+build:
+    nix-build
+
+uv-build:
+    uv build
