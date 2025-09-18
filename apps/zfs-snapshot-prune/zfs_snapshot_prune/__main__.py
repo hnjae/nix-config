@@ -5,46 +5,67 @@ from __future__ import annotations
 import json
 import subprocess
 from collections import defaultdict
-from datetime import UTC, datetime, timezone
-from typing import TYPE_CHECKING, Annotated, final, override
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from pprint import pp
+from typing import TYPE_CHECKING, Annotated, cast, final, override
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
-from typer import BadParameter, Option, Typer
+    from .types import ZfsListResponse
 
-from .types import ZfsListResponse, _SnapshotData
+from typer import BadParameter, Option, Typer
 
 app = Typer(rich_markup_mode=None)
 
 
 @final
+@dataclass(frozen=True, unsafe_hash=False, order=False)
 class ZfsSnapshot:
-    def __init__(
-        self,
-        raw: _SnapshotData,
-    ):
-        self.name = raw["name"]
-        self.datetime = datetime.fromtimestamp(
-            int(raw["properties"]["creation"]["value"]), tz=UTC
-        )
-
-    def __repl__(self):
-        return f"ZfsSnapshot(name={self.name!r}, date={self.datetime})"
+    name: str  # e.g. dataset@snapshotname
+    dataset: str
+    created: datetime
 
     @override
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     @override
     def __hash__(self):
         return self.name.__hash__()
 
+    @override
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, ZfsSnapshot):
+            msg = "Cannot compare ZfsSnapshot with non-ZfsSnapshot"
+            raise TypeError(msg)
+
+        return self.name == other.name
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, ZfsSnapshot):
+            msg = "Cannot compare ZfsSnapshot with non-ZfsSnapshot"
+            raise TypeError(msg)
+
+        if self.dataset != other.dataset:
+            msg = "Cannot compare ZfsSnapshot of different datasets"
+            raise ValueError(msg)
+
+        return self.created < other.created
+
 
 def get_snapshots(
     dataset: str, *, recursive: bool
-) -> Mapping[str, list[ZfsSnapshot]]:
-    ret: Mapping[str, list[ZfsSnapshot]] = defaultdict(list)
+) -> Mapping[str, set[ZfsSnapshot]]:
+    """
+    Get ZFS snapshots for a given dataset.
+
+    key: dataset name
+    value: set of snapshots
+    """
+
+    ret: Mapping[str, set[ZfsSnapshot]] = defaultdict(set)
 
     args = ["zfs", "list", "-t", "snapshot", "-p", "-o", "creation", "--json"]
     if recursive:
@@ -53,13 +74,18 @@ def get_snapshots(
 
     proc = subprocess.run(args, check=True, capture_output=True)
 
-    data: ZfsListResponse = json.loads(proc.stdout)
-    for snapshot_data in data["datasets"].values():
-        foo = ZfsSnapshot(raw=snapshot_data)
-        print(foo.__repl__())
-        ret[snapshot_data["dataset"]].append(ZfsSnapshot(raw=snapshot_data))
-
-    # print(ret)
+    data = cast("ZfsListResponse", json.loads(proc.stdout))
+    for snapdata in data["datasets"].values():
+        ret[snapdata["dataset"]].add(
+            ZfsSnapshot(
+                name=snapdata["name"],
+                dataset=snapdata["dataset"],
+                created=datetime.fromtimestamp(
+                    timestamp=int(snapdata["properties"]["creation"]["value"]),
+                    tz=UTC,  # NOTE: ASSUME HARDWARE CLOCK IS IN UTC
+                ),
+            )
+        )
 
     return ret
 
@@ -127,7 +153,7 @@ def main(
     ] = None,
     dataset: str,
 ) -> None:
-    get_snapshots(dataset, recursive=recursive)
+    snapshots = get_snapshots(dataset, recursive=recursive)
 
 
 if __name__ == "__main__":

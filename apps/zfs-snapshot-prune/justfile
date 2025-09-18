@@ -8,6 +8,9 @@ _:
 help:
     python3 -m zfs_snapshot_prune --help
 
+test:
+    python3 -m zfs_snapshot_prune -r isis
+
 build:
     nix-build
 
