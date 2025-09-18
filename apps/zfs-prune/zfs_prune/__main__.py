@@ -1,27 +1,67 @@
-from typing import Annotated
+# TODO: use `filter` to filter  <2025-09-17>
+
+from __future__ import annotations
+
+import json
+import subprocess
+from collections import defaultdict
+from datetime import UTC, datetime, timezone
+from typing import TYPE_CHECKING, Annotated, final, override
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 from typer import BadParameter, Option, Typer
+
+from .types import ZfsListResponse, _SnapshotData
 
 app = Typer(rich_markup_mode=None)
 
 
+@final
 class ZfsSnapshot:
     def __init__(
         self,
-        name: str,
-        createtxg: int,
-        snapshot_name: str,
-        dataset: str,
-        pool: str,
+        raw: _SnapshotData,
     ):
-        self.name = name
-        # self.createtxg = datetime.fromtimestamp(ts, tz=timezone.utc)
-        self.snapshot_name = snapshot_name
-        self.dataset = dataset
-        self.pool = pool
+        self.name = raw["name"]
+        self.datetime = datetime.fromtimestamp(
+            int(raw["properties"]["creation"]["value"]), tz=UTC
+        )
 
-    def __repr__(self):
+    def __repl__(self):
+        return f"ZfsSnapshot(name={self.name!r}, date={self.datetime})"
+
+    @override
+    def __str__(self):
         return self.name
+
+    @override
+    def __hash__(self):
+        return self.name.__hash__()
+
+
+def get_snapshots(
+    dataset: str, *, recursive: bool
+) -> Mapping[str, list[ZfsSnapshot]]:
+    ret: Mapping[str, list[ZfsSnapshot]] = defaultdict(list)
+
+    args = ["zfs", "list", "-t", "snapshot", "-p", "-o", "creation", "--json"]
+    if recursive:
+        args.append("-r")
+    args += ["--", dataset]
+
+    proc = subprocess.run(args, check=True, capture_output=True)
+
+    data: ZfsListResponse = json.loads(proc.stdout)
+    for snapshot_data in data["datasets"].values():
+        foo = ZfsSnapshot(raw=snapshot_data)
+        print(foo.__repl__())
+        ret[snapshot_data["dataset"]].append(ZfsSnapshot(raw=snapshot_data))
+
+    # print(ret)
+
+    return ret
 
 
 def is_non_negative_int(number: int) -> int:
@@ -87,7 +127,7 @@ def main(
     ] = None,
     dataset: str,
 ) -> None:
-    pass
+    get_snapshots(dataset, recursive=recursive)
 
 
 if __name__ == "__main__":
