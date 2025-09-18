@@ -143,6 +143,14 @@ def main(
             metavar="DURATION",
         ),
     ] = 0,
+    offset: Annotated[
+        int,
+        Option(
+            callback=lambda m: m * 60,  # pyright: ignore[reportUnknownLambdaType, reportUnknownArgumentType]
+            help="Delays the starting point of the day by OFFSET minutes.",
+            metavar="MINUTES",
+        ),
+    ] = 0,
     recursive: Annotated[bool, Option("--recursive", "-r")] = False,
     filter: Annotated[
         str | None,
