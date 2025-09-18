@@ -1,9 +1,8 @@
-# TODO: use `filter` to filter  <2025-09-17>
-
 from __future__ import annotations
 
 import json
 import logging
+import re
 import subprocess
 from collections import defaultdict
 from dataclasses import dataclass
@@ -36,6 +35,7 @@ now = datetime.now(tz=UTC)
 class ZfsSnapshot:
     name: str  # e.g. dataset@snapshotname
     dataset: str
+    snapshot_name: str
     created: datetime
 
     @override
@@ -200,9 +200,10 @@ def main(
         ),
     ] = None,
     recursive: Annotated[bool, Option("--recursive", "-r")] = False,
-    filter: Annotated[
+    filter_: Annotated[
         str | None,
         Option(
+            "--filter",
             help="Filter snapshots to progress by REGEX",
             metavar="REGEX",
         ),
@@ -213,6 +214,14 @@ def main(
         dataset, recursive=recursive, offset=offset
     )
 
+    keep: set[ZfsSnapshot] = set()
+    for snapshots in per_ds_snapshots.values():
+        filtered = {
+            s
+            for s in snapshots
+            if filter_ is None
+            or re.fullmatch(filter_, s.snapshot_name) is not None
+        }
 
 if __name__ == "__main__":
     app()
