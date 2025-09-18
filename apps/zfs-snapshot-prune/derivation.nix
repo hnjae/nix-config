@@ -7,7 +7,7 @@
 python3.pkgs.buildPythonApplication rec {
   preferLocalBuild = true;
 
-  pname = "zfs-prune";
+  pname = "zfs-snapshot-prune";
   version = "0.1.0";
   pyproject = true;
 

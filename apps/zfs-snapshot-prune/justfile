@@ -6,7 +6,7 @@ _:
     @just --list
 
 help:
-    python3 -m zfs_prune --help
+    python3 -m zfs_snapshot_prune --help
 
 build:
     nix-build

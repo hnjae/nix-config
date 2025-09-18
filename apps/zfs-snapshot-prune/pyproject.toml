@@ -1,5 +1,5 @@
 [project]
-name = "zfs-prune"
+name = "zfs-snapshot-prune"
 version = "0.1.0"
 description = "Prune zfs snapshot based on policy"
 readme = "README.md"
@@ -20,7 +20,7 @@ requires = ["flit_core>=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project.scripts]
-zfs-prune = "zfs_prune.__main__:app"
+zfs-snapshot-prune = "zfs_snapshot_prune.__main__:app"
 
 [tool.basedpyright]
 reportMissingTypeStubs = false
