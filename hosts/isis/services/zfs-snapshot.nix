@@ -24,9 +24,9 @@ in
         timerConfig = {
           # OnStartupSec = "30m";
           # OnUnitInactiveSec = "60m";
-          # RandomizedDelaySec = "12m";
+          # RandomizedDelaySec = "10m";
           OnCalendar = "hourly";
-          RandomizedDelaySec = "12m";
+          RandomizedDelaySec = "10m";
           Persistent = true; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
         };
       };
@@ -38,7 +38,6 @@ in
             "zfs.target"
           ];
           After = Requires;
-          ConditionACPower = true;
         };
 
         serviceConfig = {
@@ -81,8 +80,11 @@ in
             "zfs.target"
           ];
           After = Requires;
-          ConditionACPower = true;
         };
+        path = [
+          # allow to use zfs from the booted system
+          "/run/booted-system/sw"
+        ];
 
         serviceConfig = {
           Type = "oneshot";
