@@ -64,8 +64,11 @@ def get_snapshots(
     """
     Get ZFS snapshots for a given dataset.
 
-    key: dataset name
-    value: set of snapshots
+    :return: Mapping with following key-value
+        key
+            dataset name
+        value
+            set of snapshots
     """
 
     ret: Mapping[str, set[ZfsSnapshot]] = defaultdict(set)
