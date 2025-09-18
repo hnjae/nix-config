@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import heapq
 import json
 import logging
 import re
@@ -119,6 +120,7 @@ def main(
     keep_last: Annotated[
         int,
         Option(
+            "--keep-last",
             callback=validate_non_negative_int,
             help="Keep the last N snapshots",
             metavar="N",
@@ -201,6 +203,13 @@ def main(
             or re.fullmatch(filter_, s.snapshot_name) is not None
         }
 
+        if keep_last > 0:
+            last_keep = heapq.nlargest(keep_last, snapshots)
+            for k in last_keep:
+                k.keep = True
+                k.keep_reason.append("last")
+            keep.update(last_keep)
+
         for within, period in [
             (hourly_duration, Period.HOURLY),
             (daily_duration, Period.DAILY),
@@ -208,13 +217,13 @@ def main(
             (monthly_duration, Period.MONTHLY),
             (yearly_duration, Period.YEARLY),
         ]:
-            new_keep = keep_within_period(
+            period_keep = keep_within_period(
                 filtered, within=within, period=period
             )
-            for k in new_keep:
+            for k in period_keep:
                 k.keep = True
                 k.keep_reason.append(f"within {period.value}")
-            keep.update(new_keep)
+            keep.update(period_keep)
 
     for ds, snapshots in per_ds_snapshots.items():
         print(f"Snapshots of {ds}")
