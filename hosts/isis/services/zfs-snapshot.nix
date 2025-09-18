@@ -22,11 +22,12 @@ in
 
         wantedBy = [ "timers.target" ];
         timerConfig = {
-          OnStartupSec = "30m";
-          OnUnitInactiveSec = "60m"; # 5h
+          # OnStartupSec = "30m";
+          # OnUnitInactiveSec = "60m";
+          # RandomizedDelaySec = "12m";
+          OnCalendar = "hourly";
           RandomizedDelaySec = "12m";
-          Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
-          # OnCalendar = "hourly";
+          Persistent = true; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
         };
       };
 
@@ -100,7 +101,6 @@ in
             "--filter"
             "^(autosnap|rustic)_.*"
             "--recursive"
-            "--dry-run"
             "--"
             DATASET
           ];
