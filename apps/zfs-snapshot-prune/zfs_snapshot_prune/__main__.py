@@ -7,7 +7,7 @@ import logging
 import subprocess
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, timedelta, timezone
 from typing import TYPE_CHECKING, Annotated, cast, final, override
 
 import isodate
@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 app = Typer(rich_markup_mode=None)
+now = datetime.now(tz=UTC)
 
 
 @final
@@ -66,7 +67,7 @@ class ZfsSnapshot:
 
 
 def get_snapshots(
-    dataset: str, *, recursive: bool
+    dataset: str, *, recursive: bool, offset: timedelta | None
 ) -> Mapping[str, set[ZfsSnapshot]]:
     """
     Get ZFS snapshots for a given dataset.
@@ -77,6 +78,16 @@ def get_snapshots(
         value
             set of snapshots
     """
+
+    localtz = now.astimezone().tzinfo
+    if not isinstance(localtz, timezone):
+        msg = "Failed to get system local timezone"
+        raise RuntimeError(msg)
+    offset_tz = (
+        timezone(localtz.utcoffset(None) + offset)
+        if offset is not None
+        else localtz
+    )
 
     ret: Mapping[str, set[ZfsSnapshot]] = defaultdict(set)
 
@@ -93,9 +104,10 @@ def get_snapshots(
             ZfsSnapshot(
                 name=snapdata["name"],
                 dataset=snapdata["dataset"],
+                snapshot_name=snapdata["snapshot_name"],
                 created=datetime.fromtimestamp(
                     timestamp=int(snapdata["properties"]["creation"]["value"]),
-                    tz=UTC,  # NOTE: ASSUME HARDWARE CLOCK IS IN UTC
+                    tz=offset_tz,
                 ),
             )
         )
@@ -127,6 +139,10 @@ def parse_timedelta(duration_str: str) -> timedelta:
         raise BadParameter(msg)
 
     return ret
+
+
+def parse_offset(offset_min_str: str) -> timedelta:
+    return timedelta(minutes=int(offset_min_str))
 
 
 @app.command()
@@ -176,13 +192,13 @@ def main(
         ),
     ] = None,
     offset: Annotated[
-        int,
+        timedelta | None,
         Option(
-            callback=lambda m: m * 60,  # pyright: ignore[reportUnknownLambdaType, reportUnknownArgumentType]
+            parser=parse_offset,
             help="Delays the starting point of the day by OFFSET minutes.",
             metavar="MINUTES",
         ),
-    ] = 0,
+    ] = None,
     recursive: Annotated[bool, Option("--recursive", "-r")] = False,
     filter: Annotated[
         str | None,
@@ -193,7 +209,9 @@ def main(
     ] = None,
     dataset: str,
 ) -> None:
-    snapshots = get_snapshots(dataset, recursive=recursive)
+    per_ds_snapshots = get_snapshots(
+        dataset, recursive=recursive, offset=offset
+    )
 
 
 if __name__ == "__main__":
