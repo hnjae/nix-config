@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import subprocess
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, final, override
 
@@ -48,3 +49,14 @@ class ZfsSnapshot:
             raise ValueError(msg)
 
         return self.created < other.created
+
+    def destroy(self) -> int:
+        if self.keep:
+            msg = f"Snapshot {self.name} is marked to keep, cannot destroy"
+            raise RuntimeError(msg)
+
+        logger.info("Destroying snapshot %s", self.name)
+
+        args = ["zfs", "destroy", "--", self.name]
+        proc = subprocess.run(args, check=True, capture_output=False)
+        return proc.returncode

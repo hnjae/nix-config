@@ -243,6 +243,29 @@ def main(
         )
         print()
 
+    # remove: set[ZfsSnapshot] = set()
+    # for snapshots in per_ds_snapshots.values():
+    #     remove.update(snapshots.difference(keep))
+    remove: set[ZfsSnapshot] = {
+        snap
+        for snapshots in per_ds_snapshots.values()
+        for snap in snapshots.difference(keep)
+    }
+
+    if len(remove) == 0:
+        logger.info("No snapshots to remove.")
+        return
+
+    if dry_run:
+        logger.info("Dry-run mode, no changes will be made.")
+        logger.info(
+            "Would remove following snapshots: %s", [str(s) for s in remove]
+        )
+        return
+
+    for s in remove:
+        _ = s.destroy()
+
 
 if __name__ == "__main__":
     app()
