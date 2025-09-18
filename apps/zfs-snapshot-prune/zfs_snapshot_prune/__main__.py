@@ -34,7 +34,11 @@ app = Typer(rich_markup_mode=None)
 
 
 def get_snapshots(
-    dataset: str, *, recursive: bool, offset: timedelta | None
+    dataset: str,
+    *,
+    recursive: bool,
+    offset: timedelta | None,
+    filter_: str | None,
 ) -> Mapping[str, set[ZfsSnapshot]]:
     """
     Get ZFS snapshots for a given dataset.
@@ -66,6 +70,12 @@ def get_snapshots(
 
     data = cast("ZfsListResponse", json.loads(proc.stdout))
     for snapdata in data["datasets"].values():
+        if (
+            filter_ is not None
+            and re.fullmatch(filter_, snapdata["snapshot_name"]) is None
+        ):
+            continue
+
         ret[snapdata["dataset"]].add(
             ZfsSnapshot(
                 name=snapdata["name"],
@@ -190,19 +200,12 @@ def main(
     ] = None,
     dataset: str,
 ) -> None:
-    per_ds_snapshots = get_snapshots(
-        dataset, recursive=recursive, offset=offset
+    per_dataset_snapshots = get_snapshots(
+        dataset, recursive=recursive, offset=offset, filter_=filter_
     )
 
     keep: set[ZfsSnapshot] = set()
-    for snapshots in per_ds_snapshots.values():
-        filtered = {
-            s
-            for s in snapshots
-            if filter_ is None
-            or re.fullmatch(filter_, s.snapshot_name) is not None
-        }
-
+    for snapshots in per_dataset_snapshots.values():
         if keep_last > 0:
             last_keep = heapq.nlargest(keep_last, snapshots)
             for k in last_keep:
@@ -218,14 +221,14 @@ def main(
             (yearly_duration, Period.YEARLY),
         ]:
             period_keep = keep_within_period(
-                filtered, within=within, period=period
+                snapshots, within=within, period=period
             )
             for k in period_keep:
                 k.keep = True
                 k.keep_reason.append(f"within {period.value}")
             keep.update(period_keep)
 
-    for ds, snapshots in per_ds_snapshots.items():
+    for ds, snapshots in per_dataset_snapshots.items():
         print(f"Snapshots of {ds}")
         print(
             tabulate(
@@ -245,7 +248,7 @@ def main(
 
     remove: set[ZfsSnapshot] = {
         snap
-        for snapshots in per_ds_snapshots.values()
+        for snapshots in per_dataset_snapshots.values()
         for snap in snapshots.difference(keep)
     }
 
@@ -255,9 +258,6 @@ def main(
 
     if dry_run:
         logger.info("Dry-run mode, no changes will be made.")
-        logger.info(
-            "Would remove following snapshots: %s", [str(s) for s in remove]
-        )
         return
 
     for s in remove:
