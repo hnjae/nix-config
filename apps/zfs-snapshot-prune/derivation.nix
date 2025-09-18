@@ -28,6 +28,7 @@ python3.pkgs.buildPythonApplication rec {
         doCheck = false;
       })
     )
+    isodate
   ];
 
   nativeBuildInputs = [ installShellFiles ];

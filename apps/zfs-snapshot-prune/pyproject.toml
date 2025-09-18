@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Prune zfs snapshot based on policy"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["typer-slim==0.15.*"]
+dependencies = ["typer-slim==0.15.*", "isodate==0.7.*"]
 
 [dependency-groups]
 dev = [
@@ -25,6 +25,11 @@ zfs-snapshot-prune = "zfs_snapshot_prune.__main__:app"
 [tool.basedpyright]
 reportMissingTypeStubs = false
 reportUnusedImport = false     # handled by ruff
+
+[[tool.mypy.overrides]]
+module = ["isodate.*"]
+follow_untyped_imports = true
+
 
 [tool.ruff]
 line-length = 79
