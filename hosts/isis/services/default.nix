@@ -4,7 +4,8 @@ _: {
     ./fprint.nix
     ./ollama.nix
     ./systemd-mounts.nix
-    ./zrepl.nix
+    # ./zrepl.nix
+    ./zfs-snapshot.nix
 
     # ./tabby.nix
     # ./shairport-sync.nix
