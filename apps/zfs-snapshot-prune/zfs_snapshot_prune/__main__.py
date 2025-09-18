@@ -5,12 +5,14 @@ import logging
 import re
 import subprocess
 from collections import defaultdict
-from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta, timezone
-from typing import TYPE_CHECKING, Annotated, cast, final, override
+from typing import TYPE_CHECKING, Annotated, cast
 
 import isodate
 from isodate import ISO8601Error
+
+from .snapshot_utils import Period, keep_within_period, localtz
+from .zfs_snapshot import ZfsSnapshot
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -27,76 +29,6 @@ logger = logging.getLogger(__name__)
 
 
 app = Typer(rich_markup_mode=None)
-now = datetime.now(tz=UTC)
-
-
-@final
-@dataclass(frozen=True, unsafe_hash=False, order=False)
-class ZfsSnapshot:
-    name: str  # e.g. dataset@snapshotname
-    dataset: str
-    snapshot_name: str
-    created: datetime  # localtimezone+offset
-
-    @override
-    def __str__(self) -> str:
-        return self.name
-
-    @override
-    def __hash__(self):
-        return self.name.__hash__()
-
-    @override
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, ZfsSnapshot):
-            msg = "Cannot compare ZfsSnapshot with non-ZfsSnapshot"
-            raise TypeError(msg)
-
-        return self.name == other.name
-
-    def __lt__(self, other: object) -> bool:
-        if not isinstance(other, ZfsSnapshot):
-            msg = "Cannot compare ZfsSnapshot with non-ZfsSnapshot"
-            raise TypeError(msg)
-
-        if self.dataset != other.dataset:
-            msg = "Cannot compare ZfsSnapshot of different datasets"
-            raise ValueError(msg)
-
-        return self.created < other.created
-
-
-def keep_within_hourly(
-    snapshots: set[ZfsSnapshot],
-    *,
-    within: timedelta | None,
-) -> set[ZfsSnapshot]:
-    """
-    Return snapshots to keep within duration.
-    """
-
-    def get_hour_key(
-        snapshot: ZfsSnapshot,
-    ) -> datetime:
-        dt = snapshot.created
-        return datetime(
-            year=dt.year,
-            month=dt.month,
-            day=dt.day,
-            hour=dt.hour,
-            tzinfo=dt.tzinfo,
-        )
-
-    if within is None:
-        return set()
-
-    map_: Mapping[datetime, set[ZfsSnapshot]] = defaultdict(set)
-    for snapshot in snapshots:
-        if now - snapshot.created > within:
-            pass
-        map_[get_hour_key(snapshot)].add(snapshot)
-
-    return {max(map_[key]) for key in map_}
 
 
 def get_snapshots(
@@ -112,7 +44,6 @@ def get_snapshots(
             set of snapshots
     """
 
-    localtz = now.astimezone().tzinfo
     if not isinstance(localtz, timezone):
         msg = "Failed to get system local timezone"
         raise RuntimeError(msg)
@@ -192,7 +123,7 @@ def main(
             metavar="N",
         ),
     ] = 0,
-    keep_within_hourly_duration: Annotated[
+    hourly_duration: Annotated[
         timedelta | None,
         Option(
             "--keep-within-hourly",
@@ -201,27 +132,39 @@ def main(
             metavar="DURATION",
         ),
     ] = None,
-    keep_within_daily: Annotated[
+    daily_duration: Annotated[
         timedelta | None,
         Option(
+            "--keep-within-daily",
             parser=parse_timedelta,
             help="Keep daily snapshots within DURATION (ISO-8601 format, e.g. P4M5DT6H)",
             metavar="DURATION",
         ),
     ] = None,
-    keep_within_weekly: Annotated[
+    weekly_duration: Annotated[
         timedelta | None,
         Option(
+            "--keep-within-weekly",
             parser=parse_timedelta,
             help="Keep weekly snapshots within DURATION (ISO-8601 format, e.g. P4M5DT6H)",
             metavar="DURATION",
         ),
     ] = None,
-    keep_within_monthly: Annotated[
+    monthly_duration: Annotated[
         timedelta | None,
         Option(
+            "--keep-within-monthly",
             parser=parse_timedelta,
             help="Keep monthly snapshots within DURATION (ISO-8601 format, e.g. P4M5DT6H)",
+            metavar="DURATION",
+        ),
+    ] = None,
+    yearly_duration: Annotated[
+        timedelta | None,
+        Option(
+            "--keep-within-yearly",
+            parser=parse_timedelta,
+            help="Keep yearly snapshots within DURATION (ISO-8601 format, e.g. P4M5DT6H)",
             metavar="DURATION",
         ),
     ] = None,
@@ -256,12 +199,17 @@ def main(
             if filter_ is None
             or re.fullmatch(filter_, s.snapshot_name) is not None
         }
-        keep.update(
-            keep_within_hourly(
-                filtered,
-                within=keep_within_hourly_duration,
+
+        for within, period in [
+            (hourly_duration, Period.HOURLY),
+            (daily_duration, Period.DAILY),
+            (weekly_duration, Period.WEEKLY),
+            (monthly_duration, Period.MONTHLY),
+            (yearly_duration, Period.YEARLY),
+        ]:
+            keep.update(
+                keep_within_period(filtered, within=within, period=period)
             )
-        )
     for k in keep:
         logger.info(k)
 
