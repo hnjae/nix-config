@@ -6,9 +6,12 @@ import json
 import subprocess
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pprint import pp
 from typing import TYPE_CHECKING, Annotated, cast, final, override
+
+import isodate
+from isodate import ISO8601Error
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -98,6 +101,24 @@ def validate_non_negative_int(number: int) -> int:
     return number
 
 
+def parse_timedelta(duration_str: str) -> timedelta:
+    """Parse ISO-8601 duration string and return timedelta object."""
+
+    try:
+        ret = isodate.parse_duration(  # pyright: ignore[reportUnknownMemberType]
+            duration_str, as_timedelta_if_possible=True
+        )
+    except ISO8601Error as e:
+        msg = f"Invalid ISO-8601 duration format: {duration_str}"
+        raise BadParameter(msg) from e
+
+    if not isinstance(ret, timedelta):
+        msg = "Something wrong happened. Parsed duration is not timedelta."
+        raise BadParameter(msg)
+
+    return ret
+
+
 @app.command()
 def main(
     *,
@@ -113,37 +134,37 @@ def main(
         ),
     ] = 0,
     keep_within_hourly: Annotated[
-        int,
+        timedelta | None,
         Option(
-            callback=is_non_negative_int,
-            help="Keep hourly snapshots within DURATION",
+            parser=parse_timedelta,
+            help="Keep hourly snapshots within DURATION (ISO-8601 format, e.g. P4M5DT6H)",
             metavar="DURATION",
         ),
-    ] = 0,
+    ] = None,
     keep_within_daily: Annotated[
-        int,
+        timedelta | None,
         Option(
-            callback=is_non_negative_int,
-            help="Keep daily snapshots within DURATION",
+            parser=parse_timedelta,
+            help="Keep daily snapshots within DURATION (ISO-8601 format, e.g. P4M5DT6H)",
             metavar="DURATION",
         ),
-    ] = 0,
+    ] = None,
     keep_within_weekly: Annotated[
-        int,
+        timedelta | None,
         Option(
-            callback=is_non_negative_int,
-            help="Keep weekly snapshots within DURATION",
+            parser=parse_timedelta,
+            help="Keep weekly snapshots within DURATION (ISO-8601 format, e.g. P4M5DT6H)",
             metavar="DURATION",
         ),
-    ] = 0,
+    ] = None,
     keep_within_monthly: Annotated[
-        int,
+        timedelta | None,
         Option(
-            callback=is_non_negative_int,
-            help="Keep monthly snapshots within DURATION",
+            parser=parse_timedelta,
+            help="Keep monthly snapshots within DURATION (ISO-8601 format, e.g. P4M5DT6H)",
             metavar="DURATION",
         ),
-    ] = 0,
+    ] = None,
     offset: Annotated[
         int,
         Option(
@@ -162,6 +183,8 @@ def main(
     ] = None,
     dataset: str,
 ) -> None:
+    print(keep_within_hourly)
+    print(offset)
     snapshots = get_snapshots(dataset, recursive=recursive)
 
 
