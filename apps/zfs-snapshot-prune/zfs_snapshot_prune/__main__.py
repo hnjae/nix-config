@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import json
+import logging
 import subprocess
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from pprint import pp
 from typing import TYPE_CHECKING, Annotated, cast, final, override
 
 import isodate
@@ -19,6 +19,13 @@ if TYPE_CHECKING:
     from .types import ZfsListResponse
 
 from typer import BadParameter, Option, Typer
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s %(message)s",
+)
+logger = logging.getLogger(__name__)
+
 
 app = Typer(rich_markup_mode=None)
 
@@ -186,8 +193,6 @@ def main(
     ] = None,
     dataset: str,
 ) -> None:
-    print(keep_within_hourly)
-    print(offset)
     snapshots = get_snapshots(dataset, recursive=recursive)
 
 
