@@ -125,7 +125,7 @@ def main(
             help="Keep the last N snapshots",
             metavar="N",
         ),
-    ] = 0,
+    ] = 1,
     hourly_duration: Annotated[
         timedelta | None,
         Option(
@@ -243,9 +243,6 @@ def main(
         )
         print()
 
-    # remove: set[ZfsSnapshot] = set()
-    # for snapshots in per_ds_snapshots.values():
-    #     remove.update(snapshots.difference(keep))
     remove: set[ZfsSnapshot] = {
         snap
         for snapshots in per_ds_snapshots.values()

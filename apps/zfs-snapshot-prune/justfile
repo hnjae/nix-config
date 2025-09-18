@@ -8,8 +8,8 @@ _:
 help:
     python3 -m zfs_snapshot_prune --help
 
-test:
-    python3 -m zfs_snapshot_prune -r isis/safe/varlib --keep-last 3 --keep-within-hourly P1D --keep-within-daily P14D  --filter "^zrepl_.*"
+# test:
+#     python3 -m zfs_snapshot_prune -r isis/safe/varlib --keep-last 3 --keep-within-hourly P1D --keep-within-daily P14D  --filter "^zrepl_.*"
 
 build:
     nix-build
