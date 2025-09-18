@@ -17,6 +17,7 @@ class ZfsSnapshot:
     dataset: str
     snapshot_name: str
     created: datetime  # localtimezone+offset
+    keep: bool | None = None
     keep_reason: list[str] = field(
         default_factory=list
     )  # 해당 snapshot 을 보존한다면 그 이유들

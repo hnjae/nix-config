@@ -55,6 +55,7 @@ ignore = [
   "PLR0913", # too-many-arguments
   "ANN204",  # missing-return-type-special-method
   "TRY004",  # type-check-without-type-error
+  "T201",    # print
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]

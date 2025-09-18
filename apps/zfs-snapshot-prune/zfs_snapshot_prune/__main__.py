@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Annotated, cast
 
 import isodate
 from isodate import ISO8601Error
+from tabulate import tabulate
 
 from .snapshot_utils import Period, keep_within_period, localtz
 from .zfs_snapshot import ZfsSnapshot
@@ -211,10 +212,27 @@ def main(
                 filtered, within=within, period=period
             )
             for k in new_keep:
+                k.keep = True
                 k.keep_reason.append(f"within {period.value}")
             keep.update(new_keep)
-    for k in keep:
-        logger.info("%s %s", k.name, k.keep_reason)
+
+    for ds, snapshots in per_ds_snapshots.items():
+        print(f"Snapshots of {ds}")
+        print(
+            tabulate(
+                [
+                    (
+                        s.name,
+                        "keep" if s.keep else "remove",
+                        "\r".join(s.keep_reason),
+                    )
+                    for s in sorted(snapshots, reverse=True)
+                ],
+                headers=["Name", "Action", "Reason"],
+                tablefmt="presto",
+            )
+        )
+        print()
 
 
 if __name__ == "__main__":
