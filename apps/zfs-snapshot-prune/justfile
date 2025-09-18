@@ -9,7 +9,7 @@ help:
     python3 -m zfs_snapshot_prune --help
 
 test:
-    python3 -m zfs_snapshot_prune -r isis
+    python3 -m zfs_snapshot_prune -r isis/safe/varlib --keep-within-hourly P1D --filter "^zrepl_.*"
 
 build:
     nix-build

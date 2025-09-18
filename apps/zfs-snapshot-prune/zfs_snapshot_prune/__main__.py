@@ -36,7 +36,7 @@ class ZfsSnapshot:
     name: str  # e.g. dataset@snapshotname
     dataset: str
     snapshot_name: str
-    created: datetime
+    created: datetime  # localtimezone+offset
 
     @override
     def __str__(self) -> str:
@@ -64,6 +64,39 @@ class ZfsSnapshot:
             raise ValueError(msg)
 
         return self.created < other.created
+
+
+def keep_within_hourly(
+    snapshots: set[ZfsSnapshot],
+    *,
+    within: timedelta | None,
+) -> set[ZfsSnapshot]:
+    """
+    Return snapshots to keep within duration.
+    """
+
+    def get_hour_key(
+        snapshot: ZfsSnapshot,
+    ) -> datetime:
+        dt = snapshot.created
+        return datetime(
+            year=dt.year,
+            month=dt.month,
+            day=dt.day,
+            hour=dt.hour,
+            tzinfo=dt.tzinfo,
+        )
+
+    if within is None:
+        return set()
+
+    map_: Mapping[datetime, set[ZfsSnapshot]] = defaultdict(set)
+    for snapshot in snapshots:
+        if now - snapshot.created > within:
+            pass
+        map_[get_hour_key(snapshot)].add(snapshot)
+
+    return {max(map_[key]) for key in map_}
 
 
 def get_snapshots(
@@ -159,9 +192,10 @@ def main(
             metavar="N",
         ),
     ] = 0,
-    keep_within_hourly: Annotated[
+    keep_within_hourly_duration: Annotated[
         timedelta | None,
         Option(
+            "--keep-within-hourly",
             parser=parse_timedelta,
             help="Keep hourly snapshots within DURATION (ISO-8601 format, e.g. P4M5DT6H)",
             metavar="DURATION",
@@ -222,6 +256,15 @@ def main(
             if filter_ is None
             or re.fullmatch(filter_, s.snapshot_name) is not None
         }
+        keep.update(
+            keep_within_hourly(
+                filtered,
+                within=keep_within_hourly_duration,
+            )
+        )
+    for k in keep:
+        logger.info(k)
+
 
 if __name__ == "__main__":
     app()
