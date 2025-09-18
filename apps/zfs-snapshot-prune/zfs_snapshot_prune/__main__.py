@@ -90,7 +90,8 @@ def get_snapshots(
     return ret
 
 
-def is_non_negative_int(number: int) -> int:
+def validate_non_negative_int(number: int) -> int:
+    """Validate that an integer is non-negative."""
     if number < 0:
         msg = "Number must be non-negative"
         raise BadParameter(msg)
@@ -106,7 +107,7 @@ def main(
     keep_last: Annotated[
         int,
         Option(
-            callback=is_non_negative_int,
+            callback=validate_non_negative_int,
             help="Keep the last N snapshots",
             metavar="N",
         ),
