@@ -5,7 +5,7 @@ import logging
 import re
 import subprocess
 from collections import defaultdict
-from datetime import UTC, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING, Annotated, cast
 
 import isodate
@@ -207,11 +207,14 @@ def main(
             (monthly_duration, Period.MONTHLY),
             (yearly_duration, Period.YEARLY),
         ]:
-            keep.update(
-                keep_within_period(filtered, within=within, period=period)
+            new_keep = keep_within_period(
+                filtered, within=within, period=period
             )
+            for k in new_keep:
+                k.keep_reason.append(f"within {period.value}")
+            keep.update(new_keep)
     for k in keep:
-        logger.info(k)
+        logger.info("%s %s", k.name, k.keep_reason)
 
 
 if __name__ == "__main__":
