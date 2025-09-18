@@ -1,21 +1,7 @@
 /.deploy-gc
 /.pre-commit-config.yaml
-/_required-files/*.AppImage
 
 .direnv
 .mypy_cache
 .ruff_cache
 result
-
-/dotfiles/xdg.configFile/lazygit/state.yml
-/dotfiles/xdg.configFile/navi/navi.log
-/dotfiles/xdg.configFile/qalculate/qalc.history
-/dotfiles/xdg.configFile/qimgv/savedState.conf
-/dotfiles/xdg.configFile/ulauncher/ext_preferences
-/dotfiles/xdg.configFile/alacritty/base16.toml
-/dotfiles/xdg.configFile/lf/icons
-/dotfiles/xdg.configFile/btop/btop.log
-/dotfiles/xdg.configFile/vale/vale-styles
-
-# https://github.com/cheat/cheatsheets
-/dotfiles/xdg.configFile/cheat/cheatsheets/community
