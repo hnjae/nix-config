@@ -17,7 +17,7 @@ from .snapshot_utils import Period, keep_within_period, localtz
 from .zfs_snapshot import ZfsSnapshot
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterable, Mapping
 
     from .types import ZfsListResponse
 
@@ -91,10 +91,10 @@ def get_snapshots(
     return ret
 
 
-def validate_non_negative_int(number: int) -> int:
-    """Validate that an integer is non-negative."""
-    if number < 0:
-        msg = "Number must be non-negative"
+def validate_keep_last(number: int) -> int:
+    """Validate that keep_last value."""
+    if number < -1:
+        msg = "Number must be -1 or greater."
         raise BadParameter(msg)
     return number
 
@@ -131,11 +131,11 @@ def main(
         int,
         Option(
             "--keep-last",
-            callback=validate_non_negative_int,
-            help="Keep the last N snapshots",
+            callback=validate_keep_last,
+            help="Keep the last N snapshots (-1 means all)",
             metavar="N",
         ),
-    ] = 1,
+    ] = -1,
     hourly_duration: Annotated[
         timedelta | None,
         Option(
@@ -206,8 +206,13 @@ def main(
 
     keep: set[ZfsSnapshot] = set()
     for snapshots in per_dataset_snapshots.values():
-        if keep_last > 0:
-            last_keep = heapq.nlargest(keep_last, snapshots)
+        if keep_last != 0:
+            last_keep: Iterable[ZfsSnapshot]
+            if keep_last == -1:
+                last_keep = snapshots
+            else:
+                last_keep = heapq.nlargest(keep_last, snapshots)
+
             for k in last_keep:
                 k.keep = True
                 k.keep_reason.append("last")
