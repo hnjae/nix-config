@@ -25,7 +25,7 @@ from typer import BadParameter, Option, Typer
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(levelname)s %(message)s",
+    format="%(levelname)s: %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -233,23 +233,25 @@ def main(
                 k.keep_reason.append(f"within {period.value}")
             keep.update(period_keep)
 
-    for ds, snapshots in per_dataset_snapshots.items():
-        print(f"Snapshots of {ds}")
-        print(
-            tabulate(
-                [
-                    (
-                        s.name,
-                        "keep" if s.keep else "remove",
-                        "\r".join(s.keep_reason),
-                    )
-                    for s in sorted(snapshots, reverse=True)
-                ],
-                headers=["Name", "Action", "Reason"],
-                tablefmt="presto",
-            )
+    # Print summary table
+    print(
+        tabulate(
+            [
+                (
+                    s.name,
+                    "keep" if s.keep else "remove",
+                    "\n".join(s.keep_reason),
+                )
+                for s in sorted(
+                    {s for ss in per_dataset_snapshots.values() for s in ss},
+                    key=lambda x: (x.dataset, -x.created.timestamp()),
+                    reverse=False,
+                )
+            ],
+            headers=["Name", "Action", "Reason"],
+            tablefmt="presto",
         )
-        print()
+    )
 
     remove: set[ZfsSnapshot] = {
         snap
