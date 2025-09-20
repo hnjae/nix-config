@@ -217,7 +217,6 @@
           ./packages/flake-module.nix
           ./templates/flake-module.nix
 
-          ./modules/gnome/flake-module.nix
           ./modules/hm-modules/flake-module.nix
           ./modules/kde/flake-module.nix
           ./modules/nixos-modules/flake-module.nix
