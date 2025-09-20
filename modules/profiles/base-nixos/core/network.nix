@@ -52,7 +52,7 @@ in
     llmnr = "resolve";
   };
 
-  # NOTE: NixOS 25.05, **일부** 기기에 서 systemd-resolved 에서 dns 가 가끔 먹통이 되서 끄도록 함.
+  # NOTE: NixOS 25.05
   # From systemd-resolved.service: <NixOS 25.05>
   # > mDNS-IPv4: There appears to be another mDNS responder running, or previously systemd-resolved crashed with some outstanding transfers.
   # systemd-resolved 랑 avahi-daemon 이 충돌하는 듯. 근데 avahi-daemon 안키면, *.local 도메인 resolve 가 안됨.

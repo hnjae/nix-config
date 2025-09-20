@@ -55,7 +55,6 @@ in
         Type = "oneshot";
         CPUSchedulingPolicy = "idle";
         IOSchedulingClass = "idle";
-        Nice = 19;
         ExecStart = lib.escapeShellArgs [
           "${config.nix.package.out}/bin/nix"
           "store"

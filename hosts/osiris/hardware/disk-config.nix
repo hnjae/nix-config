@@ -195,6 +195,20 @@
             };
           };
 
+          "local/srv" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+            };
+          };
+
+          "local/srv/ollama" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/srv/ollama";
+            };
+          };
+
           "local/etc/NetworkManager.system-connections" = {
             type = "zfs_fs";
             options = {
