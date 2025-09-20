@@ -22,7 +22,7 @@ let
       readonly LOCKFILE="/var/lock/rustic-onedrive.lock" # eris pool lock
       readonly PROFILE="${PROFILE}"
 
-      log() { printf '[%s] %s\n' "$1" "$2" >&2; }
+      log() { printf '%s: %s\n' "$1" "$2" >&2; }
 
       release_lock() {
         local lock="$1" fdvar="$2"

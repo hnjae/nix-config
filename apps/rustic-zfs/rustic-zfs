@@ -7,9 +7,9 @@ ZFS_HOLD_TAG="rustic-in-progress"
 zfs_cmd='/run/booted-system/sw/bin/zfs'
 [ -f "$zfs_cmd" ] || zfs_cmd="$(command -v zfs 2>/dev/null)" || zfs_cmd=""
 
-_date="$(date --utc '+%Y%m%dT%H%M%SZ')"
+_date="$(date -- '+%Y-%m-%dT%H:%M:%S%:z')"
 _random="$(pwgen --no-capitalize --secure 6 1)"
-id_="${_date}-${_random}"
+id_="${_date}_${_random}"
 declare -A dataset_mountpoint
 snapshot_name="_rustic_${id_}"
 profile=""
