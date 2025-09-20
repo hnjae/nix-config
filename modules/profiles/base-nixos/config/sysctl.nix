@@ -1,3 +1,8 @@
+/*
+  NOTE:
+    - https://rudd-o.com/linux-and-free-software/tales-from-responsivenessland-why-linux-feels-slow-and-how-to-fix-that
+    - https://linuxblog.io/linux-performance-almost-always-add-swap-part2-zram/
+*/
 { lib, ... }:
 let
   inherit (lib) mkOverride;
@@ -9,7 +14,7 @@ in
     {
       # kernel default: 3 (6.6)
       "vm.page-cluster" = mkOverride 999 1; # for nvme
-      "vm.swappiness" = mkOverride 999 60;
+      "vm.swappiness" = mkOverride 999 10;
     }
     {
       # "vm.watermark_boost_factor" = 0;
@@ -24,8 +29,8 @@ in
       # "vm.dirty_background_ratio" = lib.mkDefault 5;
     }
     {
-      # NOTE: https://rudd-o.com/linux-and-free-software/tales-from-responsivenessland-why-linux-feels-slow-and-how-to-fix-that
       # kernel default: 100 (6.6)
+      # Assume your system has plenty of RAM:
       "vm.vfs_cache_pressure" = mkOverride 999 50;
     }
   ];

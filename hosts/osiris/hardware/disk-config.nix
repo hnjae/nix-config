@@ -24,9 +24,8 @@
   systemd.tmpfiles.rules = [
     "d /home/hnjae 0700 hnjae users -"
     "d /home/hnjae/.cache 0700 hnjae users -"
-    "d /home/hnjae/.local/share/baloo 0700 hnjae users -"
     "d /home/hnjae/.local/share/containers 0700 hnjae users -"
-
+    "d /home/hnjae/.local/share/baloo 0700 hnjae users -"
     "d /home/hnjae/.local/share/flatpak 0755 hnjae users -"
     "R /home/hnjae/.local/share/flatpak/.Trash-1000 - - - - "
   ];
@@ -175,14 +174,7 @@
           # Optional #
           ############
 
-          "local/user" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "none";
-            };
-          };
-
-          "local/varlib" = {
+          "local/var.lib" = {
             type = "zfs_fs";
             options = {
               mountpoint = "none";
@@ -196,7 +188,7 @@
             };
           };
 
-          "safe/varlib" = {
+          "safe/var.lib" = {
             type = "zfs_fs";
             options = {
               mountpoint = "none";
@@ -210,57 +202,57 @@
             };
           };
 
-          "local/varlib/AccountsService" = {
+          "local/var.lib/AccountsService" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/AccountsService";
             };
           };
-          "local/varlib/bluetooth" = {
+          "local/var.lib/bluetooth" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/bluetooth";
             };
           };
-          "local/varlib/containers" = {
+          "local/var.lib/containers" = {
             # NOTE: podman volume 은 ZFS 로 관리되지 않음. <2025-08-04>
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/containers";
             };
           };
-          "local/varlib/fprint" = {
+          "local/var.lib/fprint" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/fprint";
             };
           };
-          "local/varlib/nixos" = {
+          "local/var.lib/nixos" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/nixos";
             };
           };
-          "local/varlib/sbctl" = {
+          "local/var.lib/sbctl" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/sbctl";
             };
           };
-          "local/varlib/systemd.coredump" = {
+          "local/var.lib/systemd.coredump" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/systemd/coredump";
             };
           };
-          "local/varlib/tailscale" = {
+          "local/var.lib/tailscale" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/tailscale";
             };
           };
 
-          "safe/varlib/libvirt" = {
+          "safe/var.lib/libvirt" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/libvirt";
@@ -275,27 +267,34 @@
             };
           };
 
-          "local/usercache" = {
+          "local/user" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+            };
+          };
+
+          "local/user/cache" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae/.cache";
               recordsize = "16K";
             };
           };
-          "local/userbaloo" = {
+          "local/user/baloo" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae/.local/share/baloo";
               recordsize = "16K";
             };
           };
-          "local/usercontainers" = {
+          "local/user/containers" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae/.local/share/containers";
             };
           };
-          "local/userflatpak" = {
+          "local/user/flatpak" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae/.local/share/flatpak";
