@@ -39,7 +39,7 @@ in
     enable = mkOverride 999 (cfg.hostType == "baremetal");
     # dnsovertls = mkOverride 999 "true";
 
-    # NOTE: captive-portal 관련 테스트 <2025-09-04>
+    # NOTE: dnsovertls 를 `true` 로 설정하면, captive-portal 이 동작하지 않음. 어찌보면 당연한듯? <NixOS 25.05>
     dnsovertls = mkOverride 999 "opportunistic"; # "true" 대신 "opportunistic" 사용
     dnssec = mkOverride 999 "allow-downgrade";
     fallbackDns = mkOverride 999 [
@@ -52,9 +52,14 @@ in
     llmnr = "resolve";
   };
 
+  # NOTE: NixOS 25.05, **일부** 기기에 서 systemd-resolved 에서 dns 가 가끔 먹통이 되서 끄도록 함.
+  # From systemd-resolved.service: <NixOS 25.05>
+  # > mDNS-IPv4: There appears to be another mDNS responder running, or previously systemd-resolved crashed with some outstanding transfers.
+  # systemd-resolved 랑 avahi-daemon 이 충돌하는 듯. 근데 avahi-daemon 안키면, *.local 도메인 resolve 가 안됨.
+  # 일단 avahi 를 끄고, systemd-resolved 만 쓰도록 설정.
   services.avahi = {
-    enable = mkOverride 999 true;
-    nssmdns4 = mkOverride 999 true;
+    enable = mkOverride 999 false;
+    # nssmdns4 = mkOverride 999 true;
     # nssmdns6 = false;
   };
 }
