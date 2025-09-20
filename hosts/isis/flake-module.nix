@@ -15,7 +15,6 @@
 
       self.nixosModules.base-nixos
       self.nixosModules.kde
-      self.nixosModules.rollback-zfs-root
 
       inputs.impermanence.nixosModules.impermanence
       inputs.lanzaboote.nixosModules.lanzaboote

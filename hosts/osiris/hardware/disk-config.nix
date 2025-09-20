@@ -4,14 +4,30 @@
     "/secrets".neededForBoot = true;
   };
 
+  /*
+     NixOS 25.05:
+
+    - 아래가 잘 작동하려면, stage1 에서 zfs 가 import/mount 되어야하는 듯.
+    - `zfs.target` 은 `sysinit.target` 을 의존성으로 가지니 추가 X
+    - stage 2 에서 import 하는 zfs pool 은 `zfs-import.target` 을 의존성으로 가지면 안됨.
+
+    - target 은 wants 에 만 추가해도, 이것이 실행되어야 reached 에 도달하나? 다른 systemd 유닛 설정에는 전부 wantedby 만 추가되어 있다. before/after 지정은 아무도 안함.
+  */
+  systemd.targets.local-fs = {
+    wants = [ "zfs-mount.service" ];
+    # default after: local-fs-pre.target (NixOS 25.05)
+    after = [
+      "zfs-import.target"
+    ];
+  };
+
   systemd.tmpfiles.rules = [
     "d /home/hnjae 0700 hnjae users -"
     "d /home/hnjae/.cache 0700 hnjae users -"
     "d /home/hnjae/.local/share/baloo 0700 hnjae users -"
     "d /home/hnjae/.local/share/containers 0700 hnjae users -"
-    "d /home/hnjae/.local/share/flatpak 0755 hnjae users -"
 
-    # flatpak ns ZFS dataset 이라 생기는 경로 삭제
+    "d /home/hnjae/.local/share/flatpak 0755 hnjae users -"
     "R /home/hnjae/.local/share/flatpak/.Trash-1000 - - - - "
   ];
 
@@ -173,6 +189,13 @@
             };
           };
 
+          "local/etc" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+            };
+          };
+
           "safe/varlib" = {
             type = "zfs_fs";
             options = {
@@ -180,25 +203,60 @@
             };
           };
 
-          "local/varlib/tailscale" = {
+          "local/etc/NetworkManager.system-connections" = {
             type = "zfs_fs";
             options = {
-              mountpoint = "/var/lib/tailscale";
+              mountpoint = "/etc/NetworkManager/system-connections";
             };
           };
 
+          "local/varlib/AccountsService" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/AccountsService";
+            };
+          };
           "local/varlib/bluetooth" = {
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/bluetooth";
             };
           };
-
-          # NOTE: podman volume 은 ZFS 로 관리되지 않음. <2025-08-04>
           "local/varlib/containers" = {
+            # NOTE: podman volume 은 ZFS 로 관리되지 않음. <2025-08-04>
             type = "zfs_fs";
             options = {
               mountpoint = "/var/lib/containers";
+            };
+          };
+          "local/varlib/fprint" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/fprint";
+            };
+          };
+          "local/varlib/nixos" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/nixos";
+            };
+          };
+          "local/varlib/sbctl" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/sbctl";
+            };
+          };
+          "local/varlib/systemd.coredump" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/systemd/coredump";
+            };
+          };
+          "local/varlib/tailscale" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/tailscale";
             };
           };
 
@@ -247,4 +305,23 @@
       };
     };
   };
+
+  environment.persistence."/persist/@" = {
+    hideMounts = true;
+    enableWarnings = false;
+    files = [
+      "/etc/machine-id"
+    ];
+    directories = [
+      {
+        # NOTE: /var/log 를 zfs dataset 으로 관리하면 poweroff 할때 unmount fail issue 뜸. <2025-08-23>
+        directory = "/var/log";
+        mode = "0755";
+      }
+    ];
+  };
+
+  # Use FS feature insteaad
+  nix.settings.compress-build-log = false;
+  hardware.firmwareCompression = "none";
 }

@@ -11,20 +11,8 @@
     ./bootloader.nix
     ./disk-config.nix
     ./gpu.nix
+    ./initrd.nix
     ./power.nix
-  ];
-
-  ############
-  # initrd
-  ############
-
-  boot.initrd.availableKernelModules = [
-    "nvme"
-    "xhci_pci"
-    "ahci"
-    "usbhid"
-    "usb_storage"
-    "sd_mod"
   ];
 
   ############

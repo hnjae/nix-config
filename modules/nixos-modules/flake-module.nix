@@ -7,15 +7,5 @@
 
     # programs
     lact = import ./programs/lact.nix;
-
-    # system
-    configure-impermanence = {
-      imports = [
-        inputs.impermanence.nixosModules.impermanence
-        ./system/configure-impermanence.nix
-      ];
-    };
-
-    rollback-zfs-root = import ./system/rollback-zfs-root.nix;
   };
 }
