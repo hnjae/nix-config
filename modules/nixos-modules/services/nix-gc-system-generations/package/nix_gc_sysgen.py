@@ -256,13 +256,13 @@ def remove_profiles(
         NIX_ENV_BIN,
         "--profile",
         "/nix/var/nix/profiles/system",
+        "--delete-generations",
     ]
 
     if not run:
         args.append("--dry-run")
-
-    for g in generations:
-        args.extend(["--delete-generations", f"{g.number}"])
+    args.append("--")
+    args.extend([f"{g.number}" for g in generations])
 
     _ = subprocess.run(args, check=True)
 
