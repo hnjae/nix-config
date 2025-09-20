@@ -8,4 +8,4 @@ requires = ["flit_core>=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project.scripts]
-nix-gc-sysgen = "nix_gc_sysgen:entrypoint"
+nix-gc-sysgen = "nix_gc_sysgen:main"
