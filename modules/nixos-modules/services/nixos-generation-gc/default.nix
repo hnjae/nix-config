@@ -22,8 +22,9 @@
 let
   description = "GC nix system profiles and boot-entries";
   documentation = [ "man:nix-env-delete-generations(1)" ];
-  serviceName = "nix-gc-system-generations";
-  cfg = config.services.${serviceName};
+  serviceName = "nixos-generation-gc";
+
+  cfg = config.my.services.${serviceName};
   package = (import ./package) { inherit pkgs; };
 
   inherit (lib)
@@ -53,7 +54,7 @@ let
   ++ (lib.lists.optional config.services.xserver.enable "graphical.target");
 in
 {
-  options.services.${serviceName} = {
+  options.my.services.${serviceName} = {
     enable = mkEnableOption (lib.mDoc "");
 
     keepDays = mkOption {
@@ -81,7 +82,7 @@ in
         CPUSchedulingPolicy = "idle";
         IOSchedulingClass = "idle";
         ExecStart = lib.escapeShellArgs [
-          "${package}/bin/nix-gc-sysgen"
+          "${package}/bin/${serviceName}}"
           "--run"
           "--delete-older-than-days"
           (toString cfg.keepDays)

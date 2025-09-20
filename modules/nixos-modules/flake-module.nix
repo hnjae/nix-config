@@ -2,7 +2,7 @@
 {
   flake.nixosModules = {
     # services
-    nix-gc-system-generations = import ./services/nix-gc-system-generations;
+    nixos-generation-gc = import ./services/nixos-generation-gc;
     nix-store-gc = import ./services/nix-store-gc;
 
     # programs

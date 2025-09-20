@@ -56,7 +56,7 @@ in
       ./role
       ./services
 
-      self.nixosModules.nix-gc-system-generations
+      self.nixosModules.nixos-generation-gc
       self.nixosModules.nix-store-gc
       inputs.home-manager.nixosModules.home-manager
       inputs.sops-nix.nixosModules.sops

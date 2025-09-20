@@ -1,6 +1,6 @@
 {
   imports = [
-    ./nix-gc-system-generations.nix
+    ./nixos-generation-gc.nix
     ./tailscale.nix
     ./chrony.nix
   ];
