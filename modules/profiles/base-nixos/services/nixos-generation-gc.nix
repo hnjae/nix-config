@@ -10,7 +10,7 @@ in
 {
   assertions = [
     {
-      assertion = !(config.services.nix-store-gc.enable && config.nix.gc.automatic);
+      assertion = !(config.my.services.nix-store-gc.enable && config.nix.gc.automatic);
       message = "Use only one of theses";
     }
   ];
@@ -27,7 +27,7 @@ in
         ."${cfg.role}";
   };
 
-  services.nix-store-gc = {
+  my.services.nix-store-gc = {
     enable = mkOverride 999 false;
   };
 

@@ -26,7 +26,7 @@ let
     # "nix store gc --help"
   ];
   description = "run nix store gc";
-  cfg = config.services.${serviceName};
+  cfg = config.my.services.${serviceName};
 
   inherit (lib)
     mkEnableOption
@@ -36,7 +36,7 @@ let
     ;
 in
 {
-  options.services.${serviceName} = {
+  options.my.services.${serviceName} = {
     enable = mkEnableOption (lib.mDoc "");
 
     onCalendar = mkOption {
