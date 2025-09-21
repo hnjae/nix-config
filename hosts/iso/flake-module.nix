@@ -79,7 +79,7 @@
           environment.systemPackages = lib.flatten [
             (self.packageSets.system pkgs)
             (self.packageSets.user pkgs)
-            (self.packageSets.home pkgs)
+            (self.packageSets.user-home pkgs)
           ];
         }
       )
