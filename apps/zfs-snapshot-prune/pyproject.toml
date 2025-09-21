@@ -53,7 +53,9 @@ ignore = [
 
   # local ignore
   "PLR0913", # too-many-arguments
-  "ANN204",  # missing-return-type-special-method
+  "ANN201",  # missing-return-type-undocumented-public-function (타입 추론 사용.)
+  "ANN202",  # missing-return-type-private-function (타입 추론 사용.)
+  "ANN204",  # missing-return-type-special-method  (타입 추론 사용.)
   "TRY004",  # type-check-without-type-error
   "T201",    # print
 ]

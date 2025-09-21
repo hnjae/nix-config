@@ -4,7 +4,7 @@ import logging
 from collections import defaultdict
 from datetime import UTC, datetime, timedelta
 from enum import Enum
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Iterable
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -87,7 +87,7 @@ GET_KEY_PERIOD = {
 
 
 def keep_within_period(
-    snapshots: set[ZfsSnapshot],
+    snapshots: Iterable[ZfsSnapshot],
     *,
     within: timedelta | None,
     period: Period,
