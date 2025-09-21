@@ -7,7 +7,9 @@ ZFS_HOLD_TAG="rustic-in-progress"
 zfs_cmd='/run/booted-system/sw/bin/zfs'
 [ -f "$zfs_cmd" ] || zfs_cmd="$(command -v zfs 2>/dev/null)" || zfs_cmd=""
 
-_date="$(date -- '+%Y-%m-%dT%H:%M:%S%:z')"
+# 읽기 편하게 로컬 타임존 사용. ISO-8601 방식으로는 ZFS Snapshot 에 사용할수 없으니 비표준 표기법 사용.
+# _date="$(date -- '+%Y-%m-%dT%H:%M:%S%:z')"
+_date="$(date -- '+%Y-%m-%dT%H:%M:%S%Z')"
 _random="$(pwgen --no-capitalize --secure 6 1)"
 id_="${_date}_${_random}"
 declare -A dataset_mountpoint

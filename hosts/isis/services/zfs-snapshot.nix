@@ -53,7 +53,7 @@ in
               ]
             }"
             ZFS_CMD='/run/booted-system/sw/bin/zfs'
-            time_="$(date -- '+%Y-%m-%dT%H:%M:%S.%3N%:z')"
+            time_="$(date -- '+%Y-%m-%dT%H:%M:%S%Z')"
             snapshot_name="${DATASET}@autosnap_''${time_}"
 
             echo "Creating snapshot ''${snapshot_name}" >/dev/null

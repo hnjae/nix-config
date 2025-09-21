@@ -165,7 +165,7 @@ let
       # zrepl signal wakeup -- 'eris-snap'
 
       # Replication 직전에 snapshot 을 찍어, 최신의 snapshot 을 보냄.
-      time_="$(date --utc '+%Y-%m-%dT%H:%M:%S.%3NZ')"
+      time_="$(date -- '+%Y-%m-%dT%H:%M:%S%Z')"
       "$ZFS_CMD" snapshot -r -- "${dataset}@zrepl_''${time_}"
       log INFO "Created snapshot: ${dataset}@zrepl_''${time_}"
 
