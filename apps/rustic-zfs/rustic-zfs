@@ -192,7 +192,7 @@ run_backup() {
     --ignore-devid # NOTE: devid 는 ZFS snapshot 에 따라 다름.
     --one-file-system
     --git-ignore
-    "--tag=${id_}"
+    "--tag=${id_},${dataset}"
     # --no-require-git
     "--exclude-if-present=CACHEDIR.TAG"
     "--group-by=label" # zfs dataset 명이 label 이 되는데, 이것만을 기준점으로 삼자.
