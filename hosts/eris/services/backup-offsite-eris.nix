@@ -26,6 +26,7 @@ let
     text = ''
       set -Eeuo pipefail
 
+      PATH="''${PATH}:/run/booted-system/sw/bin" # podman 등에서 zfs 명령어를 찾을수 있도록 함.
       readonly LOCK_TIMEOUT="3600"
       readonly LOCKFILE_1="/var/lock/rustic-onedrive.lock" # rustic-onedrive lock
       readonly LOCKFILE_2="/var/lock/zpool-eris.lock" # eris pool lock
