@@ -16,17 +16,19 @@ in
 
     services.chrony = {
       enable = mkOverride 999 true;
-      serverOption = if isDesktop then "offline" else "iburst";
+      serverOption = if isDesktop then "offline" else "iburst"; # nix module 이 iburst 와 offline 을 동시에 넣는 걸 지원 하지 않음. <NixOS 25.05>
       enableNTS = true;
       servers =
         if config.services.chrony.enableNTS then
           [
             # https://github.com/jauderho/nts-servers
             "time.cloudflare.com" # anycast
-            "nts.netnod.se" # anycast
+            # "nts.netnod.se" # anycast
             "oregon.time.system76.com"
+            # "ohio.time.system76.com"
+            "virginia.time.system76.com"
             "paris.time.system76.com"
-            # "brazil.time.system76.com"
+            "brazil.time.system76.com"
           ]
         else
           [
@@ -34,19 +36,19 @@ in
             "0.pool.ntp.org"
             "1.pool.ntp.org"
             "2.pool.ntp.org"
-            # "3.pool.ntp.org"
+            "3.pool.ntp.org"
           ];
     };
 
     networking.networkmanager.dispatcherScripts =
-      # TODO: FIX THIS, positional argument 건내지지 않고 실행되는 것 같다. <2025-08-18>
-      lib.lists.optionals (isDesktop && config.services.chrony.enable && false) [
+      lib.lists.optional (isDesktop && config.services.chrony.enable)
         {
+          type = "basic";
           # following code follows following license: https://aur.archlinux.org/cgit/aur.git/tree/LICENSE?h=networkmanager-dispatcher-chrony
           source = pkgs.writeScript "chrony" ''
             #!${pkgs.dash}/bin/dash
 
-            # set -eu
+            set -eu
 
             PATH="${
               lib.makeBinPath [
@@ -67,7 +69,7 @@ in
             }
 
             nm_connected() {
-              [ "$(nmcli -t --fields STATE g)" = 'connected' ]
+              [ "$(nmcli networking connectivity check)" = 'full' ]
             }
 
             if [ "$INTERFACE" = "lo" ]; then
@@ -75,28 +77,18 @@ in
               exit 0
             fi
 
-            echo "TEST: $STATUS"
-
             case "$STATUS" in
-              up)
-                chrony_cmd online
+              up|vpn-up)
+                # Check for full connectivity, take online if connected
+                nm_connected && chrony_cmd online
               ;;
-              vpn-up)
-                chrony_cmd online
-              ;;
-              down)
-                # Check for active interface, take offline if none is active
-                nm_connected || chrony_cmd offline
-              ;;
-              vpn-down)
-                # Check for active interface, take offline if none is active
+              down|vpn-down)
+                # Check for full connectivity, take offline if not connected
                 nm_connected || chrony_cmd offline
               ;;
             esac
           '';
-          type = "basic";
-        }
-      ];
+        };
 
     # disable timesyncd
     services.timesyncd.enable = mkOverride 999 (!config.services.chrony.enable);
