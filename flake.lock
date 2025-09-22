@@ -345,11 +345,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1758216857,
-        "narHash": "sha256-h1BW2y7CY4LI9w61R02wPaOYfmYo82FyRqHIwukQ6SY=",
+        "lastModified": 1755922037,
+        "narHash": "sha256-wY1+2JPH0ZZC4BQefoZw/k+3+DowFyfOxv17CN/idKs=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d2ed99647a4b195f0bcc440f76edfa10aeb3b743",
+        "rev": "b1b3291469652d5a2edb0becc4ef0246fff97a7c",
         "type": "github"
       },
       "original": {
@@ -447,8 +447,8 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1758443369,
-        "narHash": "sha256-nsN3CV7DD/AxWSYn5bch040SnzMa32c2iAcx4pPMC7c=",
+        "lastModified": 1758508973,
+        "narHash": "sha256-19EaXx1IgR4YR3+za2T39O6bhxkj4VjPno5VZQimc7Y=",
         "path": "/home/hnjae/Projects/py-utils",
         "type": "path"
       },
