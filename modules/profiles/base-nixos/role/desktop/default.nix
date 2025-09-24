@@ -15,7 +15,7 @@
     ./localsend.nix
     ./portal-pipewire.nix
     ./via.nix
-    # ./pipewire-denoise-mic.nix
+    ./pipewire-denoise-mic.nix
     # ./xremap.nix
   ];
 

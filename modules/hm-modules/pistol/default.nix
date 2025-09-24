@@ -52,6 +52,35 @@ in
           attrs:
           (
             let
+              command = "${archivePreviewer} %pistol-filename%";
+            in
+            (map (mime: {
+              inherit mime;
+              inherit command;
+            }) attrs.mimes)
+            ++ (map (fpath: {
+              inherit fpath;
+              inherit command;
+            }) attrs.fpathes)
+          )
+        )
+        {
+          mimes = [
+            "application/x-rar"
+            "application/vnd.rar"
+            "application/zip"
+          ];
+          fpathes = [
+            ".*.u.zip.html$"
+            ".*.zip.html$"
+          ];
+        }
+      )
+      (
+        (
+          attrs:
+          (
+            let
               command = "bat --style=plain --color=always --paging=never --italic-text=always --wrap=character -- %pistol-filename%";
             in
             (map (mime: {
@@ -85,6 +114,7 @@ in
           "audio/*"
         ]
       )
+
       {
         mime = "image/*";
         command = "${exiftoolWrapper} %pistol-filename%";
@@ -98,17 +128,6 @@ in
           "application/vnd.oasis.opendocument.text"
           "application/vnd.oasis.opendocument.spreadsheet"
           "application/vnd.oasis.opendocument.presentation"
-        ]
-      )
-      (map
-        (mime: {
-          inherit mime;
-          command = "${archivePreviewer} %pistol-filename%";
-        })
-        [
-          "application/x-rar"
-          "application/vnd.rar"
-          "application/zip"
         ]
       )
       [
