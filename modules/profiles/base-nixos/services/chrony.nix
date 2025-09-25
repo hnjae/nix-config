@@ -45,10 +45,8 @@ in
         {
           type = "basic";
           # following code follows following license: https://aur.archlinux.org/cgit/aur.git/tree/LICENSE?h=networkmanager-dispatcher-chrony
-          source = pkgs.writeScript "chrony" ''
-            #!${pkgs.dash}/bin/dash
-
-            set -eu
+          source = pkgs.writeShellScript "chrony" ''
+            set -euo pipefail
 
             PATH="${
               lib.makeBinPath [
@@ -60,11 +58,17 @@ in
             INTERFACE="$1"
             STATUS="$2"
 
+            if [ "$INTERFACE" = "" ] && [ "$STATUS" = "" ]; then
+              printf "INFO: argument not provided: { INTERFACE: %s, STATUS: %s }" "$INTERFACE" "$STATUS" >&2
+              exit 0
+            fi
+
+
             # Make sure we're always getting the standard response strings
             LANG='C'
 
             chrony_cmd() {
-              echo "Chrony going $1." >&2
+              echo "INFO: Chrony going $1." >&2
               exec "chronyc" -a "$1"
             }
 
@@ -72,10 +76,15 @@ in
               [ "$(nmcli networking connectivity check)" = 'full' ]
             }
 
-            if [ "$INTERFACE" = "lo" ]; then
-              # Local interface
-              exit 0
-            fi
+            case "$INTERFACE" in
+              "lo" | podman* | tailscale*)
+                printf "INFO: Skipping INTERFACE %s" "$INTERFACE" >&2
+                exit 0
+                ;;
+              *)
+                printf "INFO: INTERFACE %s is %s" "$INTERFACE" "$STATUS" >&2
+                ;;
+            esac
 
             case "$STATUS" in
               up|vpn-up)
