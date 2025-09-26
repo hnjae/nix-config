@@ -62,6 +62,8 @@ ignore = [
 
 [tool.ruff.lint.extend-per-file-ignores]
 "tests/**/*.py" = [
-  "S101",   # assert
-  "ANN201", # missing-return-type-undocumented-public-function
+  "ANN201",  # missing-return-type-undocumented-public-function
+  "PLR2004", # magic-value-comparison
+  "S101",    # assert
+  "SLF001",  # private-member-access
 ]
