@@ -1,3 +1,7 @@
+<https://github.com/NixOS/nixpkgs/issues/440073>
+
+※  Systemd 257.9 <https://search.nixos.org/packages?channel=unstable&query=systemd> 로 업데이트 되기 전에 nixpkgs 업그레이드 금지.
+
 ## 주의 사항
 
 - nixpkgs 를 업데이트하기전에 <https://status.nixos.org/> 에서 이슈 확인할 것.
@@ -48,4 +52,4 @@
 ### home-manager 관련
 
 - dotfiles 는 기본적으로 home-manger 에서 관리하지 않는다.
-- `home-manager` 의 `xdg.desktopEntries` 는 Gnome 에서 패키지 자체의 desktop entry 보다 우선순위를 가지지 않는다. 때문에 `xdg.dataFile."applications/foo.desktop"` 식으로 직접 파일을 작성할 것. 이것이 DE 에 상관 없이 더 범용적으로 작동한다.
+- `home-manager` 의 `xdg.desktopEntries` 는 Gnome 에서 패키지 자체의 desktop entry 보다 우선순위를 가지지 않는다. `lib.HiPrio (pkgs.makeDesktop Item {...})` 을 사용할 것.

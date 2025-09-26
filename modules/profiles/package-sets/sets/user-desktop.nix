@@ -88,7 +88,7 @@ lib.flatten [
         name = appId;
         desktopName = appId;
         categories = [ "Office" ];
-        exec = ''sh -c "exec wezterm start --class=${appId} --cwd=\"\\$HOME/Projects/obsidian/home\" -e nvim ."'';
+        exec = ''sh -c "exec wezterm start --class=${appId} --cwd=\"/home/hnjae/Projects/obsidian/home\" -e nvim ."'';
         icon = appId;
       })
     ]
@@ -101,6 +101,37 @@ lib.flatten [
     pkgs.poppler_utils # pdftotext
     pkgs.clipboard-jh
     pkgs.handlr-regex
+    # (lib.hiPrio (
+    #   /*
+    #     <NixOS 25.05>
+    #
+    #     xdg-open 이 KDE 환경에서 아래와 같은 로그로 journal 를 오염시켜서 handlr 로 대체.
+    #
+    #     ```
+    #     "DecorationHover" - conversion from ",," to QColor failed  (integer conversion failed)
+    #     ```
+    #
+    #     - xdg-open 과 동작 일치화:
+    #       - xdg-open 은 `--` 인자를 처리 못함.
+    #       - xdg-open 은 여러개의 인자를 받지 않음.
+    #   */
+    #   pkgs.writeScriptBin "xdg-open" ''
+    #     #!${pkgs.dash}/bin/dash
+    #
+    #     if [ "$#" -ne 1 ]; then
+    #       echo "xdg-open (handlr wrapped): only single argument is supported" >&2
+    #       exit 1
+    #     fi
+    #
+    #     case "$1" in
+    #       "--help" | "--manual" | "--version" )
+    #       exec "${pkgs.xdg-utils}/bin/xdg-open" "$1"
+    #       ;;
+    #     esac
+    #
+    #     exec ${pkgs.handlr-regex}/bin/handlr open -- "$1"
+    #   ''
+    # ))
     (pkgs.runCommandLocal "gtk-launch" { } ''
       mkdir -p "$out/bin"
       ln -s "${pkgs.gtk3}/bin/gtk-launch" "$out/bin/gtk-launch"
