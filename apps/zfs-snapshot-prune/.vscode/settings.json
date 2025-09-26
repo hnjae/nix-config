@@ -1,0 +1,7 @@
+{
+        "python.testing.pytestArgs": [
+                "zfs_snapshot_prune"
+        ],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true
+}

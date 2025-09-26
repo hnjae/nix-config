@@ -93,9 +93,9 @@ class ZfsSnapshot:
 
 
 @final
-class _ZfsSnapshotStore:
+class ZfsSnapshotStore:
     def __init__(
-        self: _ZfsSnapshotStore,
+        self: ZfsSnapshotStore,
         *,
         root_dataset: str,
         snapshots: frozenset[ZfsSnapshot],
@@ -110,32 +110,83 @@ class _ZfsSnapshotStore:
         self._is_recursive = is_recursive
 
     @classmethod
-    def from_snapshots(
+    def from_dataset(
         cls,
         *,
-        snapshots: Iterable[ZfsSnapshot],
-        root_dataset: str,
-        is_recursive: bool,
-    ) -> _ZfsSnapshotStore:
-        snapshot_set = frozenset(snapshots)
+        dataset: str,
+        recursive: bool,
+        offset: timedelta | None,
+        filter_: str | None,
+    ) -> ZfsSnapshotStore:
+        """
+        Get ZFS snapshots for a given dataset.
+        """
+
+        if not isinstance(localtz, timezone):
+            msg = "Failed to get system local timezone"
+            raise RuntimeError(msg)
+        offset_tz = (
+            timezone(localtz.utcoffset(None) + offset)
+            if offset is not None
+            else localtz
+        )
+
+        args = [
+            "zfs",
+            "list",
+            "-t",
+            "snapshot",
+            "-p",
+            "-o",
+            "creation",
+            "--json",
+        ]
+        if recursive:
+            args.append("-r")
+        args.extend(["--", dataset])
+
+        proc = subprocess.run(args, check=True, capture_output=True)
+
+        snapshots: set[ZfsSnapshot] = set()
+        data = cast("ZfsListResponse", json.loads(proc.stdout))
+        for snapdata in data["datasets"].values():
+            if (
+                filter_ is not None
+                and re.fullmatch(filter_, snapdata["snapshot_name"]) is None
+            ):
+                continue
+
+            snapshots.add(
+                ZfsSnapshot(
+                    name=snapdata["name"],
+                    dataset=snapdata["dataset"],
+                    snapshot_name=snapdata["snapshot_name"],
+                    created=datetime.fromtimestamp(
+                        timestamp=int(
+                            snapdata["properties"]["creation"]["value"]
+                        ),
+                        tz=offset_tz,
+                    ),
+                    is_root=snapdata["dataset"] == dataset,
+                )
+            )
 
         by_dataset: defaultdict[str, set[ZfsSnapshot]] = defaultdict(set)
         by_name: defaultdict[str, set[ZfsSnapshot]] = defaultdict(set)
-
-        for snapshot in snapshot_set:
+        for snapshot in snapshots:
             by_dataset[snapshot.dataset].add(snapshot)
             by_name[snapshot.snapshot_name].add(snapshot)
 
         return cls(
-            root_dataset=root_dataset,
-            snapshots=snapshot_set,
-            is_recursive=is_recursive,
+            root_dataset=dataset,
+            snapshots=frozenset(snapshots),
+            is_recursive=recursive,
             by_dataset={k: frozenset(v) for k, v in by_dataset.items()},
             by_name={k: frozenset(v) for k, v in by_name.items()},
         )
 
     def apply_retention_policy(
-        self: _ZfsSnapshotStore,
+        self: ZfsSnapshotStore,
         *,
         keep_last: int,
         hourly_duration: timedelta | None,
@@ -165,7 +216,7 @@ class _ZfsSnapshotStore:
                             )
 
     def _update_keep_by_dataset(
-        self: _ZfsSnapshotStore,
+        self: ZfsSnapshotStore,
         dataset: str,
         *,
         keep_last: int,
@@ -206,7 +257,7 @@ class _ZfsSnapshotStore:
 
         return keep
 
-    def print_summary(self: _ZfsSnapshotStore):
+    def print_summary(self: ZfsSnapshotStore):
         print(
             tabulate(
                 [
@@ -227,7 +278,7 @@ class _ZfsSnapshotStore:
         )
 
     def destroy(
-        self: _ZfsSnapshotStore,
+        self: ZfsSnapshotStore,
         *,
         dry_run: bool = True,
     ):
@@ -251,63 +302,3 @@ class _ZfsSnapshotStore:
         for s in self._snapshots:
             if not s.keep and not s.is_destroyed:
                 _ = s.destroy(recursive=False, dry_run=dry_run)
-
-
-def get_snapshots(
-    dataset: str,
-    *,
-    recursive: bool,
-    offset: timedelta | None,
-    filter_: str | None,
-) -> _ZfsSnapshotStore:
-    """
-    Get ZFS snapshots for a given dataset.
-
-    :return: Mapping with following key-value
-        key
-            dataset name
-        value
-            set of snapshots
-    """
-
-    if not isinstance(localtz, timezone):
-        msg = "Failed to get system local timezone"
-        raise RuntimeError(msg)
-    offset_tz = (
-        timezone(localtz.utcoffset(None) + offset)
-        if offset is not None
-        else localtz
-    )
-
-    args = ["zfs", "list", "-t", "snapshot", "-p", "-o", "creation", "--json"]
-    if recursive:
-        args.append("-r")
-    args.extend(["--", dataset])
-
-    proc = subprocess.run(args, check=True, capture_output=True)
-
-    snapshots: set[ZfsSnapshot] = set()
-    data = cast("ZfsListResponse", json.loads(proc.stdout))
-    for snapdata in data["datasets"].values():
-        if (
-            filter_ is not None
-            and re.fullmatch(filter_, snapdata["snapshot_name"]) is None
-        ):
-            continue
-
-        snapshots.add(
-            ZfsSnapshot(
-                name=snapdata["name"],
-                dataset=snapdata["dataset"],
-                snapshot_name=snapdata["snapshot_name"],
-                created=datetime.fromtimestamp(
-                    timestamp=int(snapdata["properties"]["creation"]["value"]),
-                    tz=offset_tz,
-                ),
-                is_root=snapdata["dataset"] == dataset,
-            )
-        )
-
-    return _ZfsSnapshotStore.from_snapshots(
-        snapshots=snapshots, root_dataset=dataset, is_recursive=recursive
-    )
