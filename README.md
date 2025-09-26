@@ -1,7 +1,3 @@
-<https://github.com/NixOS/nixpkgs/issues/440073>
-
-※  Systemd 257.9 <https://search.nixos.org/packages?channel=unstable&query=systemd> 로 업데이트 되기 전에 nixpkgs 업그레이드 금지.
-
 ## 주의 사항
 
 - nixpkgs 를 업데이트하기전에 <https://status.nixos.org/> 에서 이슈 확인할 것.
