@@ -8,4 +8,4 @@ requires = ["flit_core>=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project.scripts]
-nixos-generation-gc = "run:main"
+nixos-generation-gc = "nixos_generation_gc:main"

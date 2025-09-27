@@ -11,7 +11,7 @@ from argparse import Namespace
 from collections import defaultdict
 from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, cast, override
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
@@ -36,8 +36,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-localtz = datetime.now(tz=UTC).astimezone().tzinfo
-if not isinstance(localtz, timezone):
+localtz = cast(timezone, datetime.now(tz=UTC).astimezone().tzinfo)
+# 위에서 cast 를 했으니, 안전하게 체크는 해주자.
+if not isinstance(localtz, timezone):  # pyright: ignore[reportUnnecessaryIsInstance]
     msg = "Failed to get system local timezone"
     raise RuntimeError(msg)
 
@@ -55,7 +56,7 @@ class ArgsNamespace(Namespace):
         attrs = {
             k: getattr(self, k) for k in ("keep_days", "run", "offset_tz")
         }
-        items = ", ".join(f"{k}={v!r}" for k, v in sorted(attrs.items()))
+        items = ", ".join(f"{k}={v!r}" for k, v in sorted(attrs.items()))  # pyright: ignore[reportAny]
         return f"{self.__class__.__name__}({items})"
 
 
@@ -174,6 +175,7 @@ class NixGeneration:
 
         return self.__hash__ == other.__hash__
 
+    # TODO: lanzaboote 를 쓰면 해당 파일이 없음. `/boot/EFI/Linux/nixos-generation-<number>-*.efi  를 지워야하나?  <2025-09-28>
     def remove_boot_entry(self, *, run: bool = False):
         if not self.entry_path.is_file():
             logger.warning(
