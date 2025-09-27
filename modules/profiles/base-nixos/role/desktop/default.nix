@@ -16,6 +16,7 @@
     ./portal-pipewire.nix
     ./via.nix
     ./pipewire-denoise-mic.nix
+    ./seafile.nix
     # ./xremap.nix
   ];
 
