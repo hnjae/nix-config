@@ -23,7 +23,6 @@
 
   systemd.tmpfiles.rules = [
     "d /home/hnjae 0700 hnjae users -"
-    "d /home/hnjae/.cache 0700 hnjae users -"
     "d /home/hnjae/.local/share/containers 0700 hnjae users -"
     "d /home/hnjae/.local/share/baloo 0700 hnjae users -"
     "d /home/hnjae/.local/share/flatpak 0755 hnjae users -"
@@ -288,13 +287,14 @@
             };
           };
 
-          "local/user/cache" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/home/hnjae/.cache";
-              recordsize = "16K";
-            };
-          };
+          # NOTE: `uv` 등 많은 툴이 ~/.cache 가 ~/ 와 동일 볼륨일 것이라고 기대함.  <2025-09-27>
+          # "local/user/cache" = {
+          #   type = "zfs_fs";
+          #   options = {
+          #     mountpoint = "/home/hnjae/.cache";
+          #     recordsize = "16K";
+          #   };
+          # };
           "local/user/baloo" = {
             type = "zfs_fs";
             options = {
