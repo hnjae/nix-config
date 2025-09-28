@@ -102,7 +102,7 @@ def keep_within_period(
     map_: Mapping[Any, set[ZfsSnapshot]] = defaultdict(set)  # pyright: ignore[reportExplicitAny]
     for snapshot in snapshots:
         if _now - snapshot.created > within:
-            pass
+            continue
         map_[GET_KEY_PERIOD[period](snapshot)].add(snapshot)
 
     return {max(map_[key]) for key in map_}  # pyright: ignore[reportAny]
