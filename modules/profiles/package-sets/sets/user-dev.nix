@@ -233,4 +233,6 @@ pkgs:
   pkgs.unstable.gh-copilot
   pkgs.unstable.patchelfStable
   pkgs.unstable.gemini-cli-bin
+  pkgs.unstable.opencode
+  pkgs.unstable.codex # openai
 ])
