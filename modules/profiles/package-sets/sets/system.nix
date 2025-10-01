@@ -1,5 +1,4 @@
 {
-  inputs,
   lib,
   ...
 }:
@@ -25,27 +24,24 @@ pkgs:
   pkgs.pciutils # lspci
   pkgs.usbutils # lsusb
 
-  # Get hardware info
-  pkgs.dmidecode
-  pkgs.lm_sensors
-  pkgs.lshw
-
-  ###############
-  # Requires root privilege
-  ###############
-  pkgs.hdparm # access physical device's firmware, ...
-  pkgs.dosfstools # mkfs.vfat
-  pkgs.powertop
-
   ###############
   # Misc
   ###############
   pkgs.rsbkb # crc32
   pkgs.xxHash
-  pkgs.beep # Advanced PC speaker beeper
-  pkgs.lsb-release
   pkgs.sysstat # iostat
   pkgs.file
+
+  ###############
+  # Access, Configure Hardware
+  ###############
+  pkgs.beep # Advanced PC speaker beeper
+  pkgs.dmidecode
+  pkgs.ethtool
+  pkgs.hdparm # access physical device's firmware, ...
+  pkgs.lm_sensors
+  pkgs.lshw
+  pkgs.powertop
 
   ###############
   # filesystems/progs
@@ -53,12 +49,12 @@ pkgs:
   pkgs.cryptsetup
   pkgs.gptfdisk # cgdisk
   pkgs.btrfs-progs
+  pkgs.dosfstools # mkfs.vfat
   pkgs.e2fsprogs
   pkgs.exfatprogs
   pkgs.f2fs-tools
-  pkgs.udftools
-  pkgs.dosfstools # mkfs.vfat
   pkgs.nfs-utils
+  pkgs.udftools
   pkgs.cifs-utils
   pkgs.sshfs
   pkgs.compsize # calculate btrfs compressed size
@@ -100,7 +96,7 @@ pkgs:
   # some "modern" utils (https://github.com/ibraheemdev/modern-unix)
   ###############
   pkgs.bat
-  pkgs.eza # lsd 는 ANSI color 안써서 eza 쓰자. <2023-10-05; lsd v0.23.1>
+  pkgs.eza # lsd 는 ANSI color 안써니 eza 쓰자. <2023-10-05; lsd v0.23.1>
   pkgs.fd
   pkgs.hexyl # replace od
   pkgs.just
