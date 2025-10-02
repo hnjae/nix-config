@@ -529,6 +529,31 @@
           };
 
           ################
+          # navidrome    #
+          ################
+
+          "safe/apps/navidrome" = {
+            type = "zfs_fs";
+            options = { };
+          };
+
+          "safe/apps/navidrome/music" = {
+            type = "zfs_fs";
+            options = {
+              compression = "off";
+              recordsize = "1M";
+            };
+          };
+
+          "safe/apps/navidrome/data" = {
+            type = "zfs_fs";
+            options = {
+              recordsize = "16K";
+              compression = "lz4";
+            };
+          };
+
+          ################
           # iason        #
           ################
 

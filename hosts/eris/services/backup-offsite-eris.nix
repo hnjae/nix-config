@@ -135,11 +135,13 @@ let
         rustic-zfs -k -p "$PROFILE" -- eris/safe/storage/music
         rustic-zfs -k -p "$PROFILE" -- eris/safe/storage/vault
 
+        # Shared resources
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/garage/meta eris/safe/apps/garage/data eris/safe/apps/postgresql
 
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/freshrss/postgresql eris/safe/apps/freshrss/freshrss
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/readeck/postgresql eris/safe/apps/readeck/readeck
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/iason/config eris/safe/apps/iason/resources
+        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/navidrome/music eris/safe/apps/navidrome/data
 
         # GC seafile before backup
         if podman container exists -- 'seafile-app'; then
