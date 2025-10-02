@@ -4,9 +4,9 @@ lib.flatten [
   pkgs.mkvtoolnix
 
   (with pkgs.unstable; [
-    gpac # modify mp4
-    # hide gpac's desktop file
+    pkgs.unstable.gpac # modify mp4
     (lib.hiPrio (
+      # hide gpac's desktop file
       pkgs.makeDesktopItem {
         name = "gpac";
         desktopName = "This should not be displayed.";
@@ -15,10 +15,11 @@ lib.flatten [
       }
     ))
 
+    beets # organize music collection
+    rsgain # Calculates ReplayGain, use this instead of vorbisgain, mp3gain aacgain
+    flac
     opusTools
     vorbis-tools
-    flac
-    rsgain # Calculates ReplayGain
 
     libheif
     libavif
@@ -32,14 +33,13 @@ lib.flatten [
     imagemagick
 
     pandoc
-
   ])
   pkgs.unstable.realesrgan-ncnn-vulkan # ai
   # pkgs.unstable.openai-whisper # ai
   pkgs.unstable.ocrmypdf
   pkgs.unstable.img2pdf
 
-  pkgs.resources
+  pkgs.resources # pretty system info
   pkgs.unstable.scrcpy # display and control android
 
   pkgs.zathura
