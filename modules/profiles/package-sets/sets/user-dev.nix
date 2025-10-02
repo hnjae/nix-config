@@ -89,7 +89,7 @@ pkgs:
   #######################
   # Markdown/TeX/etc... #
   #######################
-  pkgs.texlivePackages.tex
+  pkgs.texliveMedium
   (with pkgs.unstable; [
     # markdown
     marksman
@@ -135,7 +135,7 @@ pkgs:
   pkgs.unstable.neovim
   pkgs.unstable.neovim-remote
   pkgs.unstable.code-minimap
-  pkgs.unstable.tree-sitter
+  pkgs.unstable.tree-sitter # tree-sitter is required to install parsers (2025-10-01)
   pkgs.unstable.universal-ctags
   pkgs.libsecret # to access org.freedesktop.Secret.Service in neovim config
   # pkgsUnstable.glrnvim
