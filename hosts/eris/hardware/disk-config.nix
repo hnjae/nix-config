@@ -376,15 +376,6 @@
             };
           };
 
-          "safe/storage/music" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/srv/nfs/music";
-              compression = "zle";
-              recordsize = "64K";
-            };
-          };
-
           "safe/storage/vault" = {
             type = "zfs_fs";
             options = {
