@@ -25,6 +25,7 @@
     "d /home/hnjae 0700 hnjae users -"
     "d /home/hnjae/.local/share/containers 0700 hnjae users -"
     "d /home/hnjae/.local/share/baloo 0700 hnjae users -"
+    "d /home/hnjae/.local/share/steam 0700 hnjae users -"
     "d /home/hnjae/.local/share/flatpak 0755 hnjae users -"
     "R /home/hnjae/.local/share/flatpak/.Trash-1000 - - - - "
   ];
@@ -312,6 +313,12 @@
             type = "zfs_fs";
             options = {
               mountpoint = "/home/hnjae/.local/share/flatpak";
+            };
+          };
+          "local/user/steam" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/home/hnjae/.local/share/Steam";
             };
           };
         };

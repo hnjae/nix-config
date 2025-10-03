@@ -16,7 +16,7 @@ lib.flatten [
     ))
 
     beets # organize music collection
-    rsgain # Calculates ReplayGain, use this instead of vorbisgain, mp3gain aacgain
+    rsgain # Calculates ReplayGain, use this instead of vorbisgain, mp3gain and aacgain
     flac
     opusTools
     vorbis-tools
@@ -40,7 +40,7 @@ lib.flatten [
   pkgs.unstable.img2pdf
 
   pkgs.resources # pretty system info
-  pkgs.unstable.scrcpy # display and control android
+  # pkgs.unstable.scrcpy # display and control android
 
   pkgs.zathura
   (lib.hiPrio (
@@ -137,4 +137,5 @@ lib.flatten [
       ln -s "${pkgs.gtk3}/bin/gtk-launch" "$out/bin/gtk-launch"
     '')
   ])
+  pkgs.deadbeef-with-plugins # not in flathub 2025-10-03
 ]
