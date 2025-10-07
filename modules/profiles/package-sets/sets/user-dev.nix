@@ -235,4 +235,5 @@ pkgs:
   pkgs.unstable.gemini-cli-bin
   pkgs.unstable.opencode
   pkgs.unstable.codex # openai
+  pkgs.jqp # TUI playground to experiment with jq
 ])

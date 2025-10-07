@@ -32,7 +32,7 @@ in
           ]
         ))
         (with pkgs.mpvScripts; [
-          # visualizer # visualize audio; CPU 자원 꽤 소모
+          visualizer # visualize audio; CPU 자원 꽤 소모
           vr-reversal
           mpv-cheatsheet # type ? to see keyboard shortcuts
         ])

@@ -137,5 +137,4 @@ lib.flatten [
       ln -s "${pkgs.gtk3}/bin/gtk-launch" "$out/bin/gtk-launch"
     '')
   ])
-  pkgs.deadbeef-with-plugins # not in flathub 2025-10-03
 ]
