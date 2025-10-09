@@ -545,13 +545,35 @@
           };
 
           ################
+          # karakeep    #
+          ################
+
+          "safe/apps/karakeep" = {
+            type = "zfs_fs";
+            options = { };
+          };
+
+          # stores db
+          "safe/apps/karakeep/data" = {
+            type = "zfs_fs";
+            options = {
+              recordsize = "16K";
+              compression = "lz4";
+            };
+          };
+
+          "safe/apps/karakeep/assets" = {
+            type = "zfs_fs";
+            options = { };
+          };
+
+          ################
           # iason        #
           ################
 
           "safe/apps/iason" = {
             type = "zfs_fs";
-            options = {
-            };
+            options = { };
           };
 
           "safe/apps/iason/config" = {
