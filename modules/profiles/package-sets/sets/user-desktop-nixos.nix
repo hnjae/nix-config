@@ -37,8 +37,6 @@ lib.flatten [
     (appimage-run.override {
       extraPkgs =
         pkgs: with pkgs; [
-          libthai
-          # libsecret
         ];
     })
 
