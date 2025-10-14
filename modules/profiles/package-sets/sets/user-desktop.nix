@@ -66,8 +66,20 @@ lib.flatten [
   ))
 
   ##################################
-  # Obsidian Nvim                  #
+  # Obsidian                       #
   ##################################
+
+  # install as linux package to use https://github.com/hideakitai/obsidian-vim-im-control
+  (lib.lists.optional pkgs.config.allowUnfree (
+    pkgs.unstable.obsidian.override {
+      commandLineArgs = builtins.concatStringsSep " " [
+        "--enable-features=UseOzonePlatform"
+        "--ozone-platform-hint=auto"
+        "-enable-wayland-ime"
+        "--wayland-text-input-version=3"
+      ];
+    }
+  ))
   (
     let
       appId = "obsidian-nvim";
