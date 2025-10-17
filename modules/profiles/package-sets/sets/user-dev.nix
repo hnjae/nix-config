@@ -109,10 +109,8 @@ pkgs:
 
     # html formatter
     html-tidy
-
-    # asciidoctor
-    asciidoctor-with-extensions
   ])
+  pkgs.asciidoctor-with-extensions
 
   ######################
   # typst              #

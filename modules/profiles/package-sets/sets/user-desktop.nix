@@ -3,37 +3,36 @@ pkgs:
 lib.flatten [
   pkgs.mkvtoolnix
 
-  (with pkgs.unstable; [
-    pkgs.unstable.gpac # modify mp4
-    (lib.hiPrio (
-      # hide gpac's desktop file
-      pkgs.makeDesktopItem {
-        name = "gpac";
-        desktopName = "This should not be displayed.";
-        exec = ":";
-        noDisplay = true;
-      }
-    ))
+  pkgs.unstable.gpac # modify mp4
+  (lib.hiPrio (
+    # hide gpac's desktop file
+    pkgs.makeDesktopItem {
+      name = "gpac";
+      desktopName = "This should not be displayed.";
+      exec = ":";
+      noDisplay = true;
+    }
+  ))
 
-    beets # organize music collection
-    rsgain # Calculates ReplayGain, use this instead of vorbisgain, mp3gain and aacgain
-    flac
-    opusTools
-    vorbis-tools
+  pkgs.beets # organize music collection, unstable 은 빌드 실패가 잦으니 stable 사용. NixOS 25.10
+  pkgs.unstable.rsgain # Calculates ReplayGain, use this instead of vorbisgain, mp3gain and aacgain
+  pkgs.unstable.flac
+  pkgs.unstable.opusTools
+  pkgs.unstable.vorbis-tools
 
-    libheif
-    libavif
-    libjxl
-    librsvg
+  pkgs.unstable.libheif
+  pkgs.unstable.libavif
+  pkgs.unstable.libjxl
+  pkgs.unstable.librsvg
 
-    zopfli
-    libvmaf
-    libwebp
-    mozjpeg
-    imagemagick
+  pkgs.unstable.zopfli
+  pkgs.unstable.libvmaf
+  pkgs.unstable.libwebp
+  pkgs.unstable.mozjpeg
+  pkgs.unstable.imagemagick
 
-    pandoc
-  ])
+  pkgs.unstable.pandoc
+
   pkgs.unstable.realesrgan-ncnn-vulkan # ai
   # pkgs.unstable.openai-whisper # ai
   pkgs.unstable.ocrmypdf
