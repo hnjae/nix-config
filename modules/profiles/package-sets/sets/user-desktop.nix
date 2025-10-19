@@ -14,7 +14,7 @@ lib.flatten [
     }
   ))
 
-  pkgs.beets # organize music collection, unstable 은 빌드 실패가 잦으니 stable 사용. NixOS 25.10
+  # pkgs.beets # organize music collection, unstable 은 빌드 실패가 잦으니 stable 사용. NixOS 25.10
   pkgs.unstable.rsgain # Calculates ReplayGain, use this instead of vorbisgain, mp3gain and aacgain
   pkgs.unstable.flac
   pkgs.unstable.opusTools
@@ -63,6 +63,7 @@ lib.flatten [
       done
     ''
   ))
+  pkgs.beancount # cli double-entry accounting tool
 
   ##################################
   # Obsidian                       #
