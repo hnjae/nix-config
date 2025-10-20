@@ -37,6 +37,7 @@ lib.flatten [
     (appimage-run.override {
       extraPkgs =
         pkgs: with pkgs; [
+          xorg.libxshmfence # for whooing-1.10.0 2025-10-19
         ];
     })
 

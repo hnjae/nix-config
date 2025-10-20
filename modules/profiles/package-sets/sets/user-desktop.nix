@@ -64,6 +64,8 @@ lib.flatten [
     ''
   ))
   pkgs.beancount # cli double-entry accounting tool
+  pkgs.unstable.beancount-language-server
+  pkgs.unstable.beanprice
 
   ##################################
   # Obsidian                       #
