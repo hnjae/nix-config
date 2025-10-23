@@ -53,7 +53,7 @@
     services.printing = {
       enable = lib.mkOverride 999 true;
       # USE IPP Everywhere instead of specific drivers whenever possible
-      drivers = with pkgs; [
+      drivers = [
         # brlaser
         # brgenml1lpr
         # brgenml1cupswrapper
@@ -61,6 +61,14 @@
       ];
       cups-pdf.enable = true;
     };
+
+    # Scanner
+    hardware.sane.enable = true;
+    hardware.sane.extraBackends = [ pkgs.sane-airscan ];
+    services.udev.packages = [ pkgs.sane-airscan ];
+    hardware.sane.disabledDefaultBackends = [ "escl" ]; # disable escl and use airscan
+    # services.ipp-usb.enable = true;
+
     programs.gnupg.agent.enable = lib.mkOverride 999 true;
 
     documentation.dev.enable = lib.mkOverride 999 true;

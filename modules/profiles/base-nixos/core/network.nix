@@ -59,10 +59,7 @@ in
 
   };
 
-  services.avahi = {
-    enable = mkOverride 999 false;
-    nssmdns4 = mkOverride 999 false;
-    openFirewall = mkOverride 999 false;
-    # nssmdns6 = false;
-  };
+  networking.firewall.allowedUDPPorts = [ 5353 ]; # open mDNS port
+
+  services.avahi.enable = false;
 }
