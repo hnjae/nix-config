@@ -8,7 +8,6 @@
 }:
 let
   cfg = config.base-nixos;
-  inherit (lib.lists) optional;
 in
 {
   security.sudo.wheelNeedsPassword = lib.mkOverride 999 false;
@@ -32,12 +31,16 @@ in
         config.services.locate.enable && (lib.hasPrefix "plocate" config.services.locate.package.name)
       ) "plocate")
       (lib.lists.optionals (cfg.role == "desktop") (
-        builtins.concatLists [
+        lib.flatten [
           # NOTE: docker/podman 을 유저가 sudo 없이 실행하는건 bad practice 임
-          (optional config.networking.networkmanager.enable "networkmanager")
-          (optional config.hardware.i2c.enable "i2c")
-          (optional config.programs.adb.enable "adbusers")
-          (optional config.virtualisation.libvirtd.enable "libvirtd")
+          (lib.lists.optional config.networking.networkmanager.enable "networkmanager")
+          (lib.lists.optional config.hardware.i2c.enable "i2c")
+          (lib.lists.optional config.programs.adb.enable "adbusers")
+          (lib.lists.optional config.virtualisation.libvirtd.enable "libvirtd")
+          (lib.lists.optionals config.hardware.sane.enable [
+            "scanner"
+            "lp"
+          ])
         ]
       ))
     ];

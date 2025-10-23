@@ -25,8 +25,7 @@
         Gateway = "192.168.0.1";
         Address = "192.168.0.200/16";
         LLMNR = "resolve";
-        MulticastDNS = true; # 이거 끄고 avahi 만 키면 `.local` resolve 안됨. 근데 avahi 에서 중복이라고 불평하는디..
-        # avahi-daemon[2062]: *** WARNING: Detected another IPv4 mDNS stack running on this host. This makes mDNS unreliable and is thus not recommended. ***
+        MulticastDNS = true;
       };
     };
 
@@ -45,11 +44,5 @@
     #       MulticastDNS = true; # avahi 필요함. 되었다가 안되었다가 함.
     #     };
     #   };
-  };
-
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    nssmdns6 = false;
   };
 }

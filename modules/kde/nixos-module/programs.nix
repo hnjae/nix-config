@@ -1,5 +1,9 @@
 { pkgs, ... }:
 {
+  users.users.hnjae.packages = with pkgs; [
+    kdePackages.skanpage
+  ];
+
   environment.systemPackages = with pkgs; [
     unrar
     konsave
