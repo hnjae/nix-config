@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 {
@@ -49,7 +50,17 @@
 
     # provides org.freedesktop.upower interface
     services.upower.enable = lib.mkOverride 999 true;
-    services.printing.enable = lib.mkOverride 999 true;
+    services.printing = {
+      enable = lib.mkOverride 999 true;
+      # USE IPP Everywhere instead of specific drivers whenever possible
+      drivers = with pkgs; [
+        # brlaser
+        # brgenml1lpr
+        # brgenml1cupswrapper
+        # gutenprint
+      ];
+      cups-pdf.enable = true;
+    };
     programs.gnupg.agent.enable = lib.mkOverride 999 true;
 
     documentation.dev.enable = lib.mkOverride 999 true;
