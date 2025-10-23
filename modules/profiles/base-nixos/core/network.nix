@@ -50,16 +50,19 @@ in
       "2620:fe::fe:10"
     ];
     llmnr = "resolve";
+
+    # NixOS 25.05: systemd-resolved 는 mDNS 를 지원한다고 하지만, responder 로서는 동작 안하는데?
+    # man 5 resolved.conf
+    extraConfig = ''
+      MulticastDNS=yes
+    '';
+
   };
 
-  # NOTE: NixOS 25.05
-  # From systemd-resolved.service: <NixOS 25.05>
-  # > mDNS-IPv4: There appears to be another mDNS responder running, or previously systemd-resolved crashed with some outstanding transfers.
-  # systemd-resolved 랑 avahi-daemon 이 충돌하는 듯. 근데 avahi-daemon 안키면, *.local 도메인 resolve 가 안됨.
-  # 일단 avahi 를 끄고, systemd-resolved 만 쓰도록 설정.
   services.avahi = {
     enable = mkOverride 999 false;
-    # nssmdns4 = mkOverride 999 true;
+    nssmdns4 = mkOverride 999 false;
+    openFirewall = mkOverride 999 false;
     # nssmdns6 = false;
   };
 }
