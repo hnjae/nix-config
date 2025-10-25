@@ -82,7 +82,7 @@ in
         CPUSchedulingPolicy = "idle";
         IOSchedulingClass = "idle";
         ExecStart = lib.escapeShellArgs [
-          "${package}/bin/${serviceName}}"
+          "${package}/bin/${serviceName}"
           "--run"
           "--delete-older-than-days"
           (toString cfg.keepDays)
