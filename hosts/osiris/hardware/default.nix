@@ -13,6 +13,8 @@
     ./gpu.nix
     ./initrd.nix
     ./power.nix
+
+    ./scanner.nix
   ];
 
   ############
