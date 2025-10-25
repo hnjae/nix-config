@@ -235,6 +235,12 @@
               mountpoint = "/var/lib/containers";
             };
           };
+          "local/var.lib/cups" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "/var/lib/cups";
+            };
+          };
           "local/var.lib/fprint" = {
             type = "zfs_fs";
             options = {
