@@ -181,4 +181,5 @@ pkgs:
   pkgs.rsync
   pkgs.man-pages
   pkgs.man-pages-posix
+  pkgs.nmap
 ])
