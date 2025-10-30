@@ -11,6 +11,7 @@ pkgs:
 
   pkgs.unstable.editorconfig-checker
   pkgs.unstable.harper # grammar checker for developers
+  pkgs.unstable.claude-code
 
   ######################
   # Git                #
@@ -89,7 +90,7 @@ pkgs:
   #######################
   # Markdown/TeX/etc... #
   #######################
-  pkgs.texliveMedium
+  pkgs.texliveFull
   (with pkgs.unstable; [
     # markdown
     marksman
