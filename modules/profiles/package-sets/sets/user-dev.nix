@@ -11,7 +11,6 @@ pkgs:
 
   pkgs.unstable.editorconfig-checker
   pkgs.unstable.harper # grammar checker for developers
-  pkgs.unstable.claude-code
 
   ######################
   # Git                #
@@ -25,18 +24,16 @@ pkgs:
   ######################
   # nix                #
   ######################
-  (with pkgs.unstable; [
-    nil # lsp
-    # nixpkgs-lint # nix linter
-    statix # nix linter
-    deadnix # nix linter
-    nixfmt-rfc-style # nix formatter
-    hydra-check
-    shellify # make shell.nix, flake.nix based on nix-shell
-    nurl # create nix fetche calls from repository URLs
-    nix-init # auto-generate nix stderivation
-    # comma # run nixpkgs' pkg with , (comma) (use nix-index-database's)
-  ])
+  pkgs.unstable.nil # lsp
+  # pkgs.unstable.nixpkgs-lint # nix linter
+  pkgs.unstable.statix # nix linter
+  pkgs.unstable.deadnix # nix linter
+  pkgs.unstable.nixfmt-rfc-style # nix formatter
+  pkgs.unstable.hydra-check
+  pkgs.unstable.shellify # make shell.nix, flake.nix based on nix-shell
+  pkgs.unstable.nurl # create nix fetche calls from repository URLs
+  pkgs.unstable.nix-init # auto-generate nix stderivation
+  # pkgs.unstable.comma # run nixpkgs' pkg with , (comma) (use nix-index-database's)
   pkgs.sops
   # pkgs.deploy-rs
   inputs.deploy-rs.packages.${pkgs.system}.default
@@ -45,14 +42,12 @@ pkgs:
   ######################
   # bash
   ######################
-  (with pkgs.unstable; [
-    checkbashisms
-    shellharden
-    shfmt
-    beautysh
-    shellcheck # shellcheck is deprecated over bashls in none-ls
-    bash-language-server
-  ])
+  pkgs.unstable.checkbashisms
+  pkgs.unstable.shellharden
+  pkgs.unstable.shfmt
+  pkgs.unstable.beautysh
+  pkgs.unstable.shellcheck # shellcheck is deprecated over bashls in none-ls
+  pkgs.unstable.bash-language-server
 
   ######################
   # Python             #
@@ -71,11 +66,9 @@ pkgs:
   # Lua                #
   ######################
   pkgs.lua
-  (with pkgs.unstable; [
-    selene
-    stylua
-    sumneko-lua-language-server
-  ])
+  pkgs.unstable.selene
+  pkgs.unstable.stylua
+  pkgs.unstable.lua-language-server
 
   ######################
   # NodeJS             #
@@ -230,9 +223,10 @@ pkgs:
   pkgs.unstable.tgpt # support openai, ollma https://github.com/aandrew-me/tgpt
   pkgs.unstable.gh # github cli
   pkgs.unstable.gh-copilot
-  pkgs.unstable.patchelfStable
+  pkgs.unstable.patchelf
+  pkgs.unstable.claude-code
+  pkgs.unstable.codex # openai
   pkgs.unstable.gemini-cli-bin
   pkgs.unstable.opencode
-  pkgs.unstable.codex # openai
   pkgs.jqp # TUI playground to experiment with jq
 ])
