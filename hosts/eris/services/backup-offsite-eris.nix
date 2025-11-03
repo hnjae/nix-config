@@ -132,7 +132,6 @@ let
         #   rustic-zfs -k -p "$PROFILE" --  "''${ds[@]}"
         # done
 
-        rustic-zfs -k -p "$PROFILE" -- eris/safe/storage/music
         rustic-zfs -k -p "$PROFILE" -- eris/safe/storage/vault
 
         # Shared resources
