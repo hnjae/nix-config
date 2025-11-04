@@ -1,6 +1,7 @@
 {
   imports = [
     ./backup-offsite-eris.nix
+    ./nextdns-link-ip-encrypted
     ./plocate.nix
     ./rustic-maintenance-onedrive.nix
     ./tailscale.nix
