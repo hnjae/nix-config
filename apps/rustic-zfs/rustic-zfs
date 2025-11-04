@@ -195,6 +195,7 @@ run_backup() {
     "--tag=${id_},${dataset}"
     # --no-require-git
     "--exclude-if-present=CACHEDIR.TAG"
+    "--exclude-if-present=NOBACKUP.TAG"
     "--group-by=label" # zfs dataset 명이 label 이 되는데, 이것만을 기준점으로 삼자.
     "--as-path=/"
     "--use-profile=${profile}"
