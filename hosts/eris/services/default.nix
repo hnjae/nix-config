@@ -4,6 +4,7 @@
     ./nextdns-link-ip-encrypted
     ./plocate.nix
     ./rustic-maintenance-onedrive.nix
+    ./systemd-resolved-encrypted.nix
     ./tailscale.nix
     ./zfs-maintenance.nix
     ./zfs-replication-eris.nix
