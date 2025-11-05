@@ -132,7 +132,9 @@ let
         #   rustic-zfs -k -p "$PROFILE" --  "''${ds[@]}"
         # done
 
-        rustic-zfs -k -p "$PROFILE" -- eris/safe/storage/vault
+        # rustic-zfs -k -p "$PROFILE" -- eris/safe/storage/vault
+        rustic backup --use-profile "${PROFILE}" --no-progress --one-file-system --no-scan --log-level info --ignore-devid --group-by label --label '/srv/nfs/vault/Pictures' --as-path '/Pictures' --long -- '/srv/nfs/vault/Pictures'
+        rustic backup --use-profile "${PROFILE}" --no-progress --one-file-system --no-scan --log-level info --ignore-devid --group-by label --label '/srv/nfs/vault/Library' --as-path '/Library' --long -- '/srv/nfs/vault/Library'
 
         # Shared resources
         rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/garage/meta eris/safe/apps/garage/data eris/safe/apps/postgresql
