@@ -1,7 +1,7 @@
 {
   imports = [
     ./backup-offsite-eris.nix
-    ./nextdns-link-ip-encrypted
+    ./nextdns-link-ip-encrypted.nix
     ./plocate.nix
     ./rustic-maintenance-onedrive.nix
     ./systemd-resolved-encrypted.nix
