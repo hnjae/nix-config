@@ -111,7 +111,7 @@ pkgs:
   ######################
   pkgs.unstable.typst
   pkgs.unstable.tinymist
-  pkgs.unstable.typstfmt
+  # pkgs.unstable.typstyle
 
   ######################
   # DB                 #
