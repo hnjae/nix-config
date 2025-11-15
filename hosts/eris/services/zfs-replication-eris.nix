@@ -188,14 +188,14 @@ in
       snapshotting = {
         type = "periodic";
         prefix = "zrepl_";
-        interval = "1h";
+        interval = "90m";
         timestamp_format = "iso-8601";
       };
       pruning = {
         keep = [
           {
             type = "grid";
-            grid = "1x1h(keep=all) | 24x1h | 10x1d | 4x7d";
+            grid = "1x1h(keep=all) | 24x1h | 7x1d";
             regex = "^(zrepl|rustic)_.*";
           }
           {
