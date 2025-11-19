@@ -4,6 +4,8 @@
     "/secrets".neededForBoot = true;
   };
 
+  boot.tmp.useTmpfs = true;
+
   /*
      NixOS 25.05:
 
@@ -381,15 +383,6 @@
             options = {
               mountpoint = "/srv/nfs/vault";
               compression = "zstd";
-              recordsize = "1M";
-            };
-          };
-
-          "safe/storage/rustic-local-head" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/srv/rustic-local";
-              compression = "off";
               recordsize = "1M";
             };
           };
