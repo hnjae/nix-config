@@ -22,7 +22,11 @@
   ############
   nixpkgs.hostPlatform = "x86_64-linux";
   boot.kernelModules = [ "kvm-amd" ];
-  boot.kernelParams = [ "amd_pstate=passive" ];
+  boot.kernelParams = [
+    # https://wiki.gentoo.org/wiki/Power_management/Processor/en
+    # "amd_pstate=passive"
+    "amd_pstate.shared_mem=1" # zen-2
+  ];
 
   # 6C12T
   nix.settings.max-jobs = 4;
