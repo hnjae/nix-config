@@ -42,10 +42,7 @@
       url = "github:nix-community/lanzaboote";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
         rust-overlay.follows = "rust-overlay";
-        flake-compat.follows = "";
-        pre-commit-hooks-nix.follows = "";
       };
     };
     disko = {
