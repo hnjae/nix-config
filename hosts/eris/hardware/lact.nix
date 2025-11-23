@@ -24,10 +24,23 @@
       disable_clocks_cleanup: false
     apply_settings_timer: 5
     gpus:
-      1002:73DF-1EAE:6606-0000:09:00.0:
-        fan_control_enabled: false
-        performance_level: auto
-        voltage_offset: -100
+      1002:67FF-1682:9550-0000:0a:00.0:
+        fan_control_enabled: true
+        fan_control_settings:
+          mode: curve
+          static_speed: 0.5
+          temperature_key: edge
+          interval_ms: 500
+          curve:
+            40: 0.0
+            50: 0.0
+            60: 0.4
+            70: 0.75
+            80: 1.0
+          spindown_delay_ms: 0
+          change_threshold: 0
+        performance_level: low
+        voltage_offset: -2
     current_profile: null
   '';
 }
