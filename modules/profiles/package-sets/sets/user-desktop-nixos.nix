@@ -58,7 +58,7 @@ lib.flatten [
   pkgs.qdirstat
 
   (lib.lists.optionals pkgs.config.allowUnfree [
-    pkgs.davinci-resolve
+    # pkgs.davinci-resolve
     pkgs.my.cider-2
     pkgs.unstable.warp-terminal
   ])
