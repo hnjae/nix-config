@@ -1,13 +1,12 @@
 {
   config,
-  inputs,
   modulesPath,
   ...
 }:
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-    inputs.nixos-hardware.nixosModules.common-cpu-amd # includes `updateMicrocoder`
+
     ./bootloader.nix
     ./disk-config.nix
     ./gpu.nix
