@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 {
   # TODO: set aspm to l1 or l0s <2025-08-30>
   boot.kernelParams = [
@@ -19,13 +19,13 @@
   ];
 
   # load module at stage2
-  boot.kernelModules = [
-    "ryzen-smu"
-  ];
+  # boot.kernelModules = [
+  #   "ryzen-smu"
+  # ];
 
-  boot.extraModulePackages = with config.boot.kernelPackages; [
-    ryzen-smu
-  ];
+  # boot.extraModulePackages = with config.boot.kernelPackages; [
+  #   ryzen-smu
+  # ];
 
   services.udev.extraRules = ''
     SUBSYSTEM=="scsi_host", ACTION=="add", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"

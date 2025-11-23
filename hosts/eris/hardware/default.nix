@@ -16,21 +16,22 @@
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
+  # boot.kernelPackages = pkgs.linuxPackages_6_12;
 
   ############
   # CPU
   ############
   nixpkgs.hostPlatform = "x86_64-linux";
   boot.kernelModules = [ "kvm-amd" ];
-  boot.kernelParams = [
-    # https://wiki.gentoo.org/wiki/Power_management/Processor/en
-    # "amd_pstate=passive"
-    "amd_pstate.shared_mem=1" # zen-2
-  ];
+  boot.kernelParams = [ "amd_pstate=active" ]; # 2025-11-22: 왜 pstate 안먹냐..
+  # services.auto-epp = {
+  #   enable = true;
+  #   settings.Settings.epp_state_for_BAT =
+  # };
 
-  # 6C12T
+  # 8C16T
   nix.settings.max-jobs = 4;
-  nix.settings.cores = 6;
+  nix.settings.cores = 8;
 
   hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
 }
