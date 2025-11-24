@@ -11,6 +11,7 @@
     ./disk-config.nix
     ./gpu.nix
     ./initrd.nix
+
     ./power.nix
 
     ./scanner.nix
