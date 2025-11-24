@@ -91,6 +91,10 @@ pkgs:
       ];
     }
   ))
+  pkgs.iftop
+  pkgs.iotop
+  pkgs.sysdig
+  # config.boot.kernelPackages.perf
 
   ###############
   # some "modern" utils (https://github.com/ibraheemdev/modern-unix)
