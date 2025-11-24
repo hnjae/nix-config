@@ -1,9 +1,26 @@
 { pkgs, ... }:
 {
-  hardware.amdgpu.overdrive.enable = true;
+  environment.defaultPackages = with pkgs; [
+    amdgpu_top
+    nvtopPackages.amd
+
+    # infos
+    clinfo # opencl
+    glxinfo
+    vulkan-tools
+    libva-utils
+  ];
+
+  hardware.amdgpu = {
+    initrd.enable = false;
+    amdvlk.enable = true;
+    opencl.enable = false;
+  };
+
   # services.lact = { # Use this module in NixOS 25.11
   #   enable = true;
   # };
+  hardware.amdgpu.overdrive.enable = true;
 
   environment.systemPackages = [ pkgs.lact ];
   systemd.packages = [ pkgs.lact ];

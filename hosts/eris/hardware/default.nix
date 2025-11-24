@@ -10,8 +10,8 @@
 
     ./bootloader.nix
     ./disk-config.nix
+    ./gpu.nix
     ./initrd.nix
-    ./lact.nix
     ./network.nix
     ./power.nix
   ];
