@@ -16,6 +16,7 @@ in
     systemd.services.${serviceName} = {
       inherit documentation;
       inherit description;
+      path = lib.lists.optional config.boot.zfs.enabled pkgs.zfs;
 
       serviceConfig = {
         Type = "oneshot";
