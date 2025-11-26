@@ -6,10 +6,10 @@
 {
   self,
   pkgs,
+  config,
   ...
 }:
 let
-  PROFILE = "/secrets/rustic-onedrive/rustic";
   serviceName = "backup-offsite-eris";
 
   script = pkgs.writeShellApplication {
@@ -26,14 +26,30 @@ let
     text = ''
       set -Eeuo pipefail
 
+      log() { printf '[%s] %s\n' "$1" "$2" >&2; }
+
+      if [ "''${EUID:-$UID}" != 0 ]; then
+        log ERROR "This script must be run as root"
+        exit 1
+      fi
+
+      if [ ! -f "${config.sops.secrets."env-restic-onedrive".path}" ]; then
+        log ERROR "Secrets file not found: ${config.sops.secrets."env-restic-onedrive".path}"
+        exit 1
+      fi
+
+      # set -a: 이후 설정되는 모든 변수를 자동으로 export
+      set -a
+      # https://www.shellcheck.net/wiki/SC1091
+      # shellcheck source=/dev/null
+      source "${config.sops.secrets."env-restic-onedrive".path}"
+      set +a
+
       PATH="''${PATH}:/run/booted-system/sw/bin" # podman 등에서 zfs 명령어를 찾을수 있도록 함.
       readonly LOCK_TIMEOUT="3600"
-      readonly LOCKFILE_1="/var/lock/rustic-onedrive.lock" # rustic-onedrive lock
+      readonly LOCKFILE_1="/var/lock/restic-onedrive.lock" # restic-onedrive lock
       readonly LOCKFILE_2="/var/lock/zpool-eris.lock" # eris pool lock
 
-      readonly PROFILE='${PROFILE}'
-
-      log() { printf '[%s] %s\n' "$1" "$2" >&2; }
 
       release_lock() {
         local lock="$1" fdvar="$2"
@@ -86,13 +102,13 @@ let
       }
 
       check_cond() {
-        if [ "''${EUID:-$UID}" != 0 ]; then
-          log ERROR "This script must be run as root"
+        if [ "''${RUSTIC_USE_PROFILE:-}" = "" ] && [ "''${RUSTIC_REPOSITORY:-}" = "" ]; then
+          log ERROR "Either RUSTIC_USE_PROFILE or RUSTIC_REPOSITORY environment variable must be set"
           exit 1
         fi
 
-        if [ ! -f "$PROFILE.toml" ]; then
-          log ERROR "$PROFILE.toml does not exists"
+        if [ "''${RUSTIC_USE_PROFILE:-}" != "" ] && [ ! -f "$RUSTIC_USE_PROFILE.toml" ]; then
+          log ERROR "$RUSTIC_USE_PROFILE.toml does not exists"
           exit 1
         fi
 
@@ -132,25 +148,35 @@ let
         #   rustic-zfs -k -p "$PROFILE" --  "''${ds[@]}"
         # done
 
-        # rustic-zfs -k -p "$PROFILE" -- eris/safe/storage/vault
-        rustic backup --use-profile "${PROFILE}" --no-progress --one-file-system --no-scan --log-level info --ignore-devid --group-by label --label '/srv/nfs/vault/Pictures' --as-path '/Pictures' --long -- '/srv/nfs/vault/Pictures'
-        rustic backup --use-profile "${PROFILE}" --no-progress --one-file-system --no-scan --log-level info --ignore-devid --group-by label --label '/srv/nfs/vault/Library' --as-path '/Library' --long -- '/srv/nfs/vault/Library'
+        set +e
+        if [ -d "/srv/nfs/vault/Pictures" ]; then
+          rustic backup --no-progress --one-file-system --no-scan --log-level info --ignore-devid --group-by "host,paths" --long -- '/srv/nfs/vault/Pictures'
+        else
+          log ERROR "/srv/nfs/vault/Pictures does not exists. Skipping..."
+        fi
+
+        if [ -d "/srv/nfs/vault/Library" ]; then
+          rustic backup --no-progress --one-file-system --no-scan --log-level info --ignore-devid --group-by "host,paths" --long -- '/srv/nfs/vault/Library'
+        else
+          log ERROR "/srv/nfs/vault/Library does not exists. Skipping..."
+        fi
 
         # Shared resources
-        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/garage/meta eris/safe/apps/garage/data eris/safe/apps/postgresql
+        rustic-zfs -- eris/safe/apps/garage/meta eris/safe/apps/garage/data eris/safe/apps/postgresql
+        rustic-zfs -- eris/safe/apps/freshrss/postgresql eris/safe/apps/freshrss/freshrss
+        rustic-zfs -- eris/safe/apps/iason/config eris/safe/apps/iason/resources
+        rustic-zfs -- eris/safe/apps/karakeep/data eris/safe/apps/karakeep/assets
 
-        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/freshrss/postgresql eris/safe/apps/freshrss/freshrss
-        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/iason/config eris/safe/apps/iason/resources
-        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/karakeep/data eris/safe/apps/karakeep/assets
-
-        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/navidrome/music eris/safe/apps/navidrome/data
-        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/readeck/postgresql eris/safe/apps/readeck/readeck
+        rustic-zfs -- eris/safe/apps/navidrome/music eris/safe/apps/navidrome/data
+        rustic-zfs -- eris/safe/apps/readeck/postgresql eris/safe/apps/readeck/readeck
 
         # GC seafile before backup
         if podman container exists -- 'seafile-app'; then
           podman exec -- 'seafile-app' '/opt/seafile/seafile-server-latest/seaf-gc.sh'
         fi
-        rustic-zfs -k -p "$PROFILE" -- eris/safe/apps/seafile/data eris/safe/apps/seafile/mysql
+
+        rustic-zfs -- eris/safe/apps/seafile/data eris/safe/apps/seafile/mysql
+        set -e
       }
 
       main
