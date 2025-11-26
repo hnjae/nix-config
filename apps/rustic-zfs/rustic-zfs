@@ -14,7 +14,6 @@ _random="$(pwgen --no-capitalize --secure 6 1)"
 id_="${_date}_${_random}"
 declare -A dataset_mountpoint
 snapshot_name="_rustic_${id_}"
-profile=""
 ignore_file=""
 glob_file=""
 iglob_file=""
@@ -24,7 +23,7 @@ debug=false
 
 usage() {
   cat <<EOF
-Usage: $(basename -- "$0") [-n] [-f] [-d] [-k] [-g glob-file] [-i iglob-file] [-c ignore-file] -p <profile> [--] <dataset>...
+Usage: $(basename -- "$0") [-n] [-f] [-d] [-k] [-g glob-file] [-i iglob-file] [-c ignore-file] [--] <dataset>...
        $(basename -- "$0") -h
 
 ZFS dataset backup tool using rustic
@@ -45,13 +44,12 @@ Options:
   -c <ignore-file>  Custom ignore-file path (Uses .gitignore-like style)
   -g <glob-file>    File with glob patterns for including/excluding backup files
   -i <iglob-bfile>  File with case-insensitive glob patterns for including/excluding backup files
-  -p <profile>      Rustic profile name (without .toml extension)
   -h                Show this help message
 EOF
   exit 1
 }
 
-while getopts ":c:i:g:p:nkdh" opt; do
+while getopts ":c:i:g:nkdh" opt; do
   case ${opt} in
   h)
     usage
@@ -74,9 +72,6 @@ while getopts ":c:i:g:p:nkdh" opt; do
   c)
     ignore_file=$OPTARG
     ;;
-  p)
-    profile=$OPTARG
-    ;;
   \?)
     echo "Invalid Option: -$OPTARG" 1>&2
     usage
@@ -91,7 +86,6 @@ shift $((OPTIND - 1))
 datasets=("$@")
 
 [ "${#datasets[@]}" -eq 0 ] && usage
-[ "$profile" == "" ] && usage
 
 check_cond() {
   if [ "$UID" != 0 ]; then
@@ -99,8 +93,13 @@ check_cond() {
     exit 1
   fi
 
-  if [ ! -f "${profile}.toml" ]; then
-    echo "[ERROR] ${profile}.toml does not exists." >&2
+  if [ "${RUSTIC_USE_PROFILE:-}" = "" ] && [ "${RUSTIC_REPOSITORY:-}" = "" ]; then
+    log ERROR "Either RUSTIC_USE_PROFILE or RUSTIC_REPOSITORY environment variable must be set"
+    exit 1
+  fi
+
+  if [ "${RUSTIC_USE_PROFILE:-}" != "" ] && [ ! -f "$RUSTIC_USE_PROFILE.toml" ]; then
+    log ERROR "$RUSTIC_USE_PROFILE.toml does not exists"
     exit 1
   fi
 
@@ -192,15 +191,15 @@ run_backup() {
     --ignore-devid # NOTE: devid 는 ZFS snapshot 에 따라 다름.
     --one-file-system
     --git-ignore
-    "--tag=${id_},${dataset}"
+    "--tag=${id_}"
+    # "--tag=${id_},${dataset}"
     # --no-require-git
     "--exclude-if-present=CACHEDIR.TAG"
     "--exclude-if-present=NOBACKUP.TAG"
-    "--group-by=label" # zfs dataset 명이 label 이 되는데, 이것만을 기준점으로 삼자.
-    "--as-path=/"
-    "--use-profile=${profile}"
-    "--no-progress" # 가끔 zombie 프로세스가 되는 경우가 있는데 no-progress 하면 안 그런 듯.  <2025-07-27>
-    "--no-scan"     # progress 안보이니 scan 을 할 필요가 없음.
+    "--group-by=host,paths"                       # restic 과 compatible 할수 있도록.
+    "--as-path=${dataset_mountpoint["$dataset"]}" # restic 과 compatible 할수 있도록.
+    "--no-progress"                               # 가끔 zombie 프로세스가 되는 경우가 있는데 no-progress 하면 안 그런 듯.  <2025-07-27>
+    "--no-scan"                                   # progress 안보이니 scan 을 할 필요가 없음.
     "--long"
     # "--json"        # 출력 결과 json 으로 (`--long` 대신 사용)
   )
@@ -222,7 +221,7 @@ run_backup() {
   fi
 
   rustic_backup_args+=(
-    "--label=${dataset}"
+    # "--label=${dataset}" # restic 에서는 --label 옵션이 없음.
     "--time=${snapshot_time}"
     "--"
     "$snapshot_dir"

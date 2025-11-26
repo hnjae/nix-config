@@ -3,7 +3,6 @@
     ./backup-offsite-eris.nix
     ./nextdns-link-ip-encrypted.nix
     ./plocate.nix
-    ./rustic-maintenance-onedrive.nix
     ./systemd-resolved-encrypted.nix
     ./tailscale.nix
     ./zfs-maintenance.nix
