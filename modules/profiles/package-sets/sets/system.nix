@@ -182,6 +182,7 @@ pkgs:
   pkgs.wireguard-tools
   pkgs.rclone
   pkgs.rustic
+  pkgs.restic
   pkgs.rsync
   pkgs.man-pages
   pkgs.man-pages-posix
