@@ -103,10 +103,10 @@
     apply_settings_timer: 5
     gpus:
       1002:73DF-1EAE:6606-0000:09:00.0:
-        power_cap: 174.0
         fan_control_enabled: false
         performance_level: auto
-        voltage_offset: -100
+        voltage_offset: -50
     current_profile: null
   '';
+  # power_cap: 163.0
 }
