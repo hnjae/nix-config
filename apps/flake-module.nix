@@ -13,9 +13,13 @@
       apps = {
         luks-benchmark = {
           type = "app";
-          program = pkgs.writeShellScript "luks-benchmark" ''
-            ${pkgs.cryptsetup}/bin/cryptsetup benchmark
-          '';
+          program =
+            let
+              script = pkgs.writeShellScript "luks-benchmark" ''
+                ${pkgs.cryptsetup}/bin/cryptsetup benchmark
+              '';
+            in
+            "${script}/bin/luks-benchmark";
         };
 
         btrfs-benchmark =
