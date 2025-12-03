@@ -95,7 +95,7 @@ in
           CPUSchedulingPolicy = "idle";
           IOSchedulingClass = "idle";
           ExecStart = lib.escapeShellArgs [
-            "${self.packages.${pkgs.system}.zfs-snapshot-prune}/bin/zfs-snapshot-prune"
+            "${self.packages.${pkgs.stdenv.hostPlatform.system}.zfs-snapshot-prune}/bin/zfs-snapshot-prune"
             "--keep-last"
             "1"
             "--keep-within-hourly"

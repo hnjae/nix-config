@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (pkgs.hostPlatform) isLinux isDarwin isx86_64;
+  inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin isx86_64;
 in
 {
   programs.mpv = {

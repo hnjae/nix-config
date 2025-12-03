@@ -36,8 +36,8 @@ pkgs:
   # pkgs.unstable.comma # run nixpkgs' pkg with , (comma) (use nix-index-database's)
   pkgs.sops
   # pkgs.deploy-rs
-  inputs.deploy-rs.packages.${pkgs.system}.default
-  inputs.yaml2nix.packages.${pkgs.system}.default
+  inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
+  inputs.yaml2nix.packages.${pkgs.stdenv.hostPlatform.system}.default
 
   ######################
   # bash

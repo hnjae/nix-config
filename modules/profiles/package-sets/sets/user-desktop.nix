@@ -111,8 +111,8 @@ lib.flatten [
   ##################################
   # MISC                           #
   ##################################
-  (lib.lists.optionals pkgs.hostPlatform.isLinux [
-    pkgs.poppler_utils # pdftotext
+  (lib.lists.optionals pkgs.stdenv.hostPlatform.isLinux [
+    pkgs.poppler-utils # pdftotext
     pkgs.clipboard-jh
     pkgs.handlr-regex
     # (lib.hiPrio (

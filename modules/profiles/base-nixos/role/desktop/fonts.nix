@@ -39,8 +39,7 @@
         pretendard-jp
         my.fonts-freesentation
 
-        # noto-fonts
-        noto-fonts-extra
+        noto-fonts
         noto-fonts-cjk-sans
         noto-fonts-cjk-serif
 

@@ -8,10 +8,10 @@ let
 in
 {
   # NOTE: man 5 systemd.conf.d <2023-10-06>
-  systemd.extraConfig = ''
-    DefaultTimeoutStartSec=${timeoutStart}s
-    DefaultTimeoutStopSec=${timeoutStop}s
-  '';
+  systemd.settings.Manager = {
+    "DefaultTimeoutStartSec" = "${timeoutStart}s";
+    "DefaultTimeoutStopSec" = "${timeoutStop}s";
+  };
 
   # man 5 systemd-user.conf
   # https://www.freedesktop.org/software/systemd/man/latest/systemd-user.conf.html

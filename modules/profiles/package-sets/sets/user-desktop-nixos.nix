@@ -23,7 +23,7 @@ lib.flatten [
 
     # infos
     clinfo # opencl
-    glxinfo
+    mesa-demos # glxinfo
     vulkan-tools
     wayland-utils
     libva-utils
@@ -62,7 +62,7 @@ lib.flatten [
     pkgs.my.cider-2
     pkgs.unstable.warp-terminal
   ])
-  (lib.lists.optionals pkgs.hostPlatform.isLinux [
+  (lib.lists.optionals pkgs.stdenv.hostPlatform.isLinux [
     pkgs.wezterm
     pkgs.unstable.ghostty
     (pkgs.runCommandLocal "kitten" { } ''

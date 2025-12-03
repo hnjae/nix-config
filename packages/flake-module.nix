@@ -63,11 +63,11 @@ in
     # 다만, overlays 단에서 unfree 를 필터링함으로, 의도하지 않은 unfree 패키지가 설치될 일은 없을것으로 기대된다.
     overlays.default = _: prev: {
       my =
-        if (builtins.hasAttr prev.stdenv.system self.packages) then
+        if (builtins.hasAttr prev.stdenv.hostPlatform.system self.packages) then
           (builtins.mapAttrs (_: drv: drv) (
             prev.lib.filterAttrs (
               _: derivation: (prev.config.allowUnfree || (!derivation.meta.unfree))
-            ) self.packages.${prev.stdenv.system}
+            ) self.packages.${prev.stdenv.hostPlatform.system}
           ))
         else
           { };
