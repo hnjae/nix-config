@@ -6,14 +6,13 @@
 
     # infos
     clinfo # opencl
-    glxinfo
+    mesa-demos # glxinfo
     vulkan-tools
     libva-utils
   ];
 
   hardware.amdgpu = {
     initrd.enable = false;
-    amdvlk.enable = true;
     opencl.enable = false;
   };
 

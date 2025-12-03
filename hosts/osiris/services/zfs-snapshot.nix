@@ -90,7 +90,7 @@ in
         serviceConfig = {
           Type = "oneshot";
           ExecStart = lib.escapeShellArgs [
-            "${self.packages.${pkgs.system}.zfs-snapshot-prune}/bin/zfs-snapshot-prune"
+            "${self.packages.${pkgs.stdenv.hostPlatform.system}.zfs-snapshot-prune}/bin/zfs-snapshot-prune"
             "--keep-last"
             "3"
             "--keep-within-hourly"

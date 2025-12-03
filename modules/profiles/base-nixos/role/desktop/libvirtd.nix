@@ -14,7 +14,6 @@ in
     virtualisation.libvirtd = {
       enable = mkOverride 999 true;
       qemu.swtpm.enable = true;
-      qemu.ovmf.packages = with pkgs; [ OVMFFull.fd ];
     };
 
     home-manager.sharedModules = [

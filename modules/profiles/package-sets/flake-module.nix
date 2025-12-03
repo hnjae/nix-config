@@ -25,7 +25,7 @@ in
   };
   flake.overlays.unstable = _: prev: {
     unstable = import inputs.nixpkgs-unstable {
-      inherit (prev) system;
+      system = prev.stdenv.hostPlatform.system;
       config = prev.config;
     };
   };

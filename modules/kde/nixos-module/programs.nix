@@ -34,7 +34,6 @@
     # spectacle
     # ffmpegthumbs
     krdp
-    xwaylandvideobridge # exposes Wayland windows to X11 screen capture
     discover
   ];
 }

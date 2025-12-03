@@ -8,7 +8,7 @@ pkgs:
 
   # ((import ./packages/ffmpeg.nix) pkgs)
   pkgs.ffmpeg-full
-  (lib.lists.optionals pkgs.hostPlatform.isLinux [
+  (lib.lists.optionals pkgs.stdenv.hostPlatform.isLinux [
     pkgs.convmv
   ])
   pkgs.tmux
@@ -93,7 +93,7 @@ pkgs:
   pkgs.cpufetch
   pkgs.ipfetch
   pkgs.onefetch # git
-  (lib.lists.optional pkgs.hostPlatform.isLinux pkgs.ramfetch)
+  (lib.lists.optional pkgs.stdenv.hostPlatform.isLinux pkgs.ramfetch)
   pkgs.pfetch-rs
 
   ######################

@@ -1,6 +1,6 @@
 pkgs:
 let
-  inherit (pkgs.hostPlatform) isDarwin isAarch64;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin isAarch64;
 in
 pkgs.ffmpeg.override {
   withHeadlessDeps = true;

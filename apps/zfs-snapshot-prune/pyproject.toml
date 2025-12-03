@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Prune zfs snapshot based on policy"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["typer-slim==0.15.*", "isodate==0.7.*", "tabulate==0.9.*"]
+dependencies = ["typer-slim==0.19.*", "isodate==0.7.*", "tabulate==0.9.*"]
 
 [dependency-groups]
 dev = [
@@ -12,7 +12,7 @@ dev = [
   "ipython==9.*",
   "mypy==1.*",
   "pytest==8.*",
-  "typer==0.15.*",
+  "typer==0.19.*",
   "types-tabulate==0.9.*",
 ]
 
