@@ -52,10 +52,6 @@
     rocmPackages.rocm-smi
   ];
 
-  environment.systemPackages = with pkgs; [
-    lact
-  ];
-
   hardware.amdgpu = {
     initrd.enable = false;
     opencl = {
@@ -68,34 +64,27 @@
   #######
   # LACT
   #######
-  # services.lact = { # Use this module in NixOS 25.11
-  #   enable = true;
-  # };
   hardware.amdgpu.overdrive.enable = true;
-
-  systemd.packages = [ pkgs.lact ];
-
-  systemd.services.lactd = {
-    description = "LACT GPU Control Daemon";
-    wantedBy = [ "multi-user.target" ];
-    # Restart when the config file changes.
-    # restartTriggers = lib.mkIf (cfg.settings != { }) [ configFile ];
+  services.lact = {
+    enable = true;
+    settings = {
+      daemon = {
+        log_level = "info";
+        admin_groups = [
+          "wheel"
+          "sudo"
+        ];
+        disable_clocks_cleanup = false;
+      };
+      apply_settings_timer = 5;
+      gpus = {
+        "1002:73DF-1EAE:6606-0000:09:00.0" = {
+          fan_control_enabled = false;
+          performance_level = "auto";
+          voltage_offset = -50;
+        };
+      };
+      current_profile = null;
+    };
   };
-
-  environment.etc."lact/config.yaml".text = ''
-    daemon:
-      log_level: info
-      admin_groups:
-      - wheel
-      - sudo
-      disable_clocks_cleanup: false
-    apply_settings_timer: 5
-    gpus:
-      1002:73DF-1EAE:6606-0000:09:00.0:
-        fan_control_enabled: false
-        performance_level: auto
-        voltage_offset: -50
-    current_profile: null
-  '';
-  # power_cap: 163.0
 }
