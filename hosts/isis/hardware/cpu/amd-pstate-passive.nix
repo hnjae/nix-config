@@ -33,19 +33,19 @@ in
     # cpuFreqGovernor = cpuScalingGovernor.schedutil;
   };
 
-  services.tlp.settings = {
-    CPU_BOOST_ON_BAT = 0;
-    CPU_BOOST_ON_AC = 1;
-
-    # https://linrunner.de/tlp/settings/processor.html
-    # run `tlp-stat -p` to determine availability on your hardware
-    CPU_SCALING_GOVERNOR_ON_AC = cpuScalingGovernor.schedutil;
-    CPU_SCALING_GOVERNOR_ON_BAT = cpuScalingGovernor.schedutil;
-
-    # PLATFORM_PROFILE_ON_AC = "performance";
-    PLATFORM_PROFILE_ON_AC = "balanced";
-    PLATFORM_PROFILE_ON_BAT = "balanced";
-  };
+  # services.tlp.settings = {
+  #   CPU_BOOST_ON_BAT = 0;
+  #   CPU_BOOST_ON_AC = 1;
+  #
+  #   # https://linrunner.de/tlp/settings/processor.html
+  #   # run `tlp-stat -p` to determine availability on your hardware
+  #   CPU_SCALING_GOVERNOR_ON_AC = cpuScalingGovernor.schedutil;
+  #   CPU_SCALING_GOVERNOR_ON_BAT = cpuScalingGovernor.schedutil;
+  #
+  #   # PLATFORM_PROFILE_ON_AC = "performance";
+  #   PLATFORM_PROFILE_ON_AC = "balanced";
+  #   PLATFORM_PROFILE_ON_BAT = "balanced";
+  # };
 
   environment.systemPackages = [
     (lib.customisation.overrideDerivation
@@ -93,7 +93,7 @@ in
           start_threshold=$((end_threshold -1))
           start_threshold="$(bat_threshold_clamp "$start_threshold" 0 "$start_threshold")"
 
-          echo "[INFO] STOP CHARGING / Setting charnge end threshold to $end_threshold" >&2
+          echo "[INFO] STOP CHARGING / Setting charge end threshold to $end_threshold" >&2
 
           if [ "$cur_end_threshold" -gt "$end_threshold" ]; then
             echo "$start_threshold" >"$CHARGE_CONTROL_START_THRESHOLD_PATH"
