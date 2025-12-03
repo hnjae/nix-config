@@ -381,7 +381,7 @@
           "safe/storage/vault" = {
             type = "zfs_fs";
             options = {
-              mountpoint = "/srv/nfs/vault";
+              mountpoint = "/media/vault";
               compression = "zstd";
               recordsize = "1M";
             };

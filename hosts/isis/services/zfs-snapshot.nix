@@ -22,12 +22,13 @@ in
 
         wantedBy = [ "timers.target" ];
         timerConfig = {
-          # OnStartupSec = "30m";
-          # OnUnitInactiveSec = "60m";
-          # RandomizedDelaySec = "10m";
-          OnCalendar = "hourly";
+          OnStartupSec = "20m";
+          OnUnitInactiveSec = "90m";
           RandomizedDelaySec = "10m";
-          Persistent = true; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
+          Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
+
+          # OnCalendar = "hourly";
+          # RandomizedDelaySec = "10m";
         };
       };
 
@@ -42,6 +43,8 @@ in
 
         serviceConfig = {
           Type = "oneshot";
+          CPUSchedulingPolicy = "idle";
+          IOSchedulingClass = "idle";
           ExecStart = pkgs.writeScript "${snapUnitName}-script" ''
             #!/${pkgs.dash}/bin/dash
 
@@ -53,7 +56,7 @@ in
               ]
             }"
             ZFS_CMD='/run/booted-system/sw/bin/zfs'
-            time_="$(date -- '+%Y-%m-%dT%H:%M:%S%Z')"
+            time_="$(date -- '+%Y-%m-%d_%H:%M:%S_%Z')"
             snapshot_name="${DATASET}@autosnap_''${time_}"
 
             echo "Creating snapshot ''${snapshot_name}" >/dev/null
@@ -81,6 +84,7 @@ in
           ];
           After = Requires;
         };
+
         path = [
           # allow to use zfs from the booted system
           "/run/booted-system/sw"
@@ -88,16 +92,18 @@ in
 
         serviceConfig = {
           Type = "oneshot";
+          CPUSchedulingPolicy = "idle";
+          IOSchedulingClass = "idle";
           ExecStart = lib.escapeShellArgs [
             "${self.packages.${pkgs.system}.zfs-snapshot-prune}/bin/zfs-snapshot-prune"
             "--keep-last"
-            "3"
+            "1"
             "--keep-within-hourly"
-            "PT24H"
+            "PT8H"
             "--keep-within-daily"
             "P7D"
             "--keep-within-weekly"
-            "P3W"
+            "P15D"
             "--offset"
             "240" # 4 hours
             "--filter"
