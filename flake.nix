@@ -3,16 +3,13 @@
 
   inputs = {
     nixpkgs = {
-      url = "github:nixos/nixpkgs/nixos-25.05";
-
-      # https://hydra.nixos.org/job/nixos/release-25.05/tested#tabs-status
-      # 2025-08-23 build
+      url = "github:nixos/nixpkgs/nixos-25.11";
       # url = "github:nixos/nixpkgs/?ref=b1b329146965";
     };
-
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
+
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs = {
@@ -34,7 +31,7 @@
     # nixosModules / homeManagerModule
     ############################################################################
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence.url = "github:nix-community/impermanence";
@@ -116,7 +113,7 @@
     # nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
 
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.05";
+      url = "github:nix-community/nixvim/nixos-25.11";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
