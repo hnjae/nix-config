@@ -25,14 +25,36 @@
   ];
 
   services.udev.extraRules = ''
+    # Wake on lan
+    ACTION=="add", SUBSYSTEM=="net", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
+
     SUBSYSTEM=="scsi_host", ACTION=="add", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"
     SUBSYSTEM=="pci", ATTR{power/control}="auto"
     SUBSYSTEM=="ata_port", KERNEL=="ata*", ATTR{device/power/control}="auto"
 
-    SUBSYSTEM=="usb", ATTR{power/wakeup}="enabled"
-
-    ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{device/power/control}="auto"
+    ACTION=="add|change", KERNEL=="sd[a-z]", TEST=="power/control", ATTR{power/control}="auto"
     ACTION=="add|change", KERNEL=="sd[a-z]", ATTRS{queue/rotational}=="1", RUN+="${pkgs.hdparm}/sbin/hdparm -B 128 -S 246 /dev/%k"
+
+    ###########################
+    # Individual Device Rules #
+    ###########################
+    # JetKVM
+    # ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="1d6b", ATTRS{idProduct}=="0104", ATTR{power/autosuspend}="-1", ATTR{power/control}="on", ATTR{power/wakeup}="enabled"
+
+    ###############################
+    # Generic IO USB Device Rules #
+    ###############################
+    # Disable wake on USB Mouse
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{product}=="*Mouse*", ATTR{power/wakeup}="disabled", ATTR{power/autosuspend}="-1", ATTR{power/control}="on"
+
+    # Enable wake on USB Keyboard
+    ACTION=="add", SUBSYSTEM=="usb", ATTRS{product}=="*Keyboard*", ATTR{power/wakeup}="enabled", ATTR{power/autosuspend}="-1", ATTR{power/control}="on"
+
+    ###########################
+    # Generic USB Device      #
+    ###########################
+    ACTION=="add", SUBSYSTEM=="usb", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
+    ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"
   '';
 
   # NOTE: 246 = 3 hours

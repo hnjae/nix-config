@@ -1,5 +1,6 @@
 {
   inputs,
+  config,
   ...
 }:
 {
@@ -34,5 +35,9 @@
 
   boot.kernelParams = [
     # "nosmt"
+  ];
+
+  environment.defaultPackages = [
+    config.boot.kernelPackages.turbostat
   ];
 }
