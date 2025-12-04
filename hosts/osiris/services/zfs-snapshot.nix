@@ -22,12 +22,10 @@ in
 
         wantedBy = [ "timers.target" ];
         timerConfig = {
-          # OnStartupSec = "30m";
-          # OnUnitInactiveSec = "60m";
-          # RandomizedDelaySec = "10m";
-          OnCalendar = "hourly";
+          OnStartupSec = "20m";
+          OnUnitInactiveSec = "90m";
           RandomizedDelaySec = "10m";
-          Persistent = true; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
+          Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
         };
       };
 
@@ -57,8 +55,8 @@ in
             time_="$(date -- '+%Y-%m-%dT%H:%M:%S%Z')"
             snapshot_name="${DATASET}@autosnap_''${time_}"
 
-            echo "Creating snapshot ''${snapshot_name}" >/dev/null
-            "$ZFS_CMD" snapshot -r -- "$snapshot_name"
+            echo "INFO: Creating snapshot ''${snapshot_name}" >/dev/null
+            exec "$ZFS_CMD" snapshot -r -- "$snapshot_name"
           '';
         };
       };
@@ -69,7 +67,7 @@ in
         wantedBy = [ "timers.target" ];
         timerConfig = {
           OnCalendar = "*-*-* 04:00:00";
-          RandomizedDelaySec = "60m";
+          RandomizedDelaySec = "120m";
           Persistent = true;
         };
       };
@@ -92,13 +90,13 @@ in
           ExecStart = lib.escapeShellArgs [
             "${self.packages.${pkgs.stdenv.hostPlatform.system}.zfs-snapshot-prune}/bin/zfs-snapshot-prune"
             "--keep-last"
-            "3"
+            "1"
             "--keep-within-hourly"
-            "PT24H"
+            "PT8H"
             "--keep-within-daily"
             "P7D"
             "--keep-within-weekly"
-            "P3W"
+            "P15D"
             "--offset"
             "240" # 4 hours
             "--filter"

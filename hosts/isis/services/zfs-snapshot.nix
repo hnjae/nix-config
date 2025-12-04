@@ -43,8 +43,11 @@ in
 
         serviceConfig = {
           Type = "oneshot";
-          CPUSchedulingPolicy = "idle";
-          IOSchedulingClass = "idle";
+
+          # 커널 스케쥴링
+          Nice = 10;
+          IOSchedulingPriority = 7;
+
           ExecStart = pkgs.writeScript "${snapUnitName}-script" ''
             #!/${pkgs.dash}/bin/dash
 
@@ -56,11 +59,12 @@ in
               ]
             }"
             ZFS_CMD='/run/booted-system/sw/bin/zfs'
+
             time_="$(date -- '+%Y-%m-%d_%H:%M:%S_%Z')"
             snapshot_name="${DATASET}@autosnap_''${time_}"
 
-            echo "Creating snapshot ''${snapshot_name}" >/dev/null
-            "$ZFS_CMD" snapshot -r -- "$snapshot_name"
+            echo "INFO: Creating snapshot ''${snapshot_name}" >/dev/null
+            exec "$ZFS_CMD" snapshot -r -- "$snapshot_name"
           '';
         };
       };
@@ -71,7 +75,7 @@ in
         wantedBy = [ "timers.target" ];
         timerConfig = {
           OnCalendar = "*-*-* 04:00:00";
-          RandomizedDelaySec = "60m";
+          RandomizedDelaySec = "120m";
           Persistent = true;
         };
       };
@@ -92,8 +96,11 @@ in
 
         serviceConfig = {
           Type = "oneshot";
-          CPUSchedulingPolicy = "idle";
-          IOSchedulingClass = "idle";
+
+          # 커널 스케쥴링
+          Nice = 10;
+          IOSchedulingPriority = 7;
+
           ExecStart = lib.escapeShellArgs [
             "${self.packages.${pkgs.stdenv.hostPlatform.system}.zfs-snapshot-prune}/bin/zfs-snapshot-prune"
             "--keep-last"
