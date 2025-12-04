@@ -65,18 +65,6 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    # nix-modules-private = {
-    #   # url = "git+ssh://git@github.com/hnjae/nix-modules-private";
-    #   # url = "git:/home/hnjae/Projects/nix-modules-private";
-    #   url = "path:/home/hnjae/Projects/nix-modules-private";
-    #   inputs = {
-    #     nixpkgs.follows = "nixpkgs";
-    #     nixpkgs-unstable.follows = "nixpkgs-unstable";
-    #     flake-utils.follows = "flake-utils";
-    #     flake-parts.follows = "flake-parts";
-    #     sops-nix.follows = "sops-nix";
-    #   };
-    # };
     nix-web-app.url = "github:hnjae/nix-web-app";
     quadlet-nix = {
       url = "github:SEIAROTg/quadlet-nix";
@@ -125,8 +113,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     py-utils = {
-      # url = "git+ssh://git@github.com/hnjae/py-utils";
-      url = "path:/home/hnjae/Projects/py-utils";
+      url = "git+ssh://git@github.com/hnjae/py-utils";
+      # url = "path:/home/hnjae/Projects/py-utils";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";

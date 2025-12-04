@@ -125,7 +125,7 @@ update-except-stable:
 [group('update')]
 [private]
 update-locals:
-    nix flake update py-utils
+    # nix flake update py-utils
     ./hosts/eris/serve-encrypted/services/traefik/shared/update-cloudflare-ips.sh
 
 [group('check')]
@@ -270,7 +270,7 @@ deploy-eris: update-locals
 @build host: update-locals
     @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
     nix build \
-        --no-link \
+        --out-link "/nix/var/nix/gcroots/per-user/$USER/nixosConfigurations.${1}.config.system.build.toplevel" \
         --option eval-cache false \
         --show-trace \
         --keep-failed \
@@ -281,7 +281,7 @@ deploy-eris: update-locals
 @build-local host: update-locals
     @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
     nix build \
-        --no-link \
+        --out-link "/nix/var/nix/gcroots/per-user/$USER/nixosConfigurations.${1}.config.system.build.toplevel" \
         --option eval-cache false \
         --show-trace \
         --option builders "" \
@@ -290,7 +290,9 @@ deploy-eris: update-locals
 
 [group('build')]
 build-iso: update-locals
-    nix build .#nixosConfigurations.iso.config.system.build.isoImage
+    nix build \
+        --out-link "/nix/var/nix/gcroots/per-user/$USER/nixosConfigurations.iso.config.system.build.isoImage" \
+        ".#nixosConfigurations.iso.config.system.build.isoImage"
 
 [group('check')]
 [positional-arguments]
@@ -372,6 +374,7 @@ switch-home: update-locals
 
     nix build \
         --no-link \
+        --out-link "/nix/var/nix/gcroots/per-user/$USER/nixosConfigurations.${1}.config.system.build.toplevel" \
         --no-print-missing \
         --option keep-env-derivations true \
         --option pure-eval true \
@@ -379,9 +382,3 @@ switch-home: update-locals
         ".#homeConfigurations.{{ hostname }}.activationPackage"
 
     bash "$(nix eval --raw ".#homeConfigurations.{{ hostname }}.activationPackage")/activate"
-
-[linux]
-flatpak-sync:
-    #!/bin/sh
-    systemctl --user start flatpak-managed-install.service &
-    journalctl --follow --user --unit=flatpak-managed-install.service

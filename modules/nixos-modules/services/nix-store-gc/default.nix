@@ -41,7 +41,7 @@ in
 
     onCalendar = mkOption {
       type = types.str;
-      default = "Sat *-*-* 04:00:00";
+      default = "Mon *-*-* 04:00:00";
       description = '''';
     };
   };
@@ -53,12 +53,16 @@ in
 
       serviceConfig = {
         Type = "oneshot";
-        CPUSchedulingPolicy = "idle";
-        IOSchedulingClass = "idle";
+
+        # systemd.exec
+        Nice = 19;
+        IOSchedulingPriority = 7;
+
         ExecStart = lib.escapeShellArgs [
           "${config.nix.package.out}/bin/nix"
           "store"
           "gc"
+          "--verbose"
         ];
       };
     };

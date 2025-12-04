@@ -28,7 +28,7 @@ in
   };
 
   my.services.nix-store-gc = {
-    enable = mkOverride 999 false;
+    enable = mkOverride 999 true;
   };
 
   nix.gc = {

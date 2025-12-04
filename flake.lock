@@ -504,14 +504,17 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1764769179,
-        "narHash": "sha256-NXs0FYWpRdxS0ZniquVIcDsx7+zld1xOMh9bolrJIH0=",
-        "path": "/home/hnjae/Projects/py-utils",
-        "type": "path"
+        "lastModified": 1764769162,
+        "narHash": "sha256-KLrHyBoflFABlNdi1tyQ3zKmwMrG5AqVLyEntXpd7Dc=",
+        "ref": "refs/heads/main",
+        "rev": "2f3be55299668820f8b9c9fb64875f465d9e67ee",
+        "revCount": 58,
+        "type": "git",
+        "url": "ssh://git@github.com/hnjae/py-utils"
       },
       "original": {
-        "path": "/home/hnjae/Projects/py-utils",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/hnjae/py-utils"
       }
     },
     "quadlet-nix": {
