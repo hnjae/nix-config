@@ -23,10 +23,18 @@
     ACTION=="add", SUBSYSTEM=="net", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
 
     SUBSYSTEM=="scsi_host", ACTION=="add", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"
+
+    # PCI Runtime Power Management
     SUBSYSTEM=="pci", ATTR{power/control}="auto"
     SUBSYSTEM=="ata_port", KERNEL=="ata*", ATTR{device/power/control}="auto"
 
-    ACTION=="add|change", KERNEL=="sd[a-z]", TEST=="power/control", ATTR{power/control}="auto"
+    # Block Devices Power Management
+    # Does not work as expected
+    # SUBSYSTEM=="block", KERNEL=="sd[a-z]", TEST=="power/control", ATTR{power/control}="auto"
+    # Does not work as expected
+    # ACTION=="add|change", KERNEL=="sd[a-z]", TEST=="power/control", ATTR{power/control}="auto"
+
+    # HDD Spindown and APM Settings
     ACTION=="add|change", KERNEL=="sd[a-z]", ATTRS{queue/rotational}=="1", RUN+="${pkgs.hdparm}/sbin/hdparm -B 128 -S 246 /dev/%k"
 
     ###########################

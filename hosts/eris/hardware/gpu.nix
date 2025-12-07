@@ -21,7 +21,7 @@
   #######
   hardware.amdgpu.overdrive.enable = true;
   services.lact = {
-    enable = true;
+    enable = false;
     settings = {
       daemon = {
         log_level = "info";
