@@ -13,12 +13,6 @@
     options snd_hda_intel power_save=1
   '';
 
-  boot.kernel.sysctl = {
-    # https://wiki.archlinux.org/title/Power_management#Disabling_NMI_watchdog
-    "kernel.nmi_watchdog" = 0;
-    "vm.dirty_writeback_centisecs" = 1500; # follow powertop recommendation 2025-11-23
-  };
-
   environment.defaultPackages = [
     pkgs.powertop # requires non-hardened kernel
     config.boot.kernelPackages.turbostat

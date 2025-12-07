@@ -1,10 +1,10 @@
+{ lib, ... }:
 {
   imports = [
     ./dynamic-battery-charge-threshold
     ./fprint.nix
     ./ollama.nix
     ./systemd-mounts.nix
-    ./systemd-resolved-encrypted.nix
     ./zfs-snapshot.nix
 
     # ./zrepl.nix

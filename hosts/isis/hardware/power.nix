@@ -6,18 +6,13 @@
     # "workqueue.power_efficient=true"
   ];
 
-  boot.kernel.sysctl = {
-    # https://wiki.archlinux.org/title/Power_management#Disabling_NMI_watchdog
-    "kernel.nmi_watchdog" = 0;
-    "vm.dirty_writeback_centisecs" = 1500; # follow powertop recommendation 2025-11-23
-  };
-
   environment.defaultPackages = [
     pkgs.powertop # requires non-hardened kernel
     config.boot.kernelPackages.turbostat
   ];
 
   powerManagement.scsiLinkPolicy = "med_power_with_dipm";
+
   services.udev.extraRules = ''
     SUBSYSTEM=="pci", ATTR{power/control}="auto"
     SUBSYSTEM=="ata_port", KERNEL=="ata*", ATTR{device/power/control}="auto"

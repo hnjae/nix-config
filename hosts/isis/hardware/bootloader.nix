@@ -34,7 +34,7 @@ in
       "usbcore.quirks=0bda:8156:k"
 
       "zswap.enabled=1"
-      # "zswap.compressor=zstd"
+      "zswap.compressor=lz4"
     ];
   };
 

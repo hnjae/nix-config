@@ -1,14 +1,8 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   boot.kernelParams = [
     "nohibernate"
   ];
-
-  boot.kernel.sysctl = {
-    # https://wiki.archlinux.org/title/Power_management#Disabling_NMI_watchdog
-    "kernel.nmi_watchdog" = 0;
-    "vm.dirty_writeback_centisecs" = 1500; # follow powertop recommendation 2025-11-23
-  };
 
   boot.extraModprobeConfig = ''
     options snd_hda_intel power_save=1
