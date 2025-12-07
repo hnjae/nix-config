@@ -109,8 +109,6 @@ in
             "PT8H"
             "--keep-within-daily"
             "P7D"
-            "--keep-within-weekly"
-            "P15D"
             "--offset"
             "240" # 4 hours
             "--filter"
