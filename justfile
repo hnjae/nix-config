@@ -1,6 +1,7 @@
 # check: https://nixos.org/manual/nix/stable/command-ref/new-cli/nix
 
 hostname := `hostname`
+project := `basename $(pwd)`
 
 _:
     @just --list
@@ -270,28 +271,28 @@ deploy-eris: update-locals
 @build host: update-locals
     @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
     nix build \
-        --out-link "/nix/var/nix/gcroots/per-user/$USER/nixosConfigurations.${1}.config.system.build.toplevel" \
+        --out-link "/nix/var/nix/gcroots/per-user/$USER/{{ project }}#nixosConfigurations.${1}.config.system.build.toplevel" \
         --option eval-cache false \
         --show-trace \
         --keep-failed \
         ".#nixosConfigurations.${1}.config.system.build.toplevel"
 
-[group('build')]
-[positional-arguments]
-@build-local host: update-locals
-    @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
-    nix build \
-        --out-link "/nix/var/nix/gcroots/per-user/$USER/nixosConfigurations.${1}.config.system.build.toplevel" \
-        --option eval-cache false \
-        --show-trace \
-        --option builders "" \
-        --keep-failed \
-        ".#nixosConfigurations.${1}.config.system.build.toplevel"
+# [group('build')]
+# [positional-arguments]
+# @build-local host: update-locals
+#     @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
+#     nix build \
+#         --out-link "/nix/var/nix/gcroots/per-user/$USER/{{ project }}#nixosConfigurations.${1}.config.system.build.toplevel" \
+#         --option eval-cache false \
+#         --show-trace \
+#         --option builders "" \
+#         --keep-failed \
+#         ".#nixosConfigurations.${1}.config.system.build.toplevel"
 
+        # --out-link "/nix/var/nix/gcroots/per-user/$USER/{{ project }}#nixosConfigurations.iso.config.system.build.isoImage" \
 [group('build')]
 build-iso: update-locals
     nix build \
-        --out-link "/nix/var/nix/gcroots/per-user/$USER/nixosConfigurations.iso.config.system.build.isoImage" \
         ".#nixosConfigurations.iso.config.system.build.isoImage"
 
 [group('check')]
