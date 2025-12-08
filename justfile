@@ -289,7 +289,6 @@ deploy-eris: update-locals
 #         --keep-failed \
 #         ".#nixosConfigurations.${1}.config.system.build.toplevel"
 
-        # --out-link "/nix/var/nix/gcroots/per-user/$USER/{{ project }}#nixosConfigurations.iso.config.system.build.isoImage" \
 [group('build')]
 build-iso: update-locals
     nix build \

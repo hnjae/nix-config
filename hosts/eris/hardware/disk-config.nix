@@ -604,7 +604,7 @@
     ];
   };
 
-  # Use FS feature insteaad
+  # Use FS feature instead
   nix.settings.compress-build-log = false;
   hardware.firmwareCompression = "none";
 }
