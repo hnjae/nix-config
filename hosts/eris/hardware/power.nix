@@ -33,6 +33,8 @@
     # SUBSYSTEM=="block", KERNEL=="sd[a-z]", TEST=="power/control", ATTR{power/control}="auto"
     # Does not work as expected
     # ACTION=="add|change", KERNEL=="sd[a-z]", TEST=="power/control", ATTR{power/control}="auto"
+    # Test this 2025-12-09
+    ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{device/power/control}="auto"
 
     # HDD Spindown and APM Settings
     ACTION=="add|change", KERNEL=="sd[a-z]", ATTRS{queue/rotational}=="1", RUN+="${pkgs.hdparm}/sbin/hdparm -B 128 -S 246 /dev/%k"
