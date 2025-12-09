@@ -90,16 +90,13 @@
     ############################################################################
     # Overlays / Packages
     ############################################################################
-    # ghostty = {
-    #   url = "github:ghostty-org/ghostty/refs/tags/tip";
-    #   inputs = {
-    #     nixpkgs-unstable.follows = "nixpkgs-unstable";
-    #     nixpkgs-stable.follows = "nixpkgs";
-    #     flake-compat.follows = "";
-    #   };
-    # };
-    # nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
-
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
     nixvim = {
       url = "github:nix-community/nixvim/nixos-25.11";
       inputs = {
@@ -107,10 +104,6 @@
         flake-parts.follows = "flake-parts";
         nuschtosSearch.follows = "";
       };
-    };
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     py-utils = {
       url = "git+ssh://git@github.com/hnjae/py-utils";
@@ -120,6 +113,10 @@
         flake-parts.follows = "flake-parts";
         treefmt-nix.follows = "";
       };
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     yaml2nix = {
       url = "github:euank/yaml2nix";
