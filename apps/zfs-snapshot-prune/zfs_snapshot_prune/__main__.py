@@ -61,7 +61,16 @@ def get_snapshots(
 
     ret: Mapping[str, set[ZfsSnapshot]] = defaultdict(set)
 
-    args = ["zfs", "list", "-t", "snapshot", "-p", "-o", "creation", "--json"]
+    args = [
+        "/run/booted-system/sw/bin/zfs",
+        "list",
+        "-t",
+        "snapshot",
+        "-p",
+        "-o",
+        "creation",
+        "--json",
+    ]
     if recursive:
         args.append("-r")
     args += ["--", dataset]

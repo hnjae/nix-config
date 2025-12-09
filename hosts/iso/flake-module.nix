@@ -31,12 +31,11 @@
         }
       )
       "${self}/modules/profiles/base-nixos/core/keyboard.nix"
-      # "${self}/modules/profiles/base-nixos/packages"
       (
         { lib, pkgs, ... }:
         {
           isoImage = {
-            squashfsCompression = "zstd -Xcompression-level 4";
+            squashfsCompression = "zstd -Xcompression-level 11";
             makeBiosBootable = false;
           };
 

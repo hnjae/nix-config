@@ -1,10 +1,11 @@
-{ lib, ... }:
 {
   imports = [
     ./dynamic-battery-charge-threshold
     ./fprint.nix
     ./ollama.nix
     ./systemd-mounts.nix
+
+    ./zfs-scrub.nix
     ./zfs-snapshot.nix
 
     # ./zrepl.nix
@@ -20,10 +21,6 @@
 
   services.zfs = {
     trim.enable = true;
-    autoScrub = {
-      enable = true;
-      pools = [ "isis" ];
-    };
   };
 
   virtualisation.waydroid.enable = false;

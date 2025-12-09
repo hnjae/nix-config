@@ -57,6 +57,6 @@ class ZfsSnapshot:
 
         logger.info("Destroying snapshot %s", self.name)
 
-        args = ["zfs", "destroy", "--", self.name]
+        args = ["/run/booted-system/sw/bin/zfs", "destroy", "--", self.name]
         proc = subprocess.run(args, check=True, capture_output=False)
         return proc.returncode

@@ -1,26 +1,34 @@
 {
-  pkgs,
   lib,
+  pkgs,
   self,
   ...
 }:
 let
   DATASET = "isis/safe";
 
-  snapUnitName = "zfs-snapshot-isis";
-  pruneUnitName = "zfs-snapshot-prune-isis";
+  snapUnitName = "zfs-snapshot";
+  pruneUnitName = "zfs-snapshot-prune";
 in
 {
   systemd =
     let
       description = "Create snapshot of ${DATASET}";
       documentation = [ "man:zfs-snapshot(8)" ];
+      after = [
+        # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/tasks/filesystems/zfs.nix
+        # > Apparently scrubbing before boot is complete hangs the system? #53583
+        "multi-user.target"
+        "zfs.target"
+      ];
     in
     {
       timers."${snapUnitName}" = {
         inherit description documentation;
 
         wantedBy = [ "timers.target" ];
+        after = after;
+
         timerConfig = {
           OnStartupSec = "20m";
           OnUnitInactiveSec = "90m";
@@ -34,11 +42,9 @@ in
 
       services."${snapUnitName}" = {
         inherit description documentation;
-        unitConfig = rec {
-          Requires = [
-            "zfs.target"
-          ];
-          After = Requires;
+        unitConfig = {
+          Requires = after;
+          After = after;
         };
 
         serviceConfig = {
@@ -73,8 +79,12 @@ in
         inherit description documentation;
 
         wantedBy = [ "timers.target" ];
+        after = after;
         timerConfig = {
-          OnCalendar = "*-*-* 04:00:00";
+          OnCalendar = [
+            "*-*-* 04:00:00"
+            "*-*-* 16:00:00"
+          ];
           RandomizedDelaySec = "120m";
           Persistent = true;
         };
@@ -82,17 +92,11 @@ in
 
       services."${pruneUnitName}" = {
         inherit description documentation;
-        unitConfig = rec {
-          Requires = [
-            "zfs.target"
-          ];
-          After = Requires;
-        };
 
-        path = [
-          # allow to use zfs from the booted system
-          "/run/booted-system/sw"
-        ];
+        unitConfig = {
+          Requires = after;
+          After = after;
+        };
 
         serviceConfig = {
           Type = "oneshot";
@@ -106,7 +110,7 @@ in
             "--keep-last"
             "1"
             "--keep-within-hourly"
-            "PT8H"
+            "PT12H"
             "--keep-within-daily"
             "P7D"
             "--offset"

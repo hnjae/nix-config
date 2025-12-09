@@ -286,10 +286,11 @@ build-os host=`hostname` flags='': update-locals
     build_nixos() {
         host="$1"
 
+        echo ""
         if [ '{{ flags }}' = "" ]; then
-            echo "INFO: Building .#nixosConfigurations.${host}.config.system.build.toplevel" >&2
+            echo "{{ BOLD }}{{ BLUE }}INFO: Building .#nixosConfigurations.${host}.config.system.build.toplevel {{ NORMAL }}" >&2
         else
-            echo "INFO: Building .#nixosConfigurations.${host}.config.system.build.toplevel with {{ flags }} flags" >&2
+            echo "{{ BOLD }}{{ BLUE }}INFO: Building .#nixosConfigurations.${host}.config.system.build.toplevel with {{ flags }} flags{{ NORMAL }}" >&2
         fi
 
         nh os build --hostname="${host}" \

@@ -236,11 +236,11 @@ pkgs:
     pkgs.unstable.gtt # can use chatgpt to translate <https://github.com/eeeXun/gtt>
     pkgs.unstable.tgpt # support openai, ollma https://github.com/aandrew-me/tgpt
     pkgs.unstable.gh # github cli
-    pkgs.unstable.gh-copilot
     pkgs.unstable.patchelf
+    pkgs.jqp # TUI playground to experiment with jq
     pkgs.unstable.codex # openai
     pkgs.unstable.gemini-cli-bin
     pkgs.unstable.opencode
-    pkgs.jqp # TUI playground to experiment with jq
+    pkgs.unstable.gh-copilot
   ]
 )
