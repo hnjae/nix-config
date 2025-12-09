@@ -1,5 +1,7 @@
 # check: https://nixos.org/manual/nix/stable/command-ref/new-cli/nix
 
+set ignore-comments := true
+
 hostname := `hostname`
 project := `basename $(pwd)`
 
@@ -234,6 +236,11 @@ _drybuild-nixoses: update-locals
         echo ""
     done
 
+[group('check')]
+[positional-arguments]
+@drybuild host:
+    just build "{{ host }}" "--dry"
+
 ################################################################################
 # Deploy recipes
 
@@ -266,43 +273,66 @@ deploy-eris: update-locals
         --target-host "deploy@${1}" \
         --sudo
 
+################################################################################
+# Build recipes
+
 [group('build')]
 [positional-arguments]
-@build host: update-locals
-    @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
-    nix build \
-        --out-link "/nix/var/nix/gcroots/per-user/$USER/{{ project }}#nixosConfigurations.${1}.config.system.build.toplevel" \
-        --option eval-cache false \
-        --show-trace \
-        --keep-failed \
-        ".#nixosConfigurations.${1}.config.system.build.toplevel"
+build-os host=`hostname` flags='': update-locals
+    #!/bin/sh
 
-# [group('build')]
-# [positional-arguments]
-# @build-local host: update-locals
-#     @echo "Building .#nixosConfigurations.{{ host }}.config.system.build.toplevel"
-#     nix build \
-#         --out-link "/nix/var/nix/gcroots/per-user/$USER/{{ project }}#nixosConfigurations.${1}.config.system.build.toplevel" \
-#         --option eval-cache false \
-#         --show-trace \
-#         --option builders "" \
-#         --keep-failed \
-#         ".#nixosConfigurations.${1}.config.system.build.toplevel"
+    set -eu
+
+    build_nixos() {
+        host="$1"
+
+        if [ '{{ flags }}' = "" ]; then
+            echo "INFO: Building .#nixosConfigurations.${host}.config.system.build.toplevel" >&2
+        else
+            echo "INFO: Building .#nixosConfigurations.${host}.config.system.build.toplevel with {{ flags }} flags" >&2
+        fi
+
+        nh os build --hostname="${host}" \
+            --keep-failed \
+            --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#nixosConfigurations.${host}.config.system.build.toplevel" \
+            .
+
+        # nix build \
+        #     {{ flags }} \
+        #     --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#nixosConfigurations.${host}.config.system.build.toplevel" \
+        #     --option eval-cache false \
+        #     --show-trace \
+        #     --keep-failed \
+        #     ".#nixosConfigurations.${host}.config.system.build.toplevel"
+    }
+
+    main() {
+        if [ "{{ host }}" = "all" ]; then
+            hosts=$(nix flake show --json --no-pretty 2>/dev/null | jq -r '.nixosConfigurations | keys[]')
+
+            for h in $hosts; do
+                build_nixos "$h"
+            done
+        else
+            build_nixos "{{ host }}"
+        fi
+    }
+
+    main
+
+[group('build')]
+build-home: update-locals
+    @echo "Building .#homeConfigurations.{{ hostname }}.activationPackage"
+    nix build \
+        --no-print-missing \
+        --option keep-env-derivations true \
+        --option pure-eval true \
+        --json \
+        ".#homeConfigurations.{{ hostname }}.activationPackage"
 
 [group('build')]
 build-iso: update-locals
-    nix build \
-        ".#nixosConfigurations.iso.config.system.build.isoImage"
-
-[group('check')]
-[positional-arguments]
-@drybuild host: update-locals
-    @echo "Dry-building .#nixosConfigurations.${1}.config.system.build.toplevel"
-    nix build \
-        --dry-run \
-        --option eval-cache false \
-        --show-trace \
-        ".#nixosConfigurations.${1}.config.system.build.toplevel"
+    nix build ".#nixosConfigurations.iso.config.system.build.isoImage"
 
 ################################################################################
 # show flake.outputs
@@ -316,6 +346,7 @@ show-hm-modules:
     nix eval \
         --no-warn-dirty \
         --json \
+        --no-pretty \
         ".#homeManagerModules" \
         --apply builtins.attrNames | \
         jq '.[]'
@@ -325,6 +356,7 @@ show-hm-configurations:
     nix eval \
         --no-warn-dirty \
         --json \
+        --no-pretty \
         ".#homeConfigurations" \
         --apply builtins.attrNames | \
         jq '.[]'
@@ -347,29 +379,13 @@ boot-nixos: update-locals
         --option eval-cache false \
         --keep-failed
 
-# --builders "" \
-# [group('self-deploy')]
-# switch-nixos-nh: update-locals
-#     nh os switch .
-# [group('build')]
-# build-nixos-nh: update-locals
-#     nh os build .
 ################################################################################
 # home-manager build/switch
-
-[group('build')]
-build-home: update-locals
-    @echo "Switch home-manager .#{{ hostname }}"
-    nix build \
-        --no-print-missing \
-        --option keep-env-derivations true \
-        --option pure-eval true \
-        --json \
-        ".#homeConfigurations.{{ hostname }}.activationPackage"
 
 [group('self-deploy')]
 switch-home: update-locals
     #!/bin/sh
+
     set -eu
 
     nix build \
