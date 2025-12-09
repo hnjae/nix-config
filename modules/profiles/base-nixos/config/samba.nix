@@ -22,9 +22,6 @@
       # charset, naming
       # "mangled names" = "illegal"; # defaults
       "case sensitive" = "yes";
-      # "preserve case" = "yes"; # defaults
-      # "short preserve care" = "yes"; # defaults
-      # "default case" = "upper"; # defaults
 
       #
       # hide dot files = no
@@ -49,7 +46,11 @@
       "directory mask" = "0755";
 
       #
-      # "guest ok" = "no";
+      "guest ok" = "no";
+
+      #
+      "use sendfile" = "yes";
+      # "vfs objects" = "fruit streams_xattr";
     };
   };
 }
