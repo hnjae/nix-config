@@ -23,6 +23,10 @@ in
     hashedPassword = "$y$j9T$s.YA/IM9krcOc4J..OIke1$s0tKPmYDPljrwee8fho0q5w6bMq1YhG9uKDk.O5S6U2";
   };
 
+  systemd.tmpfiles.rules = [
+    ''d /nix/var/nix/gcroots/per-user/hnjae 0700 hnjae users -''
+  ];
+
   users.users.hnjae = {
     isNormalUser = true;
     extraGroups = lib.flatten [
