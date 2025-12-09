@@ -36,8 +36,8 @@
   # Get available settings: cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_available_preferences
   services.auto-epp = {
     enable = true;
-    settings.Settings.epp_state_for_BAT = "balance_performance";
-    settings.Settings.epp_state_for_AC = "balance_performance";
+    settings.Settings.epp_state_for_BAT = "performance";
+    settings.Settings.epp_state_for_AC = "performance";
   };
 
 }
