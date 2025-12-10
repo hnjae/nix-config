@@ -4,6 +4,7 @@ set ignore-comments := true
 
 hostname := `hostname`
 project := `basename $(pwd)`
+system := `nix eval --raw --impure --expr builtins.currentSystem`
 
 _:
     @just --list
@@ -278,7 +279,7 @@ deploy-eris: update-locals
 
 [group('build')]
 [positional-arguments]
-build-os host=`hostname` flags='': update-locals
+build host=`hostname` flags='': update-locals
     #!/bin/sh
 
     set -eu
@@ -293,18 +294,20 @@ build-os host=`hostname` flags='': update-locals
             echo "{{ BOLD }}{{ BLUE }}INFO: Building .#nixosConfigurations.${host}.config.system.build.toplevel with {{ flags }} flags{{ NORMAL }}" >&2
         fi
 
-        nh os build --hostname="${host}" \
-            --keep-failed \
-            --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#nixosConfigurations.${host}.config.system.build.toplevel" \
-            .
-
-        # nix build \
-        #     {{ flags }} \
-        #     --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#nixosConfigurations.${host}.config.system.build.toplevel" \
-        #     --option eval-cache false \
-        #     --show-trace \
-        #     --keep-failed \
-        #     ".#nixosConfigurations.${host}.config.system.build.toplevel"
+        if command -v nh >/dev/null 2>&1; then
+            nh os build --hostname="${host}" \
+                --keep-failed \
+                --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#nixosConfigurations.${host}.config.system.build.toplevel" \
+                .
+        else
+            nix build \
+                {{ flags }} \
+                --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#nixosConfigurations.${host}.config.system.build.toplevel" \
+                --option eval-cache false \
+                --show-trace \
+                --keep-failed \
+                ".#nixosConfigurations.${host}.config.system.build.toplevel"
+        fi
     }
 
     main() {
@@ -334,6 +337,36 @@ build-home: update-locals
 [group('build')]
 build-iso: update-locals
     nix build ".#nixosConfigurations.iso.config.system.build.isoImage"
+
+[group('build')]
+build-packages: update-locals
+    #!/bin/sh
+
+    set -eu
+
+    build() {
+        target="$1"
+
+        echo "{{ BOLD }}{{ BLUE }}INFO: Building ${target}{{ NORMAL }}" >&2
+
+        nix build \
+            --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#${target}" \
+            --option eval-cache false \
+            --show-trace \
+            --keep-failed \
+            ".#${target}"
+    }
+
+    main() {
+        for pkg in $(
+            nix flake show --json --no-pretty 2>/dev/null |
+            jq -r '.packages."{{ system }}" | keys[]'
+        ); do
+            build "packages.{{ system }}.${pkg}"
+        done
+    }
+
+    main
 
 ################################################################################
 # show flake.outputs

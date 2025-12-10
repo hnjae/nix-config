@@ -1,7 +1,5 @@
 {
   installShellFiles,
-  lib,
-  pkgs,
   python3,
 }:
 python3.pkgs.buildPythonApplication rec {
@@ -41,4 +39,8 @@ python3.pkgs.buildPythonApplication rec {
 
     installShellCompletion ${pname}.{ba,fi,z}sh
   '';
+
+  meta = {
+    mainProgram = "zfs-snapshot-prune";
+  };
 }
