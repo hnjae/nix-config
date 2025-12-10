@@ -23,7 +23,7 @@
       networkConfig = {
         DHCP = "no";
         Gateway = "192.168.0.1";
-        Address = "192.168.0.200/16";
+        Address = "192.168.0.200/23";
         LLMNR = "resolve";
         MulticastDNS = true;
       };
