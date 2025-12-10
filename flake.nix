@@ -187,7 +187,8 @@
           # (lib.lists.optional (inputs.git-hooks ? flakeModule) inputs.git-hooks.flakeModule)
           # (lib.lists.optional (inputs.treefmt-nix ? flakeModule) inputs.treefmt-nix.flakeModule)
 
-          ./attributes
+          # ./attributes/deploy.nix
+          ./attributes/homeManagerModules.nix
 
           ./shared/flake-module.nix
 

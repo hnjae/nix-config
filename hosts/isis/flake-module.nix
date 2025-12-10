@@ -1,5 +1,18 @@
-{ self, inputs, ... }:
 {
+  self,
+  inputs,
+  ...
+}:
+{
+  # flake.deploy.nodes.isis = {
+  #   hostname = "isis";
+  #   profiles.system = {
+  #     sshUser = "deploy";
+  #     user = "root";
+  #     path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.isis;
+  #   };
+  # };
+
   flake.nixosConfigurations.isis = inputs.nixpkgs.lib.nixosSystem {
     modules = [
       {

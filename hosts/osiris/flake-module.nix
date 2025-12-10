@@ -1,5 +1,18 @@
-{ self, inputs, ... }:
 {
+  self,
+  inputs,
+  ...
+}:
+{
+  # flake.deploy.nodes.osiris = {
+  #   hostname = "osiris";
+  #   profiles.system = {
+  #     sshUser = "deploy";
+  #     user = "root";
+  #     path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.osiris;
+  #   };
+  # };
+
   flake.nixosConfigurations.osiris = inputs.nixpkgs.lib.nixosSystem {
     modules = [
       inputs.disko.nixosModules.disko

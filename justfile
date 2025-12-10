@@ -251,29 +251,26 @@ _drybuild-nixoses: update-locals
 @deploy host: update-locals
     deploy --keep-result --skip-checks ".#$1"
 
-[doc('deploy to host using nixos-rebuild (will NOT rollback)')]
+[doc('deploy to host using deploy-rs (will NOT rollback)')]
 [group('deploy')]
 [positional-arguments]
 @deploy-switch host: update-locals
-    nixos-rebuild switch \
-        --flake ".#$1" \
-        --target-host "deploy@${1}" \
-        --sudo
+    deploy --keep-result --skip-checks --magic-rollback false --auto-rollback=false ".#$1"
 
-deploy-eris: update-locals
-    nixos-rebuild switch \
-        --flake ".#eris" \
-        --target-host "deploy@192.168.0.200" \
-        --sudo
-
+[doc('deploy to host using deploy-rs and register to bootloader (will NOT rollback)')]
 [group('deploy')]
 [positional-arguments]
 @deploy-boot host: update-locals
-    nixos-rebuild boot \
-        --flake ".#$1" \
-        --target-host "deploy@${1}" \
-        --sudo
+    deploy --keep-result --skip-checks --boot ".#$1"
 
+# nixos-rebuild boot \
+#     --flake ".#$1" \
+#     --target-host "deploy@${1}" \
+#     --sudo
+# nixos-rebuild switch \
+#     --flake ".#$1" \
+#     --target-host "deploy@${1}" \
+#     --sudo
 ################################################################################
 # Build recipes
 
