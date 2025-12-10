@@ -34,9 +34,6 @@ in
           OnUnitInactiveSec = "90m";
           RandomizedDelaySec = "10m";
           Persistent = false; # OnStartupSec, OnUnitInactiveSec 조합에서는 작동 안한다.
-
-          # OnCalendar = "hourly";
-          # RandomizedDelaySec = "10m";
         };
       };
 
@@ -55,7 +52,7 @@ in
           IOSchedulingPriority = 7;
 
           ExecStart = pkgs.writeScript "${snapUnitName}-script" ''
-            #!/${pkgs.dash}/bin/dash
+            #!${pkgs.dash}/bin/dash
 
             set -eu
 
@@ -66,6 +63,7 @@ in
             }"
             ZFS_CMD='/run/booted-system/sw/bin/zfs'
 
+            # NOTE: No `+` character in snapshot name
             time_="$(date -- '+%Y-%m-%d_%H:%M:%S_%Z')"
             snapshot_name="${DATASET}@autosnap_''${time_}"
 
@@ -85,7 +83,7 @@ in
             "*-*-* 04:00:00"
             "*-*-* 16:00:00"
           ];
-          RandomizedDelaySec = "120m";
+          RandomizedDelaySec = "60m";
           Persistent = true;
         };
       };

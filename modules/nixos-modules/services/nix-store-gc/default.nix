@@ -30,26 +30,23 @@ let
 
   inherit (lib)
     mkEnableOption
-    mkOption
     mkIf
-    types
     ;
 in
 {
   options.my.services.${serviceName} = {
     enable = mkEnableOption (lib.mDoc "");
-
-    onCalendar = mkOption {
-      type = types.str;
-      default = "Mon *-*-* 04:00:00";
-      description = '''';
-    };
   };
 
   config = mkIf cfg.enable {
     systemd.services.${serviceName} = {
       inherit documentation;
       inherit description;
+
+      unitConfig = {
+        Requires = [ "multi-user.target" ];
+        After = [ "multi-user.target" ];
+      };
 
       serviceConfig = {
         Type = "oneshot";
@@ -72,9 +69,15 @@ in
       inherit description;
 
       timerConfig = {
-        OnCalendar = cfg.onCalendar;
-        RandomizedDelaySec = "30m";
+        OnCalendar = [
+          "Monday *-*-* 04:00:00"
+        ];
+        RandomizedDelaySec = "2h";
         Persistent = true;
+      };
+
+      unitConfig = {
+        After = [ "multi-user.target" ];
       };
 
       wantedBy = [ "timers.target" ];

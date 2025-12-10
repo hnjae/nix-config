@@ -16,12 +16,21 @@ in
     systemd.services.${serviceName} = {
       inherit documentation;
       inherit description;
-      path = lib.lists.optional config.boot.zfs.enabled pkgs.zfs;
+
+      path = lib.lists.optional config.boot.zfs.enabled config.boot.zfs.package;
+
+      unitConfig = {
+        Requires = [ "multi-user.target" ];
+        After = [ "multi-user.target" ];
+      };
 
       serviceConfig = {
         Type = "oneshot";
-        CPUSchedulingPolicy = "idle";
-        IOSchedulingClass = "idle";
+
+        # systemd.exec
+        Nice = 19;
+        IOSchedulingPriority = 7;
+
         ExecStart = lib.escapeShellArgs [
           "${pkgs.podman}/bin/podman"
           "image"
@@ -36,9 +45,15 @@ in
       inherit documentation;
       inherit description;
 
+      unitConfig = {
+        After = [ "multi-user.target" ];
+      };
+
       timerConfig = {
-        OnCalendar = "Monday *-*-* 04:00:00";
-        RandomizedDelaySec = "1h";
+        OnCalendar = [
+          "Monday *-*-* 04:00:00"
+        ];
+        RandomizedDelaySec = "2h";
         Persistent = true;
       };
 

@@ -7,14 +7,20 @@
 let
   DATASET = "osiris/safe";
 
-  snapUnitName = "zfs-snapshot-osiris";
-  pruneUnitName = "zfs-snapshot-prune-osiris";
+  snapUnitName = "zfs-snapshot";
+  pruneUnitName = "zfs-snapshot-prune";
 in
 {
   systemd =
     let
       description = "Create snapshot of ${DATASET}";
       documentation = [ "man:zfs-snapshot(8)" ];
+      after = [
+        # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/tasks/filesystems/zfs.nix
+        # > Apparently scrubbing before boot is complete hangs the system? #53583
+        "multi-user.target"
+        "zfs.target"
+      ];
     in
     {
       timers."${snapUnitName}" = {
@@ -31,17 +37,16 @@ in
 
       services."${snapUnitName}" = {
         inherit description documentation;
-        unitConfig = rec {
-          Requires = [
-            "zfs.target"
-          ];
-          After = Requires;
+
+        unitConfig = {
+          Requires = after;
+          After = after;
         };
 
         serviceConfig = {
           Type = "oneshot";
           ExecStart = pkgs.writeScript "${snapUnitName}-script" ''
-            #!/${pkgs.dash}/bin/dash
+            #!${pkgs.dash}/bin/dash
 
             set -eu
 
@@ -51,8 +56,9 @@ in
               ]
             }"
             ZFS_CMD='/run/booted-system/sw/bin/zfs'
+
             # NOTE: No `+` character in snapshot name
-            time_="$(date -- '+%Y-%m-%dT%H:%M:%S%Z')"
+            time_="$(date -- '+%Y-%m-%d_%H:%M:%S_%Z')"
             snapshot_name="${DATASET}@autosnap_''${time_}"
 
             echo "INFO: Creating snapshot ''${snapshot_name}" >/dev/null
@@ -65,38 +71,44 @@ in
         inherit description documentation;
 
         wantedBy = [ "timers.target" ];
+
+        unitConfig = {
+          After = after;
+        };
+
         timerConfig = {
-          OnCalendar = "*-*-* 04:00:00";
-          RandomizedDelaySec = "120m";
+          OnCalendar = [
+            "*-*-* 04:00:00"
+            "*-*-* 16:00:00"
+          ];
+          RandomizedDelaySec = "60m";
           Persistent = true;
         };
       };
 
       services."${pruneUnitName}" = {
         inherit description documentation;
-        unitConfig = rec {
-          Requires = [
-            "zfs.target"
-          ];
-          After = Requires;
+
+        unitConfig = {
+          Requires = after;
+          After = after;
         };
-        path = [
-          # allow to use zfs from the booted system
-          "/run/booted-system/sw"
-        ];
 
         serviceConfig = {
           Type = "oneshot";
+
+          # systemd.exec 커널 스케쥴링
+          Nice = 10;
+          IOSchedulingPriority = 7;
+
           ExecStart = lib.escapeShellArgs [
             "${self.packages.${pkgs.stdenv.hostPlatform.system}.zfs-snapshot-prune}/bin/zfs-snapshot-prune"
             "--keep-last"
             "1"
             "--keep-within-hourly"
-            "PT8H"
+            "PT12H"
             "--keep-within-daily"
             "P7D"
-            "--keep-within-weekly"
-            "P15D"
             "--offset"
             "240" # 4 hours
             "--filter"
