@@ -1,19 +1,39 @@
+let
+  hostName = "isis";
+in
 {
-  self,
   inputs,
+  lib,
+  self,
   ...
 }:
 {
-  # flake.deploy.nodes.isis = {
-  #   hostname = "isis";
-  #   profiles.system = {
-  #     sshUser = "deploy";
-  #     user = "root";
-  #     path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.isis;
-  #   };
-  # };
+  flake.deploy.nodes =
+    let
+      fqdns = [
+        hostName
+        "${hostName}.local"
+      ];
+    in
+    builtins.listToAttrs (
+      map (
+        fqdn:
+        (lib.nameValuePair (builtins.replaceStrings [ "." ] [ "-" ] fqdn) {
+          hostname = fqdn;
+          profiles.system = {
+            sshUser = "deploy";
+            user = "root";
+            path =
+              inputs.deploy-rs.lib.${
+                self.nixosConfigurations.${hostName}.pkgs.stdenv.hostPlatform.system
+              }.activate.nixos
+                self.nixosConfigurations.${hostName};
+          };
+        })
+      ) fqdns
+    );
 
-  flake.nixosConfigurations.isis = inputs.nixpkgs.lib.nixosSystem {
+  flake.nixosConfigurations.${hostName} = inputs.nixpkgs.lib.nixosSystem {
     modules = [
       {
         system.stateVersion = "24.11";
@@ -23,7 +43,7 @@
           hostType = "baremetal";
         };
 
-        networking.hostName = "isis";
+        networking.hostName = hostName;
       }
 
       self.nixosModules.base-nixos

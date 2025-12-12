@@ -1,16 +1,39 @@
-{ self, inputs, ... }:
+let
+  hostName = "eris";
+in
 {
-  flake.deploy.nodes.eris = {
-    # hostname = "${deviceName}.local";
-    hostname = "eris";
-    profiles.system = {
-      sshUser = "deploy";
-      user = "root";
-      path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.eris;
-    };
-  };
+  inputs,
+  lib,
+  self,
+  ...
+}:
+{
+  flake.deploy.nodes =
+    let
+      fqdns = [
+        hostName
+        "${hostName}.local"
+      ];
+    in
+    builtins.listToAttrs (
+      map (
+        fqdn:
+        (lib.nameValuePair (builtins.replaceStrings [ "." ] [ "-" ] fqdn) {
+          hostname = fqdn;
+          profiles.system = {
+            sshUser = "deploy";
+            user = "root";
+            path =
+              inputs.deploy-rs.lib.${
+                self.nixosConfigurations.${hostName}.pkgs.stdenv.hostPlatform.system
+              }.activate.nixos
+                self.nixosConfigurations.${hostName};
+          };
+        })
+      ) fqdns
+    );
 
-  flake.nixosConfigurations.eris = inputs.nixpkgs.lib.nixosSystem {
+  flake.nixosConfigurations.${hostName} = inputs.nixpkgs.lib.nixosSystem {
     modules = [
       inputs.disko.nixosModules.disko
       inputs.impermanence.nixosModules.impermanence
@@ -22,7 +45,7 @@
 
       {
         system.stateVersion = "25.05";
-        networking.hostName = "eris";
+        networking.hostName = hostName;
 
         base-nixos = {
           role = "none";
