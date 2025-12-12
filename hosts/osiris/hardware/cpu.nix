@@ -39,5 +39,4 @@
     settings.Settings.epp_state_for_BAT = "performance";
     settings.Settings.epp_state_for_AC = "performance";
   };
-
 }

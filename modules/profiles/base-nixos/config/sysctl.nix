@@ -1,7 +1,6 @@
 /*
   NOTE:
     - https://rudd-o.com/linux-and-free-software/tales-from-responsivenessland-why-linux-feels-slow-and-how-to-fix-that
-    - https://linuxblog.io/linux-performance-almost-always-add-swap-part2-zram/
 */
 { lib, ... }:
 let
