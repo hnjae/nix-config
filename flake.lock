@@ -527,11 +527,11 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1764769162,
-        "narHash": "sha256-KLrHyBoflFABlNdi1tyQ3zKmwMrG5AqVLyEntXpd7Dc=",
+        "lastModified": 1765547960,
+        "narHash": "sha256-8hNypzTGYzwb6U7xdBGuQyGAWuEl4fOG3wYEWRmIVv8=",
         "ref": "refs/heads/main",
-        "rev": "2f3be55299668820f8b9c9fb64875f465d9e67ee",
-        "revCount": 58,
+        "rev": "7b05e3662855c8591451d86eed04b4ced7967b03",
+        "revCount": 60,
         "type": "git",
         "url": "ssh://git@github.com/hnjae/py-utils"
       },

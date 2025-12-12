@@ -62,6 +62,7 @@ lib.flatten [
     pkgs.my.cider-2
     pkgs.unstable.warp-terminal
   ])
+
   (lib.lists.optionals pkgs.stdenv.hostPlatform.isLinux [
     pkgs.wezterm
     pkgs.unstable.ghostty
