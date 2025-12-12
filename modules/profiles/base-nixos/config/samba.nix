@@ -35,7 +35,7 @@
 
       #
       "smb1 unix extensions" = "no"; # supports symbolic links, hard links ...
-      "smb3 unix extensions" = "no";
+      "smb3 unix extensions" = "yes";
       "store dos attributes" = "no"; # read DOS attributes from xattr
 
       #
@@ -51,6 +51,10 @@
       #
       "use sendfile" = "yes";
       # "vfs objects" = "fruit streams_xattr";
+
+      "server smb transports" = "quic";
+      "client smb transports" = "+quic";
+      "server string" = "Samba %v of %h";
     };
   };
 }
