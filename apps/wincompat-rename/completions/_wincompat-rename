@@ -9,6 +9,7 @@ _wincompat_rename() {
         '--process-dangerous-files[Process dangerous paths]'
         '(-h --help)'{-h,--help}'[Print help information]'
         '(-V --version)'{-V,--version}'[Print version information]'
+        '(- *)--[Stop parsing options; all following arguments are paths]'
         '*:file or directory:_files'
     )
 
