@@ -1,7 +1,7 @@
 use crate::cli::Args;
 use crate::converter::convert_filename;
 use crate::fs_utils::{get_device_id, is_different_filesystem, is_hidden, is_symlink};
-use crate::output::{ProgressBar, Summary, print_rename, print_summary, print_warning};
+use crate::output::{Summary, print_rename, print_summary, print_warning};
 use crate::safety::{check_collision, is_dangerous_path};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -37,7 +37,7 @@ pub fn walk_and_rename(args: Args) {
         if recursive && path.is_dir() {
             process_directory_recursive(&mut ctx, &path);
         } else {
-            process_single_path(&mut ctx, &path);
+            process_single_path(&mut ctx, &path, 1, 1);
         }
     }
 
@@ -51,12 +51,10 @@ fn process_directory_recursive(ctx: &mut WalkContext, dir: &Path) {
     all_paths.sort_by_key(|b| std::cmp::Reverse(b.components().count()));
 
     if ctx.args.recursive {
-        let mut progress = ProgressBar::new(all_paths.len());
+        let total = all_paths.len();
         for (idx, path) in all_paths.iter().enumerate() {
-            process_single_path(ctx, path);
-            progress.update(idx + 1);
+            process_single_path(ctx, path, idx + 1, total);
         }
-        progress.finish();
     }
 }
 
@@ -118,7 +116,7 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
     }
 }
 
-fn process_single_path(ctx: &mut WalkContext, path: &Path) {
+fn process_single_path(ctx: &mut WalkContext, path: &Path, current: usize, total: usize) {
     if is_symlink(path) {
         return;
     }
@@ -156,11 +154,11 @@ fn process_single_path(ctx: &mut WalkContext, path: &Path) {
     }
 
     if ctx.args.dry_run {
-        print_rename(filename_str, &new_filename);
+        print_rename(filename_str, &new_filename, current, total);
     } else {
         match fs::rename(path, &new_path) {
             Ok(()) => {
-                print_rename(filename_str, &new_filename);
+                print_rename(filename_str, &new_filename, current, total);
                 if path.is_dir() {
                     ctx.summary.dirs_renamed += 1;
                 } else {
@@ -217,7 +215,7 @@ mod tests {
             summary: Summary::new(),
         };
 
-        process_single_path(&mut ctx, &file_path);
+        process_single_path(&mut ctx, &file_path, 1, 1);
 
         assert_eq!(ctx.summary.files_renamed, 0);
 

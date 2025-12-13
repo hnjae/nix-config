@@ -10,6 +10,7 @@ name = "wincompat-rename"
 path = "src/main.rs"
 
 [dependencies]
+log = "0.4"
 
 [dev-dependencies]
 

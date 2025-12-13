@@ -1,4 +1,4 @@
-use std::io::{self, Write};
+use log::{error, info};
 
 pub struct ColorSupport {
     enabled: bool,
@@ -44,67 +44,20 @@ fn is_terminal() -> bool {
     env::var("TERM").is_ok() && env::var("TERM").unwrap() != "dumb"
 }
 
-pub fn print_rename(old_name: &str, new_name: &str) {
+pub fn print_rename(old_name: &str, new_name: &str, current: usize, total: usize) {
     let colors = ColorSupport::new();
-    println!("{} → {}", old_name, colors.green(new_name));
+    info!(
+        "({}/{}) {} → {}",
+        current,
+        total,
+        old_name,
+        colors.green(new_name)
+    );
 }
 
 pub fn print_warning(message: &str) {
     let colors = ColorSupport::new();
-    eprintln!("{}", colors.yellow(&format!("WARNING: {message}")));
-}
-
-pub struct ProgressBar {
-    total: usize,
-    current: usize,
-    width: usize,
-}
-
-impl ProgressBar {
-    #[must_use]
-    pub const fn new(total: usize) -> Self {
-        Self {
-            total,
-            current: 0,
-            width: 40,
-        }
-    }
-
-    pub fn update(&mut self, current: usize) {
-        self.current = current;
-        self.draw();
-    }
-
-    #[allow(
-        clippy::cast_possible_truncation,
-        clippy::cast_sign_loss,
-        clippy::cast_precision_loss
-    )]
-    fn draw(&self) {
-        if self.total == 0 {
-            return;
-        }
-
-        let percentage = (self.current as f64 / self.total as f64 * 100.0) as usize;
-        let filled = (self.current as f64 / self.total as f64 * self.width as f64) as usize;
-        let empty = self.width.saturating_sub(filled);
-
-        let bar = format!(
-            "\r[{}{}] {}% ({}/{})",
-            "#".repeat(filled),
-            "-".repeat(empty),
-            percentage,
-            self.current,
-            self.total
-        );
-
-        print!("{bar}");
-        let _ = io::stdout().flush();
-    }
-
-    pub fn finish(&self) {
-        println!();
-    }
+    error!("{}", colors.yellow(message));
 }
 
 pub struct Summary {
@@ -135,7 +88,7 @@ impl Summary {
 }
 
 pub fn print_summary(summary: &Summary) {
-    println!(
+    info!(
         "\nCompleted: {} files renamed, {} directories renamed",
         summary.files_renamed, summary.dirs_renamed
     );
@@ -143,7 +96,6 @@ pub fn print_summary(summary: &Summary) {
     let total_skipped =
         summary.skipped_exists + summary.skipped_dangerous + summary.skipped_filesystem;
     if total_skipped > 0 {
-        print!("Skipped: ");
         let mut parts = Vec::new();
 
         if summary.skipped_exists > 0 {
@@ -159,20 +111,13 @@ pub fn print_summary(summary: &Summary) {
             ));
         }
 
-        println!("{}", parts.join(", "));
+        info!("Skipped: {}", parts.join(", "));
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_progress_bar_new() {
-        let pb = ProgressBar::new(100);
-        assert_eq!(pb.total, 100);
-        assert_eq!(pb.current, 0);
-    }
 
     #[test]
     fn test_summary_new() {
