@@ -4,18 +4,37 @@ use std::io::Read;
 use std::path::{Path, PathBuf};
 
 const DANGEROUS_DIRNAMES: &[&str] = &[
+    ".snapshots",
+    ".zfs",
+
     ".config",
     ".git",
-    ".ssh",
-    ".snapshots",
-    "__pycache__",
-    ".direnv",
-    ".venv",
-    ".ansible",
-    ".husky",
-    ".github",
     ".git-crypt",
+    ".github",
+    ".ssh",
     ".vscode",
+    ".claude",
+
+    ".cache",
+    ".ld.so",
+    ".local",
+    ".var",
+
+    ".1password",
+    ".cert",
+    ".mozilla",
+    ".pki",
+    ".steam",
+
+    ".dotnet",
+    ".npm",
+
+    ".ansible",
+    ".deploy-gc",
+    ".direnv",
+    ".husky",
+    ".venv",
+    "__pycache__",
     "node_modules",
 ];
 
