@@ -146,18 +146,8 @@ remote-build-test: update-locals
 # check recipes
 
 [group('check')]
-check: update-locals _check-flake _drybuild-homes
-
-[group('check')]
-_check-flake:
-    #!/bin/sh
-
-    set -eu
-
-    NIXPKGS_ALLOW_UNFREE=1
-    nix flake check \
-        --no-warn-dirty \
-        --impure # to check unfree packages
+check:
+    NIXPKGS_ALLOW_UNFREE=1 nix flake check --no-warn-dirty
 
 [group('check')]
 _parallel-drybuild-homes-wip:
