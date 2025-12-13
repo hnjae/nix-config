@@ -6,7 +6,6 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 tab_width = 8
-max_line_length = 80
 
 [*.nix]
 indent_size = 2
@@ -24,6 +23,10 @@ indent_style = space
 [*.py]
 indent_size = 4
 max_line_length = 79
+indent_style = space
+
+[*.rs]
+indent_size = 4
 indent_style = space
 
 # mdformat force indent size to 2
