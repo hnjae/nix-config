@@ -365,6 +365,38 @@ build-packages: update-locals
 
     main
 
+[group('build')]
+build-others:
+    #!/bin/sh
+
+    set -eu
+
+    build() {
+        target="$1"
+
+        echo "{{ BOLD }}{{ BLUE }}INFO: Building ${target}{{ NORMAL }}" >&2
+
+        nix build \
+            --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#${target}" \
+            --option eval-cache false \
+            --show-trace \
+            --keep-failed \
+            ".#${target}"
+    }
+
+    main() {
+        build "formatter.{{ system }}"
+
+        for pkg in $(
+            nix flake show --json --no-pretty 2>/dev/null |
+            jq -r '.devShells."{{ system }}" | keys[]'
+        ); do
+            build "devShells.{{ system }}.${pkg}"
+        done
+    }
+
+    main
+
 ################################################################################
 # show flake.outputs
 
