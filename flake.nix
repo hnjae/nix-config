@@ -132,13 +132,6 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    git-hooks = {
-      url = "github:cachix/git-hooks.nix";
-      inputs = {
-        flake-compat.follows = "";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
 
     ############################################################################
     # Used in input dependency only
@@ -150,6 +143,13 @@
         rust-overlay.follows = "rust-overlay";
         flake-utils.follows = "flake-utils";
         flake-compat.follows = "";
+      };
+    };
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs = {
+        flake-compat.follows = "";
+        nixpkgs.follows = "nixpkgs";
       };
     };
     rust-overlay = {
@@ -173,7 +173,6 @@
       }
       {
         imports = nixpkgs.lib.flatten [
-          (nixpkgs.lib.lists.optional (inputs.git-hooks ? flakeModule) inputs.git-hooks.flakeModule)
           (nixpkgs.lib.lists.optional (inputs.treefmt-nix ? flakeModule) inputs.treefmt-nix.flakeModule)
 
           ./attributes/deploy.nix
@@ -203,10 +202,6 @@
           {
             # Utilized by `nix develop`
             devShells.default = pkgs.mkShellNoCC {
-              # shellHook = ''
-              #   ${config.pre-commit.installationScript}
-              # '';
-
               packages = with pkgs; [
                 sops
 
@@ -222,8 +217,6 @@
                 jq
               ];
             };
-
-            # pre-commit.settings.hooks.treefmt.enable = false;
 
             # Utilized by `nix fmt` (formatter)
             treefmt.config = {
