@@ -202,8 +202,8 @@ pkgs:
     ######################
     pkgs.go
     pkgs.unstable.nufmt
-    pkgs.rust-bin.stable.latest.default
-    pkgs.unstable.taplo # lsp for toml written in rust
+    # pkgs.rust-bin.stable.latest.default
+    pkgs.pkgs.unstable.taplo # lsp for toml written in rust
     pkgs.unstable.yaml-language-server
     # pkgs.unstable.yamlfmt # `>-` 구문 처리에 버그 있는 듯. <2025-09-16>
     # (pkgs.runCommandLocal "vscode-json-language-server" { } ''

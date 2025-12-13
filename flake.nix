@@ -114,10 +114,6 @@
         treefmt-nix.follows = "";
       };
     };
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     yaml2nix = {
       url = "github:euank/yaml2nix";
       inputs = {
@@ -153,6 +149,10 @@
         flake-utils.follows = "flake-utils";
         flake-compat.follows = "";
       };
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     ############################################################################
