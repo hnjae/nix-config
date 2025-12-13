@@ -15,6 +15,7 @@ wincompat-rename - Rename files to Windows-compatible names
 
 USAGE:
     wincompat-rename [OPTIONS] <PATH>...
+    wincompat-rename [OPTIONS] -- <PATH>...
 
 ARGUMENTS:
     <PATH>...    Files or directories to process
@@ -26,6 +27,7 @@ OPTIONS:
         --process-dangerous-files Process dangerous paths
     -h, --help                   Print help information
     -V, --version                Print version information
+    --                           Stop parsing options (all following args are paths)
 ";
 
 #[derive(Debug, Clone)]
@@ -71,37 +73,45 @@ pub fn parse_args() -> Args {
     }
 
     let mut parsed = Args::new();
+    let mut parsing_options = true;
 
     for arg in args.iter().skip(1) {
-        match arg.as_str() {
-            "-h" | "--help" => {
-                println!("{HELP}");
-                process::exit(0);
+        if parsing_options {
+            match arg.as_str() {
+                "-h" | "--help" => {
+                    println!("{HELP}");
+                    process::exit(0);
+                }
+                "-V" | "--version" => {
+                    println!("wincompat-rename {VERSION}");
+                    process::exit(0);
+                }
+                "-r" | "--recursive" => {
+                    parsed.recursive = true;
+                }
+                "-n" | "--dry-run" => {
+                    parsed.dry_run = true;
+                }
+                "-H" | "--hidden" => {
+                    parsed.hidden = true;
+                }
+                "--process-dangerous-files" => {
+                    parsed.process_dangerous = true;
+                }
+                "--" => {
+                    parsing_options = false;
+                }
+                arg_str if arg_str.starts_with('-') => {
+                    eprintln!("Error: Unknown option '{arg_str}'");
+                    eprintln!("Try 'wincompat-rename --help' for more information.");
+                    process::exit(1);
+                }
+                path => {
+                    parsed.paths.push(path.to_owned());
+                }
             }
-            "-V" | "--version" => {
-                println!("wincompat-rename {VERSION}");
-                process::exit(0);
-            }
-            "-r" | "--recursive" => {
-                parsed.recursive = true;
-            }
-            "-n" | "--dry-run" => {
-                parsed.dry_run = true;
-            }
-            "-H" | "--hidden" => {
-                parsed.hidden = true;
-            }
-            "--process-dangerous-files" => {
-                parsed.process_dangerous = true;
-            }
-            arg_str if arg_str.starts_with('-') => {
-                eprintln!("Error: Unknown option '{arg_str}'");
-                eprintln!("Try 'wincompat-rename --help' for more information.");
-                process::exit(1);
-            }
-            path => {
-                parsed.paths.push(path.to_owned());
-            }
+        } else {
+            parsed.paths.push(arg.to_owned());
         }
     }
 
