@@ -63,28 +63,23 @@ impl Args {
     }
 }
 
-#[must_use]
-pub fn parse_args() -> Args {
-    let args: Vec<String> = env::args().collect();
-
-    if args.len() == 1 {
-        println!("{HELP}");
-        process::exit(0);
+/// Internal result type for argument parsing that can fail without exiting.
+fn parse_args_internal(args: &[String]) -> Result<Args, String> {
+    if args.is_empty() {
+        return Err("help".to_owned());
     }
 
     let mut parsed = Args::new();
     let mut parsing_options = true;
 
-    for arg in args.iter().skip(1) {
+    for arg in args {
         if parsing_options {
             match arg.as_str() {
                 "-h" | "--help" => {
-                    println!("{HELP}");
-                    process::exit(0);
+                    return Err("help".to_owned());
                 }
                 "-V" | "--version" => {
-                    println!("wincompat-rename {VERSION}");
-                    process::exit(0);
+                    return Err("version".to_owned());
                 }
                 "-r" | "--recursive" => {
                     parsed.recursive = true;
@@ -102,9 +97,7 @@ pub fn parse_args() -> Args {
                     parsing_options = false;
                 }
                 arg_str if arg_str.starts_with('-') => {
-                    eprintln!("Error: Unknown option '{arg_str}'");
-                    eprintln!("Try 'wincompat-rename --help' for more information.");
-                    process::exit(1);
+                    return Err(format!("unknown_option:{arg_str}"));
                 }
                 path => {
                     parsed.paths.push(path.to_owned());
@@ -116,12 +109,46 @@ pub fn parse_args() -> Args {
     }
 
     if parsed.paths.is_empty() {
-        eprintln!("Error: No paths specified");
-        eprintln!("Try 'wincompat-rename --help' for more information.");
-        process::exit(1);
+        return Err("no_paths".to_owned());
     }
 
-    parsed
+    Ok(parsed)
+}
+
+#[must_use]
+pub fn parse_args() -> Args {
+    let args: Vec<String> = env::args().collect();
+    let args_slice = args.get(1..).unwrap_or_default();
+
+    match parse_args_internal(args_slice) {
+        Ok(parsed) => parsed,
+        Err(error) => match error.as_str() {
+            "help" => {
+                println!("{HELP}");
+                process::exit(0);
+            }
+            "version" => {
+                println!("wincompat-rename {VERSION}");
+                process::exit(0);
+            }
+            "no_paths" => {
+                eprintln!("Error: No paths specified");
+                eprintln!("Try 'wincompat-rename --help' for more information.");
+                process::exit(1);
+            }
+            unknown_opt if unknown_opt.starts_with("unknown_option:") => {
+                let opt = unknown_opt.strip_prefix("unknown_option:").unwrap_or("");
+                eprintln!("Error: Unknown option '{opt}'");
+                eprintln!("Try 'wincompat-rename --help' for more information.");
+                process::exit(1);
+            }
+            _ => {
+                eprintln!("Error: Invalid arguments");
+                eprintln!("Try 'wincompat-rename --help' for more information.");
+                process::exit(1);
+            }
+        },
+    }
 }
 
 #[cfg(test)]
@@ -131,6 +158,200 @@ mod tests {
     #[test]
     fn test_args_new() {
         let args = Args::new();
+        assert_eq!(args.paths.len(), 0);
+        assert!(!args.recursive);
+        assert!(!args.dry_run);
+        assert!(!args.hidden);
+        assert!(!args.process_dangerous);
+    }
+
+    #[test]
+    fn test_parse_args_internal_simple_path() {
+        let args = vec!["test.txt".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert_eq!(parsed.paths, vec!["test.txt"]);
+        assert!(!parsed.recursive);
+    }
+
+    #[test]
+    fn test_parse_args_internal_multiple_paths() {
+        let args = vec!["file1.txt".to_string(), "file2.txt".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert_eq!(parsed.paths.len(), 2);
+    }
+
+    #[test]
+    fn test_parse_args_internal_recursive_flag() {
+        let args = vec!["-r".to_string(), "path".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert!(parsed.recursive);
+        assert_eq!(parsed.paths, vec!["path"]);
+    }
+
+    #[test]
+    fn test_parse_args_internal_recursive_long_flag() {
+        let args = vec!["--recursive".to_string(), "path".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert!(parsed.recursive);
+    }
+
+    #[test]
+    fn test_parse_args_internal_dry_run_flag() {
+        let args = vec!["-n".to_string(), "path".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert!(parsed.dry_run);
+    }
+
+    #[test]
+    fn test_parse_args_internal_dry_run_long_flag() {
+        let args = vec!["--dry-run".to_string(), "path".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert!(parsed.dry_run);
+    }
+
+    #[test]
+    fn test_parse_args_internal_hidden_flag() {
+        let args = vec!["-H".to_string(), "path".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert!(parsed.hidden);
+    }
+
+    #[test]
+    fn test_parse_args_internal_hidden_long_flag() {
+        let args = vec!["--hidden".to_string(), "path".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert!(parsed.hidden);
+    }
+
+    #[test]
+    fn test_parse_args_internal_process_dangerous_files() {
+        let args = vec!["--process-dangerous-files".to_string(), "path".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert!(parsed.process_dangerous);
+    }
+
+    #[test]
+    fn test_parse_args_internal_multiple_flags() {
+        let args = vec![
+            "-r".to_string(),
+            "-n".to_string(),
+            "-H".to_string(),
+            "path".to_string(),
+        ];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert!(parsed.recursive);
+        assert!(parsed.dry_run);
+        assert!(parsed.hidden);
+        assert_eq!(parsed.paths, vec!["path"]);
+    }
+
+    #[test]
+    fn test_parse_args_internal_help_flag() {
+        let args = vec!["--help".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "help");
+    }
+
+    #[test]
+    fn test_parse_args_internal_help_short_flag() {
+        let args = vec!["-h".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "help");
+    }
+
+    #[test]
+    fn test_parse_args_internal_version_flag() {
+        let args = vec!["--version".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "version");
+    }
+
+    #[test]
+    fn test_parse_args_internal_version_short_flag() {
+        let args = vec!["-V".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "version");
+    }
+
+    #[test]
+    fn test_parse_args_internal_unknown_option() {
+        let args = vec!["--unknown".to_string(), "path".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_err());
+        assert!(result.unwrap_err().starts_with("unknown_option:"));
+    }
+
+    #[test]
+    fn test_parse_args_internal_no_paths() {
+        let args = vec!["-r".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "no_paths");
+    }
+
+    #[test]
+    fn test_parse_args_internal_empty_args() {
+        let args: Vec<String> = vec![];
+        let result = parse_args_internal(&args);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "help");
+    }
+
+    #[test]
+    fn test_parse_args_internal_double_dash() {
+        let args = vec!["--".to_string(), "-r".to_string(), "-n".to_string()];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        assert!(!parsed.recursive);
+        assert!(!parsed.dry_run);
+        assert_eq!(parsed.paths, vec!["-r".to_string(), "-n".to_string()]);
+    }
+
+    #[test]
+    fn test_parse_args_internal_flags_interleaved_with_paths() {
+        let args = vec![
+            "-r".to_string(),
+            "path1".to_string(),
+            "-n".to_string(),
+            "path2".to_string(),
+        ];
+        let result = parse_args_internal(&args);
+        assert!(result.is_ok());
+        let parsed = result.unwrap();
+        // Both flags are processed even if interleaved with paths
+        assert!(parsed.recursive);
+        assert!(parsed.dry_run);
+        assert_eq!(parsed.paths, vec!["path1".to_string(), "path2".to_string()]);
+    }
+
+    #[test]
+    fn test_args_default() {
+        let args = Args::default();
         assert_eq!(args.paths.len(), 0);
         assert!(!args.recursive);
         assert!(!args.dry_run);

@@ -75,15 +75,12 @@ fn is_home_dotfile(path: &Path) -> bool {
         return false;
     };
 
-    if let Some(parent) = abs_path.parent() {
-        if parent == home_path {
-            if let Some(filename) = abs_path.file_name() {
-                if let Some(name) = filename.to_str() {
+    if let Some(parent) = abs_path.parent()
+        && parent == home_path
+            && let Some(filename) = abs_path.file_name()
+                && let Some(name) = filename.to_str() {
                     return name.starts_with('.');
                 }
-            }
-        }
-    }
 
     false
 }
@@ -93,11 +90,10 @@ fn is_home_dotfile(path: &Path) -> bool {
 /// Returns `true` if the directory name is in the predefined list of
 /// dangerous directories (e.g., `.git`, `.ssh`, `node_modules`).
 fn is_dangerous_dirname(path: &Path) -> bool {
-    if let Some(filename) = path.file_name() {
-        if let Some(name) = filename.to_str() {
+    if let Some(filename) = path.file_name()
+        && let Some(name) = filename.to_str() {
             return DANGEROUS_DIRNAMES.contains(&name);
         }
-    }
     false
 }
 
@@ -187,5 +183,91 @@ mod tests {
         assert!(!check_collision(Path::new("/nonexistent/path/file.txt")));
 
         let _ = fs::remove_file(&temp_file);
+    }
+
+    #[test]
+    fn test_is_dangerous_path_with_dangerous_dirname() {
+        assert!(is_dangerous_path(Path::new(".git")));
+        assert!(is_dangerous_path(Path::new("node_modules")));
+        assert!(is_dangerous_path(Path::new(".ssh")));
+    }
+
+    #[test]
+    fn test_is_dangerous_path_with_normal_path() {
+        assert!(!is_dangerous_path(Path::new("normal_file.txt")));
+        assert!(!is_dangerous_path(Path::new("/path/to/normal_dir")));
+    }
+
+    #[test]
+    fn test_is_dangerous_path_with_cachedir_tag() {
+        let temp_dir = std::env::temp_dir().join("test_dangerous_cachedir");
+        let _ = fs::create_dir_all(&temp_dir);
+
+        let tag_path = temp_dir.join("CACHEDIR.TAG");
+        fs::write(&tag_path, CACHEDIR_TAG_SIGNATURE).unwrap();
+
+        assert!(is_dangerous_path(&temp_dir));
+
+        let _ = fs::remove_dir_all(&temp_dir);
+    }
+
+    #[test]
+    fn test_is_home_dotfile_in_home() {
+        let home_dir = std::env::var("HOME").ok();
+        if let Some(home) = home_dir {
+            let dotfile_path = std::path::PathBuf::from(&home).join(".bashrc");
+            // Only test if we can create/check the file
+            if dotfile_path.exists() {
+                assert!(is_home_dotfile(&dotfile_path));
+            }
+        }
+    }
+
+    #[test]
+    fn test_is_home_dotfile_not_dotfile() {
+        let normal_file = std::env::temp_dir().join("normal_file.txt");
+        fs::write(&normal_file, "test").unwrap();
+        assert!(!is_home_dotfile(&normal_file));
+        let _ = fs::remove_file(&normal_file);
+    }
+
+    #[test]
+    fn test_is_home_dotfile_in_subdirectory() {
+        let temp_dir = std::env::temp_dir().join("subdir");
+        let _ = fs::create_dir_all(&temp_dir);
+        let dotfile = temp_dir.join(".hidden");
+        fs::write(&dotfile, "test").unwrap();
+
+        assert!(!is_home_dotfile(&dotfile));
+
+        let _ = fs::remove_file(&dotfile);
+        let _ = fs::remove_dir(&temp_dir);
+    }
+
+    #[test]
+    fn test_has_cachedir_tag_non_existent() {
+        let non_existent = std::env::temp_dir().join("non_existent_dir_for_test");
+        assert!(!has_cachedir_tag(&non_existent));
+    }
+
+    #[test]
+    fn test_has_cachedir_tag_file_not_dir() {
+        let temp_file = std::env::temp_dir().join("test_not_dir.txt");
+        fs::write(&temp_file, "test").unwrap();
+        assert!(!has_cachedir_tag(&temp_file));
+        let _ = fs::remove_file(&temp_file);
+    }
+
+    #[test]
+    fn test_is_dangerous_dirname_all_types() {
+        // Test a few from each category
+        // System configs
+        assert!(is_dangerous_dirname(Path::new(".config")));
+        // Version control
+        assert!(is_dangerous_dirname(Path::new(".git")));
+        // Package managers
+        assert!(is_dangerous_dirname(Path::new("node_modules")));
+        // Reserved
+        assert!(is_dangerous_dirname(Path::new(".cache")));
     }
 }

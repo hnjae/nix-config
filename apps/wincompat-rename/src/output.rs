@@ -147,6 +147,7 @@ pub fn print_warning(message: &str) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::env;
 
     #[test]
     fn test_summary_new() {
@@ -158,6 +159,16 @@ mod tests {
     }
 
     #[test]
+    fn test_summary_default() {
+        let summary = Summary::default();
+        assert_eq!(summary.files_renamed, 0);
+        assert_eq!(summary.dirs_renamed, 0);
+        assert_eq!(summary.skipped_exists, 0);
+        assert_eq!(summary.skipped_dangerous, 0);
+        assert_eq!(summary.skipped_filesystem, 0);
+    }
+
+    #[test]
     fn test_color_support() {
         let colors = ColorSupport::new();
         let yellow = colors.yellow("test");
@@ -165,5 +176,195 @@ mod tests {
 
         assert!(yellow.contains("test"));
         assert!(green.contains("test"));
+    }
+
+    #[test]
+    fn test_color_support_default() {
+        let colors = ColorSupport::default();
+        let yellow = colors.yellow("test");
+        let green = colors.green("test");
+
+        assert!(yellow.contains("test"));
+        assert!(green.contains("test"));
+    }
+
+    #[test]
+    fn test_color_support_green() {
+        let colors = ColorSupport::new();
+        let green = colors.green("hello");
+        assert!(green.contains("hello"));
+    }
+
+    #[test]
+    fn test_color_support_yellow() {
+        let colors = ColorSupport::new();
+        let yellow = colors.yellow("warning");
+        assert!(yellow.contains("warning"));
+    }
+
+    #[test]
+    fn test_is_terminal_no_color_env() {
+        let old_val = env::var("NO_COLOR");
+        unsafe {
+            env::set_var("NO_COLOR", "1");
+        }
+        let result = is_terminal();
+        if let Ok(val) = old_val {
+            unsafe {
+                env::set_var("NO_COLOR", val);
+            }
+        } else {
+            unsafe {
+                env::remove_var("NO_COLOR");
+            }
+        }
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_is_terminal_term_dumb() {
+        let old_val = env::var("TERM");
+        unsafe {
+            env::set_var("TERM", "dumb");
+        }
+        let result = is_terminal();
+        if let Ok(val) = old_val {
+            unsafe {
+                env::set_var("TERM", val);
+            }
+        } else {
+            unsafe {
+                env::remove_var("TERM");
+            }
+        }
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_is_terminal_term_set() {
+        let old_term = env::var("TERM");
+        let old_no_color = env::var("NO_COLOR");
+
+        unsafe {
+            env::remove_var("NO_COLOR");
+            env::set_var("TERM", "xterm");
+        }
+
+        let result = is_terminal();
+
+        if let Ok(val) = old_term {
+            unsafe {
+                env::set_var("TERM", val);
+            }
+        } else {
+            unsafe {
+                env::remove_var("TERM");
+            }
+        }
+        if let Ok(val) = old_no_color {
+            unsafe {
+                env::set_var("NO_COLOR", val);
+            }
+        }
+
+        assert!(result);
+    }
+
+    #[test]
+    fn test_is_terminal_neither_set() {
+        let old_term = env::var("TERM");
+        let old_no_color = env::var("NO_COLOR");
+
+        unsafe {
+            env::remove_var("TERM");
+            env::remove_var("NO_COLOR");
+        }
+
+        let result = is_terminal();
+
+        if let Ok(val) = old_term {
+            unsafe {
+                env::set_var("TERM", val);
+            }
+        }
+        if let Ok(val) = old_no_color {
+            unsafe {
+                env::set_var("NO_COLOR", val);
+            }
+        }
+
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_print_rename() {
+        // This test verifies that print_rename doesn't panic
+        print_rename("old.txt", "new.txt", 1, 5);
+    }
+
+    #[test]
+    fn test_print_summary_no_skips() {
+        let summary = Summary {
+            files_renamed: 5,
+            dirs_renamed: 2,
+            skipped_dangerous: 0,
+            skipped_exists: 0,
+            skipped_filesystem: 0,
+        };
+        print_summary(&summary);
+    }
+
+    #[test]
+    fn test_print_summary_with_skips() {
+        let summary = Summary {
+            files_renamed: 5,
+            dirs_renamed: 2,
+            skipped_dangerous: 1,
+            skipped_exists: 2,
+            skipped_filesystem: 1,
+        };
+        print_summary(&summary);
+    }
+
+    #[test]
+    fn test_print_summary_only_dangerous() {
+        let summary = Summary {
+            files_renamed: 0,
+            dirs_renamed: 0,
+            skipped_dangerous: 3,
+            skipped_exists: 0,
+            skipped_filesystem: 0,
+        };
+        print_summary(&summary);
+    }
+
+    #[test]
+    fn test_print_summary_only_exists() {
+        let summary = Summary {
+            files_renamed: 0,
+            dirs_renamed: 0,
+            skipped_dangerous: 0,
+            skipped_exists: 2,
+            skipped_filesystem: 0,
+        };
+        print_summary(&summary);
+    }
+
+    #[test]
+    fn test_print_summary_only_filesystem() {
+        let summary = Summary {
+            files_renamed: 0,
+            dirs_renamed: 0,
+            skipped_dangerous: 0,
+            skipped_exists: 0,
+            skipped_filesystem: 1,
+        };
+        print_summary(&summary);
+    }
+
+    #[test]
+    fn test_print_warning() {
+        // This test verifies that print_warning doesn't panic
+        print_warning("This is a warning");
     }
 }
