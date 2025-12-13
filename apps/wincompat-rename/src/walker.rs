@@ -91,11 +91,10 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
         return;
     }
 
-    if let Some(base_dev) = ctx.base_dev {
-        if is_different_filesystem(dir, base_dev) {
+    if let Some(base_dev) = ctx.base_dev
+        && is_different_filesystem(dir, base_dev) {
             return;
         }
-    }
 
     let Ok(entries) = fs::read_dir(dir) else {
         return;
@@ -117,8 +116,8 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
             continue;
         }
 
-        if let Some(base_dev) = ctx.base_dev {
-            if is_different_filesystem(&path, base_dev) {
+        if let Some(base_dev) = ctx.base_dev
+            && is_different_filesystem(&path, base_dev) {
                 print_warning(&format!(
                     "SKIPPED \"{}\" (different filesystem)",
                     path.display()
@@ -126,7 +125,6 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
                 ctx.summary.skipped_filesystem = ctx.summary.skipped_filesystem.saturating_add(1);
                 continue;
             }
-        }
 
         collected.push(path.clone());
 
@@ -209,8 +207,8 @@ mod tests {
         let temp_dir = std::env::temp_dir().join("test_walker_collect");
         let _ = fs::create_dir_all(&temp_dir);
 
-        fs::write(temp_dir.join("file1.txt"), "test").unwrap();
-        fs::write(temp_dir.join("file2.txt"), "test").unwrap();
+        fs::write(temp_dir.join("file1.txt"), "test").expect("Failed to write file");
+        fs::write(temp_dir.join("file2.txt"), "test").expect("Failed to write file");
 
         let mut ctx = WalkContext {
             args: Args::new(),
@@ -232,7 +230,7 @@ mod tests {
         let _ = fs::create_dir_all(&temp_dir);
 
         let file_path = temp_dir.join("normal_file.txt");
-        fs::write(&file_path, "test").unwrap();
+        fs::write(&file_path, "test").expect("Failed to write test file");
 
         let mut ctx = WalkContext {
             args: Args::new(),
@@ -243,6 +241,96 @@ mod tests {
         process_single_path(&mut ctx, &file_path, 1, 1);
 
         assert_eq!(ctx.summary.files_renamed, 0);
+
+        let _ = fs::remove_dir_all(&temp_dir);
+    }
+
+    #[test]
+    fn test_walk_and_rename_nonexistent_path() {
+        let args = Args {
+            dry_run: false,
+            hidden: false,
+            paths: vec!["/nonexistent/path/does/not/exist".to_string()],
+            process_dangerous: false,
+            recursive: false,
+        };
+        // Should handle nonexistent path gracefully
+        walk_and_rename(args);
+    }
+
+    #[test]
+    fn test_walk_and_rename_dry_run() {
+        let temp_dir = std::env::temp_dir().join("test_walker_dry_run");
+        let _ = fs::create_dir_all(&temp_dir);
+
+        let file_with_colon = temp_dir.join("file:name.txt");
+        fs::write(&file_with_colon, "test").expect("Failed to write test file");
+
+        let args = Args {
+            dry_run: true,
+            hidden: false,
+            paths: vec![file_with_colon.to_string_lossy().to_string()],
+            process_dangerous: false,
+            recursive: false,
+        };
+
+        walk_and_rename(args);
+
+        // File should still exist with original name (dry run)
+        assert!(file_with_colon.exists());
+
+        let _ = fs::remove_dir_all(&temp_dir);
+    }
+
+    #[test]
+    fn test_walk_and_rename_with_rename() {
+        let temp_dir = std::env::temp_dir().join("test_walker_rename");
+        let _ = fs::create_dir_all(&temp_dir);
+
+        let file_with_colon = temp_dir.join("file:name.txt");
+        fs::write(&file_with_colon, "test").expect("Failed to write test file");
+
+        let args = Args {
+            dry_run: false,
+            hidden: false,
+            paths: vec![file_with_colon.to_string_lossy().to_string()],
+            process_dangerous: false,
+            recursive: false,
+        };
+
+        walk_and_rename(args);
+
+        // File should be renamed
+        let renamed_file = temp_dir.join("file：name.txt");
+        assert!(renamed_file.exists());
+
+        let _ = fs::remove_dir_all(&temp_dir);
+    }
+
+    #[test]
+    fn test_walk_and_rename_recursive() {
+        let temp_dir = std::env::temp_dir().join("test_walker_recursive");
+        let _ = fs::create_dir_all(&temp_dir);
+
+        let subdir = temp_dir.join("subdir");
+        let _ = fs::create_dir_all(&subdir);
+
+        let file_with_colon = subdir.join("file:name.txt");
+        fs::write(&file_with_colon, "test").expect("Failed to write test file");
+
+        let args = Args {
+            dry_run: false,
+            hidden: false,
+            paths: vec![temp_dir.to_string_lossy().to_string()],
+            process_dangerous: false,
+            recursive: true,
+        };
+
+        walk_and_rename(args);
+
+        // File should be renamed
+        let renamed_file = subdir.join("file：name.txt");
+        assert!(renamed_file.exists());
 
         let _ = fs::remove_dir_all(&temp_dir);
     }
