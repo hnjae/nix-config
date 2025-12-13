@@ -11,7 +11,6 @@ use std::path::{Path, PathBuf};
 const DANGEROUS_DIRNAMES: &[&str] = &[
     ".snapshots",
     ".zfs",
-
     ".config",
     ".git",
     ".git-crypt",
@@ -19,21 +18,17 @@ const DANGEROUS_DIRNAMES: &[&str] = &[
     ".ssh",
     ".vscode",
     ".claude",
-
     ".cache",
     ".ld.so",
     ".local",
     ".var",
-
     ".1password",
     ".cert",
     ".mozilla",
     ".pki",
     ".steam",
-
     ".dotnet",
     ".npm",
-
     ".ansible",
     ".deploy-gc",
     ".direnv",
