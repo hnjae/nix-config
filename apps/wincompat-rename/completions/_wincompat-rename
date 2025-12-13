@@ -1,0 +1,18 @@
+#compdef wincompat-rename
+
+_wincompat_rename() {
+    local -a opts
+    opts=(
+        '(-r --recursive)'{-r,--recursive}'[Recursively traverse directories]'
+        '(-n --dry-run)'{-n,--dry-run}'[Show changes without actually renaming]'
+        '(-H --hidden)'{-H,--hidden}'[Include hidden files (starting with .)]'
+        '--process-dangerous-files[Process dangerous paths]'
+        '(-h --help)'{-h,--help}'[Print help information]'
+        '(-V --version)'{-V,--version}'[Print version information]'
+        '*:file or directory:_files'
+    )
+
+    _arguments -s -S $opts
+}
+
+_wincompat_rename "$@"
