@@ -4,22 +4,16 @@ use std::path::Path;
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
 
+#[must_use]
 pub fn is_symlink(path: &Path) -> bool {
-    if let Ok(metadata) = fs::symlink_metadata(path) {
-        metadata.file_type().is_symlink()
-    } else {
-        false
-    }
+    fs::symlink_metadata(path).is_ok_and(|metadata| metadata.file_type().is_symlink())
 }
 
+#[must_use]
 pub fn is_different_filesystem(path: &Path, base_dev: u64) -> bool {
     #[cfg(unix)]
     {
-        if let Ok(metadata) = fs::metadata(path) {
-            metadata.dev() != base_dev
-        } else {
-            false
-        }
+        fs::metadata(path).is_ok_and(|metadata| metadata.dev() != base_dev)
     }
 
     #[cfg(not(unix))]
@@ -29,6 +23,7 @@ pub fn is_different_filesystem(path: &Path, base_dev: u64) -> bool {
     }
 }
 
+#[must_use]
 pub fn get_device_id(path: &Path) -> Option<u64> {
     #[cfg(unix)]
     {
@@ -42,6 +37,7 @@ pub fn get_device_id(path: &Path) -> Option<u64> {
     }
 }
 
+#[must_use]
 pub fn is_hidden(path: &Path) -> bool {
     if let Some(filename) = path.file_name() {
         if let Some(name) = filename.to_str() {

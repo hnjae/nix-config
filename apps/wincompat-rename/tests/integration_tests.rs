@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use wincompat_rename::{Args, convert_filename, walk_and_rename};
 
 fn setup_test_dir(name: &str) -> PathBuf {
-    let test_dir = std::env::temp_dir().join(format!("wincompat_test_{}", name));
+    let test_dir = std::env::temp_dir().join(format!("wincompat_test_{name}"));
     let _ = fs::remove_dir_all(&test_dir);
     fs::create_dir_all(&test_dir).unwrap();
     test_dir

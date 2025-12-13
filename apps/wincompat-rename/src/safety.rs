@@ -21,6 +21,7 @@ const DANGEROUS_DIRNAMES: &[&str] = &[
 
 const CACHEDIR_TAG_SIGNATURE: &str = "Signature: 8a477f597d28d172789f06886806bc55";
 
+#[must_use]
 pub fn is_dangerous_path(path: &Path) -> bool {
     if is_home_dotfile(path) {
         return true;
@@ -93,6 +94,7 @@ fn has_cachedir_tag(path: &Path) -> bool {
     content == CACHEDIR_TAG_SIGNATURE
 }
 
+#[must_use]
 pub fn check_collision(new_path: &Path) -> bool {
     new_path.exists()
 }

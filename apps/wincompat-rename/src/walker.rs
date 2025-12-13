@@ -13,13 +13,16 @@ struct WalkContext {
 }
 
 pub fn walk_and_rename(args: Args) {
+    let paths = args.paths.clone();
+    let recursive = args.recursive;
+
     let mut ctx = WalkContext {
         base_dev: None,
-        args: args.clone(),
+        args,
         summary: Summary::new(),
     };
 
-    for path_str in &args.paths {
+    for path_str in &paths {
         let path = PathBuf::from(path_str);
 
         if !path.exists() {
@@ -31,7 +34,7 @@ pub fn walk_and_rename(args: Args) {
             ctx.base_dev = get_device_id(&path);
         }
 
-        if args.recursive && path.is_dir() {
+        if recursive && path.is_dir() {
             process_directory_recursive(&mut ctx, &path);
         } else {
             process_single_path(&mut ctx, &path);
@@ -45,7 +48,7 @@ fn process_directory_recursive(ctx: &mut WalkContext, dir: &Path) {
     let mut all_paths = Vec::new();
     collect_paths(ctx, dir, &mut all_paths);
 
-    all_paths.sort_by(|a, b| b.components().count().cmp(&a.components().count()));
+    all_paths.sort_by_key(|b| std::cmp::Reverse(b.components().count()));
 
     if ctx.args.recursive {
         let mut progress = ProgressBar::new(all_paths.len());
@@ -146,8 +149,7 @@ fn process_single_path(ctx: &mut WalkContext, path: &Path) {
 
     if check_collision(&new_path) {
         print_warning(&format!(
-            "SKIPPED \"{}\" → \"{}\" (target already exists)",
-            filename_str, new_filename
+            "SKIPPED \"{filename_str}\" → \"{new_filename}\" (target already exists)"
         ));
         ctx.summary.skipped_exists += 1;
         return;
@@ -157,7 +159,7 @@ fn process_single_path(ctx: &mut WalkContext, path: &Path) {
         print_rename(filename_str, &new_filename);
     } else {
         match fs::rename(path, &new_path) {
-            Ok(_) => {
+            Ok(()) => {
                 print_rename(filename_str, &new_filename);
                 if path.is_dir() {
                     ctx.summary.dirs_renamed += 1;
@@ -167,8 +169,7 @@ fn process_single_path(ctx: &mut WalkContext, path: &Path) {
             }
             Err(e) => {
                 print_warning(&format!(
-                    "Failed to rename \"{}\" → \"{}\": {}",
-                    filename_str, new_filename, e
+                    "Failed to rename \"{filename_str}\" → \"{new_filename}\": {e}"
                 ));
             }
         }

@@ -15,6 +15,7 @@ const RESERVED_NAMES: &[&str] = &[
     "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
 ];
 
+#[must_use]
 pub fn convert_filename(filename: &str) -> Option<String> {
     if filename.is_empty() || filename == "." || filename == ".." {
         return None;
@@ -44,7 +45,7 @@ fn handle_reserved_names(filename: &str) -> String {
         let cleaned = remove_illegal_chars_for_check(&trimmed_lower);
 
         if cleaned == reserved_lower {
-            return format!("{}_", trimmed);
+            return format!("{trimmed}_");
         }
 
         if let Some(dot_pos) = trimmed.find('.') {
@@ -58,9 +59,8 @@ fn handle_reserved_names(filename: &str) -> String {
                     let prefix = &name_part[..reserved_len];
                     let suffix = &name_part[reserved_len..];
                     return format!("{}_{}.{}", prefix, suffix, &trimmed[dot_pos + 1..]);
-                } else {
-                    return format!("{}_.{}", name_part, &trimmed[dot_pos + 1..]);
                 }
+                return format!("{}_.{}", name_part, &trimmed[dot_pos + 1..]);
             }
         }
     }

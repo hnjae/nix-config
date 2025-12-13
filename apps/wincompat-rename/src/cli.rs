@@ -21,6 +21,7 @@ OPTIONS:
 ";
 
 #[derive(Debug, Clone)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct Args {
     pub paths: Vec<String>,
     pub recursive: bool,
@@ -29,8 +30,15 @@ pub struct Args {
     pub process_dangerous: bool,
 }
 
+impl Default for Args {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Args {
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             paths: Vec::new(),
             recursive: false,
@@ -41,11 +49,12 @@ impl Args {
     }
 }
 
+#[must_use]
 pub fn parse_args() -> Args {
     let args: Vec<String> = env::args().collect();
 
     if args.len() == 1 {
-        println!("{}", HELP);
+        println!("{HELP}");
         process::exit(0);
     }
 
@@ -55,11 +64,11 @@ pub fn parse_args() -> Args {
     while i < args.len() {
         match args[i].as_str() {
             "-h" | "--help" => {
-                println!("{}", HELP);
+                println!("{HELP}");
                 process::exit(0);
             }
             "-V" | "--version" => {
-                println!("wincompat-rename {}", VERSION);
+                println!("wincompat-rename {VERSION}");
                 process::exit(0);
             }
             "-r" | "--recursive" => {
@@ -75,7 +84,7 @@ pub fn parse_args() -> Args {
                 parsed.process_dangerous = true;
             }
             arg if arg.starts_with('-') => {
-                eprintln!("Error: Unknown option '{}'", arg);
+                eprintln!("Error: Unknown option '{arg}'");
                 eprintln!("Try 'wincompat-rename --help' for more information.");
                 process::exit(1);
             }

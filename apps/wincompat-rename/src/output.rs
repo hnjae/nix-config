@@ -4,7 +4,14 @@ pub struct ColorSupport {
     enabled: bool,
 }
 
+impl Default for ColorSupport {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ColorSupport {
+    #[must_use]
     pub fn new() -> Self {
         let enabled = is_terminal();
         Self { enabled }
@@ -12,7 +19,7 @@ impl ColorSupport {
 
     fn yellow(&self, text: &str) -> String {
         if self.enabled {
-            format!("\x1b[33m{}\x1b[0m", text)
+            format!("\x1b[33m{text}\x1b[0m")
         } else {
             text.to_string()
         }
@@ -20,7 +27,7 @@ impl ColorSupport {
 
     fn green(&self, text: &str) -> String {
         if self.enabled {
-            format!("\x1b[32m{}\x1b[0m", text)
+            format!("\x1b[32m{text}\x1b[0m")
         } else {
             text.to_string()
         }
@@ -44,7 +51,7 @@ pub fn print_rename(old_name: &str, new_name: &str) {
 
 pub fn print_warning(message: &str) {
     let colors = ColorSupport::new();
-    eprintln!("{}", colors.yellow(&format!("WARNING: {}", message)));
+    eprintln!("{}", colors.yellow(&format!("WARNING: {message}")));
 }
 
 pub struct ProgressBar {
@@ -54,7 +61,8 @@ pub struct ProgressBar {
 }
 
 impl ProgressBar {
-    pub fn new(total: usize) -> Self {
+    #[must_use]
+    pub const fn new(total: usize) -> Self {
         Self {
             total,
             current: 0,
@@ -67,6 +75,11 @@ impl ProgressBar {
         self.draw();
     }
 
+    #[allow(
+        clippy::cast_possible_truncation,
+        clippy::cast_sign_loss,
+        clippy::cast_precision_loss
+    )]
     fn draw(&self) {
         if self.total == 0 {
             return;
@@ -85,7 +98,7 @@ impl ProgressBar {
             self.total
         );
 
-        print!("{}", bar);
+        print!("{bar}");
         let _ = io::stdout().flush();
     }
 
@@ -102,8 +115,15 @@ pub struct Summary {
     pub skipped_filesystem: usize,
 }
 
+impl Default for Summary {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Summary {
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             files_renamed: 0,
             dirs_renamed: 0,
