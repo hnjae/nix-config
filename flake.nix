@@ -115,10 +115,12 @@
       };
     };
     yaml2nix = {
+      # NOTE: yaml2nix 는 구조상 다음과 같이 선언해야 함. <2025-12-14>
+      # https://github.com/euank/yaml2nix/blob/main/flake.nix
       url = "github:euank/yaml2nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        cargo2nix.follows = "cargo2nix";
+        cargo2nix.follows = "cargo2nix_0110";
         flake-utils.follows = "flake-utils";
       };
     };
@@ -141,7 +143,7 @@
     ############################################################################
     # Used in input dependency only
     ############################################################################
-    cargo2nix = {
+    cargo2nix_0110 = {
       url = "github:cargo2nix/cargo2nix/release-0.11.0";
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -154,24 +156,13 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    ############################################################################
-    # Misc
-    ############################################################################
-    # TODO: bundle some configs to nixvim <2025-03-01>
-    # dotfiles = {
-    #   url = "github:hnjae/dotfiles";
-    #   flake = false;
-    # };
   };
 
   outputs =
     inputs@{
-      self,
       flake-parts,
       flake-utils,
-      treefmt-nix,
-      git-hooks,
+      nixpkgs,
       ...
     }:
     flake-parts.lib.mkFlake
@@ -181,11 +172,9 @@
           ;
       }
       {
-        imports = [
-          git-hooks.flakeModule
-          treefmt-nix.flakeModule
-          # (lib.lists.optional (inputs.git-hooks ? flakeModule) inputs.git-hooks.flakeModule)
-          # (lib.lists.optional (inputs.treefmt-nix ? flakeModule) inputs.treefmt-nix.flakeModule)
+        imports = nixpkgs.lib.flatten [
+          (nixpkgs.lib.lists.optional (inputs.git-hooks ? flakeModule) inputs.git-hooks.flakeModule)
+          (nixpkgs.lib.lists.optional (inputs.treefmt-nix ? flakeModule) inputs.treefmt-nix.flakeModule)
 
           ./attributes/deploy.nix
           ./attributes/homeManagerModules.nix
@@ -208,7 +197,6 @@
         ];
         perSystem =
           {
-            config,
             pkgs,
             ...
           }:

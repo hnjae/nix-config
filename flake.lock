@@ -1,6 +1,6 @@
 {
   "nodes": {
-    "cargo2nix": {
+    "cargo2nix_0110": {
       "inputs": {
         "flake-compat": [],
         "flake-utils": [
@@ -557,7 +557,7 @@
     },
     "root": {
       "inputs": {
-        "cargo2nix": "cargo2nix",
+        "cargo2nix_0110": "cargo2nix_0110",
         "claude-desktop": "claude-desktop",
         "deploy-rs": "deploy-rs",
         "disko": "disko",
@@ -741,7 +741,7 @@
     "yaml2nix": {
       "inputs": {
         "cargo2nix": [
-          "cargo2nix"
+          "cargo2nix_0110"
         ],
         "flake-utils": [
           "flake-utils"
