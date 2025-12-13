@@ -1,12 +1,12 @@
 pub mod cli;
 pub mod converter;
-pub mod walker;
-pub mod safety;
-pub mod output;
 pub mod fs_utils;
+pub mod output;
+pub mod safety;
+pub mod walker;
 
 pub use cli::{Args, parse_args};
 pub use converter::convert_filename;
+pub use output::{ProgressBar, print_rename, print_summary, print_warning};
+pub use safety::{check_collision, is_dangerous_path};
 pub use walker::walk_and_rename;
-pub use safety::{is_dangerous_path, check_collision};
-pub use output::{print_rename, print_warning, print_summary, ProgressBar};

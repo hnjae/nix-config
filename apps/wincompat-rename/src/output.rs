@@ -115,10 +115,13 @@ impl Summary {
 }
 
 pub fn print_summary(summary: &Summary) {
-    println!("\nCompleted: {} files renamed, {} directories renamed",
-             summary.files_renamed, summary.dirs_renamed);
+    println!(
+        "\nCompleted: {} files renamed, {} directories renamed",
+        summary.files_renamed, summary.dirs_renamed
+    );
 
-    let total_skipped = summary.skipped_exists + summary.skipped_dangerous + summary.skipped_filesystem;
+    let total_skipped =
+        summary.skipped_exists + summary.skipped_dangerous + summary.skipped_filesystem;
     if total_skipped > 0 {
         print!("Skipped: ");
         let mut parts = Vec::new();
@@ -130,7 +133,10 @@ pub fn print_summary(summary: &Summary) {
             parts.push(format!("{} (dangerous path)", summary.skipped_dangerous));
         }
         if summary.skipped_filesystem > 0 {
-            parts.push(format!("{} (different filesystem)", summary.skipped_filesystem));
+            parts.push(format!(
+                "{} (different filesystem)",
+                summary.skipped_filesystem
+            ));
         }
 
         println!("{}", parts.join(", "));

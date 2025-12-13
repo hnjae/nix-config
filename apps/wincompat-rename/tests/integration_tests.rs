@@ -1,6 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
-use wincompat_rename::{Args, walk_and_rename, convert_filename};
+use wincompat_rename::{Args, convert_filename, walk_and_rename};
 
 fn setup_test_dir(name: &str) -> PathBuf {
     let test_dir = std::env::temp_dir().join(format!("wincompat_test_{}", name));
@@ -161,15 +161,42 @@ fn test_hidden_files_skipped_by_default() {
 #[test]
 fn test_converter_comprehensive() {
     assert_eq!(convert_filename("normal.txt"), None);
-    assert_eq!(convert_filename("file:name.txt"), Some("file：name.txt".to_string()));
-    assert_eq!(convert_filename("file|name.txt"), Some("file｜name.txt".to_string()));
-    assert_eq!(convert_filename("file*name.txt"), Some("file＊name.txt".to_string()));
-    assert_eq!(convert_filename("file?name.txt"), Some("file？name.txt".to_string()));
-    assert_eq!(convert_filename("file<name.txt"), Some("file＜name.txt".to_string()));
-    assert_eq!(convert_filename("file>name.txt"), Some("file＞name.txt".to_string()));
-    assert_eq!(convert_filename("file\\name.txt"), Some("file＼name.txt".to_string()));
-    assert_eq!(convert_filename("file/name.txt"), Some("file／name.txt".to_string()));
-    assert_eq!(convert_filename("file\"name.txt"), Some("file＂name.txt".to_string()));
+    assert_eq!(
+        convert_filename("file:name.txt"),
+        Some("file：name.txt".to_string())
+    );
+    assert_eq!(
+        convert_filename("file|name.txt"),
+        Some("file｜name.txt".to_string())
+    );
+    assert_eq!(
+        convert_filename("file*name.txt"),
+        Some("file＊name.txt".to_string())
+    );
+    assert_eq!(
+        convert_filename("file?name.txt"),
+        Some("file？name.txt".to_string())
+    );
+    assert_eq!(
+        convert_filename("file<name.txt"),
+        Some("file＜name.txt".to_string())
+    );
+    assert_eq!(
+        convert_filename("file>name.txt"),
+        Some("file＞name.txt".to_string())
+    );
+    assert_eq!(
+        convert_filename("file\\name.txt"),
+        Some("file＼name.txt".to_string())
+    );
+    assert_eq!(
+        convert_filename("file/name.txt"),
+        Some("file／name.txt".to_string())
+    );
+    assert_eq!(
+        convert_filename("file\"name.txt"),
+        Some("file＂name.txt".to_string())
+    );
 }
 
 #[test]

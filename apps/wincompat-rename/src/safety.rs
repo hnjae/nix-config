@@ -1,7 +1,7 @@
-use std::path::{Path, PathBuf};
+use std::env;
 use std::fs;
 use std::io::Read;
-use std::env;
+use std::path::{Path, PathBuf};
 
 const DANGEROUS_DIRNAMES: &[&str] = &[
     ".config",

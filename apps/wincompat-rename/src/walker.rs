@@ -1,10 +1,10 @@
-use std::path::{Path, PathBuf};
-use std::fs;
 use crate::cli::Args;
 use crate::converter::convert_filename;
-use crate::safety::{is_dangerous_path, check_collision};
-use crate::output::{print_rename, print_warning, print_summary, ProgressBar, Summary};
-use crate::fs_utils::{is_symlink, is_different_filesystem, get_device_id, is_hidden};
+use crate::fs_utils::{get_device_id, is_different_filesystem, is_hidden, is_symlink};
+use crate::output::{ProgressBar, Summary, print_rename, print_summary, print_warning};
+use crate::safety::{check_collision, is_dangerous_path};
+use std::fs;
+use std::path::{Path, PathBuf};
 
 struct WalkContext {
     base_dev: Option<u64>,
@@ -98,7 +98,10 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
 
         if let Some(base_dev) = ctx.base_dev {
             if is_different_filesystem(&path, base_dev) {
-                print_warning(&format!("SKIPPED \"{}\" (different filesystem)", path.display()));
+                print_warning(&format!(
+                    "SKIPPED \"{}\" (different filesystem)",
+                    path.display()
+                ));
                 ctx.summary.skipped_filesystem += 1;
                 continue;
             }

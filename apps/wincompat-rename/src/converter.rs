@@ -11,9 +11,8 @@ const ILLEGAL_CHARS_MAP: &[(&str, &str)] = &[
 ];
 
 const RESERVED_NAMES: &[&str] = &[
-    "CON", "PRN", "AUX", "NUL",
-    "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
-    "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+    "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8",
+    "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
 ];
 
 pub fn convert_filename(filename: &str) -> Option<String> {
@@ -112,13 +111,34 @@ mod tests {
 
     #[test]
     fn test_illegal_chars() {
-        assert_eq!(convert_filename("file:name.txt"), Some("file：name.txt".to_string()));
-        assert_eq!(convert_filename("my|file.doc"), Some("my｜file.doc".to_string()));
-        assert_eq!(convert_filename("test<file>.txt"), Some("test＜file＞.txt".to_string()));
-        assert_eq!(convert_filename("path/to\\file"), Some("path／to＼file".to_string()));
-        assert_eq!(convert_filename("file*.txt"), Some("file＊.txt".to_string()));
-        assert_eq!(convert_filename("file?.txt"), Some("file？.txt".to_string()));
-        assert_eq!(convert_filename("file\"name\".txt"), Some("file＂name＂.txt".to_string()));
+        assert_eq!(
+            convert_filename("file:name.txt"),
+            Some("file：name.txt".to_string())
+        );
+        assert_eq!(
+            convert_filename("my|file.doc"),
+            Some("my｜file.doc".to_string())
+        );
+        assert_eq!(
+            convert_filename("test<file>.txt"),
+            Some("test＜file＞.txt".to_string())
+        );
+        assert_eq!(
+            convert_filename("path/to\\file"),
+            Some("path／to＼file".to_string())
+        );
+        assert_eq!(
+            convert_filename("file*.txt"),
+            Some("file＊.txt".to_string())
+        );
+        assert_eq!(
+            convert_filename("file?.txt"),
+            Some("file？.txt".to_string())
+        );
+        assert_eq!(
+            convert_filename("file\"name\".txt"),
+            Some("file＂name＂.txt".to_string())
+        );
     }
 
     #[test]
@@ -137,7 +157,10 @@ mod tests {
     fn test_trailing_dots() {
         assert_eq!(convert_filename("file."), Some("file．".to_string()));
         assert_eq!(convert_filename("file..."), Some("file..．".to_string()));
-        assert_eq!(convert_filename("file.txt."), Some("file.txt．".to_string()));
+        assert_eq!(
+            convert_filename("file.txt."),
+            Some("file.txt．".to_string())
+        );
     }
 
     #[test]
@@ -173,8 +196,14 @@ mod tests {
 
     #[test]
     fn test_unicode_filenames() {
-        assert_eq!(convert_filename("파일:이름.txt"), Some("파일：이름.txt".to_string()));
-        assert_eq!(convert_filename("ファイル|名前.txt"), Some("ファイル｜名前.txt".to_string()));
+        assert_eq!(
+            convert_filename("파일:이름.txt"),
+            Some("파일：이름.txt".to_string())
+        );
+        assert_eq!(
+            convert_filename("ファイル|名前.txt"),
+            Some("ファイル｜名前.txt".to_string())
+        );
     }
 
     #[test]
