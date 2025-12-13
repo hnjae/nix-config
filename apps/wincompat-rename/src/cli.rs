@@ -1,7 +1,15 @@
+#![expect(
+    clippy::print_stdout,
+    clippy::print_stderr,
+    reason = "CLI interface requires direct stdout/stderr output for help, version, and error messages"
+)]
+
 use std::env;
 use std::process;
 
+/// The version of the application
 const VERSION: &str = env!("CARGO_PKG_VERSION");
+/// The help message displayed when --help is used
 const HELP: &str = "\
 wincompat-rename - Rename files to Windows-compatible names
 
@@ -21,13 +29,17 @@ OPTIONS:
 ";
 
 #[derive(Debug, Clone)]
-#[allow(clippy::struct_excessive_bools)]
+#[expect(
+    clippy::struct_excessive_bools,
+    reason = "CLI args naturally have multiple boolean flags"
+)]
+#[non_exhaustive]
 pub struct Args {
-    pub paths: Vec<String>,
-    pub recursive: bool,
     pub dry_run: bool,
     pub hidden: bool,
+    pub paths: Vec<String>,
     pub process_dangerous: bool,
+    pub recursive: bool,
 }
 
 impl Default for Args {
@@ -40,11 +52,11 @@ impl Args {
     #[must_use]
     pub const fn new() -> Self {
         Self {
-            paths: Vec::new(),
-            recursive: false,
             dry_run: false,
             hidden: false,
+            paths: Vec::new(),
             process_dangerous: false,
+            recursive: false,
         }
     }
 }
@@ -59,10 +71,9 @@ pub fn parse_args() -> Args {
     }
 
     let mut parsed = Args::new();
-    let mut i = 1;
 
-    while i < args.len() {
-        match args[i].as_str() {
+    for arg in args.iter().skip(1) {
+        match arg.as_str() {
             "-h" | "--help" => {
                 println!("{HELP}");
                 process::exit(0);
@@ -83,16 +94,15 @@ pub fn parse_args() -> Args {
             "--process-dangerous-files" => {
                 parsed.process_dangerous = true;
             }
-            arg if arg.starts_with('-') => {
-                eprintln!("Error: Unknown option '{arg}'");
+            arg_str if arg_str.starts_with('-') => {
+                eprintln!("Error: Unknown option '{arg_str}'");
                 eprintln!("Try 'wincompat-rename --help' for more information.");
                 process::exit(1);
             }
             path => {
-                parsed.paths.push(path.to_string());
+                parsed.paths.push(path.to_owned());
             }
         }
-        i += 1;
     }
 
     if parsed.paths.is_empty() {

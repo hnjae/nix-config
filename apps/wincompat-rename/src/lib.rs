@@ -1,3 +1,11 @@
+//! # wincompat-rename
+//!
+//! A CLI tool to rename files and directories to Windows-compatible names.
+//!
+//! This crate provides functionality to detect and rename files that contain
+//! Windows-incompatible characters or names, making them compatible with Windows
+//! file systems.
+
 pub mod cli;
 pub mod converter;
 pub mod fs_utils;

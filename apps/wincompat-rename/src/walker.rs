@@ -3,12 +3,21 @@ use crate::converter::convert_filename;
 use crate::fs_utils::{get_device_id, is_different_filesystem, is_hidden, is_symlink};
 use crate::output::{Summary, print_rename, print_summary, print_warning};
 use crate::safety::{check_collision, is_dangerous_path};
+use std::cmp::Reverse;
 use std::fs;
 use std::path::{Path, PathBuf};
 
+/// Context for walking and renaming files.
+///
+/// This struct holds the state needed during the file walking process,
+/// including command-line arguments, device ID for filesystem checks,
+/// and a summary of operations.
 struct WalkContext {
-    base_dev: Option<u64>,
+    /// Command-line arguments
     args: Args,
+    /// Base device ID for filesystem boundary checking
+    base_dev: Option<u64>,
+    /// Summary of rename operations
     summary: Summary,
 }
 
@@ -17,8 +26,8 @@ pub fn walk_and_rename(args: Args) {
     let recursive = args.recursive;
 
     let mut ctx = WalkContext {
-        base_dev: None,
         args,
+        base_dev: None,
         summary: Summary::new(),
     };
 
@@ -44,20 +53,31 @@ pub fn walk_and_rename(args: Args) {
     print_summary(&ctx.summary);
 }
 
+/// Processes a directory recursively, collecting and renaming all paths.
+///
+/// This function collects all paths in the directory tree, sorts them by depth
+/// (deepest first to avoid renaming parent directories before children),
+/// and processes each path for renaming.
 fn process_directory_recursive(ctx: &mut WalkContext, dir: &Path) {
     let mut all_paths = Vec::new();
     collect_paths(ctx, dir, &mut all_paths);
 
-    all_paths.sort_by_key(|b| std::cmp::Reverse(b.components().count()));
+    all_paths.sort_by_key(|path| Reverse(path.components().count()));
 
     if ctx.args.recursive {
         let total = all_paths.len();
         for (idx, path) in all_paths.iter().enumerate() {
-            process_single_path(ctx, path, idx + 1, total);
+            let current = idx.saturating_add(1);
+            process_single_path(ctx, path, current, total);
         }
     }
 }
 
+/// Recursively collects all paths in a directory tree.
+///
+/// This function traverses a directory tree, respecting command-line flags
+/// for hidden files, dangerous paths, and filesystem boundaries. It collects
+/// all valid paths into the provided vector.
 fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>) {
     if is_symlink(dir) {
         return;
@@ -93,7 +113,7 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
         }
 
         if !ctx.args.process_dangerous && is_dangerous_path(&path) {
-            ctx.summary.skipped_dangerous += 1;
+            ctx.summary.skipped_dangerous = ctx.summary.skipped_dangerous.saturating_add(1);
             continue;
         }
 
@@ -103,7 +123,7 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
                     "SKIPPED \"{}\" (different filesystem)",
                     path.display()
                 ));
-                ctx.summary.skipped_filesystem += 1;
+                ctx.summary.skipped_filesystem = ctx.summary.skipped_filesystem.saturating_add(1);
                 continue;
             }
         }
@@ -116,6 +136,11 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
     }
 }
 
+/// Processes a single path for renaming.
+///
+/// This function checks if a path needs to be renamed to be Windows-compatible,
+/// performs various safety checks, and either performs or simulates the rename
+/// operation based on command-line flags.
 fn process_single_path(ctx: &mut WalkContext, path: &Path, current: usize, total: usize) {
     if is_symlink(path) {
         return;
@@ -123,7 +148,7 @@ fn process_single_path(ctx: &mut WalkContext, path: &Path, current: usize, total
 
     if !ctx.args.process_dangerous && is_dangerous_path(path) {
         print_warning(&format!("SKIPPED \"{}\" (dangerous path)", path.display()));
-        ctx.summary.skipped_dangerous += 1;
+        ctx.summary.skipped_dangerous = ctx.summary.skipped_dangerous.saturating_add(1);
         return;
     }
 
@@ -149,7 +174,7 @@ fn process_single_path(ctx: &mut WalkContext, path: &Path, current: usize, total
         print_warning(&format!(
             "SKIPPED \"{filename_str}\" → \"{new_filename}\" (target already exists)"
         ));
-        ctx.summary.skipped_exists += 1;
+        ctx.summary.skipped_exists = ctx.summary.skipped_exists.saturating_add(1);
         return;
     }
 
@@ -160,14 +185,14 @@ fn process_single_path(ctx: &mut WalkContext, path: &Path, current: usize, total
             Ok(()) => {
                 print_rename(filename_str, &new_filename, current, total);
                 if path.is_dir() {
-                    ctx.summary.dirs_renamed += 1;
+                    ctx.summary.dirs_renamed = ctx.summary.dirs_renamed.saturating_add(1);
                 } else {
-                    ctx.summary.files_renamed += 1;
+                    ctx.summary.files_renamed = ctx.summary.files_renamed.saturating_add(1);
                 }
             }
-            Err(e) => {
+            Err(err) => {
                 print_warning(&format!(
-                    "Failed to rename \"{filename_str}\" → \"{new_filename}\": {e}"
+                    "Failed to rename \"{filename_str}\" → \"{new_filename}\": {err}"
                 ));
             }
         }
@@ -188,8 +213,8 @@ mod tests {
         fs::write(temp_dir.join("file2.txt"), "test").unwrap();
 
         let mut ctx = WalkContext {
-            base_dev: get_device_id(&temp_dir),
             args: Args::new(),
+            base_dev: get_device_id(&temp_dir),
             summary: Summary::new(),
         };
 
@@ -210,8 +235,8 @@ mod tests {
         fs::write(&file_path, "test").unwrap();
 
         let mut ctx = WalkContext {
-            base_dev: get_device_id(&temp_dir),
             args: Args::new(),
+            base_dev: get_device_id(&temp_dir),
             summary: Summary::new(),
         };
 

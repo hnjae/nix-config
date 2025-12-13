@@ -2,7 +2,7 @@ use std::fs;
 use std::path::Path;
 
 #[cfg(unix)]
-use std::os::unix::fs::MetadataExt;
+use std::os::unix::fs::MetadataExt as _;
 
 #[must_use]
 pub fn is_symlink(path: &Path) -> bool {
@@ -27,7 +27,7 @@ pub fn is_different_filesystem(path: &Path, base_dev: u64) -> bool {
 pub fn get_device_id(path: &Path) -> Option<u64> {
     #[cfg(unix)]
     {
-        fs::metadata(path).ok().map(|m| m.dev())
+        fs::metadata(path).ok().map(|metadata| metadata.dev())
     }
 
     #[cfg(not(unix))]

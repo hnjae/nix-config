@@ -1,8 +1,13 @@
 use std::env;
 use std::fs;
-use std::io::Read;
+use std::io::Read as _;
 use std::path::{Path, PathBuf};
 
+/// List of directory names that are considered dangerous to rename.
+///
+/// These directories typically contain system files, configuration,
+/// version control data, or other critical information that should
+/// not be modified automatically.
 const DANGEROUS_DIRNAMES: &[&str] = &[
     ".snapshots",
     ".zfs",
@@ -38,6 +43,9 @@ const DANGEROUS_DIRNAMES: &[&str] = &[
     "node_modules",
 ];
 
+/// The signature that identifies a valid `CACHEDIR.TAG` file.
+///
+/// This signature is defined by the Cache Directory Tagging Specification.
 const CACHEDIR_TAG_SIGNATURE: &str = "Signature: 8a477f597d28d172789f06886806bc55";
 
 #[must_use]
@@ -57,6 +65,10 @@ pub fn is_dangerous_path(path: &Path) -> bool {
     false
 }
 
+/// Checks if a path is a dotfile directly in the home directory.
+///
+/// Returns `true` if the file is in the user's home directory and
+/// its name starts with a dot (hidden file).
 fn is_home_dotfile(path: &Path) -> bool {
     let Ok(home_dir) = env::var("HOME") else {
         return false;
@@ -81,6 +93,10 @@ fn is_home_dotfile(path: &Path) -> bool {
     false
 }
 
+/// Checks if a path's name matches any of the dangerous directory names.
+///
+/// Returns `true` if the directory name is in the predefined list of
+/// dangerous directories (e.g., `.git`, `.ssh`, `node_modules`).
 fn is_dangerous_dirname(path: &Path) -> bool {
     if let Some(filename) = path.file_name() {
         if let Some(name) = filename.to_str() {
@@ -90,6 +106,14 @@ fn is_dangerous_dirname(path: &Path) -> bool {
     false
 }
 
+/// Checks if a directory contains a valid CACHEDIR.TAG file.
+///
+/// CACHEDIR.TAG is a standard way to mark cache directories. This function
+/// verifies that the directory contains a CACHEDIR.TAG file with the correct
+/// signature as defined by the Cache Directory Tagging Specification.
+///
+/// # Returns
+/// `true` if the directory contains a valid CACHEDIR.TAG file, `false` otherwise.
 fn has_cachedir_tag(path: &Path) -> bool {
     if !path.is_dir() {
         return false;

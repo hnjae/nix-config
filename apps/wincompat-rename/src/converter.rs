@@ -1,3 +1,4 @@
+/// Mapping of illegal Windows characters to their full-width Unicode equivalents
 const ILLEGAL_CHARS_MAP: &[(&str, &str)] = &[
     ("\\", "＼"),
     ("/", "／"),
@@ -10,6 +11,7 @@ const ILLEGAL_CHARS_MAP: &[(&str, &str)] = &[
     ("|", "｜"),
 ];
 
+/// Windows reserved filenames that cannot be used
 const RESERVED_NAMES: &[&str] = &[
     "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8",
     "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
@@ -21,7 +23,7 @@ pub fn convert_filename(filename: &str) -> Option<String> {
         return None;
     }
 
-    let mut result = filename.to_string();
+    let mut result = filename.to_owned();
 
     result = handle_reserved_names(&result);
     result = replace_illegal_chars(&result);
@@ -35,6 +37,10 @@ pub fn convert_filename(filename: &str) -> Option<String> {
     }
 }
 
+/// Handles Windows reserved filenames by appending an underscore.
+///
+/// Windows reserves certain filenames like CON, PRN, AUX, NUL, COM1-9, LPT1-9.
+/// This function detects these names and modifies them to be valid.
 fn handle_reserved_names(filename: &str) -> String {
     let trimmed = filename.trim_end_matches(' ');
 
@@ -49,35 +55,54 @@ fn handle_reserved_names(filename: &str) -> String {
         }
 
         if let Some(dot_pos) = trimmed.find('.') {
-            let name_part = &trimmed[..dot_pos];
+            // Use safe character boundary splitting
+            let Some(name_part) = trimmed.get(..dot_pos) else {
+                return filename.to_owned();
+            };
             let name_lower = name_part.to_lowercase();
             let cleaned_name = remove_illegal_chars_for_check(&name_lower);
 
             if cleaned_name == reserved_lower {
                 let reserved_len = reserved.len();
                 if name_part.len() >= reserved_len {
-                    let prefix = &name_part[..reserved_len];
-                    let suffix = &name_part[reserved_len..];
-                    return format!("{}_{}.{}", prefix, suffix, &trimmed[dot_pos + 1..]);
+                    let Some(prefix) = name_part.get(..reserved_len) else {
+                        return filename.to_owned();
+                    };
+                    let Some(suffix) = name_part.get(reserved_len..) else {
+                        return filename.to_owned();
+                    };
+                    let Some(ext) = trimmed.get(dot_pos.saturating_add(1)..) else {
+                        return filename.to_owned();
+                    };
+                    return format!("{prefix}_{suffix}.{ext}");
                 }
-                return format!("{}_.{}", name_part, &trimmed[dot_pos + 1..]);
+                let Some(ext) = trimmed.get(dot_pos.saturating_add(1)..) else {
+                    return filename.to_owned();
+                };
+                return format!("{name_part}_.{ext}");
             }
         }
     }
 
-    filename.to_string()
+    filename.to_owned()
 }
 
-fn remove_illegal_chars_for_check(s: &str) -> String {
-    let mut result = s.to_string();
+/// Removes illegal characters from a string for checking purposes.
+///
+/// This is used internally to compare filenames against reserved names.
+fn remove_illegal_chars_for_check(input: &str) -> String {
+    let mut result = input.to_owned();
     for &(from, _) in ILLEGAL_CHARS_MAP {
         result = result.replace(from, "");
     }
     result
 }
 
+/// Replaces illegal Windows characters with their full-width Unicode equivalents.
+///
+/// This converts characters like `:` to `：`, `*` to `＊`, etc.
 fn replace_illegal_chars(filename: &str) -> String {
-    let mut result = filename.to_string();
+    let mut result = filename.to_owned();
 
     for &(from, to) in ILLEGAL_CHARS_MAP {
         result = result.replace(from, to);
@@ -86,16 +111,23 @@ fn replace_illegal_chars(filename: &str) -> String {
     result
 }
 
+/// Removes trailing spaces from a filename.
+///
+/// Windows does not allow filenames to end with spaces.
 fn remove_trailing_spaces(filename: &str) -> String {
-    filename.trim_end_matches(' ').to_string()
+    filename.trim_end_matches(' ').to_owned()
 }
 
+/// Converts trailing dots to full-width dots.
+///
+/// Windows does not allow filenames to end with a period.
+/// This function replaces the last dot with a full-width period character.
 fn convert_trailing_dots(filename: &str) -> String {
     if filename.is_empty() {
-        return filename.to_string();
+        return filename.to_owned();
     }
 
-    let mut result = filename.to_string();
+    let mut result = filename.to_owned();
 
     if result.ends_with('.') {
         result.pop();
