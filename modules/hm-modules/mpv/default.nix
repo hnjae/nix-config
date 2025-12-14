@@ -2,10 +2,14 @@
   pkgs,
   lib,
   config,
+  osConfig,
   ...
 }:
 let
-  inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin isx86_64;
+  inherit (pkgs.stdenv) hostPlatform;
+  inherit (osConfig.networking) hostName;
+
+  isFHD = builtins.elem hostName [ "isis" ];
 in
 {
   programs.mpv = {
@@ -21,20 +25,16 @@ in
         #
         cddaSupport = true; # default false; play CD
         sixelSupport = true; # default false
-        vapoursynthSupport = isx86_64; # default false
+        vapoursynthSupport = hostPlatform.isx86_64; # default false
       };
       youtubeSupport = true;
-      scripts = builtins.concatLists [
-        (lib.lists.optionals isLinux (
-          with pkgs.mpvScripts;
-          [
-            mpris
-          ]
-        ))
+      scripts = lib.flatten [
+        (lib.lists.optional hostPlatform.isLinux pkgs.mpvScripts.mpris)
         (with pkgs.mpvScripts; [
           visualizer # visualize audio; CPU 자원 꽤 소모
           vr-reversal
           mpv-cheatsheet # type ? to see keyboard shortcuts
+          thumbfast
         ])
       ];
     };
@@ -50,58 +50,98 @@ in
       `x11-bypass-compositor=%2%no` <2024-11-28>
     */
     config = {
-      geometry = "1920x1080";
-      # Video / Audio
-      ao = if isDarwin then "coreaudio" else "pipewire";
-      pipewire-volume-mode = lib.mkIf (isLinux) "global";
+      # initial window size
+      geometry = if isFHD then "1344x756" else "2720x1530";
+
+      # Audio
+      ao = if hostPlatform.isDarwin then "coreaudio" else "pipewire";
+      pipewire-volume-mode = lib.mkIf hostPlatform.isLinux "global";
       replaygain = "track";
+      replaygain-fallback = "-6";
+      #   af = "loudnorm";
+
+      # Video
+      # https://github.com/mpv-player/mpv/wiki/GPU-Next-vs-GPU
+      vo = "gpu-next";
+      gpu-api = "vulkan";
+      hwdec = "auto";
+      vd-lavc-framedrop = "nonref";
+      vd-lavc-show-all = true;
+      vd-lavc-skiploopfilter = "none";
 
       # Scaling
-      # HELP;
-      # https://avisynthplus.readthedocs.io/en/latest/avisynthdoc/corefilters/resize.html
+      /*
+        NOTE:
+          - https://iamscum.wordpress.com/guides/videoplayback-guide/mpv-conf/#scaler
+          - https://avisynthplus.readthedocs.io/en/latest/avisynthdoc/corefilters/resize.html
+      */
       # lanczos 는 ringing 현상이 좀 거슬리는듯.
-      # scale = "ewa_lanczossharp";
-      scale = "spline64";
-      # sigmoid-upscaling = true; # enabled by defaults
-      # dscale = "mitchell";
-      # cscale = "mitchell"; # ignored by gpu-next?
-      dscale = "spline64";
-      cscale = "spline64"; # ignored by gpu-next?
-      # correct-downscaling = true; # enabled by defaults
-      sws-scaler = "spline";
-      zimg-scaler = "spline36"; # default: lanczos
+      scale = "ewa_lanczos4sharpest";
+      cscale = "ewa_lanczos4sharpest"; # ignored by gpu-next?
+      dscale = "ewa_robidouxsharp";
+      sigmoid-upscaling = true;
 
-      #
-      interpolation = true; # reduce stuttering
+      # SW Scaler (requires `--vf=scale`)
+      sws-scaler = "spline";
+      sws-allow-zimg = true;
+      zimg-scaler = "spline36";
+      zimg-scaler-chroma = "spline36";
+      zimg-fast = false;
+
+      deband = true;
+      deband-iterations = 3; # higher = more cpu usage
+
+      # NOTE: fullscreen 일때 framedrop 심하게 발생.
+      # To reduce stuttering,
+      # interpolation = true;
+      # interpolation-preserve = true; # Preserve  the  previous  frames'  interpolated results (only works on vo=gpu-next)
+      # video-sync = "display-tempo";
+
+      # audio-buffer = 1; # default 0.2 s
 
       # Screenshot
       screenshot-format = "png"; # default: jpg
-      screenshot-tag-colorspace = true; # enabled by defaults
-      screenshot-high-bit-depth = true; # enabled by defaults
       screenshot-template = "%F-%P-(%t%F)";
-      screenshot-png-compression = 9;
-      screenshot-webp-lossless = true;
-      screenshot-webp-quality = 100;
-      screenshot-webp-compression = 6; # best compression
+      screenshot-directory = "${config.xdg.userDirs.pictures}/mpv-screenshots";
+      screenshot-tag-colorspace = true; # enabled by defaults
+      screenshot-jpeg-quality = 95; # default 90
+      screenshot-high-bit-depth = true; # enabled by defaults
       screenshot-jxl-distance = 0; # lossless
       screenshot-jxl-effort = 9; # best compression
-      screenshot-directory = "${config.xdg.userDirs.pictures}/mpv-screenshots";
+      screenshot-png-compression = 9;
+      screenshot-webp-compression = 6; # best compression
+      screenshot-webp-lossless = true;
+      screenshot-webp-quality = 100;
 
-      # do not disable compositor
-      ytdl-format = "bestvideo+bestaudio";
+      ytdl-format = builtins.concatStringsSep "/" (
+        let
+          heightLimit = toString (if isFHD then 1200 else 1440);
+          vidLimit = ''best*[vcodec!=none][height>=1080][height<=${heightLimit}][fps<=60]'';
+        in
+        [
+          "${vidLimit}[acodec!=none]"
+          "${vidLimit}[acodec=none]+bestaudio"
+          "bestvideo+bestaudio"
+          "best"
+        ]
+      );
 
       # osd
-      osd-fractions = true; # show osd times with fractions of seconds
-      term-osd-bar = true; # default: false
       osd-bar = false; # no osd bar when skipping time
-      osd-duration = 800; # default 1000
+      osd-bar-outline-size = 1; # default 0.5
       osd-blur = 0.1; # default 0
+      osd-bold = true;
+      osd-duration = 800; # default 1000
+      osd-font = "Monospace"; # default: Sans serif
+      osd-font-size = 35; # default 30
+      osd-fractions = true; # show osd times with fractions of seconds
       osd-level = 1; # osd shows up on user interaction
-      # osd-font-size = 60; # default 55
-      # osd-font = "monospace";
+      term-osd-bar = true; # default: false
 
-      #   # sub
-      #   sub-blur = 0.11;
+      # sub
+      sub-blur = 0.1;
+      sub-bold = true;
+      sub-outline-size = 1.65; # default: 1.65
       #   sub-font-size = 40; # default 55
       #   sub-ass-line-spacing = 25; # srt 자막에도 적용됨.
       #   sub-margin-x = 120; # default 25
@@ -112,102 +152,159 @@ in
       #   # sub-filter-sdh="yes" # remove deaf or hard-of-hearing subtitle
       #   # sub-filter-sdh-harder="yes"
 
-      # default values:
-      video-sync = "display-resample";
-      # framedrop = "vo";
-      # dither-depth = "auto";
-
-      #
-      # temporal-dither = true;
-    };
-
-    #
-    #   # testing options
-    #   error-diffusion = "burkes";
-    #
-    #   #
-    #   vo = "gpu-next";
-    #   af = "lavfi=[loudnorm]";
-    #   gpu-api = "auto";
-    #   vulkan-async-compute = true; # ! isNvidia
-    #   # hwdec = "auto-copy";
-    #   hwdec = "auto";
-    #   # hwdec-codecs = "all";
-    #   hr-seek = "default";
-    #
-    #   #
-    #   osc = true;
-    #   # osd
-    #
-    #   # behavior
-    #   keep-open = true;
-    #
-    # };
-
-    bindings = {
-      # h = "seek -0.01 keyframes";
-      # j = "seek -30 keyframes";
-      # k = "seek 30 keyframes";
-      # l = "seek 0.01 keyframes";
-      r = "cycle_values video-rotate 90 270 0"; # default subtitle loc
-      R = "cycle_values video-rotate 270 90 0";
-      "-" = "add video-zoom -0.076";
-      "=" = "add video-zoom +0.076";
-      RIGHT = "no-osd seek +1 keyframes";
-      LEFT = "no-osd seek -1 keyframes";
-      WHEEL_UP = "seek +1 keyframes";
-      WHEEL_DOWN = "seek -1 keyframes";
-
-      UP = "seek 30 keyframes";
-      DOWN = "seek -30 keyframes";
-
-      HOME = "seek 60 keyframes";
-      END = "seek 60 keyframes";
-
-      m = "cycle mute";
-
-      x = "add sub-delay -0.1";
-      X = "add sub-delay +0.1";
-      c = "add sub-delay +0.1";
-
-      "1" = "set current-window-scale 0.5";
-      "2" = "set current-window-scale 1.0";
-      "3" = "set current-window-scale 2.0";
-
-      # "F6" = "cycle_values video-rotate 0";
-      # "F7" = "cycle_values video-rotate 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90";
-      # "F7" = "no-osd vf add rotate=1";
-      # "F8" = "no-osd vf add rotate=2";
-
-      "F9" = "add video-pan-x .05";
-      "F10" = "add video-pan-y -.05";
-      "F11" = "add video-pan-y .05";
-      "F12" = "add video-pan-x -.05";
-      # ";" = "set video-pan-x 0; set video-pan-y 0; set video-zoom 0";
+      # Disc Devices
+      cdda-paranoia = 2;
+      cdda-speed = 1;
+      dvd-speed = 1;
     };
 
     profiles = {
-      fast2 = {
+      sw-scale = {
+        vf = "scale";
+      };
+
+      deinterlace = {
+        deinterlace = false;
+        vf = ''lavfi=[${
+          builtins.concatStringsSep "," [
+            "bwdif_vulkan"
+          ]
+        }]'';
+      };
+
+      deinterlace-sw = {
+        deinterlace = false;
+        vf = ''bwdif'';
+      };
+
+      deinterlace-sw2 = {
+        deinterlace = false;
+        vf = ''lavfi=[${
+          builtins.concatStringsSep "," [
+            "nnedi"
+          ]
+        }]'';
+      };
+
+      deblock = {
+        deband = false;
+        vf = ''lavfi=[${
+          builtins.concatStringsSep "," [
+            "deblock=filter=strong:block=8"
+          ]
+        }]'';
+      };
+
+      denoise = {
+        vf = ''lavfi=["${
+          builtins.concatStringsSep "," [
+            "nlmeans_vulkan"
+          ]
+        }]'';
+      };
+
+      denoise-sw = {
+        vf = ''lavfi=[${
+          builtins.concatStringsSep "," [
+            "bm3d"
+            # "hqdn3d"
+          ]
+        }]'';
+      };
+
+      medium = {
+        vd-lavc-skiploopfilter = "default";
+
+        scale = "ewa_lanczos";
+        dscale = "hermite";
+        cscale = "ewa_lanczos";
+        sws-scaler = "bicubic";
+        zimg-scaler = "spline16";
+        zimg-scaler-chroma = "spline16";
+      };
+
+      very-fast = {
+        vd-lavc-skiploopfilter = "default";
+        # vd-lavc-framedrop = "nonkey"; # 프레임 드롭: 키프레임 외 모든 프레임
+
         correct-downscaling = false;
-        # scale = "nearest";
-        # dscale = "nearest";
-        # cscale = "nearest";
-        # sws-scaler = "fast-bilinear";
-        scale = "bicubic_fast";
-        dscale = "bicubic_fast";
-        cscale = "bicubic_fast";
+        scale = "bilinear";
+        dscale = "bilinear";
+        cscale = "bilinear";
+
+        sws-allow-zimg = false;
         sws-scaler = "fast-bilinear";
-        zimg-scaler = "bicubic";
-        vo = "gpu-next";
-        hwdec = "vaapi";
-        framedrop = "decoder";
         sws-fast = true;
+        zimg-scaler = "bilinear";
+        zimg-scaler-chroma = "bilinear";
+        zimg-fast = true;
+
+        deband = false;
+        deband-iterations = 1;
+      };
+
+      anime = {
+        zimg-scaler = "lanczos";
       };
 
       audio = {
         replaygain = "track";
-        audio-display = false;
       };
+      audio-normalize = {
+        af = "loudnorm";
+      };
+
+      hdr = {
+        # WIP
+        vo = "gpu-next";
+        gpu-api = "vulkan";
+        target-colorspace-hint = true;
+        target-contrast = "auto"; # Max contrast ratio of your supported device, usually ~1000 for IPS, ~3000-5000 for VA and inf for OLED)
+      };
+    };
+
+    bindings = {
+      # https://github.com/mpv-player/mpv/blob/master/etc/input.conf
+      # NEW
+      r = "cycle_values video-rotate 90 180 270 0"; # default subtitle loc
+      R = "cycle_values video-rotate 270 180 90 0";
+      "-" = "add video-zoom -0.076";
+      "=" = "add video-zoom +0.076";
+
+      # SEEK
+      RIGHT = "no-osd seek +1 keyframes";
+      LEFT = "no-osd seek -1 keyframes";
+      WHEEL_UP = "seek +1 keyframes"; # default: change volume
+      WHEEL_DOWN = "seek -1 keyframes"; # default: change volume
+      UP = "seek 30 keyframes";
+      DOWN = "seek -30 keyframes";
+      HOME = "seek 60 keyframes"; # NEW
+      END = "seek 60 keyframes"; # NEW
+
+      # default bindings
+      m = "cycle mute";
+      h = "cycle deband";
+      d = "cycle deinterlace";
+
+      # remap bindings for colemak-dh layout
+      x = "add sub-delay -0.1";
+      X = "add sub-delay +0.1";
+      c = "add sub-delay +0.1";
+
+      # Zoom presets (default: contrast, brightness, gamma, saturation adjust)
+      "1" = "set current-window-scale 0.5";
+      "2" = "set current-window-scale 1.0";
+      "3" = "set current-window-scale 2.0";
+
+      # Function keys
+      "F5" = "add video-rotate -1"; # NEW
+      "F6" = "set video-rotate 0"; # NEW
+      "F7" = "add video-rotate 1"; # NEW
+
+      "F9" = "add video-pan-x .05"; # NEW
+      "F10" = "add video-pan-y -.05"; # NEW
+      "F11" = "add video-pan-y .05"; # NEW
+      "F12" = "add video-pan-x -.05"; # NEW
     };
 
     scriptOpts = {
