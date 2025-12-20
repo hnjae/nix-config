@@ -215,18 +215,20 @@ pkgs:
     pkgs.unstable.tinty # Base16 and base24 color scheme manager
     pkgs.unstable.mani # <https://github.com/alajmo/mani>
     pkgs.unstable.awscli2
-    pkgs.unstable.dotbot
-    pkgs.unstable.buildah
+    pkgs.unstable.buildah # build oci container images
     pkgs.unstable.openssl
+    pkgs.unstable.prek # pre-commit-hook
 
     ######################
     # LLM
     ######################
-    pkgs.unstable.claude-code
     pkgs.unstable.claude-monitor
-    (lib.lists.optional allowUnfree
+    (lib.lists.optionals allowUnfree [
+      pkgs.unstable.claude-code
       inputs.claude-desktop.packages.${hostPlatform.system}.claude-desktop-with-fhs
-    )
+    ])
+    pkgs.unstable.codex # openai
+    pkgs.unstable.opencode
 
     ######################
     # 테스트 中
@@ -238,9 +240,7 @@ pkgs:
     pkgs.unstable.gh # github cli
     pkgs.unstable.patchelf
     pkgs.jqp # TUI playground to experiment with jq
-    pkgs.unstable.codex # openai
     pkgs.unstable.gemini-cli-bin
-    pkgs.unstable.opencode
     pkgs.unstable.gh-copilot
   ]
 )
