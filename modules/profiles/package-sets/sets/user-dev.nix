@@ -92,7 +92,6 @@ pkgs:
     (with pkgs.unstable; [
       # markdown
       marksman
-      markdownlint-cli
       markdownlint-cli2
       cbfmt # format codeblocks inside markdown and org
       mdcat # markdown preview in cli; better than glow as it uses ANSI colors
@@ -205,6 +204,7 @@ pkgs:
     # pkgs.rust-bin.stable.latest.default
     pkgs.pkgs.unstable.taplo # lsp for toml written in rust
     pkgs.unstable.yaml-language-server
+    pkgs.unstable.yamlfmt
     # pkgs.unstable.yamlfmt # `>-` 구문 처리에 버그 있는 듯. <2025-09-16>
     # (pkgs.runCommandLocal "vscode-json-language-server" { } ''
     #   mkdir -p $out/bin
