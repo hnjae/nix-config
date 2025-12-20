@@ -280,27 +280,29 @@ build host=`hostname` flags='': update-locals
 
     build_nixos() {
         host="$1"
+        target="nixosConfigurations.${host}.config.system.build.toplevel"
+        outlink="/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#${target}"
 
         echo ""
         if [ '{{ flags }}' = "" ]; then
-            echo "{{ BOLD }}{{ BLUE }}INFO: Building .#nixosConfigurations.${host}.config.system.build.toplevel {{ NORMAL }}" >&2
+            echo "{{ BOLD }}{{ BLUE }}INFO: Building .#${target} {{ NORMAL }}" >&2
         else
-            echo "{{ BOLD }}{{ BLUE }}INFO: Building .#nixosConfigurations.${host}.config.system.build.toplevel with {{ flags }} flags{{ NORMAL }}" >&2
+            echo "{{ BOLD }}{{ BLUE }}INFO: Building .#${target} with {{ flags }} flags{{ NORMAL }}" >&2
         fi
 
         if command -v nh >/dev/null 2>&1; then
             nh os build --hostname="${host}" \
                 --keep-failed \
-                --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#nixosConfigurations.${host}.config.system.build.toplevel" \
+                --out-link "$outlink" \
                 .
         else
             nix build \
                 {{ flags }} \
-                --out-link "/nix/var/nix/gcroots/per-user/${USER}/{{ project }}#nixosConfigurations.${host}.config.system.build.toplevel" \
+                --out-link "$outlink" \
                 --option eval-cache false \
                 --show-trace \
                 --keep-failed \
-                ".#nixosConfigurations.${host}.config.system.build.toplevel"
+                ".#${target}"
         fi
     }
 
