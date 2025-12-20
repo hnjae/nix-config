@@ -129,8 +129,15 @@ update-except-stable:
 [group('update')]
 [private]
 update-locals:
-    # nix flake update py-utils
-    ./hosts/eris/serve-encrypted/services/traefik/shared/update-cloudflare-ips.sh
+    #!/bin/sh
+
+    SCRIPT="./hosts/eris/serve-encrypted/services/traefik/shared/update-cloudflare-ips.sh"
+
+    if [ "$(file --brief -- "$SCRIPT")" != "data" ]; then
+        "$SCRIPT"
+    else
+        echo "{{ BOLD }}{{ BLUE }}INFO: Skipping update-cloudflare-ips.sh since it is locked (encrypted).{{ NORMAL }}" >&2
+    fi
 
 [group('check')]
 remote-build-test: update-locals
