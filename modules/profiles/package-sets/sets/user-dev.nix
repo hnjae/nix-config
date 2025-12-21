@@ -196,20 +196,21 @@ pkgs:
       ''
     ))
 
+    #######################################
+    # Other formatters, linters, ... etc
+    #######################################
+    pkgs.unstable.taplo # lsp for toml written in rust
+    pkgs.unstable.nufmt
+    pkgs.unstable.prek # pre-commit-hook
+    pkgs.unstable.treefmt # one CLI to format the code tree
+    pkgs.unstable.typos # source code spell checker
+    pkgs.unstable.yamlfmt
+
     ######################
     # Misc               #
     ######################
     pkgs.go
-    pkgs.unstable.nufmt
-    # pkgs.rust-bin.stable.latest.default
-    pkgs.pkgs.unstable.taplo # lsp for toml written in rust
     pkgs.unstable.yaml-language-server
-    pkgs.unstable.yamlfmt
-    # pkgs.unstable.yamlfmt # `>-` 구문 처리에 버그 있는 듯. <2025-09-16>
-    # (pkgs.runCommandLocal "vscode-json-language-server" { } ''
-    #   mkdir -p $out/bin
-    #   ln -s "${pkgs.unstable.vscode-langservers-extracted}/bin/vscode-json-language-server" "$out/bin/vscode-json-language-server"
-    # '')
     pkgs.unstable.hurl
     pkgs.unstable.leetcode-cli
     pkgs.unstable.tinty # Base16 and base24 color scheme manager
@@ -217,7 +218,6 @@ pkgs:
     pkgs.unstable.awscli2
     pkgs.unstable.buildah # build oci container images
     pkgs.unstable.openssl
-    pkgs.unstable.prek # pre-commit-hook
 
     ######################
     # LLM
