@@ -24,7 +24,7 @@ in
 {
   boot = {
     kernelPackages = lib.mkOverride 999 (
-      if cfg.role != "desktop" then pkgs.linuxPackages_6_12_hardened else pkgs.linuxPackages_6_12
+      if cfg.role != "desktop" then pkgs.linuxPackages_6_18_hardened else pkgs.linuxPackages_6_18
     );
 
     kernelModules = [ "wireguard" ];
@@ -32,5 +32,7 @@ in
       "kernel.nmi_watchdog" = 0; # https://wiki.archlinux.org/title/Power_management#Disabling_NMI_watchdog
       "vm.dirty_writeback_centisecs" = 1500; # follow powertop recommendation 2025-11-23
     };
+
+    zfs.package = lib.mkOverride 999 pkgs.zfs_2_4;
   };
 }
