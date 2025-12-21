@@ -19,12 +19,13 @@ in
     networking.networkmanager = {
       enable = mkProfileDefault true;
       plugins = with pkgs; [
-        networkmanager_strongswan
+        networkmanager-openvpn
       ];
-      # wifi.backend = mkProfileDefault "iwd"; # NixOS 24.11 기준 unstable 함
+      wifi = {
+        powersave = true;
+        # backend = mkProfileDefault "iwd"; # NixOS 24.11 기준 unstable 함
+      };
     };
-
-    services.dbus.packages = [ pkgs.strongswanNM ];
 
     # bluetooth
     hardware.bluetooth = {
@@ -37,7 +38,6 @@ in
     # opengl
     hardware.graphics = {
       enable = mkProfileDefault true;
-      enable32Bit = mkProfileDefault true;
     };
 
     hardware.i2c.enable = mkProfileDefault true;

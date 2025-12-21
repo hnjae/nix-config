@@ -1,7 +1,7 @@
 {
   imports = [
     ./ssh-host-key
-    ./packages.nix
+    ./steam.nix
     ./systemd.nix
     ./wol.nix
   ];

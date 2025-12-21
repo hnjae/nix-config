@@ -1,3 +1,6 @@
+let
+  project = "zfs-snapshot-prune";
+in
 {
   perSystem =
     {
@@ -16,10 +19,11 @@
     in
     {
       packages = lib.mkIf isSupported {
-        zfs-snapshot-prune = import ./. { inherit pkgs; };
+        ${project} = import ./. { inherit pkgs; };
       };
+
       apps = lib.mkIf isSupported {
-        zfs-snapshot-prune = {
+        ${project} = {
           type = "app";
           program = config.packages.zfs-snapshot-prune;
         };
