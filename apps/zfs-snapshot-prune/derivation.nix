@@ -14,18 +14,7 @@ python3.pkgs.buildPythonApplication rec {
   build-system = with python3.pkgs; [ flit-core ];
   dependencies = with python3.pkgs; [
     rich
-    (
-      (typer.override {
-        rich = null;
-        shellingham = null;
-      }).overridePythonAttrs
-      (_: {
-        pname = "typer-slim";
-        env.TIANGOLO_BUILD_PACKAGE = "typer-slim";
-        dontCheckRuntimeDeps = true;
-        doCheck = false;
-      })
-    )
+    typer-slim
     isodate
     tabulate
   ];
