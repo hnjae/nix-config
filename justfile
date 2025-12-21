@@ -91,7 +91,8 @@ update:
     git commit -m "build: update flake.lock"
 
 [group('update')]
-update-except-unstable:
+[positional-arguments]
+update-except input=`echo "nixpkgs-unstable"`:
     #!/usr/bin/env nu
 
     let inputs = (
@@ -99,25 +100,7 @@ update-except-unstable:
         | from json
         | $in.locks.nodes.root.inputs
         | columns
-        | where $it not-in ["nixpkgs-unstable"]
-    )
-
-    nix flake update ...$inputs
-
-    git reset
-    git add flake.lock
-    git commit -m "build: update flake.lock"
-
-[group('update')]
-update-except-stable:
-    #!/usr/bin/env nu
-
-    let inputs = (
-        nix flake metadata --json
-        | from json
-        | $in.locks.nodes.root.inputs
-        | columns
-        | where $it not-in ["nixpkgs"]
+        | where $it not-in ["{{ input }}"]
     )
 
     nix flake update ...$inputs
