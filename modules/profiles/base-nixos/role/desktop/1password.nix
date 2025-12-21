@@ -1,10 +1,11 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 {
-  config = lib.mkIf (config.base-nixos.role == "desktop") {
+  config = lib.mkIf (config.base-nixos.role == "desktop" && pkgs.config.allowUnfree) {
     programs._1password.enable = true;
     programs._1password-gui = {
       enable = true;
