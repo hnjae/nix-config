@@ -81,7 +81,7 @@
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
         # devshell.follows = ""; flake.nix를 이상하게 작성했는지, devshell 이 필요하다. <2025-03-23>
-        treefmt-nix.follows = "treefmt-nix"; # 상동
+        # treefmt-nix.follows = ""; # 상동
         home-manager.follows = "";
         hyprland.follows = "";
       };
@@ -126,21 +126,6 @@
     };
 
     ############################################################################
-    # dev tools
-    ############################################################################
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    git-hooks = {
-      url = "github:cachix/git-hooks.nix";
-      inputs = {
-        flake-compat.follows = "";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
-    ############################################################################
     # Used in input dependency only
     ############################################################################
     cargo2nix_0110 = {
@@ -173,9 +158,6 @@
       }
       {
         imports = nixpkgs.lib.flatten [
-          (nixpkgs.lib.lists.optional (inputs.git-hooks ? flakeModule) inputs.git-hooks.flakeModule)
-          (nixpkgs.lib.lists.optional (inputs.treefmt-nix ? flakeModule) inputs.treefmt-nix.flakeModule)
-
           ./attributes/deploy.nix
           ./attributes/homeManagerModules.nix
 
@@ -203,10 +185,6 @@
           {
             # Utilized by `nix develop`
             devShells.default = pkgs.mkShellNoCC {
-              # shellHook = ''
-              #   ${config.pre-commit.installationScript}
-              # '';
-
               packages = with pkgs; [
                 sops
 
@@ -218,88 +196,48 @@
 
                 # just
                 just
-                parallel
                 jq
+
+                prek
+                treefmt
               ];
             };
 
-            # pre-commit.settings.hooks.treefmt.enable = false;
-
-            # Utilized by `nix fmt` (formatter)
-            treefmt.config = {
-              projectRootFile = "flake.nix";
-              programs = {
-                nixfmt = {
-                  enable = true;
-                  package = pkgs.nixfmt-rfc-style;
-                };
-                rustfmt.enable = true;
-                biome.enable = true;
-                fish_indent.enable = true;
-                just = {
-                  enable = true;
-                  includes = [
-                    "justfile"
-                    "*/justfile"
-                  ];
-                };
-                mdformat.enable = false; # forces indentation to 2 spaces; does not support frontmatter
-                taplo.enable = true;
-                ruff-format.enable = true;
-                yamlfmt.enable = false;
-                shellcheck.enable = true;
-                shfmt = {
-                  enable = true;
-                  indent_size = 2;
-                };
-                stylua = {
-                  enable = true;
-                  settings = {
-                    column_width = 80;
-                    indent_type = "Spaces";
-                    indent_width = 2;
-                  };
-                };
-              };
-              settings = {
-                formatter.shellcheck.priority = 1;
-                formatter.shfmt.priority = 2;
-                formatter.nixfmt.options = [
-                  "--width=100"
-                ];
-                global.excludes = [
-                  # specific file name
-                  ".editorconfig"
-                  "*/.editorconfig"
-                  ".gitattributes"
-                  "*/.gitattributes"
-                  "LICENSE"
-                  "*/LICENSE"
-
-                  # by directory pattern
-                  "dotfiles/*"
-                  "*/*-encrypted/*"
-                  "*-encrypted.*"
-                  "*/secrets/*"
-
-                  # by suffix pattern
-                  "*.gpg"
-                  "*.adoc"
-                  "*.kdl"
-                  "*.mustache"
-                  "*.zsh"
-                  "*.txt"
-                  "*.nu" # nufmt break files. don't know why. <2025-03-23>
-                  "*rc"
-                  "*.cheat"
-                  "*.log"
-                  "*.md" # mdformat does not support frontmatter, so it breaks markdown files.
-
-                  # misc
-                  "*-samples"
-                ];
-              };
-            };
+            # Utilized by `nix fmt`
+            # treefmt.config = {
+            #   programs = {
+            #     nixfmt = {
+            #       enable = true;
+            #       package = pkgs.nixfmt-rfc-style;
+            #     };
+            #     just = {
+            #       enable = true;
+            #       includes = [
+            #         "justfile"
+            #         "*/justfile"
+            #       ];
+            #     };
+            #     shellcheck.enable = true;
+            #     shfmt.enable = true;
+            #   };
+            #   settings = {
+            #     formatter = {
+            #       shellcheck.priority = 1;
+            #       shfmt.priority = 2;
+            #       nixfmt.options = [
+            #         "--width=100"
+            #       ];
+            #     };
+            #     global.excludes = [
+            #       "apps/*"
+            #       "*.md" # mdformat does not support frontmatter, so it breaks markdown files.
+            #
+            #       "*/*-encrypted/*"
+            #       "*-encrypted.*"
+            #       "*/secrets/*"
+            #     ];
+            #   };
+            # };
           };
       };
 }
