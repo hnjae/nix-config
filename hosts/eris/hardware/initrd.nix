@@ -6,7 +6,6 @@
 {
   config,
   self,
-  pkgs,
   ...
 }:
 {
@@ -16,51 +15,31 @@
       "nvme"
       "xhci_pci"
       "ahci"
+      "mpt3sas"
+
       "usbhid"
       "usb_storage"
+
       "sd_mod"
       "sr_mod"
 
       "r8169" # network drive. run `lsmod` to list loaded kernel modules
     ];
+
     systemd = {
       enable = true;
-
-      users.root.shell = "/bin/systemd-tty-ask-password-agent";
-
-      initrdBin = with pkgs; [
-        zfs
-      ];
-
-      services.rollback = {
-        description = "Restore ZFS root dataset to empty state";
-        wantedBy = [
-          "initrd.target"
-        ];
-        after = [
-          "zfs-import.target"
-        ];
-        before = [
-          "sysroot.mount"
-        ];
-        unitConfig.DefaultDependencies = "no";
-        serviceConfig.Type = "oneshot";
-        script = ''
-          zfs rollback -r -- 'eris/local/rootfs@blank'
-        '';
-      };
 
       network = {
         enable = true;
         # NOTE: stage2 에서는 작동하는 브릿지 네트워크 설정이 stage1 에서는 작동하지 않음. <NixOS 25.05>
         networks."10-lan" = {
           matchConfig = {
-            Name = "eno1";
+            Name = "enp4s0";
           };
           networkConfig = {
             DHCP = "no";
             Gateway = "192.168.0.1";
-            Address = "192.168.0.200/16";
+            Address = "192.168.0.200/23";
 
             LLMNR = "resolve";
             MulticastDNS = true;

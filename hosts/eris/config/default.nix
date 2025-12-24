@@ -1,7 +1,9 @@
 { lib, ... }:
 {
   imports = [
+    ./sops.nix
     ./ssh-host-key
+    ./storage-encryption-key
     ./systemd.nix
   ];
 

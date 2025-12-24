@@ -15,46 +15,4 @@
     initrd.enable = false;
     opencl.enable = false;
   };
-
-  #######
-  # LACT
-  #######
-  hardware.amdgpu.overdrive.enable = true;
-  services.lact = {
-    enable = false;
-    settings = {
-      daemon = {
-        log_level = "info";
-        admin_groups = [
-          "wheel"
-          "sudo"
-        ];
-        disable_clocks_cleanup = false;
-      };
-      apply_settings_timer = 5;
-      gpus = {
-        "1002:67FF-1682:9550-0000:0a:00.0" = {
-          fan_control_enabled = true;
-          fan_control_settings = {
-            mode = "curve";
-            static_speed = 0.5;
-            temperature_key = "edge";
-            interval_ms = 500;
-            curve = {
-              "40" = 0.0;
-              "50" = 0.0;
-              "60" = 0.0;
-              "70" = 0.5;
-              "80" = 1.0;
-            };
-            spindown_delay_ms = 0;
-            change_threshold = 0;
-          };
-          performance_level = "low";
-          voltage_offset = -10;
-        };
-      };
-      current_profile = null;
-    };
-  };
 }

@@ -12,7 +12,7 @@
     };
 
     networks."10-lan" = {
-      matchConfig.Name = [ "eno1" ];
+      matchConfig.Name = [ "enp4s0" ];
       networkConfig = {
         Bridge = "br0";
       };
@@ -26,6 +26,16 @@
         Address = "192.168.0.200/23";
         LLMNR = "resolve";
         MulticastDNS = true;
+      };
+    };
+
+    networks."99-other-physical-nics" = {
+      matchConfig.Name = [
+        "en*"
+        "eth*"
+      ];
+      networkConfig = {
+        DHCP = "yes";
       };
     };
 

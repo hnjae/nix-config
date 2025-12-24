@@ -29,12 +29,12 @@
   boot = {
     # enable lanzaboote after creating keys (`sbctl create-keys`)
     lanzaboote = {
-      enable = true;
+      enable = false;
       pkiBundle = "/var/lib/sbctl";
       settings.console-mode = "keep"; # use vendor's firmware's default
     };
     loader.systemd-boot = {
-      enable = lib.mkForce false;
+      enable = lib.mkForce true;
       configurationLimit = 50;
     };
     loader.efi = {
@@ -43,8 +43,6 @@
     };
 
     kernelParams = [
-      "amdgpu.dc=0" # fix amdgpu - flip_done timed out <https://forum.manjaro.org/t/system-freeze-amdgpu-flip-done-timed-out-after-switch-to-kernel-6-12/176608> (Kernel 6.12)
-
       "zswap.enabled=1"
       "zswap.compressor=lz4"
     ];
