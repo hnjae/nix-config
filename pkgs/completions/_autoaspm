@@ -9,7 +9,7 @@ _autoaspm() {
         '--run[actually apply patches (default is dry-run)]'
         '(-v --verbose)'{-v,--verbose}'[show detailed device information]'
     )
-    _arguments -s -S $args
+    _arguments -s -S "${args[@]}"
 }
 
 _autoaspm "$@"
