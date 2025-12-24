@@ -219,8 +219,7 @@ class TestPCIDeviceReadConfigSpace:
         mock_run.return_value = Mock(
             returncode=0,
             stdout="01:00.0 Network controller...\n"
-             "00: "
-            + " ".join(f"{i:02x}" for i in range(100)),
+            "00: " + " ".join(f"{i:02x}" for i in range(100)),
         )
         device = PCIDevice("01:00.0")
         with pytest.raises(DeviceAccessError, match="Incomplete config space"):

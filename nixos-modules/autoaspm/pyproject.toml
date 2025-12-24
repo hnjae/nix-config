@@ -62,3 +62,4 @@ convention = "pep257"
 "reportUndefinedVariable" = false    # ruff F821
 "reportUnusedVariable" = false       # ruff F841
 "reportPrivateUsage" = false         # ruff SLF001
+exclude = ["test_*.py"]              # exclude test files from type checking
