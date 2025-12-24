@@ -7,3 +7,6 @@ _:
 
 build:
     nix build '.#autoaspm'
+
+test:
+    direnv exec . pytest test_autoaspm.py -v
