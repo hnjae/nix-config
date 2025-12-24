@@ -5,7 +5,8 @@ Original bash script by Luis R. Rodriguez
 Re-written in Python by z8
 Re-re-written to patch supported devices automatically by notthebee
 Re-re-re-written to improve usability by hnjae
-  - Added CLI arguments (--mode, --list, --dry-run)
+  - Added CLI arguments (--mode, --list, --run)
+  - Changed default behavior to dry-run for safety
 """
 
 import argparse
@@ -592,7 +593,7 @@ class ArgsNamespace(argparse.Namespace):
 
     mode: str | None = None
     list_only: bool = False
-    dry_run: bool = False
+    run: bool = False
     verbose: bool = False
 
 
@@ -604,12 +605,13 @@ def parse_args() -> ArgsNamespace:
         epilog="""
 Examples:
   %(prog)s                  List ASPM-capable devices (default)
-  %(prog)s --mode l0s       Enable L0s only on devices that support it
-  %(prog)s --mode l1        Enable L1 only on devices that support it
-  %(prog)s --mode l0sl1     Enable L0s+L1 on devices that support both
+  %(prog)s --mode l0s       Simulate enabling L0s (dry-run)
+  %(prog)s --mode l1 --run  Actually enable L1 on devices that support it
+  %(prog)s --mode l0sl1     Simulate enabling L0s+L1 (dry-run)
   %(prog)s --list --verbose List devices with detailed information
 
 Notes:
+  - By default, --mode performs a dry-run simulation. Use --run to actually patch.
   - If a device is already in L0sL1 state and you request L1 only,
     the device will be skipped (not downgraded).
   - Requesting a mode the device doesn't support will skip that device.
@@ -634,10 +636,10 @@ Notes:
     )
 
     _ = parser.add_argument(
-        "--dry-run",
-        "-n",
+        "--run",
+        "-r",
         action="store_true",
-        help="Show what would be done without actually patching",
+        help="Actually apply patches (default is dry-run when --mode is specified)",
     )
 
     _ = parser.add_argument(
@@ -670,8 +672,8 @@ def main():
         logger.info("No ASPM-capable devices found")
         return 0
 
-    # If no mode and no dry-run specified, default to list mode
-    if not args.mode and not args.dry_run:
+    # If no mode specified, default to list mode
+    if not args.mode:
         args.list_only = True
 
     # --list option: print list only
@@ -684,18 +686,24 @@ def main():
     if args.mode:
         requested_mode = ASPM.from_string(args.mode)
 
+    # Determine if this is a dry-run (default) or actual run
+    dry_run = not args.run
+
     logger.info("Found %d ASPM-capable device(s)", len(devices))
     if requested_mode:
         logger.info("Requested mode: %s", requested_mode.name)
     else:
         logger.info("Mode: auto (maximum supported per device)")
 
+    if dry_run:
+        logger.info("Running in dry-run mode (use --run to actually patch)")
+
     # Process devices
     patched_count, skipped_count, error_count = process_devices(
-        devices, requested_mode, args.dry_run
+        devices, requested_mode, dry_run
     )
 
-    action_word = "would patch" if args.dry_run else "patched"
+    action_word = "would patch" if dry_run else "patched"
     logger.info(
         "Summary: %s %d, skipped %d, errors %d",
         action_word,

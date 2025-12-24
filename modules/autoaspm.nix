@@ -28,7 +28,12 @@ in
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${lib.getExe cfg.package}";
+        ExecStart = lib.escapeShellArg [
+          "${lib.getExe cfg.package}"
+          "--run"
+          "--mode"
+          "l0sl1"
+        ];
 
         # Security hardening
         ProtectSystem = "strict";
