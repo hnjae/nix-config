@@ -5,4 +5,8 @@
     sshKeyPaths = [ ];
     generateKey = false;
   };
+
+  systemd.tmpfiles.rules = [
+    "z /zlocal/home-age-private 0400 root root - -"
+  ];
 }
