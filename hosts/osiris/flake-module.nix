@@ -42,6 +42,7 @@ in
 
       self.nixosModules.base-nixos
       self.nixosModules.kde
+
       {
         system.stateVersion = "25.05";
         networking.hostName = hostName;
