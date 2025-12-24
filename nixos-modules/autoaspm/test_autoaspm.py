@@ -1,14 +1,13 @@
 """Tests for autoaspm module."""
 
 import subprocess
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
 import pytest
 
 from autoaspm import (
     ASPM,
     PCIDevice,
-    ASPMPatcherError,
     CapabilityNotFoundError,
     DeviceAccessError,
 )
@@ -100,7 +99,8 @@ class TestPCIDeviceGetName:
     def test_get_name_success(self, mock_run):
         """Test successful device name retrieval."""
         mock_run.return_value = Mock(
-            returncode=0, stdout="01:00.0 Network controller: Intel Corporation..."
+            returncode=0,
+            stdout="01:00.0 Network controller: Intel Corporation...",
         )
         device = PCIDevice("01:00.0")
         name = device.get_name()
@@ -111,7 +111,8 @@ class TestPCIDeviceGetName:
     def test_get_name_caching(self, mock_run):
         """Test that device name is cached."""
         mock_run.return_value = Mock(
-            returncode=0, stdout="01:00.0 Network controller: Intel Corporation..."
+            returncode=0,
+            stdout="01:00.0 Network controller: Intel Corporation...",
         )
         device = PCIDevice("01:00.0")
         name1 = device.get_name()
@@ -125,7 +126,9 @@ class TestPCIDeviceGetName:
         """Test handling of lspci failure."""
         mock_run.return_value = Mock(returncode=1, stderr="Device not found")
         device = PCIDevice("01:00.0")
-        with pytest.raises(DeviceAccessError, match="Failed to get device name"):
+        with pytest.raises(
+            DeviceAccessError, match="Failed to get device name"
+        ):
             device.get_name()
 
     @patch("subprocess.run")
@@ -157,10 +160,16 @@ class TestPCIDeviceReadConfigSpace:
             offset = i * 16
             # First line has the device name
             if i == 0:
-                hex_lines.append(f"01:00.0 Network controller: Intel Corporation...")
-                hex_lines.append(f"{offset:02x}: 86 80 24 43 07 04 10 00 10 00 80 02 00 00 00 00")
+                hex_lines.append(
+                    "01:00.0 Network controller: Intel Corporation..."
+                )
+                hex_lines.append(
+                    f"{offset:02x}: 86 80 24 43 07 04 10 00 10 00 80 02 00 00 00 00"
+                )
             else:
-                hex_lines.append(f"{offset:02x}: " + " ".join(f"{j:02x}" for j in range(16)))
+                hex_lines.append(
+                    f"{offset:02x}: " + " ".join(f"{j:02x}" for j in range(16))
+                )
 
         lspci_output = "\n".join(hex_lines)
         mock_run.return_value = Mock(returncode=0, stdout=lspci_output)
@@ -184,9 +193,13 @@ class TestPCIDeviceReadConfigSpace:
         for i in range(16):
             offset = i * 16
             if i == 0:
-                hex_lines.append(f"{offset:02x}: 86 80 24 43 07 04 10 00 10 00 80 02 00 00 00 00")
+                hex_lines.append(
+                    f"{offset:02x}: 86 80 24 43 07 04 10 00 10 00 80 02 00 00 00 00"
+                )
             else:
-                hex_lines.append(f"{offset:02x}: " + " ".join(f"{j:02x}" for j in range(16)))
+                hex_lines.append(
+                    f"{offset:02x}: " + " ".join(f"{j:02x}" for j in range(16))
+                )
 
         lspci_output = "\n".join(hex_lines)
         mock_run.return_value = Mock(returncode=0, stdout=lspci_output)
@@ -205,8 +218,9 @@ class TestPCIDeviceReadConfigSpace:
         # Only 100 bytes instead of 256
         mock_run.return_value = Mock(
             returncode=0,
-            stdout="01:00.0 Network controller...\n" +
-                   "00: " + " ".join(f"{i:02x}" for i in range(100))
+            stdout="01:00.0 Network controller...\n"
+             "00: "
+            + " ".join(f"{i:02x}" for i in range(100)),
         )
         device = PCIDevice("01:00.0")
         with pytest.raises(DeviceAccessError, match="Incomplete config space"):
@@ -217,15 +231,19 @@ class TestPCIDeviceReadConfigSpace:
         """Test handling of lspci failure."""
         mock_run.return_value = Mock(returncode=1, stderr="Command failed")
         device = PCIDevice("01:00.0")
-        with pytest.raises(DeviceAccessError, match="Failed to read config space"):
+        with pytest.raises(
+            DeviceAccessError, match="Failed to read config space"
+        ):
             device.read_config_space()
 
 
 class TestPCIDeviceFindPCIeCapability:
     """Test PCIDevice.find_pcie_capability() method."""
 
-    def _create_config_with_pcie_cap(self, cap_offset: int = 0x40) -> bytearray:
-        """Helper to create a config space with PCIe capability."""
+    def _create_config_with_pcie_cap(
+        self, cap_offset: int = 0x40
+    ) -> bytearray:
+        """Create a config space with PCIe capability."""
         config = bytearray(256)
         # Set capability list pointer (at offset 0x34)
         config[0x34] = cap_offset
@@ -379,7 +397,9 @@ class TestPCIDevicePatchByte:
     @patch("subprocess.run")
     def test_patch_byte_failure(self, mock_run):
         """Test handling of patch failure."""
-        mock_run.return_value = Mock(returncode=1, stderr="Operation not permitted")
+        mock_run.return_value = Mock(
+            returncode=1, stderr="Operation not permitted"
+        )
 
         device = PCIDevice("01:00.0")
         with pytest.raises(DeviceAccessError, match="Failed to patch"):
@@ -440,7 +460,9 @@ class TestPCIDevicePatchASPM:
     @patch.object(PCIDevice, "_patch_byte")
     @patch.object(PCIDevice, "get_link_control_offset")
     @patch.object(PCIDevice, "read_config_space")
-    def test_patch_aspm_no_change(self, mock_read, mock_offset, mock_patch, mock_verify):
+    def test_patch_aspm_no_change(
+        self, mock_read, mock_offset, mock_patch, mock_verify
+    ):
         """Test when device is already in target state."""
         config = bytearray(256)
         config[0x50] = ASPM.L0sL1.value  # Already L0sL1
@@ -457,7 +479,9 @@ class TestPCIDevicePatchASPM:
     @patch.object(PCIDevice, "_patch_byte")
     @patch.object(PCIDevice, "get_link_control_offset")
     @patch.object(PCIDevice, "read_config_space")
-    def test_patch_aspm_success(self, mock_read, mock_offset, mock_patch, mock_verify):
+    def test_patch_aspm_success(
+        self, mock_read, mock_offset, mock_patch, mock_verify
+    ):
         """Test successful ASPM patching."""
         config = bytearray(256)
         config[0x50] = ASPM.DISABLED.value  # Currently disabled
@@ -506,8 +530,13 @@ class TestIntegration:
             returncode=0,
             stdout="""01:00.0 Network controller: Intel...
 00: 86 80 24 43 07 04 10 00 10 00 80 02 00 00 00 00
-""" + "\n".join([f"{i:02x}: " + " ".join(f"{j:02x}" for j in range(16))
-                  for i in range(1, 16)])
+"""
+            + "\n".join(
+                [
+                    f"{i:02x}: " + " ".join(f"{j:02x}" for j in range(16))
+                    for i in range(1, 16)
+                ]
+            ),
         )
 
         mock_run.side_effect = [device_name_response, config_response]
