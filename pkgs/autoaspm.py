@@ -16,6 +16,7 @@ import platform
 import re
 import shutil
 import subprocess
+import sys
 from enum import Enum
 from typing import ClassVar, override
 
@@ -604,7 +605,7 @@ def parse_args() -> ArgsNamespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s                  List ASPM-capable devices (default)
+  %(prog)s --list           List ASPM-capable devices
   %(prog)s --mode l0s       Simulate enabling L0s (dry-run)
   %(prog)s --mode l1 --run  Actually enable L1 on devices that support it
   %(prog)s --mode l0sl1     Simulate enabling L0s+L1 (dry-run)
@@ -649,7 +650,14 @@ Notes:
         help="Show detailed device information",
     )
 
-    return parser.parse_args(namespace=ArgsNamespace())
+    args = parser.parse_args(namespace=ArgsNamespace())
+
+    # If no meaningful arguments provided, print help and exit
+    if not args.mode and not args.list_only:
+        parser.print_help()
+        sys.exit(0)
+
+    return args
 
 
 def main():
@@ -671,10 +679,6 @@ def main():
     if not devices:
         logger.info("No ASPM-capable devices found")
         return 0
-
-    # If no mode specified, default to list mode
-    if not args.mode:
-        args.list_only = True
 
     # --list option: print list only
     if args.list_only:
@@ -716,6 +720,4 @@ def main():
 
 
 if __name__ == "__main__":
-    import sys
-
     sys.exit(main())
