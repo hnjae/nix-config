@@ -1,0 +1,9 @@
+#!/usr/bin/env -S just --justfile
+
+set fallback := true
+
+_:
+    @just --list
+
+build:
+    nix build '.#autoaspm'

@@ -1,5 +1,6 @@
 {
   imports = [
+    ./autoaspm/flake-module.nix
     ./kde/flake-module.nix
   ];
 

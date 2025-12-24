@@ -1,0 +1,15 @@
+#compdef autoaspm autoaspm.py
+
+_autoaspm() {
+    local -a args
+    args=(
+        '(- *)'{-h,--help}'[show help message and exit]'
+        '(-l --list)'{-l,--list}'[list ASPM-capable devices and their supported modes]'
+        '(-m --mode)'{-m,--mode}'[ASPM mode to enable]:mode:(l0s l1 l0sl1 disabled)'
+        '--run[actually apply patches (default is dry-run)]'
+        '(-v --verbose)'{-v,--verbose}'[show detailed device information]'
+    )
+    _arguments -s -S "${args[@]}"
+}
+
+_autoaspm "$@"
