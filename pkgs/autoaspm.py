@@ -16,7 +16,7 @@ import re
 import shutil
 import subprocess
 from enum import Enum
-from typing import ClassVar
+from typing import ClassVar, override
 
 
 class SystemdFormatter(logging.Formatter):
@@ -31,6 +31,7 @@ class SystemdFormatter(logging.Formatter):
         logging.DEBUG: 7,  # Debug
     }
 
+    @override
     def format(self, record: logging.LogRecord) -> str:
         """Format log record with syslog priority prefix."""
         priority = self.LEVEL_MAP.get(record.levelno, 6)
@@ -356,7 +357,9 @@ def patch_device(
 
         # If already in target state
         if current_aspm == target_aspm:
-            logger.info("%s: Already has ASPM %s enabled", addr, target_aspm.name)
+            logger.info(
+                "%s: Already has ASPM %s enabled", addr, target_aspm.name
+            )
             return False
 
         # If current state already includes requested mode (e.g., L0sL1 when only L1 requested)
@@ -381,14 +384,16 @@ def patch_device(
         logger.warning("%s: Skipping - %s", addr, e)
         return False
     except DeviceAccessError as e:
-        logger.error("%s: Error - %s", addr, e)  # noqa: TRY400
+        logger.error("%s: Error - %s", addr, e)
         return False
     else:
         # Verify patch
         if verify_patch(addr, link_control_offset, target_aspm.value):
             logger.info("%s: Enabled ASPM %s", addr, target_aspm.name)
         else:
-            logger.warning("%s: WARNING - Patch applied but verification failed", addr)
+            logger.warning(
+                "%s: WARNING - Patch applied but verification failed", addr
+            )
         return True
 
 
@@ -451,7 +456,9 @@ def list_supported_devices() -> dict[str, ASPM]:
     return aspm_devices
 
 
-def handle_list_mode(devices: dict[str, ASPM], *, verbose: bool = False) -> None:
+def handle_list_mode(
+    devices: dict[str, ASPM], *, verbose: bool = False
+) -> None:
     """Handle --list mode to display ASPM-capable devices."""
     for device, supported_aspm in devices.items():
         # Read current ASPM state
@@ -465,7 +472,9 @@ def handle_list_mode(devices: dict[str, ASPM], *, verbose: bool = False) -> None
             current_str = "unknown"
 
         # Print device info
-        print(f"{device}: current={current_str}, supports={supported_aspm.name}")  # noqa: T201
+        print(  # noqa: T201
+            f"{device}: current={current_str}, supports={supported_aspm.name}"
+        )
 
         # Print detailed device name only in verbose mode
         if verbose:
@@ -568,7 +577,7 @@ def process_devices(
                 else:
                     skipped_count += 1
         except ASPMPatcherError as e:
-            logger.error("%s: Failed - %s", device, e)  # noqa: TRY400
+            logger.error("%s: Failed - %s", device, e)
             error_count += 1
 
     return (patched_count, skipped_count, error_count)
@@ -644,13 +653,13 @@ def main():
     try:
         run_prerequisites()
     except (OSError, PermissionError, ASPMPatcherError) as e:
-        logger.error("%s", e)  # noqa: TRY400
+        logger.error("%s", e)
         return 1
 
     try:
         devices = list_supported_devices()
     except ASPMPatcherError as e:
-        logger.error("Error listing devices: %s", e)  # noqa: TRY400
+        logger.error("Error listing devices: %s", e)
         return 1
 
     if not devices:
