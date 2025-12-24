@@ -30,7 +30,7 @@
   boot.kernelParams = [ "amd_pstate=active" ];
 
   # Get available governor: cpupower frequency-info
-  powerManagement.cpuFreqGovernor = "powersave";
+  powerManagement.cpuFreqGovernor = "performance";
 
   # Current settings: cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference
   # Get available settings: cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_available_preferences

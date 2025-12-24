@@ -10,9 +10,7 @@ pkgs:
     inherit (pkgs.stdenv) hostPlatform;
   in
   lib.flatten [
-    (lib.lists.optional (
-      inputs.py-utils ? packages
-    ) inputs.py-utils.packages.${hostPlatform.system}.default)
+    (lib.lists.optional (inputs ? py-utils) inputs.py-utils.packages.${hostPlatform.system}.default)
 
     localFlake.packages.${hostPlatform.system}.wincompat-rename
   ]

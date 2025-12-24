@@ -48,6 +48,10 @@ pkgs:
   ###############
   pkgs.cryptsetup
   pkgs.gptfdisk # cgdisk
+  pkgs.lvm2
+  pkgs.mdadm
+  pkgs.parted # partprobe
+
   pkgs.btrfs-progs
   pkgs.dosfstools # mkfs.vfat
   pkgs.e2fsprogs

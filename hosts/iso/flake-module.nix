@@ -34,6 +34,9 @@
       (
         { lib, pkgs, ... }:
         {
+          boot.kernelPackages = pkgs.linuxPackages_6_18;
+          zfs.package = pkgs.zfs_2_4;
+
           isoImage = {
             squashfsCompression = "zstd -Xcompression-level 11";
             makeBiosBootable = false;
@@ -42,7 +45,7 @@
           systemd.services.sshd.wantedBy = lib.mkForce [ "multi-user.target" ];
 
           users = {
-            defaultUserShell = pkgs.zsh;
+            defaultUserShell = pkgs.bash;
 
             users.root = {
               openssh.authorizedKeys.keys = [

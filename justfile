@@ -4,7 +4,7 @@ set ignore-comments := true
 
 hostname := `hostname`
 project := `basename $(pwd)`
-system := `nix eval --raw --impure --expr builtins.currentSystem`
+system := `nix --extra-experimental-features nix-command eval --raw --impure --expr builtins.currentSystem`
 
 _:
     @just --list
@@ -243,14 +243,14 @@ _drybuild-nixoses: update-locals
 @deploy-boot host: update-locals
     deploy --keep-result --skip-checks --boot ".#$1"
 
-# nixos-rebuild boot \
-#     --flake ".#$1" \
-#     --target-host "deploy@${1}" \
-#     --sudo
-# nixos-rebuild switch \
-#     --flake ".#$1" \
-#     --target-host "deploy@${1}" \
-#     --sudo
+[group('deploy')]
+[positional-arguments]
+@deploy-manual host ip: update-locals
+    nixos-rebuild switch \
+        --flake ".#$1" \
+        --target-host "deploy@$2" \
+        --sudo
+
 ################################################################################
 # Build recipes
 
@@ -279,7 +279,8 @@ build host=`hostname` flags='': update-locals
                 --out-link "$outlink" \
                 .
         else
-            nix build \
+            nix --extra-experimental-features "nix-command flakes" \
+                build \
                 {{ flags }} \
                 --out-link "$outlink" \
                 --option eval-cache false \

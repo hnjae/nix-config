@@ -1,4 +1,4 @@
-_: {
+{
   sops = {
     gnupg.sshKeyPaths = [ ];
     age = {

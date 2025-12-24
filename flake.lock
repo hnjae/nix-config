@@ -489,30 +489,6 @@
         "type": "github"
       }
     },
-    "py-utils": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": []
-      },
-      "locked": {
-        "lastModified": 1766331864,
-        "narHash": "sha256-Z+M21BLZB9TUp9SpVOzuyrolVEOqiv8OuLi10119s2Q=",
-        "ref": "refs/heads/main",
-        "rev": "96f05fa7ce0712e6f0f22abd9c40a1d402e66761",
-        "revCount": 62,
-        "type": "git",
-        "url": "ssh://git@github.com/hnjae/py-utils"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/hnjae/py-utils"
-      }
-    },
     "quadlet-nix": {
       "locked": {
         "lastModified": 1763141753,
@@ -547,7 +523,6 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nixvirt": "nixvirt",
-        "py-utils": "py-utils",
         "quadlet-nix": "quadlet-nix",
         "rust-overlay": "rust-overlay",
         "sops-nix": "sops-nix",
