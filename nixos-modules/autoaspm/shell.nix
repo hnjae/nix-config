@@ -8,6 +8,8 @@ pkgs.mkShellNoCC {
       python-pkgs: with python-pkgs; [
         ipython
         ruff
+        pytest
+        pytest-mock
       ]
     ))
   ];
