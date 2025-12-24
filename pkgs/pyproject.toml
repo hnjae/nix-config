@@ -13,10 +13,16 @@ ignore = [
   # "RUF100", # unused-noqa
   # "TRY003", # raise-vanilla-args
   "ANN201",  # missing-return-type-undocumented-public-function (간단한 스크립트에서는 자동 추론 사용)
-  "PLR5501",
+  "PLR5501", # collapsible-else-if
 
   # Things that conflicts with other rules
   "S603", # subprocess-without-shell-equals-true", conflicts with S602
+
+  # Acceptable for system tool scripts:
+  "S607",    # subprocess-popen-preexec-fn (using system tools like lspci, setpci)
+  "PLR2004", # magic-value-comparison (clear magic values in context)
+  "FBT001",  # boolean-type-hint-positional-argument (clear boolean parameters)
+  "PERF203", # try-except-in-loop (necessary for error handling per device)
 
   # Folloing rule should be fixed by formatter:
   "COM", # flake8-commas
