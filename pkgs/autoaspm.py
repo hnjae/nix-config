@@ -329,11 +329,10 @@ def patch_device(
             # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
             intersection = supported_aspm.value & requested_mode.value
             if intersection == 0:
-                logger.warning(
-                    "%s: Skipping - Device supports %s, but %s was requested (no overlap)",
+                logger.info(
+                    "%s: ASPM %s supported (skipped)",
                     addr,
                     supported_aspm.name,
-                    requested_mode.name,
                 )
                 return False
             target_aspm = ASPM(intersection)
@@ -358,7 +357,9 @@ def patch_device(
         # If already in target state
         if current_aspm == target_aspm:
             logger.info(
-                "%s: Already has ASPM %s enabled", addr, target_aspm.name
+                "%s: ASPM %s enabled (no change)",
+                addr,
+                target_aspm.name,
             )
             return False
 
@@ -367,7 +368,7 @@ def patch_device(
             requested_mode
         ):
             logger.info(
-                "%s: Skipping - Current %s already includes %s",
+                "%s: ASPM %s enabled (no change, includes %s)",
                 addr,
                 current_aspm.name,
                 requested_mode.name,
@@ -389,11 +390,14 @@ def patch_device(
     else:
         # Verify patch
         if verify_patch(addr, link_control_offset, target_aspm.value):
-            logger.info("%s: Enabled ASPM %s", addr, target_aspm.name)
-        else:
-            logger.warning(
-                "%s: WARNING - Patch applied but verification failed", addr
+            logger.info(
+                "%s: ASPM %s enabled (was %s)",
+                addr,
+                target_aspm.name,
+                current_aspm.name,
             )
+        else:
+            logger.warning("%s: Patch applied but verification failed", addr)
         return True
 
 
@@ -685,15 +689,13 @@ def main():
         logger.info("Requested mode: %s", requested_mode.name)
     else:
         logger.info("Mode: auto (maximum supported per device)")
-    logger.info("-" * 60)
 
     # Process devices
     patched_count, skipped_count, error_count = process_devices(
         devices, requested_mode, args.dry_run
     )
 
-    logger.info("-" * 60)
-    action_word = "Would patch" if args.dry_run else "Patched"
+    action_word = "would patch" if args.dry_run else "patched"
     logger.info(
         "Summary: %s %d, skipped %d, errors %d",
         action_word,
