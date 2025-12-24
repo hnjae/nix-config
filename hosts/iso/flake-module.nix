@@ -30,13 +30,10 @@
           };
         }
       )
-      "${self}/modules/profiles/base-nixos/core/keyboard.nix"
+      "${self}/profiles/base-nixos/core/keyboard.nix"
       (
         { lib, pkgs, ... }:
         {
-          boot.kernelPackages = pkgs.linuxPackages_6_18;
-          zfs.package = pkgs.zfs_2_4;
-
           isoImage = {
             squashfsCompression = "zstd -Xcompression-level 11";
             makeBiosBootable = false;

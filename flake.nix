@@ -163,15 +163,15 @@
 
           ./shared/flake-module.nix
 
-          ./apps/flake-module.nix
           ./hosts/flake-module.nix
+
+          ./apps/flake-module.nix
+          ./hm-modules/flake-module.nix
+          ./nixos-modules/flake-module.nix
           ./packages/flake-module.nix
           ./templates/flake-module.nix
 
-          ./modules/hm-modules/flake-module.nix
-          ./modules/kde/flake-module.nix
-          ./modules/nixos-modules/flake-module.nix
-          ./modules/profiles/flake-module.nix
+          ./profiles/flake-module.nix
         ];
         systems = with flake-utils.lib.system; [
           x86_64-linux
