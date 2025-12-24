@@ -18,7 +18,7 @@ import shutil
 import subprocess
 import sys
 from enum import Enum
-from typing import ClassVar, override
+from typing import ClassVar, final, override
 
 
 class SystemdFormatter(logging.Formatter):
@@ -113,6 +113,7 @@ class DeviceAccessError(ASPMPatcherError):
     """When device access fails."""
 
 
+@final
 class PCIDevice:
     """Represents a PCI device with ASPM support."""
 
@@ -230,7 +231,9 @@ class PCIDevice:
         visited: set[int] = set()  # For detecting circular references
         iterations = 0
 
-        while cap_pointer != 0 and iterations < MAX_CAPABILITY_SEARCH_ITERATIONS:
+        while (
+            cap_pointer != 0 and iterations < MAX_CAPABILITY_SEARCH_ITERATIONS
+        ):
             # Boundary check
             if cap_pointer >= len(config_bytes) - 1:
                 msg = f"Capability pointer {cap_pointer:#x} out of bounds"
@@ -391,7 +394,9 @@ class PCIDevice:
                     current_aspm.name,
                 )
             else:
-                logger.warning("%s: Patch applied but verification failed", self.addr)
+                logger.warning(
+                    "%s: Patch applied but verification failed", self.addr
+                )
             return True
 
 
@@ -551,7 +556,9 @@ def process_device_in_dry_run(
         current_aspm = device.get_current_aspm()
 
         if current_aspm == target:
-            logger.info("%s: would skip - already %s", device_addr, target.name)
+            logger.info(
+                "%s: would skip - already %s", device_addr, target.name
+            )
             return (False, True)
         if requested_mode and current_aspm.includes(requested_mode):
             logger.info(
