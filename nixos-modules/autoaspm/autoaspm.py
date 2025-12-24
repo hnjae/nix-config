@@ -113,6 +113,288 @@ class DeviceAccessError(ASPMPatcherError):
     """When device access fails."""
 
 
+class PCIDevice:
+    """Represents a PCI device with ASPM support."""
+
+    def __init__(self, addr: str) -> None:
+        """Initialize PCIDevice.
+
+        Args:
+            addr: PCI device address (e.g., "01:00.0")
+        """
+        self.addr = addr
+        self._config_bytes: bytearray | None = None
+        self._pcie_cap_offset: int | None = None
+        self._device_name: str | None = None
+
+    def get_name(self) -> str:
+        """Get device name from PCI address."""
+        if self._device_name is None:
+            self._device_name = self._fetch_device_name()
+        return self._device_name
+
+    def _fetch_device_name(self) -> str:
+        """Fetch device name from lspci."""
+        try:
+            result = subprocess.run(
+                ["lspci", "-s", self.addr],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            if result.returncode != 0:
+                msg = f"Failed to get device name for {self.addr}: {result.stderr}"
+                raise DeviceAccessError(msg)
+
+            lines = result.stdout.strip().splitlines()
+            if not lines:
+                msg = f"No device found at {self.addr}"
+                raise DeviceAccessError(msg)
+
+            return lines[0]
+        except subprocess.TimeoutExpired:
+            msg = f"Timeout while getting device name for {self.addr}"
+            raise DeviceAccessError(msg) from None
+
+    def read_config_space(self) -> bytearray:
+        """Read PCI config space from device."""
+        if self._config_bytes is not None:
+            return self._config_bytes
+
+        try:
+            result = subprocess.run(
+                ["lspci", "-s", self.addr, "-xxx"],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+
+            if result.returncode != 0:
+                msg = f"Failed to read config space for {self.addr}: {result.stderr}"
+                raise DeviceAccessError(msg)
+
+            all_bytes = bytearray()
+            device_name = self.get_name()
+
+            for line in result.stdout.splitlines():
+                # Skip device name line, parse only hex dump lines
+                if device_name not in line and ": " in line:
+                    hex_part = line.split(": ", 1)[1]
+                    # Parse hex values separated by spaces
+                    hex_values = hex_part.split()
+                    for hex_val in hex_values:
+                        if len(hex_val) == 2:  # Valid hex byte
+                            try:
+                                all_bytes.append(int(hex_val, 16))
+                            except ValueError:
+                                continue
+
+            if len(all_bytes) >= PCI_CONFIG_SPACE_SIZE:
+                self._config_bytes = all_bytes
+                return all_bytes
+
+            msg = (
+                f"Incomplete config space read for {self.addr}: "
+                f"got {len(all_bytes)} bytes, expected at least {PCI_CONFIG_SPACE_SIZE}"
+            )
+            raise DeviceAccessError(msg)
+
+        except subprocess.TimeoutExpired:
+            msg = f"Timeout while reading config space for {self.addr}"
+            raise DeviceAccessError(msg) from None
+
+    def find_pcie_capability(self) -> int:
+        """Find PCIe Capability location in PCI config space.
+
+        Returns:
+            Start offset of PCIe capability
+
+        Raises:
+            CapabilityNotFoundError: If PCIe capability cannot be found
+        """
+        if self._pcie_cap_offset is not None:
+            return self._pcie_cap_offset
+
+        config_bytes = self.read_config_space()
+
+        # Read capabilities pointer
+        cap_pointer = config_bytes[PCI_CAPABILITY_LIST_POINTER]
+
+        # Validation: capability pointer must be 4-byte aligned
+        if cap_pointer == 0 or cap_pointer % 4 != 0:
+            msg = "Invalid or no capabilities pointer"
+            raise CapabilityNotFoundError(msg)
+
+        visited: set[int] = set()  # For detecting circular references
+        iterations = 0
+
+        while cap_pointer != 0 and iterations < MAX_CAPABILITY_SEARCH_ITERATIONS:
+            # Boundary check
+            if cap_pointer >= len(config_bytes) - 1:
+                msg = f"Capability pointer {cap_pointer:#x} out of bounds"
+                raise CapabilityNotFoundError(msg)
+
+            # Check for circular reference
+            if cap_pointer in visited:
+                msg = f"Circular reference detected at {cap_pointer:#x}"
+                raise CapabilityNotFoundError(msg)
+            visited.add(cap_pointer)
+
+            # Check Capability ID
+            cap_id = config_bytes[cap_pointer]
+
+            if cap_id == PCI_CAP_ID_PCIE:
+                self._pcie_cap_offset = cap_pointer
+                return cap_pointer
+
+            # Move to next capability
+            cap_pointer = config_bytes[cap_pointer + 1]
+            iterations += 1
+
+        msg = "PCIe capability not found in capability list"
+        raise CapabilityNotFoundError(msg)
+
+    def get_link_control_offset(self) -> int:
+        """Calculate Link Control Register offset within PCIe Capability."""
+        pcie_cap_offset = self.find_pcie_capability()
+        return pcie_cap_offset + PCIE_CAP_LINK_CONTROL_OFFSET
+
+    def get_current_aspm(self) -> ASPM:
+        """Get current ASPM state from device."""
+        config_bytes = self.read_config_space()
+        link_control_offset = self.get_link_control_offset()
+        return ASPM(config_bytes[link_control_offset] & 0b11)
+
+    def _patch_byte(self, position: int, value: int) -> None:
+        """Patch a specific byte in PCI config space."""
+        # Invalidate cache after patching
+        self._config_bytes = None
+
+        try:
+            result = subprocess.run(
+                ["setpci", "-s", self.addr, f"{position:#x}.B={value:#x}"],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+
+            if result.returncode != 0:
+                msg = f"Failed to patch {self.addr} at {position:#x}: {result.stderr}"
+                raise DeviceAccessError(msg)
+        except subprocess.TimeoutExpired:
+            msg = f"Timeout while patching {self.addr}"
+            raise DeviceAccessError(msg) from None
+
+    def verify_patch(self, position: int, expected_value: int) -> bool:
+        """Verify that the patch was applied correctly."""
+        # Clear cache to re-read fresh config space
+        self._config_bytes = None
+
+        try:
+            new_bytes = self.read_config_space()
+        except DeviceAccessError:
+            return False
+        else:
+            actual_value = new_bytes[position] & 0b11  # Check only ASPM bits
+            return actual_value == expected_value
+
+    def patch_aspm(
+        self, supported_aspm: ASPM, requested_mode: ASPM | None = None
+    ) -> bool:
+        """Patch ASPM settings for this device.
+
+        Args:
+            supported_aspm: ASPM mode that the device supports
+            requested_mode: ASPM mode requested by user (None = use maximum supported)
+
+        Returns:
+            True if patched successfully, False if already set or skipped
+
+        Raises:
+            ASPMPatcherError: When patching fails
+        """
+        try:
+            # Determine target ASPM mode
+            if requested_mode is None:
+                # If no request, use maximum supported mode
+                target_aspm = supported_aspm
+            else:
+                # Use intersection of requested and supported modes
+                # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
+                intersection = supported_aspm.value & requested_mode.value
+                if intersection == 0:
+                    logger.info(
+                        "%s: ASPM %s supported (skipped)",
+                        self.addr,
+                        supported_aspm.name,
+                    )
+                    return False
+                target_aspm = ASPM(intersection)
+
+            # Read config space
+            endpoint_bytes = self.read_config_space()
+
+            # Calculate Link Control Register location
+            link_control_offset = self.get_link_control_offset()
+
+            # Boundary check
+            if link_control_offset >= len(endpoint_bytes):
+                msg = f"Link Control offset {link_control_offset:#x} out of bounds"
+                raise ASPMPatcherError(msg)
+
+            current_value = endpoint_bytes[link_control_offset]
+            current_aspm = ASPM(current_value & 0b11)
+
+            # If already in target state
+            if current_aspm == target_aspm:
+                logger.info(
+                    "%s: ASPM %s enabled (no change)",
+                    self.addr,
+                    target_aspm.name,
+                )
+                return False
+
+            # If current state already includes requested mode (e.g., L0sL1 when only L1 requested)
+            if requested_mode is not None and current_aspm.includes(
+                requested_mode
+            ):
+                logger.info(
+                    "%s: ASPM %s enabled (no change, includes %s)",
+                    self.addr,
+                    current_aspm.name,
+                    requested_mode.name,
+                )
+                return False
+
+            # Calculate new value: change only lower 2 bits
+            patched_byte = (current_value & ~0b11) | target_aspm.value
+
+            # Apply patch
+            self._patch_byte(link_control_offset, patched_byte)
+
+        except CapabilityNotFoundError as e:
+            logger.warning("%s: Skipping - %s", self.addr, e)
+            return False
+        except DeviceAccessError as e:
+            logger.error("%s: Error - %s", self.addr, e)
+            return False
+        else:
+            # Verify patch
+            if self.verify_patch(link_control_offset, target_aspm.value):
+                logger.info(
+                    "%s: ASPM %s enabled (was %s)",
+                    self.addr,
+                    target_aspm.name,
+                    current_aspm.name,
+                )
+            else:
+                logger.warning("%s: Patch applied but verification failed", self.addr)
+            return True
+
+
 # PCI Capability IDs
 PCI_CAP_ID_PCIE = 0x10  # PCI Express Capability
 
@@ -145,262 +427,6 @@ def run_prerequisites():
         if not shutil.which(tool):
             msg = f"{tool} not detected. Please install pciutils"
             raise ASPMPatcherError(msg)
-
-
-def get_device_name(addr: str) -> str:
-    """Get device name from PCI address."""
-    try:
-        result = subprocess.run(
-            ["lspci", "-s", addr],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        if result.returncode != 0:
-            msg = f"Failed to get device name for {addr}: {result.stderr}"
-            raise DeviceAccessError(msg)
-
-        lines = result.stdout.strip().splitlines()
-        if not lines:
-            msg = f"No device found at {addr}"
-            raise DeviceAccessError(msg)
-
-        return lines[0]
-    except subprocess.TimeoutExpired:
-        msg = f"Timeout while getting device name for {addr}"
-        raise DeviceAccessError(msg) from None
-
-
-def read_all_bytes(device: str) -> bytearray:
-    """Read PCI config space from device."""
-    try:
-        result = subprocess.run(
-            ["lspci", "-s", device, "-xxx"],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-
-        if result.returncode != 0:
-            msg = f"Failed to read config space for {device}: {result.stderr}"
-            raise DeviceAccessError(msg)
-
-        all_bytes = bytearray()
-        device_name = get_device_name(device)
-
-        for line in result.stdout.splitlines():
-            # Skip device name line, parse only hex dump lines
-            if device_name not in line and ": " in line:
-                hex_part = line.split(": ", 1)[1]
-                # Parse hex values separated by spaces
-                hex_values = hex_part.split()
-                for hex_val in hex_values:
-                    if len(hex_val) == 2:  # Valid hex byte
-                        try:
-                            all_bytes.append(int(hex_val, 16))
-                        except ValueError:
-                            continue
-
-        if len(all_bytes) >= PCI_CONFIG_SPACE_SIZE:
-            return all_bytes
-
-        msg = (
-            f"Incomplete config space read for {device}: "
-            f"got {len(all_bytes)} bytes, expected at least {PCI_CONFIG_SPACE_SIZE}"
-        )
-        raise DeviceAccessError(msg)
-
-    except subprocess.TimeoutExpired:
-        msg = f"Timeout while reading config space for {device}"
-        raise DeviceAccessError(msg) from None
-
-
-def find_pcie_capability(config_bytes: bytearray) -> int:
-    """Find PCIe Capability location in PCI config space.
-
-    PCI Capability List structure:
-    - config_bytes[0x34]: Pointer to first capability
-    - Each capability structure:
-      - [offset + 0]: Capability ID
-      - [offset + 1]: Pointer to next capability (0 if end)
-      - [offset + 2...]: Capability-specific data
-
-    Returns:
-        Start offset of PCIe capability
-
-    Raises:
-        CapabilityNotFoundError: If PCIe capability cannot be found
-    """
-    # Read capabilities pointer
-    cap_pointer = config_bytes[PCI_CAPABILITY_LIST_POINTER]
-
-    # Validation: capability pointer must be 4-byte aligned
-    if cap_pointer == 0 or cap_pointer % 4 != 0:
-        msg = "Invalid or no capabilities pointer"
-        raise CapabilityNotFoundError(msg)
-
-    visited: set[int] = set()  # For detecting circular references
-    iterations = 0
-
-    while cap_pointer != 0 and iterations < MAX_CAPABILITY_SEARCH_ITERATIONS:
-        # Boundary check
-        if cap_pointer >= len(config_bytes) - 1:
-            msg = f"Capability pointer {cap_pointer:#x} out of bounds"
-            raise CapabilityNotFoundError(msg)
-
-        # Check for circular reference
-        if cap_pointer in visited:
-            msg = f"Circular reference detected at {cap_pointer:#x}"
-            raise CapabilityNotFoundError(msg)
-        visited.add(cap_pointer)
-
-        # Check Capability ID
-        cap_id = config_bytes[cap_pointer]
-
-        if cap_id == PCI_CAP_ID_PCIE:
-            return cap_pointer
-
-        # Move to next capability
-        cap_pointer = config_bytes[cap_pointer + 1]
-        iterations += 1
-
-    msg = "PCIe capability not found in capability list"
-    raise CapabilityNotFoundError(msg)
-
-
-def get_link_control_offset(pcie_cap_offset: int) -> int:
-    """Calculate Link Control Register offset within PCIe Capability."""
-    return pcie_cap_offset + PCIE_CAP_LINK_CONTROL_OFFSET
-
-
-def patch_byte(device: str, position: int, value: int) -> None:
-    """Patch a specific byte in PCI config space."""
-    try:
-        result = subprocess.run(
-            ["setpci", "-s", device, f"{position:#x}.B={value:#x}"],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-
-        if result.returncode != 0:
-            msg = f"Failed to patch {device} at {position:#x}: {result.stderr}"
-            raise DeviceAccessError(msg)
-    except subprocess.TimeoutExpired:
-        msg = f"Timeout while patching {device}"
-        raise DeviceAccessError(msg) from None
-
-
-def verify_patch(device: str, position: int, expected_value: int) -> bool:
-    """Verify that the patch was applied correctly."""
-    try:
-        new_bytes = read_all_bytes(device)
-    except DeviceAccessError:
-        return False
-    else:
-        actual_value = new_bytes[position] & 0b11  # Check only ASPM bits
-        return actual_value == expected_value
-
-
-def patch_device(
-    addr: str, supported_aspm: ASPM, requested_mode: ASPM | None = None
-) -> bool:
-    """Patch ASPM settings for a device.
-
-    Args:
-        addr: PCI address
-        supported_aspm: ASPM mode that the device supports
-        requested_mode: ASPM mode requested by user (None = use maximum supported)
-
-    Returns:
-        True if patched successfully, False if already set or skipped
-
-    Raises:
-        ASPMPatcherError: When patching fails
-    """
-    try:
-        # Determine target ASPM mode
-        if requested_mode is None:
-            # If no request, use maximum supported mode
-            target_aspm = supported_aspm
-        else:
-            # Use intersection of requested and supported modes
-            # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
-            intersection = supported_aspm.value & requested_mode.value
-            if intersection == 0:
-                logger.info(
-                    "%s: ASPM %s supported (skipped)",
-                    addr,
-                    supported_aspm.name,
-                )
-                return False
-            target_aspm = ASPM(intersection)
-
-        # Read config space
-        endpoint_bytes = read_all_bytes(addr)
-
-        # Find PCIe capability
-        pcie_cap_offset = find_pcie_capability(endpoint_bytes)
-
-        # Calculate Link Control Register location
-        link_control_offset = get_link_control_offset(pcie_cap_offset)
-
-        # Boundary check
-        if link_control_offset >= len(endpoint_bytes):
-            msg = f"Link Control offset {link_control_offset:#x} out of bounds"
-            raise ASPMPatcherError(msg)
-
-        current_value = endpoint_bytes[link_control_offset]
-        current_aspm = ASPM(current_value & 0b11)
-
-        # If already in target state
-        if current_aspm == target_aspm:
-            logger.info(
-                "%s: ASPM %s enabled (no change)",
-                addr,
-                target_aspm.name,
-            )
-            return False
-
-        # If current state already includes requested mode (e.g., L0sL1 when only L1 requested)
-        if requested_mode is not None and current_aspm.includes(
-            requested_mode
-        ):
-            logger.info(
-                "%s: ASPM %s enabled (no change, includes %s)",
-                addr,
-                current_aspm.name,
-                requested_mode.name,
-            )
-            return False
-
-        # Calculate new value: change only lower 2 bits
-        patched_byte = (current_value & ~0b11) | target_aspm.value
-
-        # Apply patch
-        patch_byte(addr, link_control_offset, patched_byte)
-
-    except CapabilityNotFoundError as e:
-        logger.warning("%s: Skipping - %s", addr, e)
-        return False
-    except DeviceAccessError as e:
-        logger.error("%s: Error - %s", addr, e)
-        return False
-    else:
-        # Verify patch
-        if verify_patch(addr, link_control_offset, target_aspm.value):
-            logger.info(
-                "%s: ASPM %s enabled (was %s)",
-                addr,
-                target_aspm.name,
-                current_aspm.name,
-            )
-        else:
-            logger.warning("%s: Patch applied but verification failed", addr)
-        return True
 
 
 def list_supported_devices() -> dict[str, ASPM]:
@@ -466,41 +492,45 @@ def handle_list_mode(
     devices: dict[str, ASPM], *, verbose: bool = False
 ) -> None:
     """Handle --list mode to display ASPM-capable devices."""
-    for device, supported_aspm in devices.items():
+    for device_addr, supported_aspm in devices.items():
+        device = PCIDevice(device_addr)
+
         # Read current ASPM state
         try:
-            endpoint_bytes = read_all_bytes(device)
-            pcie_cap_offset = find_pcie_capability(endpoint_bytes)
-            link_control_offset = get_link_control_offset(pcie_cap_offset)
-            current_aspm = ASPM(endpoint_bytes[link_control_offset] & 0b11)
+            current_aspm = device.get_current_aspm()
             current_str = current_aspm.name
         except (CapabilityNotFoundError, DeviceAccessError):
             current_str = "unknown"
 
         # Print device info
         print(  # noqa: T201
-            f"{device}: current={current_str}, supports={supported_aspm.name}"
+            f"{device_addr}: current={current_str}, supports={supported_aspm.name}"
         )
 
         # Print detailed device name only in verbose mode
         if verbose:
-            device_name = get_device_name(device)
-            print(f"  {device_name}")  # noqa: T201
+            try:
+                device_name = device.get_name()
+                print(f"  {device_name}")  # noqa: T201
+            except DeviceAccessError:
+                pass
 
 
 def process_device_in_dry_run(
-    device: str, supported_aspm: ASPM, requested_mode: ASPM | None
+    device_addr: str, supported_aspm: ASPM, requested_mode: ASPM | None
 ) -> tuple[bool, bool]:
     """Process a device in dry-run mode.
 
     Args:
-        device: PCI device address
+        device_addr: PCI device address
         supported_aspm: ASPM mode the device supports
         requested_mode: Requested ASPM mode (None = auto)
 
     Returns:
         Tuple of (would_patch, would_skip) booleans
     """
+    device = PCIDevice(device_addr)
+
     # Determine target mode
     if requested_mode is None:
         target = supported_aspm
@@ -510,7 +540,7 @@ def process_device_in_dry_run(
         if intersection == 0:
             logger.info(
                 "%s: would skip - doesn't support %s (no overlap)",
-                device,
+                device_addr,
                 requested_mode.name,
             )
             return (False, True)
@@ -518,29 +548,26 @@ def process_device_in_dry_run(
 
     # Read config space to check current state
     try:
-        endpoint_bytes = read_all_bytes(device)
-        pcie_cap_offset = find_pcie_capability(endpoint_bytes)
-        link_control_offset = get_link_control_offset(pcie_cap_offset)
-        current_aspm = ASPM(endpoint_bytes[link_control_offset] & 0b11)
+        current_aspm = device.get_current_aspm()
 
         if current_aspm == target:
-            logger.info("%s: would skip - already %s", device, target.name)
+            logger.info("%s: would skip - already %s", device_addr, target.name)
             return (False, True)
         if requested_mode and current_aspm.includes(requested_mode):
             logger.info(
                 "%s: would skip - %s already includes %s",
-                device,
+                device_addr,
                 current_aspm.name,
                 requested_mode.name,
             )
             return (False, True)
     except (CapabilityNotFoundError, DeviceAccessError) as e:
-        logger.info("%s: would skip - %s", device, e)
+        logger.info("%s: would skip - %s", device_addr, e)
         return (False, True)
     else:
         logger.info(
             "%s: would enable %s (current: %s)",
-            device,
+            device_addr,
             target.name,
             current_aspm.name,
         )
@@ -566,11 +593,11 @@ def process_devices(
     skipped_count = 0
     error_count = 0
 
-    for device, supported_aspm in devices.items():
+    for device_addr, supported_aspm in devices.items():
         try:
             if dry_run:
                 would_patch, would_skip = process_device_in_dry_run(
-                    device, supported_aspm, requested_mode
+                    device_addr, supported_aspm, requested_mode
                 )
                 if would_patch:
                     patched_count += 1
@@ -578,12 +605,13 @@ def process_devices(
                     skipped_count += 1
             else:
                 # Actually patch
-                if patch_device(device, supported_aspm, requested_mode):
+                device = PCIDevice(device_addr)
+                if device.patch_aspm(supported_aspm, requested_mode):
                     patched_count += 1
                 else:
                     skipped_count += 1
         except ASPMPatcherError as e:
-            logger.error("%s: Failed - %s", device, e)
+            logger.error("%s: Failed - %s", device_addr, e)
             error_count += 1
 
     return (patched_count, skipped_count, error_count)
