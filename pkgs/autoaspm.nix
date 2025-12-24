@@ -10,22 +10,26 @@ stdenv.mkDerivation {
   pname = "autoaspm";
   version = "0.1";
 
-  src = ./autoaspm.py;
+  src = ./.;
 
   nativeBuildInputs = [ makeWrapper ];
 
   buildInputs = [ pciutils ];
 
-  dontUnpack = true;
-
   installPhase = ''
     runHook preInstall
 
-    install -Dm755 $src $out/libexec/autoaspm/autoaspm.py
+    install -Dm755 autoaspm.py $out/libexec/autoaspm/autoaspm.py
 
     makeWrapper ${python3.interpreter} "$out/bin/autoaspm" \
       --add-flags "$out/libexec/autoaspm/autoaspm.py" \
       --prefix PATH : ${lib.makeBinPath [ pciutils ]}
+
+    # Install shell completions
+    install -Dm644 completions/autoaspm.bash $out/share/bash-completion/completions/autoaspm
+    install -Dm644 completions/autoaspm.fish $out/share/fish/vendor_completions.d/autoaspm.fish
+    install -Dm644 completions/_autoaspm $out/share/zsh/site-functions/_autoaspm
+    install -Dm644 completions/autoaspm.nu $out/share/nu/vendor/autocompletions/autoaspm.nu
 
     runHook postInstall
   '';
