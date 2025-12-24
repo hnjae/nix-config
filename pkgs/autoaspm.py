@@ -449,12 +449,26 @@ def list_supported_devices() -> dict[str, ASPM]:
     return aspm_devices
 
 
-def handle_list_mode(devices: dict[str, ASPM]) -> None:
+def handle_list_mode(devices: dict[str, ASPM], *, verbose: bool = False) -> None:
     """Handle --list mode to display ASPM-capable devices."""
     for device, supported_aspm in devices.items():
-        device_name = get_device_name(device)
-        print(f"{device}: supports {supported_aspm.name}")  # noqa: T201
-        print(f"  {device_name}")  # noqa: T201
+        # Read current ASPM state
+        try:
+            endpoint_bytes = read_all_bytes(device)
+            pcie_cap_offset = find_pcie_capability(endpoint_bytes)
+            link_control_offset = get_link_control_offset(pcie_cap_offset)
+            current_aspm = ASPM(endpoint_bytes[link_control_offset] & 0b11)
+            current_str = current_aspm.name
+        except (CapabilityNotFoundError, DeviceAccessError):
+            current_str = "unknown"
+
+        # Print device info
+        print(f"{device}: current={current_str}, supports={supported_aspm.name}")  # noqa: T201
+
+        # Print detailed device name only in verbose mode
+        if verbose:
+            device_name = get_device_name(device)
+            print(f"  {device_name}")  # noqa: T201
 
 
 def process_device_in_dry_run(
@@ -558,6 +572,7 @@ class ArgsNamespace(argparse.Namespace):
     mode: str | None = None
     list_only: bool = False
     dry_run: bool = False
+    verbose: bool = False
 
 
 def parse_args() -> ArgsNamespace:
@@ -567,11 +582,11 @@ def parse_args() -> ArgsNamespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s                  Enable maximum supported ASPM on all devices
+  %(prog)s                  List ASPM-capable devices (default)
   %(prog)s --mode l0s       Enable L0s only on devices that support it
   %(prog)s --mode l1        Enable L1 only on devices that support it
   %(prog)s --mode l0sl1     Enable L0s+L1 on devices that support both
-  %(prog)s --list           List ASPM-capable devices without patching
+  %(prog)s --list --verbose List devices with detailed information
 
 Notes:
   - If a device is already in L0sL1 state and you request L1 only,
@@ -604,6 +619,13 @@ Notes:
         help="Show what would be done without actually patching",
     )
 
+    _ = parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Show detailed device information",
+    )
+
     return parser.parse_args(namespace=ArgsNamespace())
 
 
@@ -627,6 +649,15 @@ def main():
         logger.info("No ASPM-capable devices found")
         return 0
 
+    # If no mode and no dry-run specified, default to list mode
+    if not args.mode and not args.dry_run:
+        args.list_only = True
+
+    # --list option: print list only
+    if args.list_only:
+        handle_list_mode(devices, args.verbose)
+        return 0
+
     # Parse requested ASPM mode
     requested_mode: ASPM | None = None
     if args.mode:
@@ -638,11 +669,6 @@ def main():
     else:
         logger.info("Mode: auto (maximum supported per device)")
     logger.info("-" * 60)
-
-    # --list option: print list only
-    if args.list_only:
-        handle_list_mode(devices)
-        return 0
 
     # Process devices
     patched_count, skipped_count, error_count = process_devices(
