@@ -638,7 +638,6 @@ Notes:
 
     _ = parser.add_argument(
         "--run",
-        "-r",
         action="store_true",
         help="Actually apply patches (default is dry-run when --mode is specified)",
     )
