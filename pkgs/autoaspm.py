@@ -655,7 +655,7 @@ def main():
 
     # --list option: print list only
     if args.list_only:
-        handle_list_mode(devices, args.verbose)
+        handle_list_mode(devices, verbose=args.verbose)
         return 0
 
     # Parse requested ASPM mode
