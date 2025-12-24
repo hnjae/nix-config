@@ -52,15 +52,12 @@ class ASPMPatcherError(Exception):
     """Error related to ASPM patcher"""
 
 
-
 class CapabilityNotFoundError(ASPMPatcherError):
     """When PCIe Capability cannot be found"""
 
 
-
 class DeviceAccessError(ASPMPatcherError):
     """When device access fails"""
-
 
 
 # PCI Capability IDs
@@ -92,7 +89,8 @@ def run_prerequisites():
     for tool in ["lspci", "setpci"]:
         result = subprocess.run(
             ["which", tool],
-            check=False, stdout=subprocess.DEVNULL,
+            check=False,
+            stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
         if result.returncode != 0:
@@ -105,7 +103,11 @@ def get_device_name(addr: str) -> str:
     """Get device name from PCI address"""
     try:
         result = subprocess.run(
-            ["lspci", "-s", addr], check=False, capture_output=True, text=True, timeout=10
+            ["lspci", "-s", addr],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
         )
         if result.returncode != 0:
             raise DeviceAccessError(
@@ -128,7 +130,8 @@ def read_all_bytes(device: str) -> bytearray:
     try:
         result = subprocess.run(
             ["lspci", "-s", device, "-xxx"],
-            check=False, capture_output=True,
+            check=False,
+            capture_output=True,
             text=True,
             timeout=10,
         )
@@ -234,7 +237,8 @@ def patch_byte(device: str, position: int, value: int) -> None:
     try:
         result = subprocess.run(
             ["setpci", "-s", device, f"{position:#x}.B={value:#x}"],
-            check=False, capture_output=True,
+            check=False,
+            capture_output=True,
             text=True,
             timeout=10,
         )
@@ -348,7 +352,11 @@ def list_supported_devices() -> dict[str, ASPM]:
 
     try:
         result = subprocess.run(
-            ["lspci", "-vv"], check=False, capture_output=True, text=True, timeout=30
+            ["lspci", "-vv"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
 
         if result.returncode != 0:
