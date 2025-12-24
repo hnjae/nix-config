@@ -9,14 +9,14 @@ _autoaspm() {
 
     case "${prev}" in
         --mode|-m)
-            COMPREPLY=( $(compgen -W "l0s l1 l0sl1 disabled" -- ${cur}) )
+            mapfile -t COMPREPLY < <(compgen -W "l0s l1 l0sl1 disabled" -- "${cur}")
             return 0
             ;;
         *)
             ;;
     esac
 
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
     return 0
 }
 
