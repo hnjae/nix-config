@@ -9,7 +9,6 @@ ignore = [
   "ERA", # eradicate, e.g. ERA001 - commented-out-code
   "FIX", # flake8-fixme
   "TD",  # flake8-todos
-  "T20", # flake8-print
   # "RUF100", # unused-noqa
   # "TRY003", # raise-vanilla-args
   "ANN201",  # missing-return-type-undocumented-public-function (간단한 스크립트에서는 자동 추론 사용)

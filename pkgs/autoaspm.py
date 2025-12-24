@@ -9,12 +9,57 @@ Re-re-re-written to improve usability by hnjae
 """
 
 import argparse
+import logging
 import os
 import platform
 import re
 import shutil
 import subprocess
 from enum import Enum
+from typing import ClassVar
+
+
+class SystemdFormatter(logging.Formatter):
+    """Formatter for systemd journal with syslog priority prefixes."""
+
+    # Map Python logging levels to syslog priorities
+    LEVEL_MAP: ClassVar[dict[int, int]] = {
+        logging.CRITICAL: 3,  # Error
+        logging.ERROR: 3,  # Error
+        logging.WARNING: 4,  # Warning
+        logging.INFO: 6,  # Informational
+        logging.DEBUG: 7,  # Debug
+    }
+
+    def format(self, record: logging.LogRecord) -> str:
+        """Format log record with syslog priority prefix."""
+        priority = self.LEVEL_MAP.get(record.levelno, 6)
+        return f"<{priority}>{record.getMessage()}"
+
+
+def setup_logger() -> logging.Logger:
+    """Set up logger with systemd support."""
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+
+    # Detect systemd environment
+    is_systemd = "JOURNAL_STREAM" in os.environ
+
+    # Create custom formatter
+    if is_systemd:
+        formatter = SystemdFormatter()
+    else:
+        formatter = logging.Formatter("%(levelname)s: %(message)s")
+
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    return logger
+
+
+# Initialize logger
+logger = setup_logger()
 
 
 class ASPM(Enum):
@@ -281,8 +326,11 @@ def patch_device(
         else:
             # Check if device supports the requested mode
             if not supported_aspm.supports(requested_mode):
-                print(
-                    f"{addr}: Skipping - Device supports {supported_aspm.name}, but {requested_mode.name} was requested"
+                logger.warning(
+                    "%s: Skipping - Device supports %s, but %s was requested",
+                    addr,
+                    supported_aspm.name,
+                    requested_mode.name,
                 )
                 return False
             target_aspm = requested_mode
@@ -306,15 +354,18 @@ def patch_device(
 
         # If already in target state
         if current_aspm == target_aspm:
-            print(f"{addr}: Already has ASPM {target_aspm.name} enabled")
+            logger.info("%s: Already has ASPM %s enabled", addr, target_aspm.name)
             return False
 
         # If current state already includes requested mode (e.g., L0sL1 when only L1 requested)
         if requested_mode is not None and current_aspm.includes(
             requested_mode
         ):
-            print(
-                f"{addr}: Skipping - Current {current_aspm.name} already includes {requested_mode.name}"
+            logger.info(
+                "%s: Skipping - Current %s already includes %s",
+                addr,
+                current_aspm.name,
+                requested_mode.name,
             )
             return False
 
@@ -325,17 +376,17 @@ def patch_device(
         patch_byte(addr, link_control_offset, patched_byte)
 
     except CapabilityNotFoundError as e:
-        print(f"{addr}: Skipping - {e}")
+        logger.warning("%s: Skipping - %s", addr, e)
         return False
     except DeviceAccessError as e:
-        print(f"{addr}: Error - {e}")
+        logger.error("%s: Error - %s", addr, e)  # noqa: TRY400
         return False
     else:
         # Verify patch
         if verify_patch(addr, link_control_offset, target_aspm.value):
-            print(f"{addr}: Enabled ASPM {target_aspm.name}")
+            logger.info("%s: Enabled ASPM %s", addr, target_aspm.name)
         else:
-            print(f"{addr}: WARNING - Patch applied but verification failed")
+            logger.warning("%s: WARNING - Patch applied but verification failed", addr)
         return True
 
 
@@ -388,8 +439,10 @@ def list_supported_devices() -> dict[str, ASPM]:
                 aspm_mode = ASPM[aspm_mode_str]
                 aspm_devices[device_addr] = aspm_mode
             except KeyError:
-                print(
-                    f"{device_addr}: Unknown ASPM mode '{aspm_support[0]}', skipping"
+                logger.warning(
+                    "%s: Unknown ASPM mode '%s', skipping",
+                    device_addr,
+                    aspm_support[0],
                 )
                 continue
 
@@ -400,8 +453,8 @@ def handle_list_mode(devices: dict[str, ASPM]) -> None:
     """Handle --list mode to display ASPM-capable devices."""
     for device, supported_aspm in devices.items():
         device_name = get_device_name(device)
-        print(f"{device}: supports {supported_aspm.name}")
-        print(f"  {device_name}")
+        logger.info("%s: supports %s", device, supported_aspm.name)
+        logger.info("  %s", device_name)
 
 
 def process_device_in_dry_run(
@@ -421,7 +474,7 @@ def process_device_in_dry_run(
     if requested_mode is None:
         target = supported_aspm
     elif not supported_aspm.supports(requested_mode):
-        print(f"{device}: would skip - doesn't support {requested_mode.name}")
+        logger.info("%s: would skip - doesn't support %s", device, requested_mode.name)
         return (False, True)
     else:
         target = requested_mode
@@ -434,19 +487,25 @@ def process_device_in_dry_run(
         current_aspm = ASPM(endpoint_bytes[link_control_offset] & 0b11)
 
         if current_aspm == target:
-            print(f"{device}: would skip - already {target.name}")
+            logger.info("%s: would skip - already %s", device, target.name)
             return (False, True)
         if requested_mode and current_aspm.includes(requested_mode):
-            print(
-                f"{device}: would skip - {current_aspm.name} already includes {requested_mode.name}"
+            logger.info(
+                "%s: would skip - %s already includes %s",
+                device,
+                current_aspm.name,
+                requested_mode.name,
             )
             return (False, True)
     except (CapabilityNotFoundError, DeviceAccessError) as e:
-        print(f"{device}: would skip - {e}")
+        logger.info("%s: would skip - %s", device, e)
         return (False, True)
     else:
-        print(
-            f"{device}: would enable {target.name} (current: {current_aspm.name})"
+        logger.info(
+            "%s: would enable %s (current: %s)",
+            device,
+            target.name,
+            current_aspm.name,
         )
         return (True, False)
 
@@ -487,7 +546,7 @@ def process_devices(
                 else:
                     skipped_count += 1
         except ASPMPatcherError as e:
-            print(f"{device}: Failed - {e}")
+            logger.error("%s: Failed - %s", device, e)  # noqa: TRY400
             error_count += 1
 
     return (patched_count, skipped_count, error_count)
@@ -555,17 +614,17 @@ def main():
     try:
         run_prerequisites()
     except (OSError, PermissionError, ASPMPatcherError) as e:
-        print(f"Error: {e}")
+        logger.error("%s", e)  # noqa: TRY400
         return 1
 
     try:
         devices = list_supported_devices()
     except ASPMPatcherError as e:
-        print(f"Error listing devices: {e}")
+        logger.error("Error listing devices: %s", e)  # noqa: TRY400
         return 1
 
     if not devices:
-        print("No ASPM-capable devices found")
+        logger.info("No ASPM-capable devices found")
         return 0
 
     # Parse requested ASPM mode
@@ -573,12 +632,12 @@ def main():
     if args.mode:
         requested_mode = ASPM.from_string(args.mode)
 
-    print(f"Found {len(devices)} ASPM-capable device(s)")
+    logger.info("Found %d ASPM-capable device(s)", len(devices))
     if requested_mode:
-        print(f"Requested mode: {requested_mode.name}")
+        logger.info("Requested mode: %s", requested_mode.name)
     else:
-        print("Mode: auto (maximum supported per device)")
-    print("-" * 60)
+        logger.info("Mode: auto (maximum supported per device)")
+    logger.info("-" * 60)
 
     # --list option: print list only
     if args.list_only:
@@ -590,10 +649,14 @@ def main():
         devices, requested_mode, args.dry_run
     )
 
-    print("-" * 60)
+    logger.info("-" * 60)
     action_word = "Would patch" if args.dry_run else "Patched"
-    print(
-        f"Summary: {action_word} {patched_count}, skipped {skipped_count}, errors {error_count}"
+    logger.info(
+        "Summary: %s %d, skipped %d, errors %d",
+        action_word,
+        patched_count,
+        skipped_count,
+        error_count,
     )
 
     return 0 if error_count == 0 else 1
