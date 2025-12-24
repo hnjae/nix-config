@@ -324,16 +324,18 @@ def patch_device(
             # If no request, use maximum supported mode
             target_aspm = supported_aspm
         else:
-            # Check if device supports the requested mode
-            if not supported_aspm.supports(requested_mode):
+            # Use intersection of requested and supported modes
+            # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
+            intersection = supported_aspm.value & requested_mode.value
+            if intersection == 0:
                 logger.warning(
-                    "%s: Skipping - Device supports %s, but %s was requested",
+                    "%s: Skipping - Device supports %s, but %s was requested (no overlap)",
                     addr,
                     supported_aspm.name,
                     requested_mode.name,
                 )
                 return False
-            target_aspm = requested_mode
+            target_aspm = ASPM(intersection)
 
         # Read config space
         endpoint_bytes = read_all_bytes(addr)
@@ -487,11 +489,17 @@ def process_device_in_dry_run(
     # Determine target mode
     if requested_mode is None:
         target = supported_aspm
-    elif not supported_aspm.supports(requested_mode):
-        logger.info("%s: would skip - doesn't support %s", device, requested_mode.name)
-        return (False, True)
     else:
-        target = requested_mode
+        # Use intersection of requested and supported modes
+        intersection = supported_aspm.value & requested_mode.value
+        if intersection == 0:
+            logger.info(
+                "%s: would skip - doesn't support %s (no overlap)",
+                device,
+                requested_mode.name,
+            )
+            return (False, True)
+        target = ASPM(intersection)
 
     # Read config space to check current state
     try:
