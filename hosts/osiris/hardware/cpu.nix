@@ -27,16 +27,8 @@
   ############################
   # AMD CPU Power Management #
   ############################
-  boot.kernelParams = [ "amd_pstate=active" ];
+  boot.kernelParams = [ "amd_pstate=passive" ];
 
   # Get available governor: cpupower frequency-info
-  powerManagement.cpuFreqGovernor = "performance";
-
-  # Current settings: cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference
-  # Get available settings: cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_available_preferences
-  services.auto-epp = {
-    enable = true;
-    settings.Settings.epp_state_for_BAT = "performance";
-    settings.Settings.epp_state_for_AC = "performance";
-  };
+  powerManagement.cpuFreqGovernor = "schedutil";
 }
