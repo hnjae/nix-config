@@ -193,7 +193,7 @@ def find_pcie_capability(config_bytes: bytearray) -> int:
         msg = "Invalid or no capabilities pointer"
         raise CapabilityNotFoundError(msg)
 
-    visited = set()  # For detecting circular references
+    visited: set[int] = set()  # For detecting circular references
     iterations = 0
 
     while cap_pointer != 0 and iterations < MAX_CAPABILITY_SEARCH_ITERATIONS:
@@ -282,8 +282,7 @@ def patch_device(
             # Check if device supports the requested mode
             if not supported_aspm.supports(requested_mode):
                 print(
-                    f"{addr}: Skipping - Device supports {supported_aspm.name}, "
-                    f"but {requested_mode.name} was requested"
+                    f"{addr}: Skipping - Device supports {supported_aspm.name}, but {requested_mode.name} was requested"
                 )
                 return False
             target_aspm = requested_mode
@@ -368,7 +367,7 @@ def list_supported_devices() -> dict[str, ASPM]:
         x + y for x, y in zip(lspci_arr[0::2], lspci_arr[1::2], strict=True)
     ]
 
-    aspm_devices = {}
+    aspm_devices: dict[str, ASPM] = {}
 
     for dev in lspci_arr:
         addr_match = re.search(pcie_addr_regex, dev)
@@ -382,7 +381,7 @@ def list_supported_devices() -> dict[str, ASPM]:
             continue
 
         # Parse supported ASPM modes
-        aspm_support = re.findall(r"ASPM (L[L0-1s ]*),", dev)
+        aspm_support: list[str] = re.findall(r"ASPM (L[L0-1s ]*),", dev)
         if aspm_support:
             try:
                 aspm_mode_str = aspm_support[0].replace(" ", "")
@@ -494,7 +493,15 @@ def process_devices(
     return (patched_count, skipped_count, error_count)
 
 
-def parse_args() -> argparse.Namespace:
+class ArgsNamespace(argparse.Namespace):
+    """Typed Namespace for parsed command-line arguments."""
+
+    mode: str | None = None
+    list_only: bool = False
+    dry_run: bool = False
+
+
+def parse_args() -> ArgsNamespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
         description="Enable ASPM (Active State Power Management) on PCIe devices",
@@ -538,7 +545,7 @@ Notes:
         help="Show what would be done without actually patching",
     )
 
-    return parser.parse_args()
+    return parser.parse_args(namespace=ArgsNamespace())
 
 
 def main():
