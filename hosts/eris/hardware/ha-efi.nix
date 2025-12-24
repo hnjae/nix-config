@@ -1,6 +1,11 @@
 # NOTE: `efibootmgr` 안써도, UEFI 가 알아서 인식 <2025-12-24>
 # TODO: `/boot` 이 업데이트되는 모든 조건에서 이 스크립트가 실행되는지?
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  self,
+  ...
+}:
 let
   serviceName = "sync-esp";
   script = pkgs.writeScript serviceName ''
@@ -45,8 +50,20 @@ in
 {
   systemd.services."${serviceName}" = {
     description = "Sync EFI system partition for redundancy";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "local-fs.target" ];
+    wantedBy = [
+      "multi-user.target"
+      "nixos-generation-gc.service"
+    ];
+    after = [
+      "nixos-generation-gc.service"
+      "local-fs.target"
+      (self.shared.lib.mountpathToUnit "/boot_fallback_a")
+      (self.shared.lib.mountpathToUnit "/boot_fallback_b")
+    ];
+    wants = [
+      (self.shared.lib.mountpathToUnit "/boot_fallback_a")
+      (self.shared.lib.mountpathToUnit "/boot_fallback_b")
+    ];
     unitConfig = {
       RequiresMountsFor = "/boot";
     };
