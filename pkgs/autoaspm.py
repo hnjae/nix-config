@@ -453,8 +453,8 @@ def handle_list_mode(devices: dict[str, ASPM]) -> None:
     """Handle --list mode to display ASPM-capable devices."""
     for device, supported_aspm in devices.items():
         device_name = get_device_name(device)
-        logger.info("%s: supports %s", device, supported_aspm.name)
-        logger.info("  %s", device_name)
+        print(f"{device}: supports {supported_aspm.name}")  # noqa: T201
+        print(f"  {device_name}")  # noqa: T201
 
 
 def process_device_in_dry_run(
