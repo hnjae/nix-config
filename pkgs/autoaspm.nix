@@ -3,7 +3,6 @@
   stdenv,
   makeWrapper,
   pciutils,
-  which,
   python3,
 }:
 
@@ -15,10 +14,7 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ makeWrapper ];
 
-  buildInputs = [
-    pciutils
-    which
-  ];
+  buildInputs = [ pciutils ];
 
   dontUnpack = true;
 
@@ -29,12 +25,7 @@ stdenv.mkDerivation {
 
     makeWrapper ${python3.interpreter} "$out/bin/autoaspm" \
       --add-flags "$out/libexec/autoaspm/autoaspm.py" \
-      --prefix PATH : ${
-        lib.makeBinPath [
-          pciutils
-          which
-        ]
-      }
+      --prefix PATH : ${lib.makeBinPath [ pciutils ]}
 
     runHook postInstall
   '';
