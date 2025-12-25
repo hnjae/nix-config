@@ -24,6 +24,12 @@
         "server smb encrypt" = "off"; # use wireguard only
         # "server services" = "-dns -dnsupdate";
       };
+      home = {
+        path = "/home/hnjae";
+        "read only" = false;
+        "guest ok" = false;
+        "browsable" = true;
+      };
     };
   };
 
