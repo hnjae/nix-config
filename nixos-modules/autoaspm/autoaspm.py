@@ -558,17 +558,17 @@ def handle_list_mode(
                 pass
 
 
-def process_devices(
+def handle_patch_mode(
     devices: Iterable[PCIDevice],
     requested_mode: ASPM | None,
     dry_run: bool,
 ) -> tuple[int, int, int]:
-    """Process devices for patching.
+    """Handle patch mode to patch or simulate ASPM settings on devices.
 
     Args:
-        devices: Iterable of PCIDevice objects to process
-        requested_mode: Requested ASPM mode (None = auto)
-        dry_run: Whether this is a dry-run
+        devices: Iterable of PCIDevice objects to patch
+        requested_mode: Requested ASPM mode (None = use maximum supported)
+        dry_run: If True, simulate without actually patching
 
     Returns:
         Tuple of (patched_count, skipped_count, error_count)
@@ -702,8 +702,8 @@ def main():
     if dry_run:
         logger.info("Running in dry-run mode (use --run to actually patch)")
 
-    # Process devices
-    patched_count, skipped_count, error_count = process_devices(
+    # Handle patch mode
+    patched_count, skipped_count, error_count = handle_patch_mode(
         devices, requested_mode, dry_run
     )
 
