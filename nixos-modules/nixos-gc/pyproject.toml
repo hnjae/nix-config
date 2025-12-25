@@ -1,0 +1,82 @@
+[project]
+name = "nixos-gc"
+description = ""
+version = "0.1.0"
+
+[build-system]
+requires = ["flit_core>=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project.scripts]
+nixos-gc = "nixos_gc:main"
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = ["ALL"]
+ignore = [
+  # Things that bother me in simple python scripts:
+  "ERA",     # eradicate, e.g. ERA001 - commented-out-code
+  "FIX",     # flake8-fixme
+  "TD",      # flake8-todos
+  "ANN201",  # missing-return-type-undocumented-public-function (간단한 스크립트에서는 자동 추론 사용)
+  "PLR5501", # collapsible-else-if
+  "EXE001",
+  "D",
+
+  # Things that conflicts with other rules
+  "S603", # subprocess-without-shell-equals-true", conflicts with S602
+
+  # Acceptable for system tool scripts:
+  # "FBT001",  # boolean-type-hint-positional-argument (clear boolean parameters)
+  # "PERF203", # try-except-in-loop (necessary for error handling per device)
+  # "PLR2004", # magic-value-comparison (clear magic values in context)
+  # "S607",    # subprocess-popen-preexec-fn (using system tools like lspci, setpci)
+  # "TRY400",  # error-instead-of-exception (allow use of logger.error)
+
+  # Following rule should be fixed by formatter:
+  "COM", # flake8-commas
+  "E",   # pycodestyle
+  "I",   # isort
+  "Q",   # flake8-quotes
+
+  # Things can be fixed by formatter:
+  "D201", # no-blank-line-before-function
+  "D202", # no-blank-line-after-function
+  "D203", # one-blank-line-before-class
+  "D204", # one-blank-line-after-class
+  "D205", # blank-line-after-summary
+  "D206", # indent-with-spaces
+  "D209", # new-line-after-last-paragraph
+  "D210", # no-surrounding-whitespace
+  "D211", # no-blank-line-before-class
+  "E501", # line-too-long
+  "Q000", # bad-quotes-inline-string
+  "Q001", # bad-quotes-multiline-string
+  "Q002", # bad-quotes-docstring
+  "W293", # blank-line-with-whitespace
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+"test_*.py" = [
+  "S101",   # assert-used: assert statements are required in tests
+  "ANN001", # missing-type-function-argument: mock parameters are self-documenting in tests
+  "SLF001", # private-member-access: necessary to test internal state of objects
+  "ARG002", # unused-argument: mock parameters required by patch decorators
+]
+
+[tool.ty.src]
+exclude = ["test_*.py"]
+
+[tool.basedpyright]
+"reportMissingParameterType" = false # ruff ANN001
+"reportUnusedImport" = false         # ruff F401
+"reportUndefinedVariable" = false    # ruff F821
+"reportUnusedVariable" = false       # ruff F841
+"reportPrivateUsage" = false         # ruff SLF001
+exclude = ["test_*.py"]              # exclude test files from type checking

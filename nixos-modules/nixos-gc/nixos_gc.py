@@ -36,7 +36,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-localtz = cast(timezone, datetime.now(tz=UTC).astimezone().tzinfo)
+localtz = cast("timezone", datetime.now(tz=UTC).astimezone().tzinfo)
 # 위에서 cast 를 했으니, 안전하게 체크는 해주자.
 if not isinstance(localtz, timezone):  # pyright: ignore[reportUnnecessaryIsInstance]
     msg = "Failed to get system local timezone"
@@ -271,7 +271,7 @@ def remove_profiles(
     return True
 
 
-def main() -> int:
+def main() -> int:  # noqa: C901
     _ = check_condition()
     args = get_args()
 

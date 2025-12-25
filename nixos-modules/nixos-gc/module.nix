@@ -13,6 +13,7 @@
       부팅 때 사용했던 generation 과 current generation 은 절대 제거하지 않아,
       부팅 가능한 NixOS generation 을 남겨둡니다.
 */
+{ localFlake, project, ... }:
 {
   config,
   pkgs,
@@ -22,17 +23,11 @@
 let
   description = "GC nix system profiles and boot-entries";
   documentation = [ "man:nix-env-delete-generations(1)" ];
-  serviceName = "nixos-generation-gc";
 
-  cfg = config.my.services.${serviceName};
-  package = (import ./package) { inherit pkgs; };
+  cfg = config.my.services.${project};
 
-  inherit (lib)
-    mkEnableOption
-    mkOption
-    mkIf
-    types
-    ;
+  inherit (pkgs.stdenv) hostPlatform;
+  package = localFlake.packages.${hostPlatform.system}.${project};
 
   # do not run this if something wrong with system
   # requires = ["boot-complete.target"];
@@ -41,7 +36,7 @@ let
 
   # NOTE: boot-complete.target 이 NixOS 24.05 기준 작동되지 않아, 중요한 다른 타겟을
   # 추가하는 것으로 대체.
-  requires = [
+  Requires = lib.flatten [
     "network-online.target"
     "time-sync.target"
     "machines.target" # containers
@@ -50,39 +45,49 @@ let
     "remote-fs.target"
     "multi-user.target"
     "getty.target"
-  ]
-  ++ (lib.lists.optional config.services.xserver.enable "graphical.target");
+    (lib.lists.optional config.services.xserver.enable "graphical.target")
+  ];
 in
 {
-  options.my.services.${serviceName} = {
-    enable = mkEnableOption (lib.mDoc "");
+  options.my.services.${project} = {
+    enable = lib.mkEnableOption (lib.mDoc "automatic NixOS generation garbage collection");
 
-    keepDays = mkOption {
-      type = types.int;
+    keepDays = lib.mkOption {
+      type = lib.types.int;
       default = 14;
       description = "The last x days to keep.";
     };
 
-    onCalendar = mkOption {
-      type = types.str;
+    onCalendar = lib.mkOption {
+      type = lib.types.str;
       default = "*-*-* 04:00:00";
       description = "How often to clean old generations.";
     };
   };
 
-  config = mkIf cfg.enable {
-    systemd.services.${serviceName} = {
+  config = lib.mkIf cfg.enable {
+    environment.systemPackages = [
+      package
+    ];
+
+    systemd.services.${project} = {
       inherit documentation;
       inherit description;
-      inherit requires;
-      inherit (cfg) enable;
+
+      unitConfig = {
+        inherit Requires;
+        After = Requires;
+      };
 
       serviceConfig = {
         Type = "oneshot";
-        CPUSchedulingPolicy = "idle";
-        IOSchedulingClass = "idle";
+
+        # systemd.exec
+        Nice = 19;
+        IOSchedulingPriority = 7;
+
         ExecStart = lib.escapeShellArgs [
-          "${package}/bin/${serviceName}"
+          "${lib.getExe package}"
           "--run"
           "--delete-older-than-days"
           (toString cfg.keepDays)
@@ -90,15 +95,13 @@ in
       };
     };
 
-    systemd.timers.${serviceName} = {
+    systemd.timers.${project} = {
       inherit documentation;
       inherit description;
-      inherit requires;
-      inherit (cfg) enable;
 
       timerConfig = {
         OnCalendar = cfg.onCalendar;
-        AccuracySec = "30m";
+        RandomizedDelaySec = "30m";
         Persistent = true;
       };
 

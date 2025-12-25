@@ -3,6 +3,7 @@
 {
   pkgs,
   lib,
+  config,
   self,
   ...
 }:
@@ -50,21 +51,21 @@ in
 {
   systemd.services."${serviceName}" = {
     description = "Sync EFI system partition for redundancy";
-    wantedBy = [
-      "multi-user.target"
-      "nixos-generation-gc.service"
-    ];
-    after = [
-      "nixos-generation-gc.service"
-      "local-fs.target"
-      (self.shared.lib.mountpathToUnit "/boot_fallback_a")
-      (self.shared.lib.mountpathToUnit "/boot_fallback_b")
-    ];
-    wants = [
-      (self.shared.lib.mountpathToUnit "/boot_fallback_a")
-      (self.shared.lib.mountpathToUnit "/boot_fallback_b")
-    ];
-    unitConfig = {
+    unitConfig = rec {
+      WantedBy = lib.flatten [
+        "multi-user.target"
+        (lib.lists.optional config.my.services.nixos-gc.enable "nixos-gc.service")
+      ];
+      Wants = [
+        (self.shared.lib.mountpathToUnit "/boot_fallback_a")
+        (self.shared.lib.mountpathToUnit "/boot_fallback_b")
+      ];
+
+      After = lib.flatten [
+        WantedBy
+        Wants
+        "local-fs.target"
+      ];
       RequiresMountsFor = "/boot";
     };
 

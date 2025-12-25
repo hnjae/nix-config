@@ -1,0 +1,26 @@
+#!/usr/bin/env -S just --justfile
+
+set fallback := true
+
+alias fmt := format
+
+_:
+    @just --list
+
+build:
+    nix build '.#nixos-gc'
+
+check: lint typecheck test
+
+test:
+    direnv exec . pytest nixos_gc.py -v
+
+lint:
+    direnv exec . ruff check
+
+typecheck:
+    direnv exec . ty check
+
+format:
+    direnv exec . ruff check --fix
+    direnv exec . ruff format

@@ -15,7 +15,7 @@ in
     }
   ];
 
-  my.services.nixos-generation-gc = {
+  my.services.nixos-gc = {
     # enable = config.services.nix-store-gc.enable;
     enable = lib.mkForce true;
     keepDays =
