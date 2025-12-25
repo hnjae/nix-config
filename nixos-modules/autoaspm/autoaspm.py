@@ -352,7 +352,7 @@ class PCIDevice:
                 intersection = self.supported_aspm.value & requested_mode.value
                 if intersection == 0:
                     logger.info(
-                        "%s: ASPM %s supported (skipped)",
+                        "%s: ASPM %s (skipped, not supported)",
                         self.addr,
                         self.supported_aspm.name,
                     )
@@ -375,16 +375,10 @@ class PCIDevice:
 
             # If already in target state
             if current_aspm == target_aspm:
-                action = "would skip" if dry_run else "ASPM"
-                action_msg = (
-                    f"{action} enabled (no change)"
-                    if not dry_run
-                    else f"{action} - already {target_aspm.name}"
-                )
                 logger.info(
-                    "%s: %s",
+                    "%s: ASPM %s (skipped, already enabled)",
                     self.addr,
-                    action_msg,
+                    current_aspm.name,
                 )
                 return False
 
@@ -392,16 +386,11 @@ class PCIDevice:
             if requested_mode is not None and current_aspm.includes(
                 requested_mode
             ):
-                action = "would skip" if dry_run else "ASPM"
-                action_msg = (
-                    f"{action} enabled (no change, includes {requested_mode.name})"
-                    if not dry_run
-                    else f"{action} - {current_aspm.name} already includes {requested_mode.name}"
-                )
                 logger.info(
-                    "%s: %s",
+                    "%s: ASPM %s (skipped, includes %s)",
                     self.addr,
-                    action_msg,
+                    current_aspm.name,
+                    requested_mode.name,
                 )
                 return False
 
@@ -433,7 +422,7 @@ class PCIDevice:
             # Verify patch (only if not dry_run)
             if dry_run:
                 logger.info(
-                    "%s: would enable %s (current: %s)",
+                    "%s: ASPM %s would be enabled (current: %s)",
                     self.addr,
                     target_aspm.name,
                     current_aspm.name,
