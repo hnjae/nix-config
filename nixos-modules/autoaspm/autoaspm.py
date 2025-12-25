@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING, ClassVar, final, override
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+    from collections.abc import Set as AbstractSet
 
 
 class SystemdFormatter(logging.Formatter):
@@ -134,6 +135,18 @@ class PCIDevice:
         self._config_bytes: bytearray | None = None
         self._pcie_cap_offset: int | None = None
         self._device_name: str | None = None
+
+    @override
+    def __hash__(self) -> int:
+        """Return hash based on PCI address."""
+        return hash(self.addr)
+
+    @override
+    def __eq__(self, other: object) -> bool:
+        """Check equality based on PCI address."""
+        if not isinstance(other, PCIDevice):
+            return NotImplemented
+        return self.addr == other.addr
 
     def get_name(self) -> str:
         """Get device name from PCI address."""
@@ -473,7 +486,7 @@ def run_prerequisites() -> None:
             raise ASPMPatcherError(msg)
 
 
-def list_supported_devices() -> Iterable[PCIDevice]:
+def get_aspm_devices() -> AbstractSet[PCIDevice]:
     """Get list of PCI devices that support ASPM."""
     pcie_addr_regex = r"([0-9a-f]{2}:[0-9a-f]{2}\.[0-9a-f])"
 
@@ -501,7 +514,7 @@ def list_supported_devices() -> Iterable[PCIDevice]:
         x + y for x, y in zip(lspci_arr[0::2], lspci_arr[1::2], strict=True)
     ]
 
-    devices: list[PCIDevice] = []
+    devices: set[PCIDevice] = set()
 
     for dev in lspci_arr:
         addr_match = re.search(pcie_addr_regex, dev)
@@ -520,7 +533,7 @@ def list_supported_devices() -> Iterable[PCIDevice]:
             try:
                 aspm_mode_str = aspm_support[0].replace(" ", "")
                 aspm_mode = ASPM[aspm_mode_str]
-                devices.append(PCIDevice(device_addr, aspm_mode))
+                devices.add(PCIDevice(device_addr, aspm_mode))
             except KeyError:
                 logger.warning(
                     "%s: Unknown ASPM mode '%s', skipping",
@@ -673,7 +686,7 @@ def main():
         return 1
 
     try:
-        devices = list(list_supported_devices())
+        devices = get_aspm_devices()
     except ASPMPatcherError as e:
         logger.error("Error listing devices: %s", e)
         return 1
