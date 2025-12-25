@@ -12,12 +12,11 @@ Run these commands via the justfile:
 
 ```bash
 just build           # Build the NixOS package
-just check           # Run all checks (lint, lsp, test)
+just check           # Run all checks (lint, typecheck, test)
 just test            # Run pytest tests
 just lint            # Run ruff linter
-just lsp             # Run basedpyright type checker
+just typecheck       # Run ty type checker
 just format          # Format code with ruff
-just fmt             # Alias for format
 ```
 
 All development commands use `direnv exec .` to ensure proper environment setup.
@@ -27,11 +26,13 @@ All development commands use `direnv exec .` to ensure proper environment setup.
 ### Core Classes
 
 **ASPM Enum** (`autoaspm.py:73-106`)
+
 - Represents the four ASPM modes: DISABLED, L0s, L1, L0sL1
 - Modes are represented as bitmasks (0b00, 0b01, 0b10, 0b11)
 - Methods: `from_string()` for parsing, `supports()` and `includes()` for mode compatibility checking
 
 **PCIDevice Class** (`autoaspm.py:121-405`)
+
 - Represents a single PCI device with ASPM support
 - Core responsibilities:
   - Read PCI configuration space via `lspci -xxx`
@@ -56,11 +57,13 @@ All development commands use `direnv exec .` to ensure proper environment setup.
 **Dry-Run by Default**: Running with `--mode` only performs a dry-run. Use `--run` to actually patch devices. This is a safety feature.
 
 **Mode Negotiation**:
+
 - If user requests a mode but device supports a different mode, the intersection is used (e.g., user requests L0sL1 but device supports only L1 → L1 is applied)
 - If intersection is zero (no overlap), device is skipped
 - Already-enabled modes are never downgraded (e.g., if L0sL1 is enabled and user requests L1, device is skipped)
 
 **PCI Configuration Space Parsing**:
+
 - Configuration space is 256 bytes
 - Capabilities are found via a linked list starting at offset 0x34
 - PCIe capability is identified by ID 0x10
@@ -68,6 +71,7 @@ All development commands use `direnv exec .` to ensure proper environment setup.
 - Uses regex to parse `lspci` output since raw config space access requires special permissions
 
 **Error Handling**:
+
 - `CapabilityNotFoundError`: Device doesn't have PCIe capability
 - `DeviceAccessError`: Failed to read/write device via lspci/setpci
 - Errors are logged but don't stop processing other devices
@@ -94,6 +98,7 @@ Follow Conventional Commits format with `autoaspm` as the scope. Create commits 
 Format: `<type>(autoaspm): <description>`
 
 Common types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `refactor`: Code refactoring
@@ -103,6 +108,7 @@ Common types:
 - `chore`: Build, dependencies, or maintenance tasks
 
 Examples:
+
 - `feat(autoaspm): add support for custom ASPM mode validation`
 - `fix(autoaspm): handle missing PCIe capability gracefully`
 - `test(autoaspm): add tests for mode negotiation logic`
@@ -111,6 +117,7 @@ Examples:
 ## NixOS Integration
 
 The module at `module.nix` configures AutoASPM as a systemd service:
+
 - Service type: oneshot (runs once at startup)
 - Depends on: systemd-udev-settle.service
 - Security hardening: strict filesystem protection, no network, restricted syscalls
@@ -120,6 +127,7 @@ The module at `module.nix` configures AutoASPM as a systemd service:
 ## Testing
 
 Tests in `test_autoaspm.py` use mocking to avoid requiring actual PCI devices:
+
 - Mock `subprocess.run` to simulate lspci/setpci output
 - Test ASPM enum logic, mode negotiation, configuration space parsing
 - Test error conditions: missing capabilities, invalid device access, timeout scenarios

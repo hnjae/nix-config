@@ -10,7 +10,7 @@ _:
 build:
     nix build '.#autoaspm'
 
-check: lint lsp test
+check: lint typecheck test
 
 test:
     direnv exec . pytest test_autoaspm.py -v
@@ -18,8 +18,8 @@ test:
 lint:
     direnv exec . ruff check
 
-lsp:
-    direnv exec . basedpyright
+typecheck:
+    direnv exec . ty check
 
 format:
     direnv exec . ruff check --fix
