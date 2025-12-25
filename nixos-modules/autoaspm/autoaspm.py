@@ -470,7 +470,7 @@ MAX_CAPABILITY_SEARCH_ITERATIONS = (
 )
 
 
-def run_prerequisites() -> None:
+def check_prerequisites() -> None:
     """Check requirements before running."""
     if platform.system() != "Linux":
         msg = "This script only runs on Linux-based systems"
@@ -680,7 +680,7 @@ def main():
     args = parse_args()
 
     try:
-        run_prerequisites()
+        check_prerequisites()
     except (OSError, PermissionError, ASPMPatcherError) as e:
         logger.error("%s", e)
         return 1
