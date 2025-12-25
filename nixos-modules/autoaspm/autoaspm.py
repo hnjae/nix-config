@@ -55,6 +55,7 @@ def setup_logger() -> logging.Logger:
     is_systemd = "JOURNAL_STREAM" in os.environ
 
     # Create custom formatter
+    formatter: logging.Formatter
     if is_systemd:
         formatter = SystemdFormatter()
     else:
