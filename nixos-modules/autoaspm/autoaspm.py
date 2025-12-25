@@ -620,7 +620,9 @@ Notes:
 """,
     )
 
-    _ = parser.add_argument(
+    # Create mutually exclusive group for --mode and --list
+    mode_group = parser.add_mutually_exclusive_group()
+    _ = mode_group.add_argument(
         "--mode",
         "-m",
         type=str,
@@ -629,7 +631,7 @@ Notes:
         help="ASPM mode to enable. If not specified, enables maximum supported mode for each device.",
     )
 
-    _ = parser.add_argument(
+    _ = mode_group.add_argument(
         "--list",
         "-l",
         action="store_true",
@@ -653,7 +655,7 @@ Notes:
     args = parser.parse_args(namespace=ArgsNamespace())
 
     # If no meaningful arguments provided, print help and exit
-    if not args.mode and not args.list_only:
+    if args.mode is None and not args.list_only:
         parser.print_help()
         sys.exit(0)
 
