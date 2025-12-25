@@ -9,6 +9,8 @@ Re-re-re-written to improve usability by hnjae
   - Changed default behavior to dry-run for safety
 """
 
+from __future__ import annotations
+
 import argparse
 import logging
 import os
@@ -18,7 +20,10 @@ import shutil
 import subprocess
 import sys
 from enum import Enum
-from typing import ClassVar, final, override
+from typing import TYPE_CHECKING, ClassVar, final, override
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 class SystemdFormatter(logging.Formatter):
@@ -74,7 +79,7 @@ class ASPM(Enum):
     L0sL1 = 0b11
 
     @classmethod
-    def from_string(cls, s: str) -> "ASPM":
+    def from_string(cls, s: str) -> ASPM:
         """Parse ASPM mode from string."""
         mapping = {
             "disabled": cls.DISABLED,
@@ -84,7 +89,7 @@ class ASPM(Enum):
         }
         return mapping[s.lower()]
 
-    def supports(self, requested: "ASPM") -> bool:
+    def supports(self, requested: ASPM) -> bool:
         """Check if this ASPM mode supports the requested mode.
 
         Example: L0sL1 supports L0s, L1, and L0sL1
@@ -93,7 +98,7 @@ class ASPM(Enum):
         """
         return (self.value & requested.value) == requested.value
 
-    def includes(self, other: "ASPM") -> bool:
+    def includes(self, other: ASPM) -> bool:
         """Check if current mode includes another mode.
 
         Example: L0sL1.includes(L1) -> True (L0sL1 includes L1)
@@ -418,7 +423,7 @@ MAX_CAPABILITY_SEARCH_ITERATIONS = (
 )
 
 
-def run_prerequisites():
+def run_prerequisites() -> None:
     """Check requirements before running."""
     if platform.system() != "Linux":
         msg = "This script only runs on Linux-based systems"
@@ -434,7 +439,7 @@ def run_prerequisites():
             raise ASPMPatcherError(msg)
 
 
-def list_supported_devices() -> dict[str, ASPM]:
+def list_supported_devices() -> Mapping[str, ASPM]:
     """Get list of PCI devices that support ASPM."""
     pcie_addr_regex = r"([0-9a-f]{2}:[0-9a-f]{2}\.[0-9a-f])"
 
@@ -494,7 +499,7 @@ def list_supported_devices() -> dict[str, ASPM]:
 
 
 def handle_list_mode(
-    devices: dict[str, ASPM], *, verbose: bool = False
+    devices: Mapping[str, ASPM], *, verbose: bool = False
 ) -> None:
     """Handle --list mode to display ASPM-capable devices."""
     for device_addr, supported_aspm in devices.items():
@@ -582,7 +587,7 @@ def process_device_in_dry_run(
 
 
 def process_devices(
-    devices: dict[str, ASPM],
+    devices: Mapping[str, ASPM],
     requested_mode: ASPM | None,
     dry_run: bool,
 ) -> tuple[int, int, int]:
