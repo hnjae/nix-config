@@ -101,6 +101,7 @@ pkgs:
   ######################
   pkgs.ansible # 내 dotfiles repo 에서 사용
   pkgs.sysz # systemctl 커맨드를 fzf 로 래핑한 유틸
+  pkgs.glow # markdown viewer in terminal
   pkgs.rmlint
   pkgs.unstable.yt-dlp
   pkgs.exiftool
