@@ -311,17 +311,18 @@ class PCIDevice:
             actual_value = new_bytes[position] & 0b11  # Check only ASPM bits
             return actual_value == expected_value
 
-    def patch_aspm(
-        self, supported_aspm: ASPM, requested_mode: ASPM | None = None
+    # NOTE: C901: complex-structure, PLR0912: too-many-branches
+    def patch_aspm(  # noqa: C901, PLR0912
+        self, requested_mode: ASPM | None = None, *, dry_run: bool = False
     ) -> bool:
         """Patch ASPM settings for this device.
 
         Args:
-            supported_aspm: ASPM mode that the device supports
             requested_mode: ASPM mode requested by user (None = use maximum supported)
+            dry_run: If True, simulate without actually patching (default: False)
 
         Returns:
-            True if patched successfully, False if already set or skipped
+            True if patched/would patch, False if already set or skipped
 
         Raises:
             ASPMPatcherError: When patching fails
@@ -330,16 +331,16 @@ class PCIDevice:
             # Determine target ASPM mode
             if requested_mode is None:
                 # If no request, use maximum supported mode
-                target_aspm = supported_aspm
+                target_aspm = self.supported_aspm
             else:
                 # Use intersection of requested and supported modes
                 # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
-                intersection = supported_aspm.value & requested_mode.value
+                intersection = self.supported_aspm.value & requested_mode.value
                 if intersection == 0:
                     logger.info(
                         "%s: ASPM %s supported (skipped)",
                         self.addr,
-                        supported_aspm.name,
+                        self.supported_aspm.name,
                     )
                     return False
                 target_aspm = ASPM(intersection)
@@ -360,10 +361,16 @@ class PCIDevice:
 
             # If already in target state
             if current_aspm == target_aspm:
+                action = "would skip" if dry_run else "ASPM"
+                action_msg = (
+                    f"{action} enabled (no change)"
+                    if not dry_run
+                    else f"{action} - already {target_aspm.name}"
+                )
                 logger.info(
-                    "%s: ASPM %s enabled (no change)",
+                    "%s: %s",
                     self.addr,
-                    target_aspm.name,
+                    action_msg,
                 )
                 return False
 
@@ -371,39 +378,64 @@ class PCIDevice:
             if requested_mode is not None and current_aspm.includes(
                 requested_mode
             ):
+                action = "would skip" if dry_run else "ASPM"
+                action_msg = (
+                    f"{action} enabled (no change, includes {requested_mode.name})"
+                    if not dry_run
+                    else f"{action} - {current_aspm.name} already includes {requested_mode.name}"
+                )
                 logger.info(
-                    "%s: ASPM %s enabled (no change, includes %s)",
+                    "%s: %s",
                     self.addr,
-                    current_aspm.name,
-                    requested_mode.name,
+                    action_msg,
                 )
                 return False
 
             # Calculate new value: change only lower 2 bits
             patched_byte = (current_value & ~0b11) | target_aspm.value
 
-            # Apply patch
-            self._patch_byte(link_control_offset, patched_byte)
+            # Apply patch or simulate
+            if not dry_run:
+                self._patch_byte(link_control_offset, patched_byte)
 
         except CapabilityNotFoundError as e:
-            logger.warning("%s: Skipping - %s", self.addr, e)
+            logger.warning(
+                "%s: %sSkipping - %s",
+                self.addr,
+                "Would " if dry_run else "",
+                e,
+            )
             return False
         except DeviceAccessError as e:
-            logger.error("%s: Error - %s", self.addr, e)
+            log_func = logger.info if dry_run else logger.error
+            log_func(
+                "%s: %s%s",
+                self.addr,
+                "Would encounter error - " if dry_run else "",
+                e,
+            )
             return False
         else:
-            # Verify patch
-            if self.verify_patch(link_control_offset, target_aspm.value):
+            # Verify patch (only if not dry_run)
+            if dry_run:
                 logger.info(
-                    "%s: ASPM %s enabled (was %s)",
+                    "%s: would enable %s (current: %s)",
                     self.addr,
                     target_aspm.name,
                     current_aspm.name,
                 )
             else:
-                logger.warning(
-                    "%s: Patch applied but verification failed", self.addr
-                )
+                if self.verify_patch(link_control_offset, target_aspm.value):
+                    logger.info(
+                        "%s: ASPM %s enabled (was %s)",
+                        self.addr,
+                        target_aspm.name,
+                        current_aspm.name,
+                    )
+                else:
+                    logger.warning(
+                        "%s: Patch applied but verification failed", self.addr
+                    )
             return True
 
 
@@ -526,63 +558,6 @@ def handle_list_mode(
                 pass
 
 
-def process_device_in_dry_run(
-    device: PCIDevice, requested_mode: ASPM | None
-) -> tuple[bool, bool]:
-    """Process a device in dry-run mode.
-
-    Args:
-        device: PCIDevice to process
-        requested_mode: Requested ASPM mode (None = auto)
-
-    Returns:
-        Tuple of (would_patch, would_skip) booleans
-    """
-    # Determine target mode
-    if requested_mode is None:
-        target = device.supported_aspm
-    else:
-        # Use intersection of requested and supported modes
-        intersection = device.supported_aspm.value & requested_mode.value
-        if intersection == 0:
-            logger.info(
-                "%s: would skip - doesn't support %s (no overlap)",
-                device.addr,
-                requested_mode.name,
-            )
-            return (False, True)
-        target = ASPM(intersection)
-
-    # Read config space to check current state
-    try:
-        current_aspm = device.get_current_aspm()
-
-        if current_aspm == target:
-            logger.info(
-                "%s: would skip - already %s", device.addr, target.name
-            )
-            return (False, True)
-        if requested_mode and current_aspm.includes(requested_mode):
-            logger.info(
-                "%s: would skip - %s already includes %s",
-                device.addr,
-                current_aspm.name,
-                requested_mode.name,
-            )
-            return (False, True)
-    except (CapabilityNotFoundError, DeviceAccessError) as e:
-        logger.info("%s: would skip - %s", device.addr, e)
-        return (False, True)
-    else:
-        logger.info(
-            "%s: would enable %s (current: %s)",
-            device.addr,
-            target.name,
-            current_aspm.name,
-        )
-        return (True, False)
-
-
 def process_devices(
     devices: Iterable[PCIDevice],
     requested_mode: ASPM | None,
@@ -604,20 +579,10 @@ def process_devices(
 
     for device in devices:
         try:
-            if dry_run:
-                would_patch, would_skip = process_device_in_dry_run(
-                    device, requested_mode
-                )
-                if would_patch:
-                    patched_count += 1
-                elif would_skip:
-                    skipped_count += 1
+            if device.patch_aspm(requested_mode, dry_run=dry_run):
+                patched_count += 1
             else:
-                # Actually patch
-                if device.patch_aspm(device.supported_aspm, requested_mode):
-                    patched_count += 1
-                else:
-                    skipped_count += 1
+                skipped_count += 1
         except ASPMPatcherError as e:
             logger.error("%s: Failed - %s", device.addr, e)
             error_count += 1

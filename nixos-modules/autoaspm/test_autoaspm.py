@@ -481,7 +481,7 @@ class TestPCIDevicePatchASPM:
         mock_offset.return_value = 0x50
 
         device = PCIDevice("01:00.0", ASPM.L0sL1)
-        result = device.patch_aspm(ASPM.L0sL1, None)
+        result = device.patch_aspm(ASPM.L0sL1)
 
         assert result is False
         mock_patch.assert_not_called()
@@ -501,7 +501,7 @@ class TestPCIDevicePatchASPM:
         mock_verify.return_value = True
 
         device = PCIDevice("01:00.0", ASPM.L0sL1)
-        result = device.patch_aspm(ASPM.L0sL1, None)
+        result = device.patch_aspm(ASPM.L0sL1)
 
         assert result is True
         mock_patch.assert_called_once()
@@ -509,17 +509,72 @@ class TestPCIDevicePatchASPM:
     @patch.object(PCIDevice, "get_link_control_offset")
     @patch.object(PCIDevice, "read_config_space")
     def test_patch_aspm_unsupported_mode(self, mock_read, mock_offset):
-        """Test when requested mode is not supported."""
+        """Test when requested mode is not supported by device."""
         config = bytearray(256)
-        config[0x50] = ASPM.L0s.value  # Only L0s supported
+        config[0x50] = ASPM.L0s.value  # Currently L0s
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+
+        device = PCIDevice("01:00.0", ASPM.L0s)  # Device only supports L0s
+        # Request L1 when device only supports L0s
+        result = device.patch_aspm(ASPM.L1)
+
+        assert result is False
+
+    @patch.object(PCIDevice, "verify_patch")
+    @patch.object(PCIDevice, "_patch_byte")
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_patch_aspm_dry_run_would_patch(
+        self, mock_read, mock_offset, mock_patch, mock_verify
+    ):
+        """Test dry_run=True reports would patch without actually patching."""
+        config = bytearray(256)
+        config[0x50] = ASPM.DISABLED.value  # Currently disabled
         mock_read.return_value = config
         mock_offset.return_value = 0x50
 
         device = PCIDevice("01:00.0", ASPM.L0sL1)
-        # Request L1 when only L0s supported
-        result = device.patch_aspm(ASPM.L0s, ASPM.L1)
+        result = device.patch_aspm(ASPM.L0sL1, dry_run=True)
+
+        assert result is True
+        mock_patch.assert_not_called()
+        mock_verify.assert_not_called()
+
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_patch_aspm_dry_run_would_skip(self, mock_read, mock_offset):
+        """Test dry_run=True reports would skip when already set."""
+        config = bytearray(256)
+        config[0x50] = ASPM.L0sL1.value  # Already L0sL1
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        result = device.patch_aspm(ASPM.L0sL1, dry_run=True)
 
         assert result is False
+
+    @patch.object(PCIDevice, "verify_patch")
+    @patch.object(PCIDevice, "_patch_byte")
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_patch_aspm_actual_run_patches(
+        self, mock_read, mock_offset, mock_patch, mock_verify
+    ):
+        """Test dry_run=False actually patches."""
+        config = bytearray(256)
+        config[0x50] = ASPM.DISABLED.value  # Currently disabled
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+        mock_verify.return_value = True
+
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        result = device.patch_aspm(ASPM.L0sL1, dry_run=False)
+
+        assert result is True
+        mock_patch.assert_called_once()
+        mock_verify.assert_called_once()
 
 
 # ============================================================================
