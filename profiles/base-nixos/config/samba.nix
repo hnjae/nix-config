@@ -55,6 +55,19 @@
       "server smb transports" = "quic";
       "client smb transports" = "+quic";
       "server string" = "Samba %v of %h";
+
+      "veto files" = "/${
+        builtins.concatStringsSep "/" [
+          ".DS_Store"
+          ".directory" # KDE
+          "Thumbs.db" # MS Windows
+          "*.swp" # vim
+          ".~lock.*" # libreoffice
+          ".snapshots" # btrfs snapper
+          ".zfs" # zfs snapshots
+        ]
+      }/";
+      "delete veto files" = "no";
     };
   };
 }
