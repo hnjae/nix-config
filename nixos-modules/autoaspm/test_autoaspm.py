@@ -85,11 +85,23 @@ class TestPCIDeviceInit:
 
     def test_init(self):
         """Test PCIDevice initialization."""
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         assert device.addr == "01:00.0"
+        assert device.supported_aspm == ASPM.L0sL1
         assert device._config_bytes is None
         assert device._pcie_cap_offset is None
         assert device._device_name is None
+
+    def test_init_with_different_aspm_mode(self):
+        """Test PCIDevice initialization with different ASPM modes."""
+        device_l0s = PCIDevice("02:00.0", ASPM.L0s)
+        assert device_l0s.supported_aspm == ASPM.L0s
+
+        device_l1 = PCIDevice("03:00.0", ASPM.L1)
+        assert device_l1.supported_aspm == ASPM.L1
+
+        device_disabled = PCIDevice("04:00.0", ASPM.DISABLED)
+        assert device_disabled.supported_aspm == ASPM.DISABLED
 
 
 class TestPCIDeviceGetName:
@@ -102,7 +114,7 @@ class TestPCIDeviceGetName:
             returncode=0,
             stdout="01:00.0 Network controller: Intel Corporation...",
         )
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         name = device.get_name()
         assert "Network controller" in name
         mock_run.assert_called_once()
@@ -114,7 +126,7 @@ class TestPCIDeviceGetName:
             returncode=0,
             stdout="01:00.0 Network controller: Intel Corporation...",
         )
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         name1 = device.get_name()
         name2 = device.get_name()
         assert name1 == name2
@@ -125,7 +137,7 @@ class TestPCIDeviceGetName:
     def test_get_name_command_failure(self, mock_run):
         """Test handling of lspci failure."""
         mock_run.return_value = Mock(returncode=1, stderr="Device not found")
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         with pytest.raises(
             DeviceAccessError, match="Failed to get device name"
         ):
@@ -135,7 +147,7 @@ class TestPCIDeviceGetName:
     def test_get_name_no_output(self, mock_run):
         """Test handling of empty lspci output."""
         mock_run.return_value = Mock(returncode=0, stdout="")
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         with pytest.raises(DeviceAccessError, match="No device found"):
             device.get_name()
 
@@ -143,7 +155,7 @@ class TestPCIDeviceGetName:
     def test_get_name_timeout(self, mock_run):
         """Test handling of subprocess timeout."""
         mock_run.side_effect = subprocess.TimeoutExpired("lspci", 10)
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         with pytest.raises(DeviceAccessError, match="Timeout"):
             device.get_name()
 
@@ -174,7 +186,7 @@ class TestPCIDeviceReadConfigSpace:
         lspci_output = "\n".join(hex_lines)
         mock_run.return_value = Mock(returncode=0, stdout=lspci_output)
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         config = device.read_config_space()
 
         # Should have at least 256 bytes (PCI_CONFIG_SPACE_SIZE)
@@ -204,7 +216,7 @@ class TestPCIDeviceReadConfigSpace:
         lspci_output = "\n".join(hex_lines)
         mock_run.return_value = Mock(returncode=0, stdout=lspci_output)
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         config1 = device.read_config_space()
         config2 = device.read_config_space()
 
@@ -221,7 +233,7 @@ class TestPCIDeviceReadConfigSpace:
             stdout="01:00.0 Network controller...\n"
             "00: " + " ".join(f"{i:02x}" for i in range(100)),
         )
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         with pytest.raises(DeviceAccessError, match="Incomplete config space"):
             device.read_config_space()
 
@@ -229,7 +241,7 @@ class TestPCIDeviceReadConfigSpace:
     def test_read_config_space_command_failure(self, mock_run):
         """Test handling of lspci failure."""
         mock_run.return_value = Mock(returncode=1, stderr="Command failed")
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         with pytest.raises(
             DeviceAccessError, match="Failed to read config space"
         ):
@@ -261,7 +273,7 @@ class TestPCIDeviceFindPCIeCapability:
         config = self._create_config_with_pcie_cap(0x40)
         mock_read.return_value = config
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         offset = device.find_pcie_capability()
 
         assert offset == 0x40
@@ -272,7 +284,7 @@ class TestPCIDeviceFindPCIeCapability:
         config = self._create_config_with_pcie_cap(0x40)
         mock_read.return_value = config
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         offset1 = device.find_pcie_capability()
         offset2 = device.find_pcie_capability()
 
@@ -289,7 +301,7 @@ class TestPCIDeviceFindPCIeCapability:
 
         mock_read.return_value = config
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         with pytest.raises(CapabilityNotFoundError, match="Invalid or no"):
             device.find_pcie_capability()
 
@@ -306,7 +318,7 @@ class TestPCIDeviceFindPCIeCapability:
 
         mock_read.return_value = config
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         with pytest.raises(CapabilityNotFoundError, match="out of bounds"):
             device.find_pcie_capability()
 
@@ -319,7 +331,7 @@ class TestPCIDeviceGetLinkControlOffset:
         """Test Link Control offset calculation."""
         mock_find.return_value = 0x40
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         offset = device.get_link_control_offset()
 
         # PCIE_CAP_LINK_CONTROL_OFFSET = 0x10
@@ -338,7 +350,7 @@ class TestPCIDeviceGetCurrentASPM:
         mock_read.return_value = config
         mock_offset.return_value = 0x50
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         aspm = device.get_current_aspm()
 
         assert aspm == ASPM.L0s
@@ -352,7 +364,7 @@ class TestPCIDeviceGetCurrentASPM:
         mock_read.return_value = config
         mock_offset.return_value = 0x50
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         aspm = device.get_current_aspm()
 
         assert aspm == ASPM.L0sL1
@@ -367,7 +379,7 @@ class TestPCIDeviceGetCurrentASPM:
         mock_read.return_value = config
         mock_offset.return_value = 0x50
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         aspm = device.get_current_aspm()
 
         # Should only consider lower 2 bits
@@ -382,7 +394,7 @@ class TestPCIDevicePatchByte:
         """Test successful byte patching."""
         mock_run.return_value = Mock(returncode=0, stderr="")
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         device._config_bytes = bytearray(256)  # Set cache
         device._patch_byte(0x50, 0x03)
 
@@ -400,7 +412,7 @@ class TestPCIDevicePatchByte:
             returncode=1, stderr="Operation not permitted"
         )
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         with pytest.raises(DeviceAccessError, match="Failed to patch"):
             device._patch_byte(0x50, 0x03)
 
@@ -409,7 +421,7 @@ class TestPCIDevicePatchByte:
         """Test handling of timeout."""
         mock_run.side_effect = subprocess.TimeoutExpired("setpci", 10)
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         with pytest.raises(DeviceAccessError, match="Timeout"):
             device._patch_byte(0x50, 0x03)
 
@@ -424,7 +436,7 @@ class TestPCIDeviceVerifyPatch:
         config[0x50] = 0b11
         mock_read.return_value = config
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         result = device.verify_patch(0x50, 0b11)
 
         assert result is True
@@ -436,7 +448,7 @@ class TestPCIDeviceVerifyPatch:
         config[0x50] = 0b01  # Different value
         mock_read.return_value = config
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         result = device.verify_patch(0x50, 0b11)
 
         assert result is False
@@ -446,7 +458,7 @@ class TestPCIDeviceVerifyPatch:
         """Test error handling in verify."""
         mock_read.side_effect = DeviceAccessError("Read failed")
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         result = device.verify_patch(0x50, 0b11)
 
         assert result is False
@@ -468,7 +480,7 @@ class TestPCIDevicePatchASPM:
         mock_read.return_value = config
         mock_offset.return_value = 0x50
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         result = device.patch_aspm(ASPM.L0sL1, None)
 
         assert result is False
@@ -488,7 +500,7 @@ class TestPCIDevicePatchASPM:
         mock_offset.return_value = 0x50
         mock_verify.return_value = True
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         result = device.patch_aspm(ASPM.L0sL1, None)
 
         assert result is True
@@ -503,7 +515,7 @@ class TestPCIDevicePatchASPM:
         mock_read.return_value = config
         mock_offset.return_value = 0x50
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         # Request L1 when only L0s supported
         result = device.patch_aspm(ASPM.L0s, ASPM.L1)
 
@@ -540,7 +552,7 @@ class TestIntegration:
 
         mock_run.side_effect = [device_name_response, config_response]
 
-        device = PCIDevice("01:00.0")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
         name = device.get_name()
         config = device.read_config_space()
 

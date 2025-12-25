@@ -23,7 +23,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, ClassVar, final, override
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterable
 
 
 class SystemdFormatter(logging.Formatter):
@@ -122,13 +122,15 @@ class DeviceAccessError(ASPMPatcherError):
 class PCIDevice:
     """Represents a PCI device with ASPM support."""
 
-    def __init__(self, addr: str) -> None:
+    def __init__(self, addr: str, supported_aspm: ASPM) -> None:
         """Initialize PCIDevice.
 
         Args:
             addr: PCI device address (e.g., "01:00.0")
+            supported_aspm: ASPM mode supported by this device
         """
         self.addr = addr
+        self.supported_aspm = supported_aspm
         self._config_bytes: bytearray | None = None
         self._pcie_cap_offset: int | None = None
         self._device_name: str | None = None
@@ -439,7 +441,7 @@ def run_prerequisites() -> None:
             raise ASPMPatcherError(msg)
 
 
-def list_supported_devices() -> Mapping[str, ASPM]:
+def list_supported_devices() -> Iterable[PCIDevice]:
     """Get list of PCI devices that support ASPM."""
     pcie_addr_regex = r"([0-9a-f]{2}:[0-9a-f]{2}\.[0-9a-f])"
 
@@ -467,7 +469,7 @@ def list_supported_devices() -> Mapping[str, ASPM]:
         x + y for x, y in zip(lspci_arr[0::2], lspci_arr[1::2], strict=True)
     ]
 
-    aspm_devices: dict[str, ASPM] = {}
+    devices: list[PCIDevice] = []
 
     for dev in lspci_arr:
         addr_match = re.search(pcie_addr_regex, dev)
@@ -486,7 +488,7 @@ def list_supported_devices() -> Mapping[str, ASPM]:
             try:
                 aspm_mode_str = aspm_support[0].replace(" ", "")
                 aspm_mode = ASPM[aspm_mode_str]
-                aspm_devices[device_addr] = aspm_mode
+                devices.append(PCIDevice(device_addr, aspm_mode))
             except KeyError:
                 logger.warning(
                     "%s: Unknown ASPM mode '%s', skipping",
@@ -495,16 +497,14 @@ def list_supported_devices() -> Mapping[str, ASPM]:
                 )
                 continue
 
-    return aspm_devices
+    return devices
 
 
 def handle_list_mode(
-    devices: Mapping[str, ASPM], *, verbose: bool = False
+    devices: Iterable[PCIDevice], *, verbose: bool = False
 ) -> None:
     """Handle --list mode to display ASPM-capable devices."""
-    for device_addr, supported_aspm in devices.items():
-        device = PCIDevice(device_addr)
-
+    for device in devices:
         # Read current ASPM state
         try:
             current_aspm = device.get_current_aspm()
@@ -514,7 +514,7 @@ def handle_list_mode(
 
         # Print device info
         print(  # noqa: T201
-            f"{device_addr}: current={current_str}, supports={supported_aspm.name}"
+            f"{device.addr}: current={current_str}, supports={device.supported_aspm.name}"
         )
 
         # Print detailed device name only in verbose mode
@@ -527,30 +527,27 @@ def handle_list_mode(
 
 
 def process_device_in_dry_run(
-    device_addr: str, supported_aspm: ASPM, requested_mode: ASPM | None
+    device: PCIDevice, requested_mode: ASPM | None
 ) -> tuple[bool, bool]:
     """Process a device in dry-run mode.
 
     Args:
-        device_addr: PCI device address
-        supported_aspm: ASPM mode the device supports
+        device: PCIDevice to process
         requested_mode: Requested ASPM mode (None = auto)
 
     Returns:
         Tuple of (would_patch, would_skip) booleans
     """
-    device = PCIDevice(device_addr)
-
     # Determine target mode
     if requested_mode is None:
-        target = supported_aspm
+        target = device.supported_aspm
     else:
         # Use intersection of requested and supported modes
-        intersection = supported_aspm.value & requested_mode.value
+        intersection = device.supported_aspm.value & requested_mode.value
         if intersection == 0:
             logger.info(
                 "%s: would skip - doesn't support %s (no overlap)",
-                device_addr,
+                device.addr,
                 requested_mode.name,
             )
             return (False, True)
@@ -562,24 +559,24 @@ def process_device_in_dry_run(
 
         if current_aspm == target:
             logger.info(
-                "%s: would skip - already %s", device_addr, target.name
+                "%s: would skip - already %s", device.addr, target.name
             )
             return (False, True)
         if requested_mode and current_aspm.includes(requested_mode):
             logger.info(
                 "%s: would skip - %s already includes %s",
-                device_addr,
+                device.addr,
                 current_aspm.name,
                 requested_mode.name,
             )
             return (False, True)
     except (CapabilityNotFoundError, DeviceAccessError) as e:
-        logger.info("%s: would skip - %s", device_addr, e)
+        logger.info("%s: would skip - %s", device.addr, e)
         return (False, True)
     else:
         logger.info(
             "%s: would enable %s (current: %s)",
-            device_addr,
+            device.addr,
             target.name,
             current_aspm.name,
         )
@@ -587,14 +584,14 @@ def process_device_in_dry_run(
 
 
 def process_devices(
-    devices: Mapping[str, ASPM],
+    devices: Iterable[PCIDevice],
     requested_mode: ASPM | None,
     dry_run: bool,
 ) -> tuple[int, int, int]:
     """Process devices for patching.
 
     Args:
-        devices: Dictionary of device addresses to supported ASPM modes
+        devices: Iterable of PCIDevice objects to process
         requested_mode: Requested ASPM mode (None = auto)
         dry_run: Whether this is a dry-run
 
@@ -605,11 +602,11 @@ def process_devices(
     skipped_count = 0
     error_count = 0
 
-    for device_addr, supported_aspm in devices.items():
+    for device in devices:
         try:
             if dry_run:
                 would_patch, would_skip = process_device_in_dry_run(
-                    device_addr, supported_aspm, requested_mode
+                    device, requested_mode
                 )
                 if would_patch:
                     patched_count += 1
@@ -617,13 +614,12 @@ def process_devices(
                     skipped_count += 1
             else:
                 # Actually patch
-                device = PCIDevice(device_addr)
-                if device.patch_aspm(supported_aspm, requested_mode):
+                if device.patch_aspm(device.supported_aspm, requested_mode):
                     patched_count += 1
                 else:
                     skipped_count += 1
         except ASPMPatcherError as e:
-            logger.error("%s: Failed - %s", device_addr, e)
+            logger.error("%s: Failed - %s", device.addr, e)
             error_count += 1
 
     return (patched_count, skipped_count, error_count)
@@ -710,7 +706,7 @@ def main():
         return 1
 
     try:
-        devices = list_supported_devices()
+        devices = list(list_supported_devices())
     except ASPMPatcherError as e:
         logger.error("Error listing devices: %s", e)
         return 1
