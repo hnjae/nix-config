@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, cast, override
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
+    from collections.abc import Set as AbstractSet
     from datetime import date
     from typing import Final, Literal
 
@@ -40,7 +41,7 @@ localtz = cast("timezone", datetime.now(tz=UTC).astimezone().tzinfo)
 # 위에서 cast 를 했으니, 안전하게 체크는 해주자.
 if not isinstance(localtz, timezone):  # pyright: ignore[reportUnnecessaryIsInstance]
     msg = "Failed to get system local timezone"
-    raise RuntimeError(msg)
+    raise RuntimeError(msg)  # noqa: TRY004
 
 
 # NOTE: ArgsNamespace 를 사용하는 경우 `parser.add_argument` 의 `default` 는 무시됨. <Python 3.12>
@@ -115,9 +116,9 @@ def check_condition() -> Literal[True]:
         msg = "This script must be run as root."
         raise PermissionError(msg)
 
-    for bin in (NIX_ENV_BIN, NIX_BIN):
-        if not Path(bin).is_file():
-            msg = f"{bin} does not exist."
+    for bin_ in (NIX_ENV_BIN, NIX_BIN):
+        if not Path(bin_).is_file():
+            msg = f"{bin_} does not exist."
             raise FileNotFoundError(msg)
 
     return True
@@ -132,7 +133,7 @@ class NixGeneration:
         offset_tz: timezone,
         *,
         is_current_profile: bool,
-    ):
+    ) -> None:
         self.number: Final[int] = number
         self.profile_path: Final[Path] = Path(
             PROFILE_PATH, f"system-{number}-link"
@@ -158,14 +159,14 @@ class NixGeneration:
         self.entry_path: Final[Path] = Path(BOOT_ENTRY_PATH, self.entry_name)
 
     @override
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.number} ({self.datetime_.astimezone().isoformat()})"
 
-    def __lt__(self, other: NixGeneration):
+    def __lt__(self, other: NixGeneration) -> bool:
         return self.datetime_ < other.datetime_
 
     @override
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(frozenset({self.datetime_, self.number}))
 
     @override
@@ -197,7 +198,7 @@ class NixGeneration:
             return
 
 
-def get_generations(offset_tz: timezone) -> set[NixGeneration]:
+def get_generations(offset_tz: timezone) -> AbstractSet[NixGeneration]:
     ret: set[NixGeneration] = set()
 
     args = (
