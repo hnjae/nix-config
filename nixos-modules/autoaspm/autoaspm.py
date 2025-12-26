@@ -854,6 +854,16 @@ def main():
         logger.error("%s", e)
         return 1
 
+    # Parse device overrides
+    try:
+        device_mode_map, skip_set = parse_device_overrides(
+            args.device_modes,
+            args.skip_devices,
+        )
+    except ASPMPatcherError as e:
+        logger.error("Invalid device override: %s", e)
+        return 1
+
     try:
         devices = get_aspm_devices()
     except ASPMPatcherError as e:
@@ -883,12 +893,21 @@ def main():
     else:
         logger.info("Mode: auto (maximum supported per device)")
 
+    if device_mode_map:
+        logger.info("Device-specific overrides: %d device(s)", len(device_mode_map))
+    if skip_set:
+        logger.info("Skipping %d device(s)", len(skip_set))
+
     if dry_run:
         logger.info("Running in dry-run mode (use --run to actually patch)")
 
     # Handle patch mode
     patched_count, skipped_count, error_count = handle_patch_mode(
-        devices, requested_mode, dry_run
+        devices,
+        requested_mode,
+        dry_run,
+        device_mode_map,
+        skip_set,
     )
 
     action_word = "would patch" if dry_run else "patched"
