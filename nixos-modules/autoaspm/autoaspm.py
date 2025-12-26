@@ -136,6 +136,7 @@ class PCIDevice:
         self._config_bytes: bytearray | None = None
         self._pcie_cap_offset: int | None = None
         self._device_name: str | None = None
+        self._vendor_device_id: str | None = None
 
     @override
     def __hash__(self) -> int:
@@ -177,6 +178,43 @@ class PCIDevice:
             return lines[0]
         except subprocess.TimeoutExpired:
             msg = f"Timeout while getting device name for {self.addr}"
+            raise DeviceAccessError(msg) from None
+
+    def get_vendor_device_id(self) -> str:
+        """Get vendor:device ID (e.g., '8086:15b8')."""
+        if self._vendor_device_id is None:
+            self._vendor_device_id = self._fetch_vendor_device_id()
+        return self._vendor_device_id
+
+    def _fetch_vendor_device_id(self) -> str:
+        """Fetch vendor:device ID from lspci."""
+        try:
+            result = subprocess.run(
+                ["lspci", "-n", "-s", self.addr],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            if result.returncode != 0:
+                msg = f"Failed to get vendor:device ID for {self.addr}: {result.stderr}"
+                raise DeviceAccessError(msg)
+
+            lines = result.stdout.strip().splitlines()
+            if not lines:
+                msg = f"No device found at {self.addr}"
+                raise DeviceAccessError(msg)
+
+            # Parse output format: "01:00.0 0280: 8086:15b8 (rev 34)"
+            # Extract vendor:device ID using regex
+            match = re.search(r"\s([0-9a-f]{4}:[0-9a-f]{4})", lines[0])
+            if not match:
+                msg = f"Could not parse vendor:device ID from lspci output: {lines[0]}"
+                raise DeviceAccessError(msg)
+
+            return match.group(1)
+        except subprocess.TimeoutExpired:
+            msg = f"Timeout while getting vendor:device ID for {self.addr}"
             raise DeviceAccessError(msg) from None
 
     def read_config_space(self) -> bytearray:
