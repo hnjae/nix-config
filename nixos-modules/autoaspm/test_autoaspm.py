@@ -1041,3 +1041,39 @@ class TestHandlePatchModeDeviceModeOnly:
 
         # Verify patch_aspm was called twice
         assert mock_patch_aspm.call_count == 2
+
+    @patch.object(PCIDevice, "get_current_aspm")
+    @patch.object(PCIDevice, "get_vendor_device_id")
+    @patch.object(PCIDevice, "patch_aspm")
+    def test_skip_device_shows_current_aspm(
+        self, mock_patch_aspm, mock_get_id, mock_get_current_aspm
+    ):
+        """Test that skipped devices display their current ASPM state."""
+        # Create two devices
+        device1 = PCIDevice("01:00.0", ASPM.L0sL1)
+        device2 = PCIDevice("02:00.0", ASPM.L1)
+
+        # Setup mocks
+        mock_get_id.side_effect = ["1022:1502", "8086:15b8"]
+        mock_get_current_aspm.return_value = ASPM.L1
+        mock_patch_aspm.return_value = True
+
+        # Call with device1 in skip list
+        device_mode_map: dict[str, ASPM] = {}
+        skip_set = {"1022:1502"}
+
+        patched, skipped, errors = handle_patch_mode(
+            devices=[device1, device2],
+            requested_mode=ASPM.L0sL1,
+            dry_run=False,
+            device_mode_map=device_mode_map,
+            skip_set=skip_set,
+        )
+
+        # device1 should be skipped, device2 should be patched
+        assert patched == 1
+        assert skipped == 1
+        assert errors == 0
+
+        # Verify get_current_aspm was called for the skipped device
+        assert mock_get_current_aspm.call_count == 1

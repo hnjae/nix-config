@@ -731,9 +731,18 @@ def handle_patch_mode(
 
         # Check skip list
         if vendor_device_id in skip_set:
-            logger.info(
-                "%s (%s): Skipped by user", device.addr, vendor_device_id
-            )
+            try:
+                current_aspm = device.get_current_aspm()
+                logger.info(
+                    "%s (%s): ASPM %s (skipped by user)",
+                    device.addr,
+                    vendor_device_id,
+                    current_aspm.name,
+                )
+            except (CapabilityNotFoundError, DeviceAccessError):
+                logger.info(
+                    "%s (%s): Skipped by user", device.addr, vendor_device_id
+                )
             skipped_count += 1
             continue
 
