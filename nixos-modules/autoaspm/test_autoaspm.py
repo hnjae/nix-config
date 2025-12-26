@@ -699,7 +699,11 @@ class TestParseDeviceOverrides:
 
     def test_parse_device_modes_valid(self):
         """Test parsing valid device-mode arguments."""
-        device_modes = ["8086:15b8=l1", "10de:1234=l0sl1", "1002:abcd=disabled"]
+        device_modes = [
+            "8086:15b8=l1",
+            "10de:1234=l0sl1",
+            "1002:abcd=disabled",
+        ]
         device_mode_map, skip_set = parse_device_overrides(device_modes, None)
 
         assert len(device_mode_map) == 3
@@ -840,9 +844,7 @@ class TestPatchASPMStrictMode:
 
     @patch.object(PCIDevice, "get_link_control_offset")
     @patch.object(PCIDevice, "read_config_space")
-    def test_strict_mode_fails_on_unsupported(
-        self, mock_read, mock_offset
-    ):
+    def test_strict_mode_fails_on_unsupported(self, mock_read, mock_offset):
         """Test strict mode fails if device doesn't support requested mode."""
         config = bytearray(256)
         config[0x50] = ASPM.DISABLED.value

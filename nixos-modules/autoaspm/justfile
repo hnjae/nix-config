@@ -24,3 +24,5 @@ typecheck:
 format:
     direnv exec . ruff check --fix
     direnv exec . ruff format
+    direnv exec . shellharden --replace completions/autoaspm.bash
+    direnv exec . shfmt --write completions/autoaspm.bash

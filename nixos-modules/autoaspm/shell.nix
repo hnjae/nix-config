@@ -14,5 +14,9 @@ pkgs.mkShellNoCC {
         pytest-mock
       ]
     ))
+
+    shellharden
+    shellcheck
+    shfmt
   ];
 }

@@ -402,7 +402,9 @@ class PCIDevice:
                 else:
                     # Safe mode: use intersection of requested and supported modes
                     # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
-                    intersection = self.supported_aspm.value & requested_mode.value
+                    intersection = (
+                        self.supported_aspm.value & requested_mode.value
+                    )
                     if intersection == 0:
                         logger.info(
                             "%s: ASPM %s (skipped, not supported)",
@@ -721,13 +723,17 @@ def handle_patch_mode(
         try:
             vendor_device_id = device.get_vendor_device_id()
         except DeviceAccessError as e:
-            logger.error("%s: Failed to get vendor:device ID - %s", device.addr, e)
+            logger.error(
+                "%s: Failed to get vendor:device ID - %s", device.addr, e
+            )
             error_count += 1
             continue
 
         # Check skip list
         if vendor_device_id in skip_set:
-            logger.info("%s (%s): Skipped by user", device.addr, vendor_device_id)
+            logger.info(
+                "%s (%s): Skipped by user", device.addr, vendor_device_id
+            )
             skipped_count += 1
             continue
 
@@ -743,7 +749,9 @@ def handle_patch_mode(
 
         # Patch with determined mode
         try:
-            if device.patch_aspm(mode_to_apply, dry_run=dry_run, strict=strict):
+            if device.patch_aspm(
+                mode_to_apply, dry_run=dry_run, strict=strict
+            ):
                 patched_count += 1
             else:
                 skipped_count += 1
@@ -917,7 +925,9 @@ def main():  # noqa: C901
         logger.info("Mode: auto (maximum supported per device)")
 
     if device_mode_map:
-        logger.info("Device-specific overrides: %d device(s)", len(device_mode_map))
+        logger.info(
+            "Device-specific overrides: %d device(s)", len(device_mode_map)
+        )
     if skip_set:
         logger.info("Skipping %d device(s)", len(skip_set))
 
