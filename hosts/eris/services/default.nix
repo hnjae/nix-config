@@ -5,5 +5,6 @@
     ./plocate.nix
     ./samba
     ./tailscale.nix
+    ./inkjet-maintenance.nix
   ];
 }
