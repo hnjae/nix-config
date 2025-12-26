@@ -15,11 +15,13 @@ in
   options.my.services.${project} = {
     enable = lib.mkEnableOption "Automatically activate ASPM on all supported devices";
     mode = lib.mkOption {
-      type = lib.types.nullOr (lib.types.enum [
-        "l0s"
-        "l1"
-        "l0sl1"
-      ]);
+      type = lib.types.nullOr (
+        lib.types.enum [
+          "l0s"
+          "l1"
+          "l0sl1"
+        ]
+      );
       default = null;
       description = ''
         Default ASPM mode to set for all devices.
@@ -27,12 +29,14 @@ in
       '';
     };
     deviceModes = lib.mkOption {
-      type = lib.types.attrsOf (lib.types.enum [
-        "l0s"
-        "l1"
-        "l0sl1"
-        "disabled"
-      ]);
+      type = lib.types.attrsOf (
+        lib.types.enum [
+          "l0s"
+          "l1"
+          "l0sl1"
+          "disabled"
+        ]
+      );
       default = { };
       example = {
         "8086:15b8" = "l0sl1";
@@ -70,18 +74,17 @@ in
         baseArgs = [
           "${lib.getExe package}"
           "--run"
-        ] ++ lib.optionals (cfg.mode != null) [
+        ]
+        ++ lib.optionals (cfg.mode != null) [
           "--mode"
           "${cfg.mode}"
         ];
 
         deviceModeArgs = lib.flatten (
-          lib.mapAttrsToList
-            (vendorDevice: mode: [
-              "--device-mode"
-              "${vendorDevice}=${mode}"
-            ])
-            cfg.deviceModes
+          lib.mapAttrsToList (vendorDevice: mode: [
+            "--device-mode"
+            "${vendorDevice}=${mode}"
+          ]) cfg.deviceModes
         );
 
         skipArgs = lib.flatten (
@@ -103,32 +106,33 @@ in
           Nice = 5;
 
           ExecStart = lib.escapeShellArgs allArgs;
+          RemainAfterExit = true;
 
-        LockPersonality = true;
-        MemoryDenyWriteExecute = true;
-        NoNewPrivileges = true;
-        PrivateDevices = false; # Require access to /dev
-        PrivateIPC = true;
-        PrivateMounts = true;
-        PrivateNetwork = true; # No network needed
-        PrivateTmp = true;
-        ProtectClock = true;
-        ProtectControlGroups = true;
-        ProtectHome = true;
-        ProtectHostname = true;
-        ProtectKernelLogs = true;
-        ProtectKernelModules = true;
-        ProtectKernelTunables = false; # Need to write to /sys/bus/pci
-        ProtectProc = "invisible";
-        ProtectSystem = "strict";
-        RemoveIPC = true;
-        RestrictAddressFamilies = "none"; # No network sockets
-        RestrictNamespaces = true;
-        RestrictRealtime = true;
-        RestrictSUIDSGID = true;
-        SystemCallArchitectures = "native";
-        SystemCallFilter = "@system-service";
+          LockPersonality = true;
+          MemoryDenyWriteExecute = true;
+          NoNewPrivileges = true;
+          PrivateDevices = false; # Require access to /dev
+          PrivateIPC = true;
+          PrivateMounts = true;
+          PrivateNetwork = true; # No network needed
+          PrivateTmp = true;
+          ProtectClock = true;
+          ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = false; # Need to write to /sys/bus/pci
+          ProtectProc = "invisible";
+          ProtectSystem = "strict";
+          RemoveIPC = true;
+          RestrictAddressFamilies = "none"; # No network sockets
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          SystemCallArchitectures = "native";
+          SystemCallFilter = "@system-service";
+        };
       };
-    };
   };
 }
