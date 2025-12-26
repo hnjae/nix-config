@@ -118,7 +118,7 @@ All development commands use `direnv exec .` to ensure proper environment setup.
 
 ## Git Commits
 
-Follow Conventional Commits format with `autoaspm` as the scope. Create commits at the end of each task.
+Follow Conventional Commits format with `autoaspm` as the scope. **IMPORTANT: Create commits after each major step, NOT at the end of all tasks.** This provides better git history and allows easier rollback if needed.
 
 Format: `<type>(autoaspm): <description>`
 
@@ -132,12 +132,31 @@ Common types:
 - `style`: Code style changes (formatting, linting)
 - `chore`: Build, dependencies, or maintenance tasks
 
-Examples:
+### Commit Strategy
 
-- `feat(autoaspm): add support for custom ASPM mode validation`
+**Multi-step features should be committed incrementally:**
+
+For example, when implementing vendor:device ID based ASPM configuration:
+1. `feat(autoaspm): add vendor:device ID retrieval to PCIDevice` - After adding the ID retrieval method
+2. `feat(autoaspm): add --device-mode and --skip CLI flags` - After CLI parsing is complete
+3. `feat(autoaspm): add strict mode for explicit ASPM control` - After implementing strict mode
+4. `feat(autoaspm): implement device-specific ASPM overrides` - After handle_patch_mode is updated
+5. `feat(autoaspm): wire up device override logic in main` - After main() integration
+6. `test(autoaspm): add tests for vendor:device ID and overrides` - After tests are written
+7. `feat(autoaspm): add deviceModes and skipDevices to NixOS module` - After module update
+8. `docs(autoaspm): update documentation for device overrides` - After documentation
+
+**Single-step changes can be committed immediately:**
 - `fix(autoaspm): handle missing PCIe capability gracefully`
-- `test(autoaspm): add tests for mode negotiation logic`
+- `style(autoaspm): fix ruff linting issues`
 - `refactor(autoaspm): extract PCI config parsing into helper method`
+
+### Benefits of Incremental Commits
+
+- **Better git history**: Each commit has a clear, focused purpose
+- **Easier code review**: Changes can be reviewed step-by-step
+- **Safer rollback**: Can revert specific steps without losing entire feature
+- **Clearer progress tracking**: Shows incremental progress during implementation
 
 ## NixOS Integration
 
