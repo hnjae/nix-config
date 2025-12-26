@@ -21,13 +21,13 @@ _autoaspm() {
                 COMPREPLY=("${modes[@]/#/${prefix}}")
             else
                 # Suggest vendor:device= format
-                COMPREPLY=( $(compgen -W "VENDOR:DEVICE=" -- "${cur}") )
+                mapfile -t COMPREPLY < <(compgen -W "VENDOR:DEVICE=" -- "${cur}")
             fi
             return 0
             ;;
         --skip)
             # Suggest vendor:device format
-            COMPREPLY=( $(compgen -W "VENDOR:DEVICE" -- "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "VENDOR:DEVICE" -- "${cur}")
             return 0
             ;;
         *)
