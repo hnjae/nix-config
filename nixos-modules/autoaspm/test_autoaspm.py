@@ -915,6 +915,86 @@ class TestPatchASPMStrictMode:
         # Should skip because intersection is 0
         assert result is False
 
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_safe_mode_prevents_lateral_change_l1_to_l0s(
+        self, mock_read, mock_offset
+    ):
+        """Test safe mode prevents lateral change (L1 → L0s)."""
+        config = bytearray(256)
+        config[0x50] = ASPM.L1.value  # Currently L1
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+
+        device = PCIDevice("01:00.0", ASPM.L0sL1)  # Device supports L0sL1
+        # Request L0s when currently L1 - this is lateral change
+        result = device.patch_aspm(ASPM.L0s, strict=False)
+
+        # Should skip (lateral change not allowed in safe mode)
+        assert result is False
+
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_safe_mode_prevents_lateral_change_l0s_to_l1(
+        self, mock_read, mock_offset
+    ):
+        """Test safe mode prevents lateral change (L0s → L1)."""
+        config = bytearray(256)
+        config[0x50] = ASPM.L0s.value  # Currently L0s
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+
+        device = PCIDevice("01:00.0", ASPM.L0sL1)  # Device supports L0sL1
+        # Request L1 when currently L0s - this is lateral change
+        result = device.patch_aspm(ASPM.L1, strict=False)
+
+        # Should skip (lateral change not allowed in safe mode)
+        assert result is False
+
+    @patch.object(PCIDevice, "verify_patch")
+    @patch.object(PCIDevice, "_patch_byte")
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_safe_mode_allows_upgrade_l0s_to_l0sl1(
+        self, mock_read, mock_offset, mock_patch, mock_verify
+    ):
+        """Test safe mode allows upgrade (L0s → L0sL1)."""
+        config = bytearray(256)
+        config[0x50] = ASPM.L0s.value  # Currently L0s
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+        mock_verify.return_value = True
+
+        device = PCIDevice("01:00.0", ASPM.L0sL1)  # Device supports L0sL1
+        # Request L0sL1 when currently L0s - this is upgrade
+        result = device.patch_aspm(ASPM.L0sL1, strict=False, dry_run=False)
+
+        # Should allow (upgrade from L0s to L0sL1)
+        assert result is True
+        mock_patch.assert_called_once()
+
+    @patch.object(PCIDevice, "verify_patch")
+    @patch.object(PCIDevice, "_patch_byte")
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_safe_mode_allows_upgrade_l1_to_l0sl1(
+        self, mock_read, mock_offset, mock_patch, mock_verify
+    ):
+        """Test safe mode allows upgrade (L1 → L0sL1)."""
+        config = bytearray(256)
+        config[0x50] = ASPM.L1.value  # Currently L1
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+        mock_verify.return_value = True
+
+        device = PCIDevice("01:00.0", ASPM.L0sL1)  # Device supports L0sL1
+        # Request L0sL1 when currently L1 - this is upgrade
+        result = device.patch_aspm(ASPM.L0sL1, strict=False, dry_run=False)
+
+        # Should allow (upgrade from L1 to L0sL1)
+        assert result is True
+        mock_patch.assert_called_once()
+
 
 # ============================================================================
 # Handle Patch Mode Tests (Device-Mode Only Behavior)
