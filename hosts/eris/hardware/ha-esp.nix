@@ -53,8 +53,11 @@ in
     description = "Sync EFI system partition for redundancy";
     unitConfig = rec {
       WantedBy = lib.flatten [
-        "multi-user.target"
+        "multi-user.target" # after boot
         (lib.lists.optional config.my.services.nixos-gc.enable "nixos-gc.service")
+        (lib.lists.optional config.my.services.nix-store-gc.enable "nix-store-gc.service")
+        (lib.lists.optional config.services.nix.gc.automatic "nix-gc.service")
+        (lib.lists.optional config.programs.nh.clean.enable "nh-clean.service")
       ];
       Wants = [
         (self.shared.lib.mountpathToUnit "/boot_fallback_a")

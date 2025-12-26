@@ -13,7 +13,7 @@
     ./cpu.nix
     ./network.nix
 
-    ./ha-efi.nix
+    ./ha-esp.nix
     ./gpu.nix
     ./power.nix
   ];
