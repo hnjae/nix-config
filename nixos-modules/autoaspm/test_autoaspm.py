@@ -12,6 +12,7 @@ from autoaspm import (
     CapabilityNotFoundError,
     DeviceAccessError,
     parse_device_overrides,
+    handle_patch_mode,
 )
 
 
@@ -913,3 +914,130 @@ class TestPatchASPMStrictMode:
 
         # Should skip because intersection is 0
         assert result is False
+
+
+# ============================================================================
+# Handle Patch Mode Tests (Device-Mode Only Behavior)
+# ============================================================================
+
+
+class TestHandlePatchModeDeviceModeOnly:
+    """Test handle_patch_mode() when only device-mode is specified."""
+
+    @patch.object(PCIDevice, "get_vendor_device_id")
+    @patch.object(PCIDevice, "patch_aspm")
+    def test_device_mode_only_patches_specified_device(
+        self, mock_patch_aspm, mock_get_id
+    ):
+        """Test that only device with --device-mode is patched when no --mode specified."""
+        # Create two devices
+        device1 = PCIDevice("01:00.0", ASPM.L0sL1)
+        device2 = PCIDevice("02:00.0", ASPM.L1)
+
+        # Setup mocks
+        mock_get_id.side_effect = ["1022:1668", "8086:15b8"]
+        mock_patch_aspm.return_value = True
+
+        # Call with no requested_mode, only device override for device1
+        device_mode_map = {"1022:1668": ASPM.L0sL1}
+        skip_set: set[str] = set()
+
+        patched, skipped, errors = handle_patch_mode(
+            devices=[device1, device2],
+            requested_mode=None,  # No default mode
+            dry_run=False,
+            device_mode_map=device_mode_map,
+            skip_set=skip_set,
+        )
+
+        # device1 should be patched with strict mode
+        # device2 should be skipped (no override, no default mode)
+        assert patched == 1
+        assert skipped == 1
+        assert errors == 0
+
+        # Verify patch_aspm was called only once for device1
+        assert mock_patch_aspm.call_count == 1
+        # Verify it was called with strict=True for device1
+        call_args = mock_patch_aspm.call_args_list[0]
+        assert call_args[0][0] == ASPM.L0sL1  # requested_mode
+        assert call_args[1]["strict"] is True
+
+    @patch.object(PCIDevice, "get_vendor_device_id")
+    @patch.object(PCIDevice, "patch_aspm")
+    def test_device_mode_with_default_mode_patches_all(
+        self, mock_patch_aspm, mock_get_id
+    ):
+        """Test that all devices are patched when both --mode and --device-mode specified."""
+        # Create two devices
+        device1 = PCIDevice("01:00.0", ASPM.L0sL1)
+        device2 = PCIDevice("02:00.0", ASPM.L1)
+
+        # Setup mocks
+        mock_get_id.side_effect = ["1022:1668", "8086:15b8"]
+        mock_patch_aspm.return_value = True
+
+        # Call with requested_mode=L1 and device override for device1
+        device_mode_map = {"1022:1668": ASPM.L0sL1}
+        skip_set: set[str] = set()
+
+        patched, skipped, errors = handle_patch_mode(
+            devices=[device1, device2],
+            requested_mode=ASPM.L1,  # Default mode for all devices
+            dry_run=False,
+            device_mode_map=device_mode_map,
+            skip_set=skip_set,
+        )
+
+        # Both devices should be patched
+        assert patched == 2
+        assert skipped == 0
+        assert errors == 0
+
+        # Verify patch_aspm was called twice
+        assert mock_patch_aspm.call_count == 2
+
+        # First call (device1): strict mode with L0sL1
+        call1 = mock_patch_aspm.call_args_list[0]
+        assert call1[0][0] == ASPM.L0sL1
+        assert call1[1]["strict"] is True
+
+        # Second call (device2): safe mode with L1
+        call2 = mock_patch_aspm.call_args_list[1]
+        assert call2[0][0] == ASPM.L1
+        assert call2[1]["strict"] is False
+
+    @patch.object(PCIDevice, "get_vendor_device_id")
+    @patch.object(PCIDevice, "patch_aspm")
+    def test_multiple_device_modes_without_default(
+        self, mock_patch_aspm, mock_get_id
+    ):
+        """Test multiple --device-mode without --mode only patches specified devices."""
+        # Create three devices
+        device1 = PCIDevice("01:00.0", ASPM.L0sL1)
+        device2 = PCIDevice("02:00.0", ASPM.L1)
+        device3 = PCIDevice("03:00.0", ASPM.L0s)
+
+        # Setup mocks
+        mock_get_id.side_effect = ["1022:1668", "8086:15b8", "10de:1234"]
+        mock_patch_aspm.return_value = True
+
+        # Call with no requested_mode, device overrides for device1 and device3
+        device_mode_map = {"1022:1668": ASPM.L0sL1, "10de:1234": ASPM.DISABLED}
+        skip_set: set[str] = set()
+
+        patched, skipped, errors = handle_patch_mode(
+            devices=[device1, device2, device3],
+            requested_mode=None,  # No default mode
+            dry_run=False,
+            device_mode_map=device_mode_map,
+            skip_set=skip_set,
+        )
+
+        # device1 and device3 should be patched, device2 should be skipped
+        assert patched == 2
+        assert skipped == 1
+        assert errors == 0
+
+        # Verify patch_aspm was called twice
+        assert mock_patch_aspm.call_count == 2

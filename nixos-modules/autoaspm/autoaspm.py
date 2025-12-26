@@ -747,6 +747,16 @@ def handle_patch_mode(
             mode_to_apply = requested_mode
             strict = False
 
+            # If no default mode and no device-specific override, skip this device
+            if requested_mode is None:
+                logger.info(
+                    "%s (%s): Skipped (no default mode, no device override)",
+                    device.addr,
+                    vendor_device_id,
+                )
+                skipped_count += 1
+                continue
+
         # Patch with determined mode
         try:
             if device.patch_aspm(
@@ -868,7 +878,12 @@ Notes:
     args = parser.parse_args(namespace=ArgsNamespace())
 
     # If no meaningful arguments provided, print help and exit
-    if args.mode is None and not args.list_only:
+    # --device-mode is considered meaningful even without --mode
+    if (
+        args.mode is None
+        and not args.list_only
+        and not args.device_modes
+    ):
         parser.print_help()
         sys.exit(0)
 
