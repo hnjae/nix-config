@@ -125,4 +125,10 @@ pkgs:
       ];
     }
   ))
+
+  ######################
+  # Test 중
+  ######################
+  pkgs.timg # image/video viewer in terminal
+  pkgs.glow # markdown previewer
 ])

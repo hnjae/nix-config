@@ -20,7 +20,7 @@
 
   services.udev.extraRules = ''
     # Wake on lan
-    ACTION=="add", SUBSYSTEM=="net", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
+    ACTION=="add|change", SUBSYSTEM=="net", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
 
     SUBSYSTEM=="scsi_host", ACTION=="add", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"
 
@@ -28,12 +28,10 @@
     SUBSYSTEM=="pci", ATTR{power/control}="auto"
     SUBSYSTEM=="ata_port", KERNEL=="ata*", ATTR{device/power/control}="auto"
 
-    # Block Devices Power Management
+    # SATA/SAS Block Devices Power Management
     # Does not work as expected
     # SUBSYSTEM=="block", KERNEL=="sd[a-z]", TEST=="power/control", ATTR{power/control}="auto"
-    # Does not work as expected
-    # ACTION=="add|change", KERNEL=="sd[a-z]", TEST=="power/control", ATTR{power/control}="auto"
-    # Test this 2025-12-09
+    # WORKS:
     ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{device/power/control}="auto"
 
     # HDD Spindown and APM Settings

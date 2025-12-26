@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   boot.kernelParams = [
     "nohibernate"
@@ -8,17 +8,27 @@
     options snd_hda_intel power_save=1
   '';
 
+  environment.defaultPackages = [
+    pkgs.powertop # requires non-hardened kernel
+    config.boot.kernelPackages.turbostat
+  ];
+
   powerManagement.scsiLinkPolicy = "med_power_with_dipm";
 
   # TODO:
   # ACTION=="add", SUBSYSTEM=="net", NAME=="en*", RUN+="/usr/bin/ethtool -s $name wol g"
   services.udev.extraRules = ''
     # Wake on lan
-    ACTION=="add", SUBSYSTEM=="net", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
+    ACTION=="add|change", SUBSYSTEM=="net", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
 
+    # PCI Runtime Power Management
     SUBSYSTEM=="pci", ATTR{power/control}="auto"
     SUBSYSTEM=="ata_port", KERNEL=="ata*", ATTR{device/power/control}="auto"
 
+    # SATA/SAS Block Devices Power Management
+    ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{device/power/control}="auto"
+
+    # HDD Spindown and APM Settings
     ACTION=="add|change", KERNEL=="sd[a-z]", ATTRS{queue/rotational}=="1", RUN+="${pkgs.hdparm}/sbin/hdparm -B 128 -S 248 /dev/%k"
 
     ###########################
