@@ -10,6 +10,7 @@ flakeArgs@{ importApply, ... }:
     ./login-defs.nix
     ./polkit.nix
     ./samba.nix
+    ./scheduler.nix
     ./shell.nix
     ./sops.nix
     ./sysctl.nix
