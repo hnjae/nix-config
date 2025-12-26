@@ -15,12 +15,16 @@ in
   options.my.services.${project} = {
     enable = lib.mkEnableOption "Automatically activate ASPM on all supported devices";
     mode = lib.mkOption {
-      type = lib.types.enum [
+      type = lib.types.nullOr (lib.types.enum [
         "l0s"
         "l1"
         "l0sl1"
-      ];
-      description = "Default ASPM mode to set for all devices";
+      ]);
+      default = null;
+      description = ''
+        Default ASPM mode to set for all devices.
+        If null, only devices specified in deviceModes will be patched.
+      '';
     };
     deviceModes = lib.mkOption {
       type = lib.types.attrsOf (lib.types.enum [
@@ -50,6 +54,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.mode != null || cfg.deviceModes != { };
+        message = "autoaspm: either mode or deviceModes must be specified";
+      }
+    ];
+
     environment.systemPackages = [
       package
     ];
@@ -59,6 +70,7 @@ in
         baseArgs = [
           "${lib.getExe package}"
           "--run"
+        ] ++ lib.optionals (cfg.mode != null) [
           "--mode"
           "${cfg.mode}"
         ];
