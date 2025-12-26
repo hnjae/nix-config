@@ -151,6 +151,35 @@ For example, when implementing vendor:device ID based ASPM configuration:
 - `style(autoaspm): fix ruff linting issues`
 - `refactor(autoaspm): extract PCI config parsing into helper method`
 
+### TDD + Incremental Commits
+
+When following TDD (Test-Driven Development), combine it with incremental commits:
+
+**For each feature component:**
+
+1. `test(autoaspm): add tests for <feature>` - Write failing tests first
+2. `feat(autoaspm): implement <feature>` - Implement code to pass tests
+3. `refactor(autoaspm): improve <feature> implementation` - Refactor if needed (optional)
+
+**Example: Adding device name filtering**
+
+1. `test(autoaspm): add tests for device name filtering`
+   - Write tests for filter_devices_by_name()
+   - Tests fail (no implementation yet)
+
+2. `feat(autoaspm): implement device name filtering`
+   - Add filter_devices_by_name() function
+   - Tests now pass
+
+3. `refactor(autoaspm): optimize device filtering regex`
+   - Improve implementation
+   - Tests still pass
+
+This approach gives you:
+- Clear test/implementation separation in git history
+- Easy rollback of implementation without losing tests
+- Documentation of what was tested vs what was implemented
+
 ### Benefits of Incremental Commits
 
 - **Better git history**: Each commit has a clear, focused purpose
@@ -199,3 +228,56 @@ Tests in `test_autoaspm.py` use mocking to avoid requiring actual PCI devices:
 - Test device override parsing and validation
 - Test strict vs safe mode behavior
 - 63 tests total covering all major functionality
+
+### Test-Driven Development (TDD)
+
+**IMPORTANT: Follow TDD approach for new features.**
+
+1. **Write tests first**, then implement the feature
+2. Run tests to see them fail (Red)
+3. Implement minimal code to make tests pass (Green)
+4. Refactor code while keeping tests passing (Refactor)
+
+#### TDD Workflow Example
+
+When adding a new feature (e.g., device filtering by name):
+
+```python
+# Step 1: Write failing tests first
+class TestDeviceFiltering:
+    def test_filter_by_device_name(self):
+        devices = [...]
+        filtered = filter_devices_by_name(devices, "Intel")
+        assert len(filtered) == expected_count
+
+    def test_filter_invalid_pattern(self):
+        with pytest.raises(ValueError):
+            filter_devices_by_name(devices, "[invalid")
+
+# Step 2: Run tests - they should fail
+# just test
+
+# Step 3: Implement minimal code to pass tests
+def filter_devices_by_name(devices, pattern):
+    # Implementation here
+    pass
+
+# Step 4: Run tests - they should pass
+# just test
+
+# Step 5: Refactor if needed, tests still pass
+```
+
+#### Benefits of TDD
+
+- **Better design**: Writing tests first forces you to think about the API
+- **Fewer bugs**: Edge cases are considered upfront
+- **Refactoring confidence**: Tests ensure changes don't break functionality
+- **Living documentation**: Tests show how the code is meant to be used
+
+#### When to Skip TDD
+
+TDD is strongly recommended for all features, but may be skipped for:
+- Quick bug fixes where the bug itself serves as the test case
+- Exploratory code that will be thrown away
+- Code that's difficult to test in isolation (should be rare with good design)
