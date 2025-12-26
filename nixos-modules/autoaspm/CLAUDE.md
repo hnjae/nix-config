@@ -68,7 +68,9 @@ All development commands use `direnv exec .` to ensure proper environment setup.
 
 1. **Safe Mode** (--mode, strict=False):
    - Uses intersection of requested and supported modes
+   - Only allows upgrades (target must include current state)
    - Never downgrades (L0sL1 → L1 is skipped)
+   - Never allows lateral changes (L0s ↔ L1 is skipped)
    - Cannot disable ASPM
    - Appropriate for system-wide default settings
 

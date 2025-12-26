@@ -363,8 +363,8 @@ class PCIDevice:
             actual_value = new_bytes[position] & 0b11  # Check only ASPM bits
             return actual_value == expected_value
 
-    # NOTE: C901: complex-structure, PLR0912: too-many-branches
-    def patch_aspm(  # noqa: C901, PLR0912
+    # NOTE: C901: complex-structure, PLR0911: too-many-returns, PLR0912: too-many-branches
+    def patch_aspm(  # noqa: C901, PLR0911, PLR0912
         self,
         requested_mode: ASPM | None = None,
         *,
@@ -449,6 +449,21 @@ class PCIDevice:
                     self.addr,
                     current_aspm.name,
                     requested_mode.name,
+                )
+                return False
+
+            # If target doesn't include current, this is a lateral change (e.g., L1 → L0s)
+            # Skip this check in strict mode to allow lateral changes
+            if (
+                not strict
+                and requested_mode is not None
+                and not target_aspm.includes(current_aspm)
+            ):
+                logger.info(
+                    "%s: ASPM %s (skipped, would change to %s - use --device-mode for explicit control)",
+                    self.addr,
+                    current_aspm.name,
+                    target_aspm.name,
                 )
                 return False
 
@@ -819,7 +834,9 @@ Examples:
 
 Device Override Behavior:
   --mode (Safe mode):
+    - Only allows upgrades (e.g., L0s → L0sL1, L1 → L0sL1)
     - Never downgrades ASPM (L0sL1 → L1 is skipped)
+    - Never allows lateral changes (L0s ↔ L1 is skipped)
     - Never disables ASPM (cannot set to DISABLED)
     - Uses intersection when device doesn't fully support requested mode
 
