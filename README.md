@@ -31,6 +31,9 @@
 `services`
 : systemd 서비스
 
+`timers`
+: systemd-timers 유닛
+
 `hardware`
 : 하드웨어 관련
 : `hardware-configuration.nix` 에 들어가는 내용.

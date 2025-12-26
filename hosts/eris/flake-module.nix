@@ -58,8 +58,10 @@ in
 
       ./config
       ./hardware
-      ./serve-encrypted
       ./services
+      ./timers
+
+      ./serve-encrypted
     ];
 
     specialArgs = {
