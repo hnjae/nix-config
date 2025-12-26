@@ -772,17 +772,40 @@ def parse_args() -> ArgsNamespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s --list           List ASPM-capable devices
-  %(prog)s --mode l0s       Simulate enabling L0s (dry-run)
-  %(prog)s --mode l1 --run  Actually enable L1 on devices that support it
-  %(prog)s --mode l0sl1     Simulate enabling L0s+L1 (dry-run)
-  %(prog)s --list --verbose List devices with detailed information
+  %(prog)s --list
+      List ASPM-capable devices with vendor:device IDs
+
+  %(prog)s --mode l1
+      Simulate enabling L1 on all devices (dry-run)
+
+  %(prog)s --mode l1 --run
+      Actually enable L1 on all devices that support it
+
+  %(prog)s --mode l1 --device-mode 8086:15b8=l0sl1 --run
+      Enable L1 by default, but use L0sL1 for Intel WiFi (8086:15b8)
+
+  %(prog)s --mode l1 --device-mode 10de:1234=disabled --skip 8086:9999 --run
+      Enable L1 by default, disable NVIDIA GPU, skip device 8086:9999
+
+  %(prog)s --list --verbose
+      List devices with detailed information
+
+Device Override Behavior:
+  --mode (Safe mode):
+    - Never downgrades ASPM (L0sL1 → L1 is skipped)
+    - Never disables ASPM (cannot set to DISABLED)
+    - Uses intersection when device doesn't fully support requested mode
+
+  --device-mode (Strict mode):
+    - Allows downgrade (L0sL1 → L1 is applied)
+    - Allows disable (can set to DISABLED)
+    - Fails if device doesn't support exact requested mode
+    - Forces exact mode specified by user
 
 Notes:
   - By default, --mode performs a dry-run simulation. Use --run to actually patch.
-  - If a device is already in L0sL1 state and you request L1 only,
-    the device will be skipped (not downgraded).
-  - Requesting a mode the device doesn't support will skip that device.
+  - Use --list to find vendor:device IDs for your devices.
+  - Device-specific overrides (--device-mode, --skip) take precedence over --mode.
 """,
     )
 
