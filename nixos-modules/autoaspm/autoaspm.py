@@ -573,6 +573,76 @@ def get_aspm_devices() -> AbstractSet[PCIDevice]:
     return devices
 
 
+def parse_device_overrides(
+    device_modes: list[str] | None,
+    skip_devices: list[str] | None,
+) -> tuple[dict[str, ASPM], set[str]]:
+    """Parse device mode overrides and skip list.
+
+    Args:
+        device_modes: List of "vendor:device=mode" strings
+        skip_devices: List of "vendor:device" strings
+
+    Returns:
+        Tuple of (device_mode_map, skip_set)
+
+    Raises:
+        ASPMPatcherError: If format is invalid
+    """
+    device_mode_map: dict[str, ASPM] = {}
+    skip_set: set[str] = set()
+
+    # Regex for vendor:device format (4-digit hex : 4-digit hex)
+    vendor_device_pattern = re.compile(r"^[0-9a-f]{4}:[0-9a-f]{4}$")
+
+    # Parse --device-mode arguments
+    if device_modes:
+        for entry in device_modes:
+            if "=" not in entry:
+                msg = f"Invalid --device-mode format: '{entry}' (expected VENDOR:DEVICE=MODE)"
+                raise ASPMPatcherError(msg)
+
+            vendor_device, mode_str = entry.split("=", 1)
+            vendor_device = vendor_device.lower()
+
+            # Validate vendor:device format
+            if not vendor_device_pattern.match(vendor_device):
+                msg = (
+                    f"Invalid vendor:device format: '{vendor_device}' "
+                    f"(expected format: 8086:15b8)"
+                )
+                raise ASPMPatcherError(msg)
+
+            # Validate and parse ASPM mode
+            try:
+                aspm_mode = ASPM.from_string(mode_str)
+            except KeyError:
+                msg = (
+                    f"Invalid ASPM mode: '{mode_str}' "
+                    f"(valid modes: l0s, l1, l0sl1, disabled)"
+                )
+                raise ASPMPatcherError(msg) from None
+
+            device_mode_map[vendor_device] = aspm_mode
+
+    # Parse --skip arguments
+    if skip_devices:
+        for vendor_device in skip_devices:
+            vendor_device = vendor_device.lower()
+
+            # Validate vendor:device format
+            if not vendor_device_pattern.match(vendor_device):
+                msg = (
+                    f"Invalid vendor:device format: '{vendor_device}' "
+                    f"(expected format: 8086:15b8)"
+                )
+                raise ASPMPatcherError(msg)
+
+            skip_set.add(vendor_device)
+
+    return (device_mode_map, skip_set)
+
+
 def handle_list_mode(
     devices: Iterable[PCIDevice], *, verbose: bool = False
 ) -> None:
@@ -638,6 +708,8 @@ class ArgsNamespace(argparse.Namespace):
     list_only: bool = False
     run: bool = False
     verbose: bool = False
+    device_modes: list[str] | None = None
+    skip_devices: list[str] | None = None
 
 
 def parse_args() -> ArgsNamespace:
@@ -691,6 +763,22 @@ Notes:
         "-v",
         action="store_true",
         help="Show detailed device information",
+    )
+
+    _ = parser.add_argument(
+        "--device-mode",
+        action="append",
+        dest="device_modes",
+        metavar="VENDOR:DEVICE=MODE",
+        help="Set ASPM mode for specific device (can be repeated). Format: 8086:15b8=l1",
+    )
+
+    _ = parser.add_argument(
+        "--skip",
+        action="append",
+        dest="skip_devices",
+        metavar="VENDOR:DEVICE",
+        help="Skip patching for specific device (can be repeated). Format: 8086:15b8",
     )
 
     args = parser.parse_args(namespace=ArgsNamespace())
