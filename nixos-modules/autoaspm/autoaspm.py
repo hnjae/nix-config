@@ -24,7 +24,6 @@ from typing import TYPE_CHECKING, ClassVar, final, override
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-    from collections.abc import Set as AbstractSet
 
 
 class SystemdFormatter(logging.Formatter):
@@ -149,6 +148,13 @@ class PCIDevice:
         if not isinstance(other, PCIDevice):
             return NotImplemented
         return self.addr == other.addr
+
+    def __lt__(self, other: object) -> bool:
+        """Compare devices based on PCI address for sorting."""
+        if not isinstance(other, PCIDevice):
+            return NotImplemented
+
+        return self.addr < other.addr
 
     def get_name(self) -> str:
         """Get device name from PCI address."""
@@ -549,7 +555,7 @@ def check_prerequisites() -> None:
             raise ASPMPatcherError(msg)
 
 
-def get_aspm_devices() -> AbstractSet[PCIDevice]:
+def get_aspm_devices() -> list[PCIDevice]:
     """Get list of PCI devices that support ASPM."""
     pcie_addr_regex = r"([0-9a-f]{2}:[0-9a-f]{2}\.[0-9a-f])"
 
@@ -577,7 +583,7 @@ def get_aspm_devices() -> AbstractSet[PCIDevice]:
         x + y for x, y in zip(lspci_arr[0::2], lspci_arr[1::2], strict=True)
     ]
 
-    devices: set[PCIDevice] = set()
+    devices: list[PCIDevice] = []
 
     for dev in lspci_arr:
         addr_match = re.search(pcie_addr_regex, dev)
@@ -596,7 +602,7 @@ def get_aspm_devices() -> AbstractSet[PCIDevice]:
             try:
                 aspm_mode_str = aspm_support[0].replace(" ", "")
                 aspm_mode = ASPM[aspm_mode_str]
-                devices.add(PCIDevice(device_addr, aspm_mode))
+                devices.append(PCIDevice(device_addr, aspm_mode))
             except KeyError:
                 logger.warning(
                     "%s: Unknown ASPM mode '%s', skipping",
@@ -605,7 +611,7 @@ def get_aspm_devices() -> AbstractSet[PCIDevice]:
                 )
                 continue
 
-    return devices
+    return sorted(devices)
 
 
 def parse_device_overrides(
@@ -905,11 +911,7 @@ Notes:
 
     # If no meaningful arguments provided, print help and exit
     # --device-mode is considered meaningful even without --mode
-    if (
-        args.mode is None
-        and not args.list_only
-        and not args.device_modes
-    ):
+    if args.mode is None and not args.list_only and not args.device_modes:
         parser.print_help()
         sys.exit(0)
 
