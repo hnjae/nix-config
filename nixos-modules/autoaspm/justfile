@@ -3,6 +3,7 @@
 set fallback := true
 
 alias fmt := format
+alias lint := check
 
 _:
     @just --list
@@ -10,16 +11,12 @@ _:
 build:
     nix build '.#autoaspm'
 
-check: lint typecheck test
+check:
+    direnv exec . ruff check
+    direnv exec . ty check
 
 test:
     direnv exec . pytest test_autoaspm.py -v
-
-lint:
-    direnv exec . ruff check
-
-typecheck:
-    direnv exec . ty check
 
 format:
     direnv exec . ruff check --fix
