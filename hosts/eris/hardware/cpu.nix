@@ -1,4 +1,4 @@
-# CPU: AMD 5650GE (Zen 3)
+# CPU: AMD 5650GE (Zen 3) / 6C12T
 {
   config,
   ...
@@ -7,9 +7,7 @@
   nixpkgs.hostPlatform = "x86_64-linux";
   boot.kernelModules = [ "kvm-amd" ];
 
-  # 6C12T
-  nix.settings.max-jobs = 6;
-  nix.settings.cores = 12;
+  nix.settings.cores = 6;
 
   hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
   programs.ryzen-monitor-ng.enable = true;

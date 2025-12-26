@@ -15,6 +15,8 @@ in
         "flakes"
       ];
 
+      max-jobs = 4; # max concurrent build
+
       # make builders to use cache
       builders-use-substitutes = lib.mkOverride 999 true;
       auto-optimise-store = lib.mkOverride 999 false;

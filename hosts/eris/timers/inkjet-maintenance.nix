@@ -144,10 +144,8 @@ in
           RestrictRealtime = true;
           RestrictSUIDSGID = true;
           SystemCallArchitectures = "native"; # 불필요한 아키텍처 syscall 차단
-          SystemCallFilter = [
-            # NOTE: run `systemd-analyze syscall-filter @system-service` for more details. <2025-12-26>
-            "@system-service"
-          ];
+          SystemCallFilter = "@system-service";
+          # NOTE: run `systemd-analyze syscall-filter @system-service` for more details. <2025-12-26>
         };
       };
     };

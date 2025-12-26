@@ -4,7 +4,6 @@
   nixpkgs.hostPlatform = "x86_64-linux";
 
   # 6C12T
-  nix.settings.max-jobs = 4;
   nix.settings.cores = 6;
 
   hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;

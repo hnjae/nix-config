@@ -30,7 +30,6 @@
   ];
 
   # 8c16t cpu
-  nix.settings.max-jobs = 4; # max concurrent build
   nix.settings.cores = 8;
 
   boot.kernelParams = [

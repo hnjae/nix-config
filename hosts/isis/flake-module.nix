@@ -56,6 +56,7 @@ in
       ./config
       ./hardware
       ./services
+      ./timers
     ];
 
     specialArgs = {

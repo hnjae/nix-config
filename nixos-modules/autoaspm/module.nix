@@ -45,35 +45,30 @@ in
           "${cfg.mode}"
         ];
 
-        # Security hardening
-        ProtectSystem = "strict";
-        ProtectHome = true;
-        PrivateTmp = true;
-        PrivateNetwork = true; # No network needed
-
-        # Need access to PCI devices
-        PrivateDevices = false;
-
-        # Restrict capabilities
-        NoNewPrivileges = true;
-        ProtectKernelTunables = false; # Need to write to /sys/bus/pci
-        ProtectKernelModules = true;
-        ProtectKernelLogs = true;
-        ProtectControlGroups = true;
-
-        # Restrict system calls
-        SystemCallFilter = "@system-service";
-        SystemCallArchitectures = "native";
-
-        # Additional restrictions
         LockPersonality = true;
+        MemoryDenyWriteExecute = true;
+        NoNewPrivileges = true;
+        PrivateDevices = false; # Require access to /dev
+        PrivateIPC = true;
+        PrivateMounts = true;
+        PrivateNetwork = true; # No network needed
+        PrivateTmp = true;
+        ProtectClock = true;
+        ProtectControlGroups = true;
+        ProtectHome = true;
+        ProtectHostname = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = false; # Need to write to /sys/bus/pci
+        ProtectProc = "invisible";
+        ProtectSystem = "strict";
+        RemoveIPC = true;
+        RestrictAddressFamilies = "none"; # No network sockets
+        RestrictNamespaces = true;
         RestrictRealtime = true;
         RestrictSUIDSGID = true;
-        RestrictNamespaces = true;
-        RestrictAddressFamilies = "none"; # No network sockets
-
-        # Memory protections
-        MemoryDenyWriteExecute = true;
+        SystemCallArchitectures = "native";
+        SystemCallFilter = "@system-service";
       };
     };
   };
