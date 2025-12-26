@@ -365,19 +365,24 @@ class PCIDevice:
 
     # NOTE: C901: complex-structure, PLR0912: too-many-branches
     def patch_aspm(  # noqa: C901, PLR0912
-        self, requested_mode: ASPM | None = None, *, dry_run: bool = False
+        self,
+        requested_mode: ASPM | None = None,
+        *,
+        dry_run: bool = False,
+        strict: bool = False,
     ) -> bool:
         """Patch ASPM settings for this device.
 
         Args:
             requested_mode: ASPM mode requested by user (None = use maximum supported)
             dry_run: If True, simulate without actually patching (default: False)
+            strict: If True, enforce exact mode and allow downgrade/disable (default: False)
 
         Returns:
             True if patched/would patch, False if already set or skipped
 
         Raises:
-            ASPMPatcherError: When patching fails
+            ASPMPatcherError: When patching fails or device doesn't support requested mode in strict mode
         """
         try:
             # Determine target ASPM mode
@@ -385,17 +390,27 @@ class PCIDevice:
                 # If no request, use maximum supported mode
                 target_aspm = self.supported_aspm
             else:
-                # Use intersection of requested and supported modes
-                # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
-                intersection = self.supported_aspm.value & requested_mode.value
-                if intersection == 0:
-                    logger.info(
-                        "%s: ASPM %s (skipped, not supported)",
-                        self.addr,
-                        self.supported_aspm.name,
-                    )
-                    return False
-                target_aspm = ASPM(intersection)
+                if strict:
+                    # Strict mode: fail if device doesn't support exact mode
+                    if not self.supported_aspm.supports(requested_mode):
+                        msg = (
+                            f"Device supports {self.supported_aspm.name} "
+                            f"but {requested_mode.name} was requested"
+                        )
+                        raise ASPMPatcherError(msg)
+                    target_aspm = requested_mode
+                else:
+                    # Safe mode: use intersection of requested and supported modes
+                    # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
+                    intersection = self.supported_aspm.value & requested_mode.value
+                    if intersection == 0:
+                        logger.info(
+                            "%s: ASPM %s (skipped, not supported)",
+                            self.addr,
+                            self.supported_aspm.name,
+                        )
+                        return False
+                    target_aspm = ASPM(intersection)
 
             # Read config space
             endpoint_bytes = self.read_config_space()
@@ -421,8 +436,11 @@ class PCIDevice:
                 return False
 
             # If current state already includes requested mode (e.g., L0sL1 when only L1 requested)
-            if requested_mode is not None and current_aspm.includes(
-                requested_mode
+            # Skip this check in strict mode to allow downgrade
+            if (
+                not strict
+                and requested_mode is not None
+                and current_aspm.includes(requested_mode)
             ):
                 logger.info(
                     "%s: ASPM %s (skipped, includes %s)",
