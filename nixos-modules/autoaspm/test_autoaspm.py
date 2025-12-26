@@ -7,9 +7,11 @@ import pytest
 
 from autoaspm import (
     ASPM,
+    ASPMPatcherError,
     PCIDevice,
     CapabilityNotFoundError,
     DeviceAccessError,
+    parse_device_overrides,
 )
 
 
@@ -613,3 +615,299 @@ class TestIntegration:
 
         assert "Network controller" in name
         assert len(config) >= 256
+
+
+# ============================================================================
+# Vendor:Device ID Tests
+# ============================================================================
+
+
+class TestPCIDeviceGetVendorDeviceId:
+    """Test PCIDevice.get_vendor_device_id() method."""
+
+    @patch("subprocess.run")
+    def test_get_vendor_device_id_success(self, mock_run):
+        """Test successful vendor:device ID retrieval."""
+        mock_run.return_value = Mock(
+            returncode=0,
+            stdout="01:00.0 0280: 8086:15b8 (rev 34)\n",
+        )
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        vendor_device_id = device.get_vendor_device_id()
+        assert vendor_device_id == "8086:15b8"
+        mock_run.assert_called_once()
+
+    @patch("subprocess.run")
+    def test_get_vendor_device_id_caching(self, mock_run):
+        """Test that vendor:device ID is cached."""
+        mock_run.return_value = Mock(
+            returncode=0,
+            stdout="01:00.0 0280: 8086:15b8 (rev 34)\n",
+        )
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        id1 = device.get_vendor_device_id()
+        id2 = device.get_vendor_device_id()
+        assert id1 == id2 == "8086:15b8"
+        # Should only be called once due to caching
+        assert mock_run.call_count == 1
+
+    @patch("subprocess.run")
+    def test_get_vendor_device_id_command_failure(self, mock_run):
+        """Test handling of lspci failure."""
+        mock_run.return_value = Mock(returncode=1, stderr="Device not found")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        with pytest.raises(
+            DeviceAccessError, match="Failed to get vendor:device ID"
+        ):
+            device.get_vendor_device_id()
+
+    @patch("subprocess.run")
+    def test_get_vendor_device_id_no_output(self, mock_run):
+        """Test handling of empty lspci output."""
+        mock_run.return_value = Mock(returncode=0, stdout="")
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        with pytest.raises(DeviceAccessError, match="No device found"):
+            device.get_vendor_device_id()
+
+    @patch("subprocess.run")
+    def test_get_vendor_device_id_parse_failure(self, mock_run):
+        """Test handling of unparseable output."""
+        mock_run.return_value = Mock(
+            returncode=0,
+            stdout="01:00.0 Invalid output format\n",
+        )
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        with pytest.raises(DeviceAccessError, match="Could not parse"):
+            device.get_vendor_device_id()
+
+    @patch("subprocess.run")
+    def test_get_vendor_device_id_timeout(self, mock_run):
+        """Test handling of subprocess timeout."""
+        mock_run.side_effect = subprocess.TimeoutExpired("lspci", 10)
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        with pytest.raises(DeviceAccessError, match="Timeout"):
+            device.get_vendor_device_id()
+
+
+# ============================================================================
+# Device Override Parsing Tests
+# ============================================================================
+
+
+class TestParseDeviceOverrides:
+    """Test parse_device_overrides() function."""
+
+    def test_parse_device_modes_valid(self):
+        """Test parsing valid device-mode arguments."""
+        device_modes = ["8086:15b8=l1", "10de:1234=l0sl1", "1002:abcd=disabled"]
+        device_mode_map, skip_set = parse_device_overrides(device_modes, None)
+
+        assert len(device_mode_map) == 3
+        assert device_mode_map["8086:15b8"] == ASPM.L1
+        assert device_mode_map["10de:1234"] == ASPM.L0sL1
+        assert device_mode_map["1002:abcd"] == ASPM.DISABLED
+        assert len(skip_set) == 0
+
+    def test_parse_skip_devices_valid(self):
+        """Test parsing valid skip arguments."""
+        skip_devices = ["8086:15b8", "10de:1234"]
+        device_mode_map, skip_set = parse_device_overrides(None, skip_devices)
+
+        assert len(device_mode_map) == 0
+        assert skip_set == {"8086:15b8", "10de:1234"}
+
+    def test_parse_both_modes_and_skip(self):
+        """Test parsing both device-mode and skip arguments."""
+        device_modes = ["8086:15b8=l1"]
+        skip_devices = ["10de:1234"]
+        device_mode_map, skip_set = parse_device_overrides(
+            device_modes, skip_devices
+        )
+
+        assert device_mode_map == {"8086:15b8": ASPM.L1}
+        assert skip_set == {"10de:1234"}
+
+    def test_parse_empty_arguments(self):
+        """Test parsing empty arguments."""
+        device_mode_map, skip_set = parse_device_overrides(None, None)
+
+        assert len(device_mode_map) == 0
+        assert len(skip_set) == 0
+
+    def test_parse_uppercase_vendor_device(self):
+        """Test that uppercase vendor:device is converted to lowercase."""
+        device_modes = ["8086:15B8=l1"]
+        device_mode_map, _ = parse_device_overrides(device_modes, None)
+
+        assert "8086:15b8" in device_mode_map
+
+    def test_invalid_device_mode_format_no_equals(self):
+        """Test invalid device-mode format (missing =)."""
+        device_modes = ["8086:15b8"]
+        with pytest.raises(
+            ASPMPatcherError, match="Invalid --device-mode format"
+        ):
+            parse_device_overrides(device_modes, None)
+
+    def test_invalid_vendor_device_format_in_mode(self):
+        """Test invalid vendor:device format in device-mode."""
+        device_modes = ["invalid=l1"]
+        with pytest.raises(
+            ASPMPatcherError, match="Invalid vendor:device format"
+        ):
+            parse_device_overrides(device_modes, None)
+
+    def test_invalid_vendor_device_format_in_skip(self):
+        """Test invalid vendor:device format in skip."""
+        skip_devices = ["invalid"]
+        with pytest.raises(
+            ASPMPatcherError, match="Invalid vendor:device format"
+        ):
+            parse_device_overrides(None, skip_devices)
+
+    def test_invalid_aspm_mode(self):
+        """Test invalid ASPM mode."""
+        device_modes = ["8086:15b8=invalid"]
+        with pytest.raises(ASPMPatcherError, match="Invalid ASPM mode"):
+            parse_device_overrides(device_modes, None)
+
+    def test_vendor_device_too_short(self):
+        """Test vendor:device with too few hex digits."""
+        device_modes = ["86:15b8=l1"]
+        with pytest.raises(
+            ASPMPatcherError, match="Invalid vendor:device format"
+        ):
+            parse_device_overrides(device_modes, None)
+
+    def test_vendor_device_too_long(self):
+        """Test vendor:device with too many hex digits."""
+        device_modes = ["80860:15b8=l1"]
+        with pytest.raises(
+            ASPMPatcherError, match="Invalid vendor:device format"
+        ):
+            parse_device_overrides(device_modes, None)
+
+
+# ============================================================================
+# Strict Mode Tests
+# ============================================================================
+
+
+class TestPatchASPMStrictMode:
+    """Test strict mode in patch_aspm() method."""
+
+    @patch.object(PCIDevice, "verify_patch")
+    @patch.object(PCIDevice, "_patch_byte")
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_strict_mode_allows_downgrade(
+        self, mock_read, mock_offset, mock_patch, mock_verify
+    ):
+        """Test strict mode allows downgrade (L0sL1 → L1)."""
+        config = bytearray(256)
+        config[0x50] = ASPM.L0sL1.value  # Currently L0sL1
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+        mock_verify.return_value = True
+
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        # Request L1 only with strict mode
+        result = device.patch_aspm(ASPM.L1, strict=True, dry_run=False)
+
+        assert result is True
+        mock_patch.assert_called_once()
+
+    @patch.object(PCIDevice, "verify_patch")
+    @patch.object(PCIDevice, "_patch_byte")
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_strict_mode_allows_disable(
+        self, mock_read, mock_offset, mock_patch, mock_verify
+    ):
+        """Test strict mode allows disable (L1 → DISABLED)."""
+        config = bytearray(256)
+        config[0x50] = ASPM.L1.value  # Currently L1
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+        mock_verify.return_value = True
+
+        device = PCIDevice("01:00.0", ASPM.L1)
+        # Request DISABLED with strict mode
+        result = device.patch_aspm(ASPM.DISABLED, strict=True, dry_run=False)
+
+        assert result is True
+        mock_patch.assert_called_once()
+
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_strict_mode_fails_on_unsupported(
+        self, mock_read, mock_offset
+    ):
+        """Test strict mode fails if device doesn't support requested mode."""
+        config = bytearray(256)
+        config[0x50] = ASPM.DISABLED.value
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+
+        device = PCIDevice("01:00.0", ASPM.L0s)  # Device only supports L0s
+        # Request L1 when device only supports L0s
+        with pytest.raises(
+            ASPMPatcherError,
+            match="Device supports L0s but L1 was requested",
+        ):
+            device.patch_aspm(ASPM.L1, strict=True)
+
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_safe_mode_prevents_downgrade(self, mock_read, mock_offset):
+        """Test safe mode prevents downgrade (L0sL1 → L1)."""
+        config = bytearray(256)
+        config[0x50] = ASPM.L0sL1.value  # Currently L0sL1
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+
+        device = PCIDevice("01:00.0", ASPM.L0sL1)
+        # Request L1 only with safe mode (strict=False)
+        result = device.patch_aspm(ASPM.L1, strict=False)
+
+        assert result is False  # Should skip (no downgrade)
+
+    @patch.object(PCIDevice, "verify_patch")
+    @patch.object(PCIDevice, "_patch_byte")
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_safe_mode_uses_intersection(
+        self, mock_read, mock_offset, mock_patch, mock_verify
+    ):
+        """Test safe mode uses intersection (existing behavior)."""
+        config = bytearray(256)
+        config[0x50] = ASPM.DISABLED.value  # Currently disabled
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+        mock_verify.return_value = True
+
+        device = PCIDevice("01:00.0", ASPM.L1)  # Device supports L1
+        # Request L0sL1 but device only supports L1
+        result = device.patch_aspm(ASPM.L0sL1, strict=False, dry_run=False)
+
+        # Should patch with L1 (intersection of L1 and L0sL1)
+        assert result is True
+        mock_patch.assert_called_once()
+
+    @patch.object(PCIDevice, "get_link_control_offset")
+    @patch.object(PCIDevice, "read_config_space")
+    def test_safe_mode_skips_when_no_intersection(
+        self, mock_read, mock_offset
+    ):
+        """Test safe mode skips when intersection is zero."""
+        config = bytearray(256)
+        config[0x50] = ASPM.DISABLED.value  # Currently disabled
+        mock_read.return_value = config
+        mock_offset.return_value = 0x50
+
+        device = PCIDevice("01:00.0", ASPM.L0s)  # Device supports L0s
+        # Request L1 but device only supports L0s (no intersection)
+        result = device.patch_aspm(ASPM.L1, strict=False)
+
+        # Should skip because intersection is 0
+        assert result is False

@@ -136,6 +136,7 @@ class PCIDevice:
         self._config_bytes: bytearray | None = None
         self._pcie_cap_offset: int | None = None
         self._device_name: str | None = None
+        self._vendor_device_id: str | None = None
 
     @override
     def __hash__(self) -> int:
@@ -177,6 +178,43 @@ class PCIDevice:
             return lines[0]
         except subprocess.TimeoutExpired:
             msg = f"Timeout while getting device name for {self.addr}"
+            raise DeviceAccessError(msg) from None
+
+    def get_vendor_device_id(self) -> str:
+        """Get vendor:device ID (e.g., '8086:15b8')."""
+        if self._vendor_device_id is None:
+            self._vendor_device_id = self._fetch_vendor_device_id()
+        return self._vendor_device_id
+
+    def _fetch_vendor_device_id(self) -> str:
+        """Fetch vendor:device ID from lspci."""
+        try:
+            result = subprocess.run(
+                ["lspci", "-n", "-s", self.addr],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            if result.returncode != 0:
+                msg = f"Failed to get vendor:device ID for {self.addr}: {result.stderr}"
+                raise DeviceAccessError(msg)
+
+            lines = result.stdout.strip().splitlines()
+            if not lines:
+                msg = f"No device found at {self.addr}"
+                raise DeviceAccessError(msg)
+
+            # Parse output format: "01:00.0 0280: 8086:15b8 (rev 34)"
+            # Extract vendor:device ID using regex
+            match = re.search(r"\s([0-9a-f]{4}:[0-9a-f]{4})", lines[0])
+            if not match:
+                msg = f"Could not parse vendor:device ID from lspci output: {lines[0]}"
+                raise DeviceAccessError(msg)
+
+            return match.group(1)
+        except subprocess.TimeoutExpired:
+            msg = f"Timeout while getting vendor:device ID for {self.addr}"
             raise DeviceAccessError(msg) from None
 
     def read_config_space(self) -> bytearray:
@@ -327,19 +365,24 @@ class PCIDevice:
 
     # NOTE: C901: complex-structure, PLR0912: too-many-branches
     def patch_aspm(  # noqa: C901, PLR0912
-        self, requested_mode: ASPM | None = None, *, dry_run: bool = False
+        self,
+        requested_mode: ASPM | None = None,
+        *,
+        dry_run: bool = False,
+        strict: bool = False,
     ) -> bool:
         """Patch ASPM settings for this device.
 
         Args:
             requested_mode: ASPM mode requested by user (None = use maximum supported)
             dry_run: If True, simulate without actually patching (default: False)
+            strict: If True, enforce exact mode and allow downgrade/disable (default: False)
 
         Returns:
             True if patched/would patch, False if already set or skipped
 
         Raises:
-            ASPMPatcherError: When patching fails
+            ASPMPatcherError: When patching fails or device doesn't support requested mode in strict mode
         """
         try:
             # Determine target ASPM mode
@@ -347,17 +390,27 @@ class PCIDevice:
                 # If no request, use maximum supported mode
                 target_aspm = self.supported_aspm
             else:
-                # Use intersection of requested and supported modes
-                # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
-                intersection = self.supported_aspm.value & requested_mode.value
-                if intersection == 0:
-                    logger.info(
-                        "%s: ASPM %s (skipped, not supported)",
-                        self.addr,
-                        self.supported_aspm.name,
-                    )
-                    return False
-                target_aspm = ASPM(intersection)
+                if strict:
+                    # Strict mode: fail if device doesn't support exact mode
+                    if not self.supported_aspm.supports(requested_mode):
+                        msg = (
+                            f"Device supports {self.supported_aspm.name} "
+                            f"but {requested_mode.name} was requested"
+                        )
+                        raise ASPMPatcherError(msg)
+                    target_aspm = requested_mode
+                else:
+                    # Safe mode: use intersection of requested and supported modes
+                    # This enables partial support (e.g., L1 if L0sL1 requested but only L1 supported)
+                    intersection = self.supported_aspm.value & requested_mode.value
+                    if intersection == 0:
+                        logger.info(
+                            "%s: ASPM %s (skipped, not supported)",
+                            self.addr,
+                            self.supported_aspm.name,
+                        )
+                        return False
+                    target_aspm = ASPM(intersection)
 
             # Read config space
             endpoint_bytes = self.read_config_space()
@@ -383,8 +436,11 @@ class PCIDevice:
                 return False
 
             # If current state already includes requested mode (e.g., L0sL1 when only L1 requested)
-            if requested_mode is not None and current_aspm.includes(
-                requested_mode
+            # Skip this check in strict mode to allow downgrade
+            if (
+                not strict
+                and requested_mode is not None
+                and current_aspm.includes(requested_mode)
             ):
                 logger.info(
                     "%s: ASPM %s (skipped, includes %s)",
@@ -535,6 +591,76 @@ def get_aspm_devices() -> AbstractSet[PCIDevice]:
     return devices
 
 
+def parse_device_overrides(
+    device_modes: list[str] | None,
+    skip_devices: list[str] | None,
+) -> tuple[dict[str, ASPM], set[str]]:
+    """Parse device mode overrides and skip list.
+
+    Args:
+        device_modes: List of "vendor:device=mode" strings
+        skip_devices: List of "vendor:device" strings
+
+    Returns:
+        Tuple of (device_mode_map, skip_set)
+
+    Raises:
+        ASPMPatcherError: If format is invalid
+    """
+    device_mode_map: dict[str, ASPM] = {}
+    skip_set: set[str] = set()
+
+    # Regex for vendor:device format (4-digit hex : 4-digit hex)
+    vendor_device_pattern = re.compile(r"^[0-9a-f]{4}:[0-9a-f]{4}$")
+
+    # Parse --device-mode arguments
+    if device_modes:
+        for entry in device_modes:
+            if "=" not in entry:
+                msg = f"Invalid --device-mode format: '{entry}' (expected VENDOR:DEVICE=MODE)"
+                raise ASPMPatcherError(msg)
+
+            vendor_device, mode_str = entry.split("=", 1)
+            vendor_device = vendor_device.lower()
+
+            # Validate vendor:device format
+            if not vendor_device_pattern.match(vendor_device):
+                msg = (
+                    f"Invalid vendor:device format: '{vendor_device}' "
+                    f"(expected format: 8086:15b8)"
+                )
+                raise ASPMPatcherError(msg)
+
+            # Validate and parse ASPM mode
+            try:
+                aspm_mode = ASPM.from_string(mode_str)
+            except KeyError:
+                msg = (
+                    f"Invalid ASPM mode: '{mode_str}' "
+                    f"(valid modes: l0s, l1, l0sl1, disabled)"
+                )
+                raise ASPMPatcherError(msg) from None
+
+            device_mode_map[vendor_device] = aspm_mode
+
+    # Parse --skip arguments
+    if skip_devices:
+        for device_id in skip_devices:
+            device_id_lower = device_id.lower()
+
+            # Validate vendor:device format
+            if not vendor_device_pattern.match(device_id_lower):
+                msg = (
+                    f"Invalid vendor:device format: '{device_id}' "
+                    f"(expected format: 8086:15b8)"
+                )
+                raise ASPMPatcherError(msg)
+
+            skip_set.add(device_id_lower)
+
+    return (device_mode_map, skip_set)
+
+
 def handle_list_mode(
     devices: Iterable[PCIDevice], *, verbose: bool = False
 ) -> None:
@@ -547,9 +673,16 @@ def handle_list_mode(
         except (CapabilityNotFoundError, DeviceAccessError):
             current_str = "unknown"
 
-        # Print device info
+        # Get vendor:device ID
+        try:
+            vendor_device_id = device.get_vendor_device_id()
+        except DeviceAccessError:
+            vendor_device_id = "unknown"
+
+        # Print device info with vendor:device ID
         print(  # noqa: T201
-            f"{device.addr}: current={current_str}, supports={device.supported_aspm.name}"
+            f"{device.addr} ({vendor_device_id}): "
+            f"current={current_str}, supports={device.supported_aspm.name}"
         )
 
         # Print detailed device name only in verbose mode
@@ -565,6 +698,8 @@ def handle_patch_mode(
     devices: Iterable[PCIDevice],
     requested_mode: ASPM | None,
     dry_run: bool,
+    device_mode_map: dict[str, ASPM],
+    skip_set: set[str],
 ) -> tuple[int, int, int]:
     """Handle patch mode to patch or simulate ASPM settings on devices.
 
@@ -572,6 +707,8 @@ def handle_patch_mode(
         devices: Iterable of PCIDevice objects to patch
         requested_mode: Requested ASPM mode (None = use maximum supported)
         dry_run: If True, simulate without actually patching
+        device_mode_map: Device-specific mode overrides (vendor:device -> ASPM)
+        skip_set: Set of vendor:device IDs to skip
 
     Returns:
         Tuple of (patched_count, skipped_count, error_count)
@@ -582,7 +719,31 @@ def handle_patch_mode(
 
     for device in devices:
         try:
-            if device.patch_aspm(requested_mode, dry_run=dry_run):
+            vendor_device_id = device.get_vendor_device_id()
+        except DeviceAccessError as e:
+            logger.error("%s: Failed to get vendor:device ID - %s", device.addr, e)
+            error_count += 1
+            continue
+
+        # Check skip list
+        if vendor_device_id in skip_set:
+            logger.info("%s (%s): Skipped by user", device.addr, vendor_device_id)
+            skipped_count += 1
+            continue
+
+        # Determine mode and strictness
+        if vendor_device_id in device_mode_map:
+            # Device-specific override: use strict mode
+            mode_to_apply = device_mode_map[vendor_device_id]
+            strict = True
+        else:
+            # Default mode: use safe mode
+            mode_to_apply = requested_mode
+            strict = False
+
+        # Patch with determined mode
+        try:
+            if device.patch_aspm(mode_to_apply, dry_run=dry_run, strict=strict):
                 patched_count += 1
             else:
                 skipped_count += 1
@@ -600,6 +761,8 @@ class ArgsNamespace(argparse.Namespace):
     list_only: bool = False
     run: bool = False
     verbose: bool = False
+    device_modes: list[str] | None = None
+    skip_devices: list[str] | None = None
 
 
 def parse_args() -> ArgsNamespace:
@@ -609,17 +772,40 @@ def parse_args() -> ArgsNamespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s --list           List ASPM-capable devices
-  %(prog)s --mode l0s       Simulate enabling L0s (dry-run)
-  %(prog)s --mode l1 --run  Actually enable L1 on devices that support it
-  %(prog)s --mode l0sl1     Simulate enabling L0s+L1 (dry-run)
-  %(prog)s --list --verbose List devices with detailed information
+  %(prog)s --list
+      List ASPM-capable devices with vendor:device IDs
+
+  %(prog)s --mode l1
+      Simulate enabling L1 on all devices (dry-run)
+
+  %(prog)s --mode l1 --run
+      Actually enable L1 on all devices that support it
+
+  %(prog)s --mode l1 --device-mode 8086:15b8=l0sl1 --run
+      Enable L1 by default, but use L0sL1 for Intel WiFi (8086:15b8)
+
+  %(prog)s --mode l1 --device-mode 10de:1234=disabled --skip 8086:9999 --run
+      Enable L1 by default, disable NVIDIA GPU, skip device 8086:9999
+
+  %(prog)s --list --verbose
+      List devices with detailed information
+
+Device Override Behavior:
+  --mode (Safe mode):
+    - Never downgrades ASPM (L0sL1 → L1 is skipped)
+    - Never disables ASPM (cannot set to DISABLED)
+    - Uses intersection when device doesn't fully support requested mode
+
+  --device-mode (Strict mode):
+    - Allows downgrade (L0sL1 → L1 is applied)
+    - Allows disable (can set to DISABLED)
+    - Fails if device doesn't support exact requested mode
+    - Forces exact mode specified by user
 
 Notes:
   - By default, --mode performs a dry-run simulation. Use --run to actually patch.
-  - If a device is already in L0sL1 state and you request L1 only,
-    the device will be skipped (not downgraded).
-  - Requesting a mode the device doesn't support will skip that device.
+  - Use --list to find vendor:device IDs for your devices.
+  - Device-specific overrides (--device-mode, --skip) take precedence over --mode.
 """,
     )
 
@@ -655,6 +841,22 @@ Notes:
         help="Show detailed device information",
     )
 
+    _ = parser.add_argument(
+        "--device-mode",
+        action="append",
+        dest="device_modes",
+        metavar="VENDOR:DEVICE=MODE",
+        help="Set ASPM mode for specific device (can be repeated). Format: 8086:15b8=l1",
+    )
+
+    _ = parser.add_argument(
+        "--skip",
+        action="append",
+        dest="skip_devices",
+        metavar="VENDOR:DEVICE",
+        help="Skip patching for specific device (can be repeated). Format: 8086:15b8",
+    )
+
     args = parser.parse_args(namespace=ArgsNamespace())
 
     # If no meaningful arguments provided, print help and exit
@@ -665,7 +867,7 @@ Notes:
     return args
 
 
-def main():
+def main():  # noqa: C901
     """Run the ASPM patcher."""
     args = parse_args()
 
@@ -673,6 +875,16 @@ def main():
         check_prerequisites()
     except (OSError, PermissionError, ASPMPatcherError) as e:
         logger.error("%s", e)
+        return 1
+
+    # Parse device overrides
+    try:
+        device_mode_map, skip_set = parse_device_overrides(
+            args.device_modes,
+            args.skip_devices,
+        )
+    except ASPMPatcherError as e:
+        logger.error("Invalid device override: %s", e)
         return 1
 
     try:
@@ -704,12 +916,21 @@ def main():
     else:
         logger.info("Mode: auto (maximum supported per device)")
 
+    if device_mode_map:
+        logger.info("Device-specific overrides: %d device(s)", len(device_mode_map))
+    if skip_set:
+        logger.info("Skipping %d device(s)", len(skip_set))
+
     if dry_run:
         logger.info("Running in dry-run mode (use --run to actually patch)")
 
     # Handle patch mode
     patched_count, skipped_count, error_count = handle_patch_mode(
-        devices, requested_mode, dry_run
+        devices,
+        requested_mode,
+        dry_run,
+        device_mode_map,
+        skip_set,
     )
 
     action_word = "would patch" if dry_run else "patched"

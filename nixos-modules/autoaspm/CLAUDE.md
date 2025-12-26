@@ -31,7 +31,7 @@ All development commands use `direnv exec .` to ensure proper environment setup.
 - Modes are represented as bitmasks (0b00, 0b01, 0b10, 0b11)
 - Methods: `from_string()` for parsing, `supports()` and `includes()` for mode compatibility checking
 
-**PCIDevice Class** (`autoaspm.py:121-405`)
+**PCIDevice Class** (`autoaspm.py:121-500`)
 
 - Represents a single PCI device with ASPM support
 - Core responsibilities:
@@ -39,28 +39,53 @@ All development commands use `direnv exec .` to ensure proper environment setup.
   - Find PCIe capability offset in the configuration space
   - Read/write ASPM settings using `setpci`
   - Verify patches were applied successfully
+  - Retrieve vendor:device ID for stable identification
 - Key methods:
+  - `get_vendor_device_id()`: Gets vendor:device ID (e.g., '8086:15b8') via `lspci -n`
   - `read_config_space()`: Caches config space bytes from lspci output
   - `find_pcie_capability()`: Locates PCIe capability in config space with circular reference detection
   - `get_link_control_offset()`: Calculates where ASPM bits are located
-  - `patch_aspm()`: Applies ASPM changes, with logic for mode negotiation and verification
+  - `patch_aspm(requested_mode, dry_run, strict)`: Applies ASPM changes with two modes:
+    - **Safe mode** (strict=False): Uses intersection, prevents downgrade (default --mode behavior)
+    - **Strict mode** (strict=True): Enforces exact mode, allows downgrade/disable (--device-mode behavior)
 
 ### Main Processing Flow
 
-1. **Prerequisites Check** (`run_prerequisites()`): Validates Linux OS, root privileges, and pciutils availability
-2. **Device Discovery** (`list_supported_devices()`): Parses `lspci -vv` output to find devices that support ASPM and extract their supported modes
-3. **Device Processing** (`process_devices()`): Iterates over devices and either patches them or runs dry-run simulation
-4. **CLI Interface** (`parse_args()`, `main()`): Handles command-line options and orchestrates the flow
+1. **Prerequisites Check** (`check_prerequisites()`): Validates Linux OS, root privileges, and pciutils availability
+2. **Parse Device Overrides** (`parse_device_overrides()`): Parses --device-mode and --skip arguments, validates vendor:device format
+3. **Device Discovery** (`get_aspm_devices()`): Parses `lspci -vv` output to find devices that support ASPM and extract their supported modes
+4. **Device Processing** (`handle_patch_mode()` or `handle_list_mode()`):
+   - Retrieves vendor:device ID for each device
+   - Checks skip list
+   - Applies device-specific overrides (strict mode) or default mode (safe mode)
+5. **CLI Interface** (`parse_args()`, `main()`): Handles command-line options and orchestrates the flow
 
 ### Important Design Details
 
 **Dry-Run by Default**: Running with `--mode` only performs a dry-run. Use `--run` to actually patch devices. This is a safety feature.
 
-**Mode Negotiation**:
+**Device Identification**: Vendor:Device ID (e.g., `8086:15b8`) is used instead of PCI address for device-specific configuration. This is more stable across hardware changes (e.g., adding/removing PCIe cards, BIOS changes).
 
-- If user requests a mode but device supports a different mode, the intersection is used (e.g., user requests L0sL1 but device supports only L1 → L1 is applied)
-- If intersection is zero (no overlap), device is skipped
-- Already-enabled modes are never downgraded (e.g., if L0sL1 is enabled and user requests L1, device is skipped)
+**Two-Mode System**:
+
+1. **Safe Mode** (--mode, strict=False):
+   - Uses intersection of requested and supported modes
+   - Never downgrades (L0sL1 → L1 is skipped)
+   - Cannot disable ASPM
+   - Appropriate for system-wide default settings
+
+2. **Strict Mode** (--device-mode, strict=True):
+   - Enforces exact requested mode
+   - Allows downgrade (L0sL1 → L1 is applied)
+   - Allows disable (can set to DISABLED)
+   - Fails if device doesn't support exact mode
+   - Appropriate for device-specific overrides
+
+**Priority Order**:
+1. `--skip` devices are not touched at all
+2. `--device-mode` overrides use strict mode
+3. `--mode` default uses safe mode
+4. No `--mode` uses maximum supported per device
 
 **PCI Configuration Space Parsing**:
 
@@ -93,7 +118,7 @@ All development commands use `direnv exec .` to ensure proper environment setup.
 
 ## Git Commits
 
-Follow Conventional Commits format with `autoaspm` as the scope. Create commits at the end of each task.
+Follow Conventional Commits format with `autoaspm` as the scope. **IMPORTANT: Create commits after each major step, NOT at the end of all tasks.** This provides better git history and allows easier rollback if needed.
 
 Format: `<type>(autoaspm): <description>`
 
@@ -107,12 +132,60 @@ Common types:
 - `style`: Code style changes (formatting, linting)
 - `chore`: Build, dependencies, or maintenance tasks
 
-Examples:
+### Commit Strategy
 
-- `feat(autoaspm): add support for custom ASPM mode validation`
+**Multi-step features should be committed incrementally:**
+
+For example, when implementing vendor:device ID based ASPM configuration:
+1. `feat(autoaspm): add vendor:device ID retrieval to PCIDevice` - After adding the ID retrieval method
+2. `feat(autoaspm): add --device-mode and --skip CLI flags` - After CLI parsing is complete
+3. `feat(autoaspm): add strict mode for explicit ASPM control` - After implementing strict mode
+4. `feat(autoaspm): implement device-specific ASPM overrides` - After handle_patch_mode is updated
+5. `feat(autoaspm): wire up device override logic in main` - After main() integration
+6. `test(autoaspm): add tests for vendor:device ID and overrides` - After tests are written
+7. `feat(autoaspm): add deviceModes and skipDevices to NixOS module` - After module update
+8. `docs(autoaspm): update documentation for device overrides` - After documentation
+
+**Single-step changes can be committed immediately:**
 - `fix(autoaspm): handle missing PCIe capability gracefully`
-- `test(autoaspm): add tests for mode negotiation logic`
+- `style(autoaspm): fix ruff linting issues`
 - `refactor(autoaspm): extract PCI config parsing into helper method`
+
+### TDD + Incremental Commits
+
+When following TDD (Test-Driven Development), combine it with incremental commits:
+
+**For each feature component:**
+
+1. `test(autoaspm): add tests for <feature>` - Write failing tests first
+2. `feat(autoaspm): implement <feature>` - Implement code to pass tests
+3. `refactor(autoaspm): improve <feature> implementation` - Refactor if needed (optional)
+
+**Example: Adding device name filtering**
+
+1. `test(autoaspm): add tests for device name filtering`
+   - Write tests for filter_devices_by_name()
+   - Tests fail (no implementation yet)
+
+2. `feat(autoaspm): implement device name filtering`
+   - Add filter_devices_by_name() function
+   - Tests now pass
+
+3. `refactor(autoaspm): optimize device filtering regex`
+   - Improve implementation
+   - Tests still pass
+
+This approach gives you:
+- Clear test/implementation separation in git history
+- Easy rollback of implementation without losing tests
+- Documentation of what was tested vs what was implemented
+
+### Benefits of Incremental Commits
+
+- **Better git history**: Each commit has a clear, focused purpose
+- **Easier code review**: Changes can be reviewed step-by-step
+- **Safer rollback**: Can revert specific steps without losing entire feature
+- **Clearer progress tracking**: Shows incremental progress during implementation
 
 ## NixOS Integration
 
@@ -122,7 +195,27 @@ The module at `module.nix` configures AutoASPM as a systemd service:
 - Depends on: systemd-udev-settle.service
 - Security hardening: strict filesystem protection, no network, restricted syscalls
 - Device access: PrivateDevices = false to allow PCI device access
-- Runs the tool with arguments: `--run --mode <configured-mode>`
+
+**Module Options**:
+- `mode`: Default ASPM mode for all devices (safe mode)
+- `deviceModes`: Attribute set of vendor:device → mode mappings (strict mode)
+- `skipDevices`: List of vendor:device IDs to skip entirely
+
+**Example Configuration**:
+```nix
+services.autoaspm = {
+  enable = true;
+  mode = "l1";                          # Default for all devices
+  deviceModes = {
+    "8086:15b8" = "l0sl1";              # Intel WiFi uses L0sL1
+    "10de:1234" = "disabled";           # NVIDIA GPU disabled
+  };
+  skipDevices = [ "8086:9999" ];        # Skip this device
+};
+```
+
+The module dynamically builds the command line:
+`--run --mode l1 --device-mode 8086:15b8=l0sl1 --device-mode 10de:1234=disabled --skip 8086:9999`
 
 ## Testing
 
@@ -131,3 +224,60 @@ Tests in `test_autoaspm.py` use mocking to avoid requiring actual PCI devices:
 - Mock `subprocess.run` to simulate lspci/setpci output
 - Test ASPM enum logic, mode negotiation, configuration space parsing
 - Test error conditions: missing capabilities, invalid device access, timeout scenarios
+- Test vendor:device ID retrieval and caching
+- Test device override parsing and validation
+- Test strict vs safe mode behavior
+- 63 tests total covering all major functionality
+
+### Test-Driven Development (TDD)
+
+**IMPORTANT: Follow TDD approach for new features.**
+
+1. **Write tests first**, then implement the feature
+2. Run tests to see them fail (Red)
+3. Implement minimal code to make tests pass (Green)
+4. Refactor code while keeping tests passing (Refactor)
+
+#### TDD Workflow Example
+
+When adding a new feature (e.g., device filtering by name):
+
+```python
+# Step 1: Write failing tests first
+class TestDeviceFiltering:
+    def test_filter_by_device_name(self):
+        devices = [...]
+        filtered = filter_devices_by_name(devices, "Intel")
+        assert len(filtered) == expected_count
+
+    def test_filter_invalid_pattern(self):
+        with pytest.raises(ValueError):
+            filter_devices_by_name(devices, "[invalid")
+
+# Step 2: Run tests - they should fail
+# just test
+
+# Step 3: Implement minimal code to pass tests
+def filter_devices_by_name(devices, pattern):
+    # Implementation here
+    pass
+
+# Step 4: Run tests - they should pass
+# just test
+
+# Step 5: Refactor if needed, tests still pass
+```
+
+#### Benefits of TDD
+
+- **Better design**: Writing tests first forces you to think about the API
+- **Fewer bugs**: Edge cases are considered upfront
+- **Refactoring confidence**: Tests ensure changes don't break functionality
+- **Living documentation**: Tests show how the code is meant to be used
+
+#### When to Skip TDD
+
+TDD is strongly recommended for all features, but may be skipped for:
+- Quick bug fixes where the bug itself serves as the test case
+- Exploratory code that will be thrown away
+- Code that's difficult to test in isolation (should be rare with good design)

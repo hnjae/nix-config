@@ -20,7 +20,32 @@ in
         "l1"
         "l0sl1"
       ];
-      description = "ASPM mode to set";
+      description = "Default ASPM mode to set for all devices";
+    };
+    deviceModes = lib.mkOption {
+      type = lib.types.attrsOf (lib.types.enum [
+        "l0s"
+        "l1"
+        "l0sl1"
+        "disabled"
+      ]);
+      default = { };
+      example = {
+        "8086:15b8" = "l0sl1";
+        "10de:1234" = "disabled";
+      };
+      description = ''
+        Device-specific ASPM mode overrides using vendor:device ID.
+        These settings override the default mode and allow downgrade/disable.
+      '';
+    };
+    skipDevices = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      example = [ "8086:9999" ];
+      description = ''
+        List of vendor:device IDs to skip (never patch).
+      '';
     };
   };
 
@@ -29,21 +54,43 @@ in
       package
     ];
 
-    systemd.services.${project} = {
-      description = "Automatically activate ASPM on all supported devices";
-      wants = [ "systemd-udev-settle.service" ];
-      after = [ "systemd-udev-settle.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        Nice = 5;
-
-        ExecStart = lib.escapeShellArgs [
+    systemd.services.${project} =
+      let
+        baseArgs = [
           "${lib.getExe package}"
           "--run"
           "--mode"
           "${cfg.mode}"
         ];
+
+        deviceModeArgs = lib.flatten (
+          lib.mapAttrsToList
+            (vendorDevice: mode: [
+              "--device-mode"
+              "${vendorDevice}=${mode}"
+            ])
+            cfg.deviceModes
+        );
+
+        skipArgs = lib.flatten (
+          map (vendorDevice: [
+            "--skip"
+            vendorDevice
+          ]) cfg.skipDevices
+        );
+
+        allArgs = baseArgs ++ deviceModeArgs ++ skipArgs;
+      in
+      {
+        description = "Automatically activate ASPM on all supported devices";
+        wants = [ "systemd-udev-settle.service" ];
+        after = [ "systemd-udev-settle.service" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          Nice = 5;
+
+          ExecStart = lib.escapeShellArgs allArgs;
 
         LockPersonality = true;
         MemoryDenyWriteExecute = true;
