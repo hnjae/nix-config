@@ -645,18 +645,18 @@ def parse_device_overrides(
 
     # Parse --skip arguments
     if skip_devices:
-        for vendor_device in skip_devices:
-            vendor_device = vendor_device.lower()
+        for device_id in skip_devices:
+            device_id_lower = device_id.lower()
 
             # Validate vendor:device format
-            if not vendor_device_pattern.match(vendor_device):
+            if not vendor_device_pattern.match(device_id_lower):
                 msg = (
-                    f"Invalid vendor:device format: '{vendor_device}' "
+                    f"Invalid vendor:device format: '{device_id}' "
                     f"(expected format: 8086:15b8)"
                 )
                 raise ASPMPatcherError(msg)
 
-            skip_set.add(vendor_device)
+            skip_set.add(device_id_lower)
 
     return (device_mode_map, skip_set)
 
@@ -867,7 +867,7 @@ Notes:
     return args
 
 
-def main():
+def main():  # noqa: C901
     """Run the ASPM patcher."""
     args = parse_args()
 
