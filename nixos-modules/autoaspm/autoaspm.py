@@ -673,9 +673,16 @@ def handle_list_mode(
         except (CapabilityNotFoundError, DeviceAccessError):
             current_str = "unknown"
 
-        # Print device info
+        # Get vendor:device ID
+        try:
+            vendor_device_id = device.get_vendor_device_id()
+        except DeviceAccessError:
+            vendor_device_id = "unknown"
+
+        # Print device info with vendor:device ID
         print(  # noqa: T201
-            f"{device.addr}: current={current_str}, supports={device.supported_aspm.name}"
+            f"{device.addr} ({vendor_device_id}): "
+            f"current={current_str}, supports={device.supported_aspm.name}"
         )
 
         # Print detailed device name only in verbose mode
@@ -691,6 +698,8 @@ def handle_patch_mode(
     devices: Iterable[PCIDevice],
     requested_mode: ASPM | None,
     dry_run: bool,
+    device_mode_map: dict[str, ASPM],
+    skip_set: set[str],
 ) -> tuple[int, int, int]:
     """Handle patch mode to patch or simulate ASPM settings on devices.
 
@@ -698,6 +707,8 @@ def handle_patch_mode(
         devices: Iterable of PCIDevice objects to patch
         requested_mode: Requested ASPM mode (None = use maximum supported)
         dry_run: If True, simulate without actually patching
+        device_mode_map: Device-specific mode overrides (vendor:device -> ASPM)
+        skip_set: Set of vendor:device IDs to skip
 
     Returns:
         Tuple of (patched_count, skipped_count, error_count)
@@ -708,7 +719,31 @@ def handle_patch_mode(
 
     for device in devices:
         try:
-            if device.patch_aspm(requested_mode, dry_run=dry_run):
+            vendor_device_id = device.get_vendor_device_id()
+        except DeviceAccessError as e:
+            logger.error("%s: Failed to get vendor:device ID - %s", device.addr, e)
+            error_count += 1
+            continue
+
+        # Check skip list
+        if vendor_device_id in skip_set:
+            logger.info("%s (%s): Skipped by user", device.addr, vendor_device_id)
+            skipped_count += 1
+            continue
+
+        # Determine mode and strictness
+        if vendor_device_id in device_mode_map:
+            # Device-specific override: use strict mode
+            mode_to_apply = device_mode_map[vendor_device_id]
+            strict = True
+        else:
+            # Default mode: use safe mode
+            mode_to_apply = requested_mode
+            strict = False
+
+        # Patch with determined mode
+        try:
+            if device.patch_aspm(mode_to_apply, dry_run=dry_run, strict=strict):
                 patched_count += 1
             else:
                 skipped_count += 1
