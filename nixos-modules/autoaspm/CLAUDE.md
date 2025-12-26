@@ -12,11 +12,9 @@ Run these commands via the justfile:
 
 ```bash
 just build           # Build the NixOS package
-just check           # Run all checks (lint, typecheck, test)
+just check           # Run linter and type checker (ruff check, ty check)
 just test            # Run pytest tests
-just lint            # Run ruff linter
-just typecheck       # Run ty type checker
-just format          # Format code with ruff
+just format          # Format code with ruff, shellharden, and shfmt
 ```
 
 All development commands use `direnv exec .` to ensure proper environment setup.
