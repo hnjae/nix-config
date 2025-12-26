@@ -153,32 +153,60 @@ For example, when implementing vendor:device ID based ASPM configuration:
 
 ### TDD + Incremental Commits
 
-When following TDD (Test-Driven Development), combine it with incremental commits:
+**CRITICAL: Commit after EACH step is completed, NOT at the end of all steps.**
 
-**For each feature component:**
+When following TDD (Test-Driven Development), create a commit immediately after completing each step:
 
-1. `test(autoaspm): add tests for <feature>` - Write failing tests first
-2. `feat(autoaspm): implement <feature>` - Implement code to pass tests
-3. `refactor(autoaspm): improve <feature> implementation` - Refactor if needed (optional)
+**Workflow:**
 
-**Example: Adding device name filtering**
+1. **Write failing tests** → **Commit immediately**
+   - Write tests for the feature
+   - Run tests to verify they fail
+   - Commit: `test(autoaspm): add tests for <feature>`
 
-1. `test(autoaspm): add tests for device name filtering`
-   - Write tests for filter_devices_by_name()
-   - Tests fail (no implementation yet)
+2. **Implement feature** → **Commit immediately**
+   - Write minimal code to make tests pass
+   - Run tests to verify they pass
+   - Fix any linter/type errors
+   - Commit: `feat(autoaspm): implement <feature>`
 
-2. `feat(autoaspm): implement device name filtering`
-   - Add filter_devices_by_name() function
-   - Tests now pass
+3. **Refactor (optional)** → **Commit immediately**
+   - Improve implementation while keeping tests passing
+   - Commit: `refactor(autoaspm): improve <feature> implementation`
 
-3. `refactor(autoaspm): optimize device filtering regex`
-   - Improve implementation
-   - Tests still pass
+4. **Update documentation (if needed)** → **Commit immediately**
+   - Update CLAUDE.md, help messages, etc.
+   - Commit: `docs(autoaspm): document <feature>`
+
+**Example: Adding lateral change prevention**
+
+1. Write 4 tests for lateral change prevention
+   - Run `just test` to see them fail
+   - **→ Commit: `test(autoaspm): add tests for lateral ASPM change prevention`**
+
+2. Implement lateral change check in patch_aspm()
+   - Run `just test` to verify tests pass
+   - Fix linter errors (add noqa comment)
+   - **→ Commit: `feat(autoaspm): prevent lateral ASPM changes in safe mode`**
+
+3. Update CLAUDE.md and help message
+   - **→ Commit: `docs(autoaspm): document lateral change prevention`**
+
+**DO NOT:**
+- ❌ Complete all steps first, then create multiple commits at the end
+- ❌ Batch unrelated changes into one large commit
+- ❌ Wait until "everything is done" to commit
+
+**DO:**
+- ✅ Commit immediately after each major step
+- ✅ Create focused, single-purpose commits
+- ✅ Commit even if more work remains
 
 This approach gives you:
 - Clear test/implementation separation in git history
-- Easy rollback of implementation without losing tests
+- Easy rollback of any specific step without losing others
 - Documentation of what was tested vs what was implemented
+- Better progress tracking during development
 
 ### Benefits of Incremental Commits
 
