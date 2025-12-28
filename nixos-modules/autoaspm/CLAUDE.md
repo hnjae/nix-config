@@ -33,19 +33,19 @@ All development commands use `direnv exec .` to ensure proper environment setup.
 
 - Represents a single PCI device with ASPM support
 - Core responsibilities:
-  - Read PCI configuration space via `lspci -xxx`
-  - Find PCIe capability offset in the configuration space
-  - Read/write ASPM settings using `setpci`
-  - Verify patches were applied successfully
-  - Retrieve vendor:device ID for stable identification
+    - Read PCI configuration space via `lspci -xxx`
+    - Find PCIe capability offset in the configuration space
+    - Read/write ASPM settings using `setpci`
+    - Verify patches were applied successfully
+    - Retrieve vendor:device ID for stable identification
 - Key methods:
-  - `get_vendor_device_id()`: Gets vendor:device ID (e.g., '8086:15b8') via `lspci -n`
-  - `read_config_space()`: Caches config space bytes from lspci output
-  - `find_pcie_capability()`: Locates PCIe capability in config space with circular reference detection
-  - `get_link_control_offset()`: Calculates where ASPM bits are located
-  - `patch_aspm(requested_mode, dry_run, strict)`: Applies ASPM changes with two modes:
-    - **Safe mode** (strict=False): Uses intersection, prevents downgrade (default --mode behavior)
-    - **Strict mode** (strict=True): Enforces exact mode, allows downgrade/disable (--device-mode behavior)
+    - `get_vendor_device_id()`: Gets vendor:device ID (e.g., '8086:15b8') via `lspci -n`
+    - `read_config_space()`: Caches config space bytes from lspci output
+    - `find_pcie_capability()`: Locates PCIe capability in config space with circular reference detection
+    - `get_link_control_offset()`: Calculates where ASPM bits are located
+    - `patch_aspm(requested_mode, dry_run, strict)`: Applies ASPM changes with two modes:
+        - **Safe mode** (strict=False): Uses intersection, prevents downgrade (default --mode behavior)
+        - **Strict mode** (strict=True): Enforces exact mode, allows downgrade/disable (--device-mode behavior)
 
 ### Main Processing Flow
 
@@ -82,6 +82,7 @@ All development commands use `direnv exec .` to ensure proper environment setup.
    - Appropriate for device-specific overrides
 
 **Priority Order**:
+
 1. `--skip` devices are not touched at all
 2. `--device-mode` overrides use strict mode
 3. `--mode` default uses safe mode
@@ -137,6 +138,7 @@ Common types:
 **Multi-step features should be committed incrementally:**
 
 For example, when implementing vendor:device ID based ASPM configuration:
+
 1. `feat(autoaspm): add vendor:device ID retrieval to PCIDevice` - After adding the ID retrieval method
 2. `feat(autoaspm): add --device-mode and --skip CLI flags` - After CLI parsing is complete
 3. `feat(autoaspm): add strict mode for explicit ASPM control` - After implementing strict mode
@@ -147,6 +149,7 @@ For example, when implementing vendor:device ID based ASPM configuration:
 8. `docs(autoaspm): update documentation for device overrides` - After documentation
 
 **Single-step changes can be committed immediately:**
+
 - `fix(autoaspm): handle missing PCIe capability gracefully`
 - `style(autoaspm): fix ruff linting issues`
 - `refactor(autoaspm): extract PCI config parsing into helper method`
@@ -193,16 +196,19 @@ When following TDD (Test-Driven Development), create a commit immediately after 
    - **→ Commit: `docs(autoaspm): document lateral change prevention`**
 
 **DO NOT:**
+
 - ❌ Complete all steps first, then create multiple commits at the end
 - ❌ Batch unrelated changes into one large commit
 - ❌ Wait until "everything is done" to commit
 
 **DO:**
+
 - ✅ Commit immediately after each major step
 - ✅ Create focused, single-purpose commits
 - ✅ Commit even if more work remains
 
 This approach gives you:
+
 - Clear test/implementation separation in git history
 - Easy rollback of any specific step without losing others
 - Documentation of what was tested vs what was implemented
@@ -225,11 +231,13 @@ The module at `module.nix` configures AutoASPM as a systemd service:
 - Device access: PrivateDevices = false to allow PCI device access
 
 **Module Options**:
+
 - `mode`: Default ASPM mode for all devices (safe mode)
 - `deviceModes`: Attribute set of vendor:device → mode mappings (strict mode)
 - `skipDevices`: List of vendor:device IDs to skip entirely
 
 **Example Configuration**:
+
 ```nix
 services.autoaspm = {
   enable = true;
@@ -306,6 +314,7 @@ def filter_devices_by_name(devices, pattern):
 #### When to Skip TDD
 
 TDD is strongly recommended for all features, but may be skipped for:
+
 - Quick bug fixes where the bug itself serves as the test case
 - Exploratory code that will be thrown away
 - Code that's difficult to test in isolation (should be rare with good design)

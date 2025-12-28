@@ -205,7 +205,7 @@
                 shfmt
                 fish # .fish
 
-                yamlfmt
+                yamlfix
                 taplo # toml
                 markdownlint-cli2 # .md
                 biome # json

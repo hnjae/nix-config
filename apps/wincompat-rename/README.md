@@ -166,46 +166,6 @@ The tool respects filesystem boundaries and won't follow mounts to different fil
 
 Symlinks are never renamed and are not followed during traversal.
 
-## Examples
-
-### Example 1: Basic character conversion
-
-```bash
-$ wincompat-rename "my:file.txt"
-my:file.txt → my：file.txt
-
-Completed: 1 files renamed, 0 directories renamed
-```
-
-### Example 2: Reserved name
-
-```bash
-$ wincompat-rename "CON.log"
-CON.log → CON_.log
-
-Completed: 1 files renamed, 0 directories renamed
-```
-
-### Example 3: Recursive with preview
-
-```bash
-$ wincompat-rename -n -r ~/Documents
-file:name.txt → file：name.txt
-data|backup.zip → data｜backup.zip
-CON.txt → CON_.txt
-
-Completed: 0 files renamed, 0 directories renamed
-```
-
-### Example 4: Collision detection
-
-```bash
-$ wincompat-rename "test:file.txt"
-WARNING: SKIPPED "test:file.txt" → "test：file.txt" (target already exists)
-
-Completed: 0 files renamed, 0 directories renamed
-Skipped: 1 (target exists)
-```
 
 ## Testing
 
