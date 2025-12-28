@@ -199,11 +199,12 @@ pkgs:
     #######################################
     # Other formatters, linters, ... etc
     #######################################
-    pkgs.unstable.taplo # lsp for toml written in rust
-    pkgs.unstable.nufmt
     pkgs.unstable.prek # pre-commit-hook
     pkgs.unstable.treefmt # one CLI to format the code tree
+    pkgs.unstable.nufmt
+    pkgs.unstable.taplo # lsp for toml written in rust
     pkgs.unstable.typos # source code spell checker
+    pkgs.unstable.yamlfix
     pkgs.unstable.yamlfmt
 
     ######################
