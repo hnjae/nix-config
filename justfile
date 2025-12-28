@@ -1,6 +1,10 @@
+#!/usr/bin/env -S just --justfile
 # check: https://nixos.org/manual/nix/stable/command-ref/new-cli/nix
 
+set unstable := true
 set ignore-comments := true
+
+alias fmt := format
 
 hostname := `hostname`
 project := `basename $(pwd)`
@@ -74,10 +78,9 @@ sync: format
     git commit --no-verify -m '{{ hostname }}: {{ datetime("%Y-%m-%dT%H:%M:%S%Z") }}'
     git push
 
-alias fmt := format
-
+[group('ci')]
 format:
-    nix fmt --no-warn-dirty
+    nix develop --command treefmt
 
 [group('update')]
 open-status:
@@ -122,7 +125,7 @@ update-locals:
         echo "{{ BOLD }}{{ BLUE }}INFO: Skipping update-cloudflare-ips.sh since it is locked (encrypted).{{ NORMAL }}" >&2
     fi
 
-[group('check')]
+[group('ci')]
 remote-build-test: update-locals
     nix build \
         --no-link \
@@ -135,11 +138,11 @@ remote-build-test: update-locals
 #################################################################################
 # check recipes
 
-[group('check')]
+[group('ci')]
 check:
     NIXPKGS_ALLOW_UNFREE=1 nix flake check --no-warn-dirty
 
-[group('check')]
+[group('ci')]
 _parallel-drybuild-homes-wip:
     #!/bin/sh
 
@@ -161,7 +164,7 @@ _parallel-drybuild-homes-wip:
             --json \
             '.#homeConfigurations.{}.activationPackage' 2> >(sed '/^[[:space:]]*\/nix\/store\//d')"
 
-[group('check')]
+[group('ci')]
 _drybuild-homes:
     #!/bin/sh
 
@@ -191,7 +194,7 @@ _drybuild-homes:
 
 # slower than nix flake check
 
-[group('check')]
+[group('ci')]
 _drybuild-nixoses: update-locals
     #!/bin/sh
 
@@ -217,7 +220,7 @@ _drybuild-nixoses: update-locals
         echo ""
     done
 
-[group('check')]
+[group('ci')]
 [positional-arguments]
 @drybuild host:
     just build "{{ host }}" "--dry"

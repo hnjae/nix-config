@@ -1,0 +1,96 @@
+# treefmt configuration
+# See: https://treefmt.com/v2.4/getting-started/configure/
+
+on-unmatched = "warn"
+
+excludes = [
+  # Git related
+  ".git",
+  ".git-crypt/*",
+  ".gitattributes",
+  ".gitignore",
+  "*/.gitignore",
+
+  # Incomplete
+  "*/_todo/*",
+
+  # Encrypetd
+  "*-encrypted/*",
+  "*-encrypetd.*",
+  "*/secrets/*",
+
+  # No Formatter
+  ".editorconfig",
+  "*/.editorconfig",
+  "LICENSE",
+  "*.nu",             # nufmt has bugs
+  "*/completions/_*", # zsh completion files
+
+  # Auto generated files
+  "flake.lock",
+  "*/Cargo.lock",
+  "*/uv.lock",
+
+  # Files from individual projects
+  "*.rs",
+  "*.py",
+]
+
+[formatter.nix]
+command = "nixfmt"
+includes = ["*.nix"]
+
+[formatter.just]
+command = "sh"
+options = [
+  "-euc",
+  "for f in \"$@\"; do just --fmt --unstable --justfile \"$f\"; done",
+  "--",
+]
+includes = [
+  "justfile",
+  ".justfile",
+  "*/justfile",
+  "*/.justfile",
+]
+
+[formatter.shellharden]
+command = "shellharden"
+options = ["--replace"]
+includes = ["*.sh", "*.bash", "*.envrc", "*.envrc*"]
+priority = 1
+
+[formatter.shellcheck]
+command = "shellcheck"
+includes = ["*.sh", "*.bash", "*.envrc", "*.envrc*"]
+priority = 2
+
+[formatter.shfmt]
+command = "shfmt"
+options = ["--indent", "2", "--simplify", "--write"]
+includes = ["*.sh", "*.bash", "*.envrc", "*.envrc*"]
+priority = 3
+
+[formatter.fish]
+command = "fish_indent"
+options = ["--write"]
+includes = ["*.fish"]
+
+[formatter.yaml]
+command = "yamlfix"
+includes = ["*.yaml"]
+
+[formatter.toml]
+command = "taplo"
+options = ["format"]
+includes = ["*.toml"]
+
+[formatter.json]
+command = "biome"
+options = ["format", "--write"]
+includes = ["*.json", "*.jsonc"]
+
+[formatter.markdown]
+command = "markdownlint-cli2"
+options = ["--fix"]
+includes = ["*.md"]

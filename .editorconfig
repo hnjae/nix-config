@@ -12,11 +12,7 @@ indent_size = 2
 max_line_length = 100
 indent_style = space
 
-[*.sh]
-indent_size = 2
-indent_style = space
-
-[*.lua]
+[{*.{sh,bash,envrc},{*.envrc.*}}]
 indent_size = 2
 indent_style = space
 
@@ -25,15 +21,18 @@ indent_size = 4
 max_line_length = 79
 indent_style = space
 
-[*.rs]
+[*.{fish,nu}]
 indent_size = 4
 indent_style = space
 
-# mdformat force indent size to 2
 [*.md]
-indent_size = 2
+indent_size = 4
 indent_style = space
 
-[justfile]
+[{justfile,.justfile}]
 indent_size = 4
+indent_style = space
+
+[*.{json,jsonc,yaml}]
+indent_size = 2
 indent_style = space

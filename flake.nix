@@ -187,57 +187,35 @@
             devShells.default = pkgs.mkShellNoCC {
               packages = with pkgs; [
                 sops
+                git-crypt
 
-                # LSPs / Linters / Formatters
+                # LSPs / Linters
                 nil
                 statix
                 deadnix
+
+                prek
+
+                # Formatters
+                treefmt
                 nixfmt-rfc-style
+
+                shellcheck
+                shellharden
+                shfmt
+                fish # .fish
+
+                yamlfmt
+                taplo # toml
+                markdownlint-cli2 # .md
+                biome # json
 
                 # just
                 just
                 jq
-
-                prek
-                treefmt
+                nushell # used in justfile
               ];
             };
-
-            # Utilized by `nix fmt`
-            # treefmt.config = {
-            #   programs = {
-            #     nixfmt = {
-            #       enable = true;
-            #       package = pkgs.nixfmt-rfc-style;
-            #     };
-            #     just = {
-            #       enable = true;
-            #       includes = [
-            #         "justfile"
-            #         "*/justfile"
-            #       ];
-            #     };
-            #     shellcheck.enable = true;
-            #     shfmt.enable = true;
-            #   };
-            #   settings = {
-            #     formatter = {
-            #       shellcheck.priority = 1;
-            #       shfmt.priority = 2;
-            #       nixfmt.options = [
-            #         "--width=100"
-            #       ];
-            #     };
-            #     global.excludes = [
-            #       "apps/*"
-            #       "*.md" # mdformat does not support frontmatter, so it breaks markdown files.
-            #
-            #       "*/*-encrypted/*"
-            #       "*-encrypted.*"
-            #       "*/secrets/*"
-            #     ];
-            #   };
-            # };
           };
       };
 }

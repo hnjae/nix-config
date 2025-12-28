@@ -1,7 +1,6 @@
 /.deploy-gc
-/.pre-commit-config.yaml
+/.direnv
 
-.direnv
 .mypy_cache
 .ruff_cache
 result
