@@ -7,8 +7,23 @@
 let
   projectName = "quick-start";
 in
-{ inputs, self, ... }:
 {
+  flake-parts-lib,
+  inputs,
+  self,
+  ...
+}:
+let
+  inherit (flake-parts-lib) importApply;
+  flakeArgs = {
+    localFlake = self;
+    inherit projectName;
+  };
+
+in
+{
+  flake.nixosModules.${projectName} = importApply ./nixos-module.nix flakeArgs;
+
   perSystem =
     {
       config,
@@ -71,7 +86,7 @@ in
       devShells.${projectName} = craneLib.devShell {
         packages = with pkgs; [
           cargo-tarpaulin # code coverage tool
-          rust-analyzer # (officia ) rust compiler front-end for IDEs
+          rust-analyzer # (official) rust compiler front-end for IDEs
         ];
       };
     };

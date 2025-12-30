@@ -21,18 +21,18 @@ exclude: |
     .*/uv\.lock|
   )$
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: detect-private-key
+        fail_fast: true
+      - id: check-added-large-files
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+      - id: check-xml
   - repo: local
     hooks:
-      - id: nixfmt
-        name: nixfmt
-        entry: nixfmt
-        language: system
-        files: \.nix$
-      - id: just-fmt
-        name: just format
-        entry: bash -c 'just --fmt --unstable --justfile "$1"' --
-        language: system
-        files: (^|/)(\.)?justfile$
       - id: shellharden
         name: shellharden
         entry: shellharden --replace
@@ -48,6 +48,18 @@ repos:
         entry: shfmt --indent 2 --simplify --write
         language: system
         files: \.(sh|bash|envrc|envrc.*)$
+  - repo: local
+    hooks:
+      - id: nixfmt
+        name: nixfmt
+        entry: nixfmt
+        language: system
+        files: \.nix$
+      - id: just-fmt
+        name: just format
+        entry: bash -c 'just --fmt --unstable --justfile "$1"' --
+        language: system
+        files: (^|/)(\.)?justfile$
       - id: fish-indent
         name: fish_indent
         entry: fish_indent --write

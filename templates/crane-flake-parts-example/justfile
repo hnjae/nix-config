@@ -5,13 +5,14 @@ PROJECT := "quick-start"
 alias fmt := format
 alias lint := check
 
-system := `nix --extra-experimental-features nix-command eval --raw --impure --expr builtins.currentSystem`
+# system := `nix --extra-experimental-features nix-command eval --raw --impure --expr builtins.currentSystem`
 
 _:
     @just --list
 
 build:
-    nix --no-warn-dirty build '.#packages.{{ system }}.{{ PROJECT }}'
+    # nix --no-warn-dirty build '.#packages.{{ system }}.{{ PROJECT }}'
+    nix --no-warn-dirty build '.#{{ PROJECT }}'
 
 test:
     cargo test
