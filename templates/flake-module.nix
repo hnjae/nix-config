@@ -1,9 +1,12 @@
-{ ... }:
 {
   flake.templates = {
     configurations = {
       path = ./configurations;
       description = "sample home/nixos configuration";
+    };
+    crane-flake-parts-example = {
+      path = ./crane-flake-parts-example;
+      description = "example project using `crane` and `flake-parts`";
     };
     mkshell = {
       path = ./mkshell;
