@@ -40,7 +40,6 @@ in
 
   services.printing = {
     enable = true;
-    stateless = true;
     webInterface = false;
     listenAddresses = [ ];
     browsed.enable = false;
@@ -90,7 +89,7 @@ in
             "network-online.target"
           ];
           Requires = [
-            "cups.service"
+            "printer.target"
             "ensure-printers.service"
           ];
         };
