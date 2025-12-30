@@ -64,10 +64,13 @@ in
       # https://github.com/mpv-player/mpv/wiki/GPU-Next-vs-GPU
       vo = "gpu-next";
       gpu-api = "vulkan";
-      hwdec = "auto";
+      hwdec = "auto-copy"; # to use video-filters
       vd-lavc-framedrop = "nonref";
       vd-lavc-show-all = true;
       vd-lavc-skiploopfilter = "none";
+      libplacebo-opts = builtins.concatStringsSep "," [
+        "deinterlace_algo=bwdif" # default yadif
+      ]; # requires vo=gpu-next
 
       # Scaling
       /*
@@ -80,6 +83,7 @@ in
       cscale = "ewa_lanczos4sharpest"; # ignored by gpu-next?
       dscale = "ewa_robidouxsharp";
       sigmoid-upscaling = true;
+      target-colorspace-hint = true; # requires gpu-next
 
       # SW Scaler (requires `--vf=scale`)
       sws-scaler = "spline";
@@ -159,57 +163,54 @@ in
     };
 
     profiles = {
+      hwdec = "auto-copy";
       sw-scale = {
-        vf = "scale";
+        vf = builtins.concatStringsSep "," [
+          "scale"
+        ];
       };
 
       deinterlace = {
         deinterlace = false;
-        vf = ''lavfi=[${
-          builtins.concatStringsSep "," [
-            "bwdif_vulkan"
-          ]
-        }]'';
+        hwdec = "auto-copy";
+        vf = builtins.concatStringsSep "," [
+          "bwdif"
+        ];
       };
 
-      deinterlace-sw = {
+      deinterlace-slow = {
         deinterlace = false;
-        vf = ''bwdif'';
-      };
-
-      deinterlace-sw2 = {
-        deinterlace = false;
-        vf = ''lavfi=[${
-          builtins.concatStringsSep "," [
-            "nnedi"
-          ]
-        }]'';
+        hwdec = "auto-copy";
+        vf = builtins.concatStringsSep "," [
+          "nnedi"
+        ];
       };
 
       deblock = {
-        deband = false;
-        vf = ''lavfi=[${
-          builtins.concatStringsSep "," [
-            "deblock=filter=strong:block=8"
-          ]
-        }]'';
+        # deband = false;
+        scale-blur = "0.9"; # sharpen
+        hwdec = "auto-copy";
+        vf = builtins.concatStringsSep "," [
+          "deblock=filter=strong"
+          # "scale"
+          # "unsharp"
+        ];
       };
 
       denoise = {
-        vf = ''lavfi=["${
-          builtins.concatStringsSep "," [
-            "nlmeans_vulkan"
-          ]
-        }]'';
+        hwdec = "auto-copy";
+        vf = builtins.concatStringsSep "," [
+          "hqdn3d"
+          # "nlmeans"
+
+        ];
       };
 
-      denoise-sw = {
-        vf = ''lavfi=[${
-          builtins.concatStringsSep "," [
-            "bm3d"
-            # "hqdn3d"
-          ]
-        }]'';
+      denoise-slow = {
+        hwdec = "auto-copy";
+        vf = builtins.concatStringsSep "," [
+          "bm3d"
+        ];
       };
 
       medium = {
@@ -225,6 +226,7 @@ in
 
       very-fast = {
         vd-lavc-skiploopfilter = "default";
+        hwdec = "auto";
         # vd-lavc-framedrop = "nonkey"; # 프레임 드롭: 키프레임 외 모든 프레임
 
         correct-downscaling = false;
@@ -258,7 +260,7 @@ in
         # WIP
         vo = "gpu-next";
         gpu-api = "vulkan";
-        target-colorspace-hint = true;
+        target-colorspace-hint = true; # requires gpu-next
         target-contrast = "auto"; # Max contrast ratio of your supported device, usually ~1000 for IPS, ~3000-5000 for VA and inf for OLED)
       };
     };
@@ -281,12 +283,13 @@ in
       HOME = "seek 60 keyframes"; # NEW
       END = "seek 60 keyframes"; # NEW
 
-      # default bindings
-      m = "cycle mute";
-      h = "cycle deband";
-      d = "cycle deinterlace";
+      # Toggle things
+      m = "cycle mute"; # default
+      b = "cycle deband"; # default
+      d = "cycle deinterlace"; # default
+      k = "vf toggle deblock"; # NEW
 
-      # remap bindings for colemak-dh layout
+      # remap bindings for colemak-dh layout (default: z Z x)
       x = "add sub-delay -0.1";
       X = "add sub-delay +0.1";
       c = "add sub-delay +0.1";
