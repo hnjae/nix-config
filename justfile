@@ -80,7 +80,7 @@ sync: format
 
 [group('ci')]
 format:
-    nix develop --command treefmt
+    prek run --all-files
 
 [group('update')]
 open-status:

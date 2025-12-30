@@ -197,7 +197,6 @@
                 prek
 
                 # Formatters
-                treefmt
                 nixfmt-rfc-style
 
                 shellcheck

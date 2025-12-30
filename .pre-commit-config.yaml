@@ -1,0 +1,75 @@
+---
+# See: https://pre-commit.com/
+exclude: |
+  (?x)^(
+    \.git/|
+    \.git-crypt/.*|
+    \.gitattributes|
+    \.gitignore|
+    .*/\.gitignore|
+    .*/_todo/.*|
+    .*-encrypted/.*|
+    .*-encrypted\..*|
+    .*/secrets/.*|
+    \.editorconfig|
+    .*/\.editorconfig|
+    LICENSE|
+    .*\.nu|
+    .*/completions/_.*|
+    flake\.lock|
+    .*/Cargo\.lock|
+    .*/uv\.lock|
+  )$
+repos:
+  - repo: local
+    hooks:
+      - id: nixfmt
+        name: nixfmt
+        entry: nixfmt
+        language: system
+        files: \.nix$
+      - id: just-fmt
+        name: just format
+        entry: bash -c 'just --fmt --unstable --justfile "$1"' --
+        language: system
+        files: (^|/)(\.)?justfile$
+      - id: shellharden
+        name: shellharden
+        entry: shellharden --replace
+        language: system
+        files: \.(sh|bash|envrc|envrc.*)$
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        files: \.(sh|bash|envrc|envrc.*)$
+      - id: shfmt
+        name: shfmt
+        entry: shfmt --indent 2 --simplify --write
+        language: system
+        files: \.(sh|bash|envrc|envrc.*)$
+      - id: fish-indent
+        name: fish_indent
+        entry: fish_indent --write
+        language: system
+        files: \.fish$
+      - id: yamlfix
+        name: yamlfix
+        entry: yamlfix
+        language: system
+        files: \.yaml$
+      - id: taplo
+        name: taplo format
+        entry: taplo format
+        language: system
+        files: \.toml$
+      - id: biome
+        name: biome format
+        entry: biome format --write
+        language: system
+        files: \.(json|jsonc)$
+      - id: markdownlint
+        name: markdownlint-cli2
+        entry: markdownlint-cli2 --fix
+        language: system
+        files: \.md$
