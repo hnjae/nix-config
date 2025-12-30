@@ -8,17 +8,17 @@
       path = ./crane-flake-parts-example;
       description = "example project using `crane` and `flake-parts`";
     };
-    mkshell = {
-      path = ./mkshell;
-      description = "development shell using `pkgs.mkShell`";
-    };
-    mkshell-advanced = {
-      path = ./mkshell;
-      description = "development shell using `pkgs.mkShell` with `treefmt-nix`";
-    };
     devshell = {
       path = ./devshell;
-      description = "development shell using `devshell`, `treefmt-nix` and `flake-parts`";
+      description = "development shell using `devshell` and `flake-parts`";
+    };
+    devshell-flake-parts = {
+      path = ./devshell-flake-parts;
+      description = "development shell using `pkgs.mkShell` and `flake-parts`";
+    };
+    devshell-minimal-deps = {
+      path = ./devshell-minimal-deps;
+      description = "development shell using `pkgs.mkShell`";
     };
     nix-shell = {
       path = ./nix-shell;
