@@ -12,3 +12,14 @@ repos:
         language: system
         pass_filenames: true
         types: [rust]
+      - id: nixfmt
+        name: nixfmt
+        entry: nixfmt --width=100 --
+        language: system
+        pass_filenames: true
+        types: [nix]
+      - id: markdownlint
+        name: markdownlint-cli2
+        entry: markdownlint-cli2 --fix
+        language: system
+        types: [markdown]

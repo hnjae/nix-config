@@ -54,7 +54,7 @@ repos:
         name: nixfmt
         entry: nixfmt
         language: system
-        files: \.nix$
+        types: [nix]
       - id: just-fmt
         name: just format
         entry: bash -c 'just --fmt --unstable --justfile "$1"' --
@@ -64,17 +64,17 @@ repos:
         name: fish_indent
         entry: fish_indent --write
         language: system
-        files: \.fish$
+        types: [fish]
       - id: yamlfix
         name: yamlfix
         entry: yamlfix
         language: system
-        files: \.yaml$
+        types: [yaml]
       - id: taplo
         name: taplo format
         entry: taplo format
         language: system
-        files: \.toml$
+        types: [toml]
       - id: biome
         name: biome format
         entry: biome format --write
@@ -84,4 +84,4 @@ repos:
         name: markdownlint-cli2
         entry: markdownlint-cli2 --fix
         language: system
-        files: \.md$
+        types: [markdown]
