@@ -52,4 +52,7 @@
     # for secure-boot
     pkgs.sbctl
   ];
+
+  # Use tpm2 to unlock disk encryption
+  security.tpm2.enable = true;
 }

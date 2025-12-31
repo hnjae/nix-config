@@ -1,6 +1,6 @@
 ---
 date: 2025-08-02T23:26:03+0900
-lastmod: 2025-12-31T16:20:41+0900
+lastmod: 2025-12-31T20:02:10+0900
 ---
 
 ## 새 NixOS 인스톨 가이드
@@ -45,6 +45,12 @@ nix run github:nix-community/nixos-anywhere -- --flake ".#<hostname> --phases ke
     - Lanzaboote: <https://nix-community.github.io/lanzaboote/>
     - Limine: <https://wiki.nixos.org/wiki/Limine>
         - Limine 는 NixOS 25.05 기준 initrd-secrets 에 버그가 있다.
+- LUKS TPM Unlock 설정
+
+    ```sh
+    systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0,2,7,12 /dev/sdX
+    ```
+
 - tailscale 로그인
     - 일부 기기는 key expiry 끄기
     - IP 설정
