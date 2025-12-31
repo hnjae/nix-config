@@ -22,6 +22,43 @@ if TYPE_CHECKING:
 NIX_ENV_BIN: Final = "/run/current-system/sw/bin/nix-env"
 NIX_BIN: Final = "/run/current-system/sw/bin/nix"
 
+# TODO: 아래는 systemd-boot 인 경우만 사용. lanzaboote 일 경우 X
+# e.g.
+# % sudo tree /boot/
+# /boot/
+# ├── EFI
+# │   ├── BOOT
+# │   │   └── BOOTX64.EFI
+# │   ├── Linux
+# │   │   ├── nixos-generation-35-4zq3yayxc4673q33qy62ulkg4b62pktypav5vu6lw4xuocu6dijq.efi
+# │   │   ├── nixos-generation-38-ec4zeuoc46xxklmihzdwwdsj6b6ykhpy7feo2tzvgnkfctpsqsqq.efi
+# │   │   ├── nixos-generation-58-lvvid6pw7wttwjnpzwifjpzaa55lnzyw77bvvuy7oaapsifogyfq.efi
+# │   │   ├── nixos-generation-70-iyf3ui7hhausnar6ruf2lzxmjjbyixvqrlhmn3ndrswsmyou4dyq.efi
+# │   │   ├── nixos-generation-75-6tu5owcqdhlhyngvz3pspqdnrxtj2mrrl67wv4bv3qrv6thmuyxa.efi
+# │   │   ├── nixos-generation-76-3ckooxo7iofwoc2tguwmehyhqvkx2k4brazlm6ymspazozrcos4a.efi
+# │   │   ├── nixos-generation-77-jv6ofk2sfxxdc6xgn26hjt2ajc5qpvwen2k2sahn4lpc6ckufxuq.efi
+# │   │   ├── nixos-generation-78-3v7d2mjpilc5ovyvxbyyq6ipsbipllgoktsshoxwtpoifg7uk7aa.efi
+# │   │   ├── nixos-generation-79-7rnlkkazk7bfhdmk5tcg54ovhspm5r5gykrywyhzlx7tkxmgqv2q.efi
+# │   │   └── nixos-generation-80-zxxwus64pon7yogbdsrkot4yb5wlgjw6g6b4dkt4omphmcknrzeq.efi
+# │   ├── nixos
+# │   │   ├── initrd-6.18.2-en3pj5kvf5bk4o6j5k7cdj2szxynm35cz24xi5xjvmxnly3cw63a.efi
+# │   │   ├── initrd-6.18.2-l5ghpkqrlg7gqhhqjbpeyj3av42ohxwfbdqgzxjfrcu2qsdsqwya.efi
+# │   │   ├── initrd-6.18.2-wbpifus5o2yulpe6m4w42i7t2wof6f3bgcjruyxlex4fdj47gnsq.efi
+# │   │   └── kernel-6.18.2-mvsd44bockqtwrzzh6xlte7ewow6haqhadhnxpta7nbebhjunldq.efi
+# │   └── systemd
+# │       └── systemd-bootx64.efi
+# └── loader
+#     ├── entries
+#     │   ├── nixos-generation-35.conf
+#     │   ├── nixos-generation-38.conf
+#     │   ├── nixos-generation-58.conf
+#     │   └── nixos-generation-70.conf
+#     ├── entries.srel
+#     ├── keys
+#     ├── loader.conf
+#     └── random-seed
+
+
 BOOT_ENTRY_PATH: Final = "/boot/loader/entries"
 BOOT_ENTRY_PREFIX: Final = "nixos-generation-"
 PROFILE_PATH: Final = "/nix/var/nix/profiles"

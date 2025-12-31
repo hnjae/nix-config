@@ -21,6 +21,7 @@ pkgs:
   ######################
   pkgs.cheat
   pkgs.navi
+  pkgs.tealdeer # tldr
   pkgs.cht-sh
   pkgs.fzf
   pkgs.perl # fzf+zsh의 c-r 맵핑에서 사용.
