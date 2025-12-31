@@ -1,6 +1,6 @@
 ---
 date: 2025-08-02T23:26:03+0900
-lastmod: 2025-12-28T14:22:40+0900
+lastmod: 2025-12-31T16:20:41+0900
 ---
 
 ## 새 NixOS 인스톨 가이드
@@ -42,7 +42,7 @@ nix run github:nix-community/nixos-anywhere -- --flake ".#<hostname> --phases ke
 
 - `initrd.network.ssh.enable` 다시 키고 `nixos-rebuild switch`
 - Secureboot 설정
-    - Lanzaboote: <https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md>
+    - Lanzaboote: <https://nix-community.github.io/lanzaboote/>
     - Limine: <https://wiki.nixos.org/wiki/Limine>
         - Limine 는 NixOS 25.05 기준 initrd-secrets 에 버그가 있다.
 - tailscale 로그인

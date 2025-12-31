@@ -29,12 +29,12 @@
   boot = {
     # enable lanzaboote after creating keys (`sbctl create-keys`)
     lanzaboote = {
-      enable = false;
+      enable = true;
       pkiBundle = "/var/lib/sbctl";
       settings.console-mode = "keep"; # use vendor's firmware's default
     };
     loader.systemd-boot = {
-      enable = lib.mkForce true;
+      enable = lib.mkForce false;
       configurationLimit = 50;
     };
     loader.efi = {
