@@ -213,6 +213,10 @@
                 just
                 jq
                 nushell # used in justfile
+
+                # Used in other workspace
+                cargo
+                rustfmt
               ];
             };
           };

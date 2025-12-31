@@ -77,10 +77,11 @@ fn is_home_dotfile(path: &Path) -> bool {
 
     if let Some(parent) = abs_path.parent()
         && parent == home_path
-            && let Some(filename) = abs_path.file_name()
-                && let Some(name) = filename.to_str() {
-                    return name.starts_with('.');
-                }
+        && let Some(filename) = abs_path.file_name()
+        && let Some(name) = filename.to_str()
+    {
+        return name.starts_with('.');
+    }
 
     false
 }
@@ -91,9 +92,10 @@ fn is_home_dotfile(path: &Path) -> bool {
 /// dangerous directories (e.g., `.git`, `.ssh`, `node_modules`).
 fn is_dangerous_dirname(path: &Path) -> bool {
     if let Some(filename) = path.file_name()
-        && let Some(name) = filename.to_str() {
-            return DANGEROUS_DIRNAMES.contains(&name);
-        }
+        && let Some(name) = filename.to_str()
+    {
+        return DANGEROUS_DIRNAMES.contains(&name);
+    }
     false
 }
 

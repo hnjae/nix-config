@@ -92,9 +92,10 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
     }
 
     if let Some(base_dev) = ctx.base_dev
-        && is_different_filesystem(dir, base_dev) {
-            return;
-        }
+        && is_different_filesystem(dir, base_dev)
+    {
+        return;
+    }
 
     let Ok(entries) = fs::read_dir(dir) else {
         return;
@@ -117,14 +118,15 @@ fn collect_paths(ctx: &mut WalkContext, dir: &Path, collected: &mut Vec<PathBuf>
         }
 
         if let Some(base_dev) = ctx.base_dev
-            && is_different_filesystem(&path, base_dev) {
-                print_warning(&format!(
-                    "SKIPPED \"{}\" (different filesystem)",
-                    path.display()
-                ));
-                ctx.summary.skipped_filesystem = ctx.summary.skipped_filesystem.saturating_add(1);
-                continue;
-            }
+            && is_different_filesystem(&path, base_dev)
+        {
+            print_warning(&format!(
+                "SKIPPED \"{}\" (different filesystem)",
+                path.display()
+            ));
+            ctx.summary.skipped_filesystem = ctx.summary.skipped_filesystem.saturating_add(1);
+            continue;
+        }
 
         collected.push(path.clone());
 

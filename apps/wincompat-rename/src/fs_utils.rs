@@ -40,9 +40,10 @@ pub fn get_device_id(path: &Path) -> Option<u64> {
 #[must_use]
 pub fn is_hidden(path: &Path) -> bool {
     if let Some(filename) = path.file_name()
-        && let Some(name) = filename.to_str() {
-            return name.starts_with('.');
-        }
+        && let Some(name) = filename.to_str()
+    {
+        return name.starts_with('.');
+    }
     false
 }
 

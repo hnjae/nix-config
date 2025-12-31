@@ -7,19 +7,19 @@ repos:
   - repo: local
     hooks:
       - id: cargo-fmt
-        name: cargo fmt
+        name: format rust
         entry: cargo fmt --
         language: system
         pass_filenames: true
         types: [rust]
       - id: nixfmt
-        name: nixfmt
+        name: format nix
         entry: nixfmt --width=100 --
         language: system
         pass_filenames: true
         types: [nix]
       - id: markdownlint
-        name: markdownlint-cli2
+        name: format markdown
         entry: markdownlint-cli2 --fix
         language: system
         types: [markdown]

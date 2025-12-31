@@ -19,54 +19,54 @@ repos:
   - repo: local
     hooks:
       - id: shellharden
-        name: shellharden
+        name: harden shell
         entry: shellharden --replace
         language: system
         files: \.(sh|bash|envrc|envrc.*)$
       - id: shellcheck
-        name: shellcheck
+        name: check shell
         entry: shellcheck
         language: system
         files: \.(sh|bash|envrc|envrc.*)$
       - id: shfmt
-        name: shfmt
+        name: format shell
         entry: shfmt --indent 2 --simplify --write
         language: system
         files: \.(sh|bash|envrc|envrc.*)$
   - repo: local
     hooks:
       - id: nixfmt
-        name: nixfmt
+        name: format nix
         entry: nixfmt
         language: system
         types: [nix]
       - id: just-fmt
-        name: just format
+        name: format just
         entry: bash -c 'just --fmt --unstable --justfile "$1"' --
         language: system
         files: (^|/)(\.)?justfile$
       - id: fish-indent
-        name: fish_indent
+        name: format fish
         entry: fish_indent --write
         language: system
         types: [fish]
       - id: yamlfix
-        name: yamlfix
+        name: format yaml
         entry: yamlfix
         language: system
         types: [yaml]
       - id: taplo
-        name: taplo format
+        name: format toml
         entry: taplo format
         language: system
         types: [toml]
       - id: biome
-        name: biome format
+        name: format json(c)
         entry: biome format --write
         language: system
         files: \.(json|jsonc)$
       - id: markdownlint
-        name: markdownlint-cli2
+        name: format markdown
         entry: markdownlint-cli2 --fix
         language: system
         types: [markdown]
