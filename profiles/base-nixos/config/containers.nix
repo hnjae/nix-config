@@ -20,6 +20,11 @@ in
         ipv6_enabled = false;
         # default_subnet = "10.88.0.0/16";
       };
+      autoPrune = {
+        enable = lib.mkOverride 999 true;
+        dates = lib.mkOverride 999 "Monday *-*-* 04:00:00";
+        flags = lib.mkOverride 999 [ "--all" ];
+      };
     };
     oci-containers.backend = lib.mkOverride 999 "podman";
     docker.enable = lib.mkOverride 999 false;
