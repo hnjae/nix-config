@@ -194,6 +194,9 @@
           mode = "0700";
         }
       ];
+      files = [
+        "/var/cache/locatedb"
+      ];
     };
     "/zsafe/@" = {
       hideMounts = true;
