@@ -15,7 +15,7 @@ let
   };
 in
 {
-  flake.nixosModules."${project}" = importApply ./module.nix flakeArgs;
+  flake.nixosModules."${project}" = importApply ./os-module.nix flakeArgs;
 
   perSystem =
     {

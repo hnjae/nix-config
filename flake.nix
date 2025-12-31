@@ -217,6 +217,7 @@
                 # Used in other workspace
                 cargo
                 rustfmt
+                ruff
               ];
             };
           };

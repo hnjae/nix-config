@@ -19,26 +19,31 @@
       "/zsafe"
     ];
     pruneNames = [
-      # NixOS 25.11 Default:
+      # VCS directories
       ".bzr"
-      ".cache"
       ".git"
       ".hg"
       ".svn"
 
+      # Snapshots
       ".snapshots"
       ".zfs"
 
+      # Disposable directories
       ".ansible"
+      ".cache"
+      ".claude"
       ".deploy-gc"
       ".direnv"
       ".venv"
       "node_modules"
 
+      # Cache directories
+      ".mypy_cache"
+      ".pytest_cache"
+      ".pytet_cache"
+      ".ruff_cache"
       "__pycache__"
-      "mypy_cache"
-      "pytet_cache"
-      "ruff_cache"
     ];
   };
 
