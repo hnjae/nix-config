@@ -19,7 +19,10 @@
   # ACTION=="add", SUBSYSTEM=="net", NAME=="en*", RUN+="/usr/bin/ethtool -s $name wol g"
   services.udev.extraRules = ''
     # Wake on lan
-    ACTION=="add|change", SUBSYSTEM=="net", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
+    # ACTION=="add|change", SUBSYSTEM=="net", TEST=="power/wakeup", ATTR{power/wakeup}="enabled" # NOT WORKING <NixOS 25.11>
+
+    # Waek On with magic packet
+    ACTION=="add|change", SUBSYSTEM=="net", NAME=="en*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"
 
     # PCI Runtime Power Management
     SUBSYSTEM=="pci", ATTR{power/control}="auto"

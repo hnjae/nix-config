@@ -163,8 +163,8 @@ in
     };
 
     profiles = {
-      hwdec = "auto-copy";
       sw-scale = {
+        hwdec = "auto-copy";
         vf = builtins.concatStringsSep "," [
           "scale"
         ];
