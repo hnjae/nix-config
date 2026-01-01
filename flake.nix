@@ -40,6 +40,7 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         rust-overlay.follows = "rust-overlay";
+        crane.follows = "crane";
       };
     };
     disko = {
@@ -49,6 +50,7 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+    crane.url = "github:ipetkov/crane";
     microvm = {
       url = "github:astro/microvm.nix/refs/tags/v0.5.0";
       inputs = {
@@ -78,8 +80,10 @@
     xremap = {
       url = "github:xremap/nix-flake";
       inputs = {
-        nixpkgs.follows = "nixpkgs";
+        crane.follows = "crane";
         flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+
         # devshell.follows = ""; flake.nix를 이상하게 작성했는지, devshell 이 필요하다. <2025-03-23>
         # treefmt-nix.follows = ""; # 상동
         home-manager.follows = "";
