@@ -10,6 +10,9 @@ mod lock;
 /// Backup operations using rustic_core
 mod backup;
 
+/// Command-line interface
+mod cli;
+
 /// Mock implementations for testing
 #[cfg(test)]
 mod mocks;
