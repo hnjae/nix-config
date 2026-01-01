@@ -1,6 +1,6 @@
 /// File-based locking to prevent concurrent backups
 use crate::traits::Error;
-use fs4::FileExt;
+use fs4::fs_std::FileExt;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 

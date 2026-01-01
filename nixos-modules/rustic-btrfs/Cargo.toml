@@ -15,6 +15,7 @@ clap_complete = "4.5"
 clap_mangen = "0.2"
 
 # Logging and progress
+log = "0.4"
 env_logger = "0.11"
 indicatif = "0.17"
 
@@ -26,7 +27,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
 [build-dependencies]
-bindgen = "0.70"
+bindgen = "0.71"
 
 [lints.clippy]
 all = { level = "deny", priority = -1 }

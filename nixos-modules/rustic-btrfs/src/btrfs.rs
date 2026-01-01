@@ -43,9 +43,9 @@ impl BtrfsOps for LibBtrfs {
             let mut info: ffi::btrfs_util_subvolume_info = std::mem::zeroed();
             let err = ffi::btrfs_util_subvolume_info(c_path.as_ptr(), 0, &mut info);
 
-            if err != ffi::btrfs_util_error_BTRFS_UTIL_OK {
+            if err != ffi::btrfs_util_error::BTRFS_UTIL_OK {
                 return Err(Error::BtrfsError(format!(
-                    "Failed to get subvolume info: error code {err}"
+                    "Failed to get subvolume info: error code {err:?}"
                 )));
             }
 
@@ -66,11 +66,11 @@ impl BtrfsOps for LibBtrfs {
             let err = ffi::btrfs_util_is_subvolume(c_path.as_ptr());
 
             match err {
-                ffi::btrfs_util_error_BTRFS_UTIL_OK => Ok(true),
-                ffi::btrfs_util_error_BTRFS_UTIL_ERROR_NOT_BTRFS
-                | ffi::btrfs_util_error_BTRFS_UTIL_ERROR_NOT_SUBVOLUME => Ok(false),
+                ffi::btrfs_util_error::BTRFS_UTIL_OK => Ok(true),
+                ffi::btrfs_util_error::BTRFS_UTIL_ERROR_NOT_BTRFS
+                | ffi::btrfs_util_error::BTRFS_UTIL_ERROR_NOT_SUBVOLUME => Ok(false),
                 _ => Err(Error::BtrfsError(format!(
-                    "Failed to check if path is subvolume: error code {err}"
+                    "Failed to check if path is subvolume: error code {err:?}"
                 ))),
             }
         }
@@ -96,17 +96,18 @@ impl BtrfsOps for LibBtrfs {
                 0
             };
 
+            #[allow(clippy::as_conversions)]
             let err = ffi::btrfs_util_create_snapshot(
                 c_source.as_ptr(),
                 c_dest.as_ptr(),
-                flags.into(),
+                flags as i32,
                 std::ptr::null_mut(),
                 std::ptr::null_mut(),
             );
 
-            if err != ffi::btrfs_util_error_BTRFS_UTIL_OK {
+            if err != ffi::btrfs_util_error::BTRFS_UTIL_OK {
                 return Err(Error::BtrfsError(format!(
-                    "Failed to create snapshot: error code {err}"
+                    "Failed to create snapshot: error code {err:?}"
                 )));
             }
 
@@ -124,9 +125,9 @@ impl BtrfsOps for LibBtrfs {
         unsafe {
             let err = ffi::btrfs_util_delete_subvolume(c_path.as_ptr(), 0);
 
-            if err != ffi::btrfs_util_error_BTRFS_UTIL_OK {
+            if err != ffi::btrfs_util_error::BTRFS_UTIL_OK {
                 return Err(Error::BtrfsError(format!(
-                    "Failed to delete subvolume: error code {err}"
+                    "Failed to delete subvolume: error code {err:?}"
                 )));
             }
 
