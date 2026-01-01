@@ -67,8 +67,31 @@ in
           # here *without* rebuilding all dependency crates
           # MY_CUSTOM_VAR = "some value";
 
+          nativeBuildInputs =
+            commonArgs.nativeBuildInputs
+            ++ (with pkgs; [
+              installShellFiles
+              makeWrapper
+            ]);
+
+          postInstall = ''
+            # Wrap with rclone in PATH (required for rustic_core remote backends)
+            wrapProgram "$out/bin/rustic-btrfs" \
+              --prefix PATH : "${lib.makeBinPath [ pkgs.rclone ]}"
+
+            # Generate and install shell completions
+            for shell in bash fish zsh; do
+              $out/bin/rustic-btrfs --generate-completion "$shell" > "rustic-btrfs.$shell"
+            done
+            installShellCompletion rustic-btrfs.{bash,fish,zsh}
+
+            # Generate and install manpage
+            mkdir -p $out/share/man/man1
+            $out/bin/rustic-btrfs --generate-manpage > $out/share/man/man1/rustic-btrfs.1
+          '';
+
           meta = {
-            description = "";
+            description = "Safely backup Btrfs subvolumes using rustic";
             mainProgram = "rustic-btrfs";
             platforms = lib.platforms.linux;
           };
@@ -93,6 +116,7 @@ in
         packages = with pkgs; [
           cargo-tarpaulin # code coverage tool
           rust-analyzer # (official) rust compiler front-end for IDEs
+          rclone # Required for rustic_core remote backends
         ];
       };
     };
