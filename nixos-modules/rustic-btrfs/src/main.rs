@@ -13,6 +13,9 @@ mod backup;
 /// Command-line interface
 mod cli;
 
+/// Logging configuration
+mod logging;
+
 /// Mock implementations for testing
 #[cfg(test)]
 mod mocks;
@@ -28,7 +31,7 @@ fn main() {
     // Parse command-line arguments
     let cli = cli::Cli::parse();
 
-    // Handle special commands
+    // Handle special commands (before logging initialization to avoid log output)
     if let Some(ref shell) = cli.special.generate_completion {
         generate_completion(shell);
         return;
@@ -39,25 +42,28 @@ fn main() {
         return;
     }
 
+    // Initialize logging based on --debug flag
+    logging::init_logger(cli.global.debug);
+
     // Validate arguments
     if let Err(e) = cli.validate() {
-        eprintln!("Error: {e}");
+        log::error!("Invalid arguments: {e}");
         process::exit(1);
     }
 
     // TODO: Implement backup workflow in later phases
     // This will involve:
-    // 1. Initialize logging based on --debug flag
-    // 2. Validate repository configuration
-    // 3. Get subvolume UUID for locking
-    // 4. Acquire lock
-    // 5. Check for snapshot conflicts
-    // 6. Create snapshot
-    // 7. Run backup with rustic_core
-    // 8. Delete snapshot (cleanup)
-    // 9. Release lock (automatic via Drop)
+    // 1. Validate repository configuration
+    // 2. Get subvolume UUID for locking
+    // 3. Acquire lock
+    // 4. Check for snapshot conflicts
+    // 5. Create snapshot
+    // 6. Run backup with rustic_core
+    // 7. Delete snapshot (cleanup)
+    // 8. Release lock (automatic via Drop)
 
-    eprintln!("Backup workflow not yet implemented");
+    log::info!("Starting rustic-btrfs backup");
+    log::error!("Backup workflow not yet implemented");
     process::exit(1);
 }
 
