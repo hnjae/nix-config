@@ -7,6 +7,9 @@ mod btrfs;
 /// File-based locking to prevent concurrent backups
 mod lock;
 
+/// Backup operations using rustic_core
+mod backup;
+
 /// Mock implementations for testing
 #[cfg(test)]
 mod mocks;
