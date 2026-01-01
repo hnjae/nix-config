@@ -116,6 +116,7 @@ in
         LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib"; # bindgen requirement
 
         packages = with pkgs; [
+          btrfs-progs
           cargo-tarpaulin # code coverage tool
           rust-analyzer # (official) rust compiler front-end for IDEs
           rclone # Required for rustic_core remote backends
