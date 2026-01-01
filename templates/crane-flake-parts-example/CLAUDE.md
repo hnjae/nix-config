@@ -10,7 +10,7 @@ This is a Rust project built with Nix flakes and managed with `just` for common 
 
 The project uses a dual build system:
 
-- **Nix builds**: `just build` (runs `nix --no-warn-dirty --quiet --log-format raw build '.#restic-scrub'`) - Builds via Nix flakes using crane
+- **Nix builds**: `just build` (runs `nix --no-warn-dirty --quiet --log-format raw build '.#quick-start'`) - Builds via Nix flakes using crane
 - **Cargo builds**: Standard `cargo build` for development
 
 The Nix build configuration is split across:
@@ -49,8 +49,8 @@ Follow Test-Driven Development (TDD):
 ### Commit Guidelines
 
 - Follow [Conventional Commits](https://www.conventionalcommits.org/) format
-- Use scope `restic-scrub` for all commits
-- Example: `feat(restic-scrub): add repository verification`, `test(restic-scrub): add integration tests`
+- Use scope `quick-start` for all commits
+- Example: `feat(quick-start): add repository verification`, `test(restic-scrub): add integration tests`
 
 ## Linting Configuration
 
@@ -80,5 +80,5 @@ The project uses pre-commit hooks (`.pre-commit-config.yaml`):
 
 ### Nix Integration
 
-- The project is designed to be integrated into NixOS systems via the `nixosModules.restic-scrub` flake output
+- The project is designed to be integrated into NixOS systems via the `nixosModules.quick-start` flake output
 - The systemd service is hardened with extensive security restrictions (see `nixos-module.nix:46-70`)
