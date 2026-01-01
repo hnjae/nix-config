@@ -11,14 +11,14 @@ _:
     @just --list
 
 build:
-    nix --no-warn-dirty build '.#{{ PROJECT }}'
+    nix --quiet --log-format raw --no-warn-dirty build '.#{{ PROJECT }}'
 
 test:
-    cargo test
+    cargo --quiet test
 
 check:
-    cargo clippy
+    cargo --quiet clippy
 
 format:
-    cargo clippy --fix 2>/dev/null | true
-    cargo fmt --all
+    cargo --quiet clippy --fix 2>/dev/null | true
+    cargo --quiet fmt --all
