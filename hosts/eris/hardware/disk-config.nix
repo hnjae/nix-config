@@ -195,7 +195,7 @@
         }
       ];
       files = [
-        "/var/cache/locatedb"
+        "/var/cache/locatedb" # plocate
       ];
     };
     "/zsafe/@" = {
@@ -229,4 +229,45 @@
   # stateless 를 설정하면, cups 가 켜질때 /var/lib/cups 를 지워버림.
   # 어차피 `/` 가 tmpfs 라서 의미 없고, 복잡도 증가.
   services.printing.stateless = lib.mkForce false;
+
+  services.snapper = {
+    configs =
+      let
+        commonOpts = {
+          TIMELINE_CREATE = true;
+          TIMELINE_CLEANUP = true;
+          TIMELINE_MIN_AGE = 1;
+          TIMELINE_LIMIT_YEARLY = 0;
+          TIMELINE_LIMIT_QUARTERLY = 0;
+          TIMELINE_LIMIT_MONTHLY = 0;
+          TIMELINE_LIMIT_WEEKLY = 0;
+          TIMELINE_LIMIT_DAILY = 14;
+          TIMELINE_LIMIT_HOURLY = 12;
+
+          NUMBER_CLEANUP = true;
+          NUMBER_MIN_AGE = 1;
+          COMPRESSION = "none";
+        };
+      in
+      {
+        "srv" = commonOpts // {
+          SUBVOLUME = "/srv";
+        };
+        "zsafe" = commonOpts // {
+          SUBVOLUME = "/zsafe";
+        };
+      };
+  };
+
+  systemd.timers.snapper-timeline.timerConfig = lib.mkForce {
+    OnBootSec = "1h";
+    OnUnitActiveSec = "4h";
+    RandomizedDelaySec = "5m";
+  };
+
+  systemd.timers.snapper-cleanup.timerConfig = lib.mkForce {
+    OnBootSec = "10m";
+    OnCalendar = "*-*-* 04:00:00";
+    RandomizedDelaySec = "2h";
+  };
 }
