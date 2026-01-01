@@ -113,6 +113,8 @@ in
         # Inherit build inputs from commonArgs
         inputsFrom = [ my-crate ];
 
+        LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib"; # bindgen requirement
+
         packages = with pkgs; [
           cargo-tarpaulin # code coverage tool
           rust-analyzer # (official) rust compiler front-end for IDEs
