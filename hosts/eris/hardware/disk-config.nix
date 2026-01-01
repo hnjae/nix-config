@@ -235,6 +235,9 @@
     configs =
       let
         commonOpts = {
+          FSTYPE = "btrfs";
+          COMPRESSION = "none";
+
           TIMELINE_CREATE = true;
           TIMELINE_CLEANUP = true;
           TIMELINE_MIN_AGE = 1;
@@ -247,7 +250,11 @@
 
           NUMBER_CLEANUP = true;
           NUMBER_MIN_AGE = 1;
-          COMPRESSION = "none";
+          NUMBER_LIMIT = 0;
+          NUMBER_LIMIT_IMPORTANT = 0;
+
+          EMPTY_PRE_POST_CLEANUP = true;
+          EMPTY_PRE_POST_MIN_AGE = 1;
         };
       in
       {
