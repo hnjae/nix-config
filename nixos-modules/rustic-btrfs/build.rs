@@ -1,7 +1,11 @@
 use bindgen;
+use std::env;
+use std::path::PathBuf;
 
 fn main() {
     println!("cargo:rustc-link-lib=btrfsutil");
+
+    let out_path = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR not set"));
 
     bindgen::Builder::default()
         .header_contents("wrapper.h", "#include <btrfsutil.h>")
@@ -12,6 +16,6 @@ fn main() {
         .layout_tests(false)
         .generate()
         .expect("Unable to generate bindings")
-        .write_to_file(concat!(env!("OUT_DIR"), "/btrfs_bindings.rs"))
+        .write_to_file(out_path.join("btrfs_bindings.rs"))
         .expect("Couldn't write bindings");
 }
