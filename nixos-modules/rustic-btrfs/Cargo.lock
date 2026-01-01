@@ -2914,6 +2914,7 @@ dependencies = [
  "rustic_core",
  "serde",
  "serde_json",
+ "tempfile",
 ]
 
 [[package]]
