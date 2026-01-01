@@ -102,7 +102,7 @@ impl BtrfsOps for MockBtrfs {
 
     fn delete_subvolume(&self, path: &Path) -> Result<(), Error> {
         if self.fail_delete {
-            return Err(Error::BtrfsError(
+            return Err(Error::SnapshotDeletion(
                 "Mock subvolume deletion failed".to_string(),
             ));
         }
@@ -110,6 +110,12 @@ impl BtrfsOps for MockBtrfs {
         self.subvolumes_deleted
             .borrow_mut()
             .push(path.to_path_buf());
+
+        // Remove from snapshots_created if it was a snapshot
+        self.snapshots_created
+            .borrow_mut()
+            .retain(|(_, dest)| dest != path);
+
         Ok(())
     }
 }

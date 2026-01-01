@@ -19,6 +19,9 @@ mod logging;
 /// Progress reporting
 mod progress;
 
+/// Backup workflow with cleanup guarantees
+mod workflow;
+
 /// Mock implementations for testing
 #[cfg(test)]
 mod mocks;
