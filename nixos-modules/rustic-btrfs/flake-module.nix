@@ -45,9 +45,17 @@ in
         src = craneLib.cleanCargoSource ./.;
         strictDeps = true;
 
-        buildInputs = [
-          # Add additional build inputs here
+        nativeBuildInputs = with pkgs; [
+          pkg-config
+          clang # For bindgen
         ];
+
+        buildInputs = with pkgs; [
+          btrfs-progs # Provides libbtrfsutil
+        ];
+
+        # Bindgen requires libclang
+        LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
       };
 
       my-crate = craneLib.buildPackage (
@@ -79,6 +87,9 @@ in
       };
 
       devShells.${projectName} = craneLib.devShell {
+        # Inherit build inputs from commonArgs
+        inputsFrom = [ my-crate ];
+
         packages = with pkgs; [
           cargo-tarpaulin # code coverage tool
           rust-analyzer # (official) rust compiler front-end for IDEs
