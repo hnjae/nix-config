@@ -11,6 +11,7 @@ mod ffi {
 }
 
 use crate::traits::{BtrfsOps, Error};
+use std::ffi::CString;
 use std::path::Path;
 
 /// Production implementation of BtrfsOps using libbtrfsutil.
@@ -31,25 +32,106 @@ impl Default for LibBtrfs {
 }
 
 impl BtrfsOps for LibBtrfs {
-    fn get_subvolume_uuid(&self, _path: &Path) -> Result<String, Error> {
-        // TODO: Implement using btrfs_util_subvolume_info()
-        // Extract UUID and format as RFC 4122 (lowercase, hyphenated)
-        Err(Error::Other("Not implemented yet".to_string()))
+    fn get_subvolume_uuid(&self, path: &Path) -> Result<String, Error> {
+        let path_str = path
+            .to_str()
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_string()))?;
+        let c_path = CString::new(path_str)
+            .map_err(|e| Error::Other(format!("Invalid path (contains null byte): {e}")))?;
+
+        unsafe {
+            let mut info: ffi::btrfs_util_subvolume_info = std::mem::zeroed();
+            let err = ffi::btrfs_util_subvolume_info(c_path.as_ptr(), 0, &mut info);
+
+            if err != ffi::btrfs_util_error_BTRFS_UTIL_OK {
+                return Err(Error::BtrfsError(format!(
+                    "Failed to get subvolume info: error code {err}"
+                )));
+            }
+
+            // Extract UUID from info.uuid (16 bytes)
+            let uuid: [u8; 16] = info.uuid;
+            Ok(format_uuid(&uuid))
+        }
     }
 
-    fn is_subvolume(&self, _path: &Path) -> Result<bool, Error> {
-        // TODO: Implement using btrfs_util_is_subvolume()
-        Err(Error::Other("Not implemented yet".to_string()))
+    fn is_subvolume(&self, path: &Path) -> Result<bool, Error> {
+        let path_str = path
+            .to_str()
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_string()))?;
+        let c_path = CString::new(path_str)
+            .map_err(|e| Error::Other(format!("Invalid path (contains null byte): {e}")))?;
+
+        unsafe {
+            let err = ffi::btrfs_util_is_subvolume(c_path.as_ptr());
+
+            match err {
+                ffi::btrfs_util_error_BTRFS_UTIL_OK => Ok(true),
+                ffi::btrfs_util_error_BTRFS_UTIL_ERROR_NOT_BTRFS
+                | ffi::btrfs_util_error_BTRFS_UTIL_ERROR_NOT_SUBVOLUME => Ok(false),
+                _ => Err(Error::BtrfsError(format!(
+                    "Failed to check if path is subvolume: error code {err}"
+                ))),
+            }
+        }
     }
 
-    fn create_snapshot(&self, _source: &Path, _dest: &Path, _readonly: bool) -> Result<(), Error> {
-        // TODO: Implement using btrfs_util_create_snapshot()
-        Err(Error::Other("Not implemented yet".to_string()))
+    fn create_snapshot(&self, source: &Path, dest: &Path, readonly: bool) -> Result<(), Error> {
+        let source_str = source
+            .to_str()
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in source path".to_string()))?;
+        let dest_str = dest
+            .to_str()
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in dest path".to_string()))?;
+
+        let c_source = CString::new(source_str)
+            .map_err(|e| Error::Other(format!("Invalid source path (contains null byte): {e}")))?;
+        let c_dest = CString::new(dest_str)
+            .map_err(|e| Error::Other(format!("Invalid dest path (contains null byte): {e}")))?;
+
+        unsafe {
+            let flags = if readonly {
+                ffi::BTRFS_UTIL_CREATE_SNAPSHOT_READ_ONLY
+            } else {
+                0
+            };
+
+            let err = ffi::btrfs_util_create_snapshot(
+                c_source.as_ptr(),
+                c_dest.as_ptr(),
+                flags.into(),
+                std::ptr::null_mut(),
+                std::ptr::null_mut(),
+            );
+
+            if err != ffi::btrfs_util_error_BTRFS_UTIL_OK {
+                return Err(Error::BtrfsError(format!(
+                    "Failed to create snapshot: error code {err}"
+                )));
+            }
+
+            Ok(())
+        }
     }
 
-    fn delete_subvolume(&self, _path: &Path) -> Result<(), Error> {
-        // TODO: Implement using btrfs_util_delete_subvolume()
-        Err(Error::Other("Not implemented yet".to_string()))
+    fn delete_subvolume(&self, path: &Path) -> Result<(), Error> {
+        let path_str = path
+            .to_str()
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_string()))?;
+        let c_path = CString::new(path_str)
+            .map_err(|e| Error::Other(format!("Invalid path (contains null byte): {e}")))?;
+
+        unsafe {
+            let err = ffi::btrfs_util_delete_subvolume(c_path.as_ptr(), 0);
+
+            if err != ffi::btrfs_util_error_BTRFS_UTIL_OK {
+                return Err(Error::BtrfsError(format!(
+                    "Failed to delete subvolume: error code {err}"
+                )));
+            }
+
+            Ok(())
+        }
     }
 }
 
