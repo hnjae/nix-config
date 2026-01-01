@@ -57,20 +57,140 @@ fn main() {
         process::exit(1);
     }
 
-    // TODO: Implement backup workflow in later phases
-    // This will involve:
-    // 1. Validate repository configuration
-    // 2. Get subvolume UUID for locking
-    // 3. Acquire lock
-    // 4. Check for snapshot conflicts
-    // 5. Create snapshot
-    // 6. Run backup with rustic_core
-    // 7. Delete snapshot (cleanup)
-    // 8. Release lock (automatic via Drop)
+    // Run backup workflow
+    if let Err(e) = run_backup(&cli) {
+        log::error!("Backup failed: {:?}", e);
+        process::exit(e.exit_code());
+    }
+
+    log::info!("Backup completed successfully");
+}
+
+/// Run the backup workflow
+fn run_backup(cli: &cli::Cli) -> Result<(), traits::Error> {
+    use backup::RusticBackup;
+    use btrfs::LibBtrfs;
+    use lock::LockGuard;
+    use traits::BtrfsOps;
 
     log::info!("Starting rustic-btrfs backup");
-    log::error!("Backup workflow not yet implemented");
-    process::exit(1);
+
+    // Get subvolume path (already validated)
+    let subvolume = cli
+        .subvolume
+        .as_ref()
+        .ok_or_else(|| traits::Error::ConfigError("Subvolume is required".to_owned()))?;
+
+    log::info!("Backup source: {}", subvolume.display());
+
+    // Create Btrfs operations
+    let btrfs = LibBtrfs::new();
+
+    // Validate subvolume exists and is a Btrfs subvolume
+    log::debug!("Validating subvolume path");
+    if !subvolume.exists() {
+        return Err(traits::Error::ConfigError(format!(
+            "Subvolume does not exist: {}",
+            subvolume.display()
+        )));
+    }
+
+    if !btrfs.is_subvolume(subvolume)? {
+        return Err(traits::Error::ConfigError(format!(
+            "Path is not a Btrfs subvolume: {}",
+            subvolume.display()
+        )));
+    }
+
+    // Get subvolume UUID for locking
+    log::debug!("Getting subvolume UUID");
+    let uuid = btrfs.get_subvolume_uuid(subvolume)?;
+    log::info!("Subvolume UUID: {uuid}");
+
+    // Acquire exclusive lock
+    log::debug!("Acquiring lock for UUID: {uuid}");
+    let _lock = LockGuard::acquire(&uuid)?;
+    log::info!("Lock acquired");
+
+    // Check for snapshot conflicts
+    let snapshot_path = subvolume.join(".snapshot");
+    if snapshot_path.exists() {
+        log::debug!("Checking existing .snapshot path");
+        if !btrfs.is_subvolume(&snapshot_path)? {
+            return Err(traits::Error::SnapshotConflict(format!(
+                "Path {} exists but is not a subvolume. Manual cleanup required.",
+                snapshot_path.display()
+            )));
+        }
+        log::warn!(
+            "Snapshot already exists (leftover from failed backup?): {}. Will be overwritten.",
+            snapshot_path.display()
+        );
+        // Delete the existing snapshot before creating a new one
+        btrfs.delete_subvolume(&snapshot_path)?;
+    }
+
+    // Build backup configuration
+    let backup_config = build_backup_config(cli, &snapshot_path)?;
+
+    // Create backup operations
+    let backup_ops = RusticBackup::new();
+
+    // Run the backup workflow
+    log::info!("Running backup workflow");
+    let stats = workflow::run_backup_workflow(&btrfs, &backup_ops, subvolume, &backup_config)?;
+
+    log::info!(
+        "Backup statistics: {} files processed, {} bytes",
+        stats.files_processed,
+        stats.bytes_processed
+    );
+
+    Ok(())
+}
+
+/// Build `BackupConfig` from CLI arguments
+fn build_backup_config(
+    cli: &cli::Cli,
+    snapshot_path: &std::path::Path,
+) -> Result<traits::BackupConfig, traits::Error> {
+    // Build glob patterns if specified
+    let glob_patterns = cli.backup_opts.glob.clone();
+
+    // Build as_path (for partial backups, use parent directory name)
+    let as_path = if cli.backup_opts.paths.is_some() {
+        cli.subvolume
+            .as_ref()
+            .and_then(|p| p.file_name())
+            .and_then(|n| n.to_str())
+            .map(String::from)
+    } else {
+        None
+    };
+
+    // Build description
+    let description = if let Some(ref desc) = cli.backup_opts.description {
+        Some(desc.clone())
+    } else if let Some(ref desc_file) = cli.backup_opts.description_from {
+        // Read description from file
+        let content = std::fs::read_to_string(desc_file).map_err(|e| {
+            traits::Error::ConfigError(format!("Failed to read description file: {e}"))
+        })?;
+        Some(content.trim().to_owned())
+    } else {
+        cli.backup_opts
+            .paths
+            .as_ref()
+            .map(|paths| cli::generate_partial_backup_description(paths))
+    };
+
+    Ok(traits::BackupConfig {
+        snapshot_path: snapshot_path.to_path_buf(),
+        glob_patterns,
+        as_path,
+        description,
+        timestamp: cli.backup_opts.time.clone(),
+    })
 }
 
 /// Generate shell completion script
