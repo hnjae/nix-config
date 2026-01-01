@@ -231,6 +231,7 @@
   services.printing.stateless = lib.mkForce false;
 
   services.snapper = {
+    snapshotRootOnBoot = lib.mkForce false;
     configs =
       let
         commonOpts = {
@@ -257,17 +258,5 @@
           SUBVOLUME = "/zsafe";
         };
       };
-  };
-
-  systemd.timers.snapper-timeline.timerConfig = lib.mkForce {
-    OnBootSec = "1h";
-    OnUnitActiveSec = "4h";
-    RandomizedDelaySec = "5m";
-  };
-
-  systemd.timers.snapper-cleanup.timerConfig = lib.mkForce {
-    OnBootSec = "10m";
-    OnCalendar = "*-*-* 04:00:00";
-    RandomizedDelaySec = "2h";
   };
 }
