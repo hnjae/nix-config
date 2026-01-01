@@ -156,7 +156,10 @@ impl Default for MockBackup {
 impl BackupOps for MockBackup {
     fn run_backup(&self, config: &BackupConfig) -> Result<BackupStats, Error> {
         if self.fail_backup {
-            return Err(Error::BackupError("Mock backup failed".to_string()));
+            return Err(Error::BackupError {
+                message: "Mock backup failed".to_string(),
+                exit_code: None,
+            });
         }
 
         self.backups_run.borrow_mut().push(BackupConfig {

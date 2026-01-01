@@ -118,7 +118,7 @@ impl BtrfsOps for LibBtrfs {
 
             if err != ffi::btrfs_util_error::BTRFS_UTIL_OK {
                 log::error!("Failed to create snapshot: error code {err:?}");
-                return Err(Error::BtrfsError(format!(
+                return Err(Error::SnapshotCreation(format!(
                     "Failed to create snapshot: error code {err:?}"
                 )));
             }
@@ -142,7 +142,7 @@ impl BtrfsOps for LibBtrfs {
 
             if err != ffi::btrfs_util_error::BTRFS_UTIL_OK {
                 log::warn!("Failed to delete subvolume: error code {err:?}");
-                return Err(Error::BtrfsError(format!(
+                return Err(Error::SnapshotDeletion(format!(
                     "Failed to delete subvolume: error code {err:?}"
                 )));
             }

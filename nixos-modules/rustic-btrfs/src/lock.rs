@@ -47,7 +47,7 @@ impl LockGuard {
                 lock_path.display(),
                 error
             );
-            Error::Other(format!(
+            Error::LockError(format!(
                 "Failed to create lock file {}: {}",
                 lock_path.display(),
                 error
@@ -57,7 +57,7 @@ impl LockGuard {
         // Try to acquire exclusive lock (non-blocking)
         file.try_lock_exclusive().map_err(|error| {
             log::error!("Another backup is already running for this subvolume");
-            Error::Other(format!(
+            Error::LockError(format!(
                 "Another backup is already running for this subvolume: {}",
                 error
             ))

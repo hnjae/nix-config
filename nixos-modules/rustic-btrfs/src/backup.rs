@@ -60,9 +60,10 @@ impl BackupOps for RusticBackup {
         // })
 
         log::error!("rustic_core integration not implemented yet");
-        Err(Error::BackupError(
-            "rustic_core integration not implemented yet".to_string(),
-        ))
+        Err(Error::BackupError {
+            message: "rustic_core integration not implemented yet".to_string(),
+            exit_code: None,
+        })
     }
 }
 
