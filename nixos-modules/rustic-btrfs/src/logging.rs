@@ -44,8 +44,17 @@ pub fn init_logger(debug: bool) {
     // Custom format based on environment
     builder.format(move |buf, record| {
         if is_systemd {
-            // systemd: SEVERITY: message (no timestamp - systemd adds it)
-            writeln!(buf, "{}: {}", record.level(), record.args())
+            // systemd: <priority>SEVERITY: message (syslog format)
+            // Syslog priority mapping:
+            // ERROR=3, WARN=4, INFO=6, DEBUG=7, TRACE=7
+            let priority = match record.level() {
+                log::Level::Error => 3,
+                log::Level::Warn => 4,
+                log::Level::Info => 6,
+                log::Level::Debug => 7,
+                log::Level::Trace => 7,
+            };
+            writeln!(buf, "<{priority}>{}: {}", record.level(), record.args())
         } else {
             // terminal: YYYY-MM-DDTHH:MM:SS+TZ: SEVERITY: message (localtime)
             writeln!(

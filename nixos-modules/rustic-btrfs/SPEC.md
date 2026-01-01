@@ -487,17 +487,29 @@ backup_result?;
 **Systemd Detection**:
 
 - Detects systemd journal via `JOURNAL_STREAM` environment variable
-- When running under systemd, omits timestamp (systemd adds it automatically)
+- When running under systemd, uses syslog priority format
+- Timestamp is omitted (systemd adds it automatically)
 
 **Systemd Format** (JOURNAL_STREAM present):
 
 ```
-INFO: Created snapshot at /home/.snapshot
-WARN: Snapshot deletion failed, manual cleanup required
-ERROR: Backup failed: repository not found
+<6>INFO: Created snapshot at /home/.snapshot
+<4>WARN: Snapshot deletion failed, manual cleanup required
+<3>ERROR: Backup failed: repository not found
+<7>DEBUG: Lock acquired successfully
 ```
 
-Format: `SEVERITY: message`
+Format: `<priority>SEVERITY: message`
+
+**Syslog Priority Mapping**:
+
+| Log Level | Syslog Priority | Description |
+|-----------|-----------------|-------------|
+| ERROR     | 3               | Error conditions |
+| WARN      | 4               | Warning conditions |
+| INFO      | 6               | Informational messages |
+| DEBUG     | 7               | Debug-level messages |
+| TRACE     | 7               | Debug-level messages |
 
 **Terminal Format** (JOURNAL_STREAM not present):
 
@@ -505,6 +517,7 @@ Format: `SEVERITY: message`
 2026-01-01T17:21:56+09:00: INFO: Created snapshot at /home/.snapshot
 2026-01-01T17:22:10+09:00: WARN: Snapshot deletion failed
 2026-01-01T17:22:10+09:00: ERROR: Backup failed: repository not found
+2026-01-01T17:22:10+09:00: DEBUG: Lock acquired successfully
 ```
 
 Format: `YYYY-MM-DDTHH:MM:SS±TZ: SEVERITY: message` (localtime with timezone)
