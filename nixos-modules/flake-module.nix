@@ -3,6 +3,7 @@
     ./autoaspm/flake-module.nix
     ./kde/flake-module.nix
     ./nixos-gc/flake-module.nix
+    ./rustic-btrfs/flake-module.nix
   ];
 
   flake.nixosModules = {
