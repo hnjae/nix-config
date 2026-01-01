@@ -1,6 +1,8 @@
 /// Logging configuration and initialization
+use chrono::Local;
 use env_logger::Builder;
 use log::LevelFilter;
+use std::io::Write as IoWrite;
 
 /// Initialize the logger based on CLI options.
 ///
@@ -12,9 +14,10 @@ use log::LevelFilter;
 ///
 /// - Respects `RUST_LOG` environment variable if set
 /// - Falls back to INFO level by default, DEBUG if `debug` is true
-/// - Automatically detects systemd journal via `JOURNAL_STREAM` env var
-///   (handled by env_logger internally)
-/// - Uses env_logger's default format which includes timestamp, level, and module
+/// - Detects systemd journal via `JOURNAL_STREAM` env var
+/// - Custom format:
+///   - systemd (JOURNAL_STREAM present): `SEVERITY: message`
+///   - terminal: `YYYY-MM-DDTHH:MM:SS+TZ: SEVERITY: message` (localtime)
 ///
 /// # Example
 ///
@@ -35,8 +38,26 @@ pub fn init_logger(debug: bool) {
         builder.filter_module("rustic_btrfs", level);
     }
 
-    // Use default format (env_logger handles systemd detection automatically)
-    // Default format: [2025-01-15T14:30:00Z INFO  rustic_btrfs] message
+    // Detect systemd environment via JOURNAL_STREAM
+    let is_systemd = std::env::var("JOURNAL_STREAM").is_ok();
+
+    // Custom format based on environment
+    builder.format(move |buf, record| {
+        if is_systemd {
+            // systemd: SEVERITY: message (no timestamp - systemd adds it)
+            writeln!(buf, "{}: {}", record.level(), record.args())
+        } else {
+            // terminal: YYYY-MM-DDTHH:MM:SS+TZ: SEVERITY: message (localtime)
+            writeln!(
+                buf,
+                "{}: {}: {}",
+                Local::now().format("%Y-%m-%dT%H:%M:%S%:z"),
+                record.level(),
+                record.args()
+            )
+        }
+    });
+
     builder.init();
 }
 

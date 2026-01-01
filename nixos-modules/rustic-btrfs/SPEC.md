@@ -486,26 +486,28 @@ backup_result?;
 
 **Systemd Detection**:
 
-```rust
-// env_logger detects systemd journal via JOURNAL_STREAM env var
-// Automatically uses syslog format when under systemd
-```
+- Detects systemd journal via `JOURNAL_STREAM` environment variable
+- When running under systemd, omits timestamp (systemd adds it automatically)
 
-**Syslog Format** (systemd):
+**Systemd Format** (JOURNAL_STREAM present):
 
 ```
-<6>INFO: Created snapshot at /home/.snapshot
-<4>WARNING: Snapshot deletion failed, manual cleanup required
-<3>ERROR: Backup failed: repository not found
+INFO: Created snapshot at /home/.snapshot
+WARN: Snapshot deletion failed, manual cleanup required
+ERROR: Backup failed: repository not found
 ```
 
-**Standard Format** (terminal):
+Format: `SEVERITY: message`
+
+**Terminal Format** (JOURNAL_STREAM not present):
 
 ```
-[2025-01-15T14:30:00Z INFO  rustic_btrfs] Created snapshot at /home/.snapshot
-[2025-01-15T14:30:45Z WARN  rustic_btrfs] Snapshot deletion failed
-[2025-01-15T14:30:45Z ERROR rustic_btrfs] Backup failed: repository not found
+2026-01-01T17:21:56+09:00: INFO: Created snapshot at /home/.snapshot
+2026-01-01T17:22:10+09:00: WARN: Snapshot deletion failed
+2026-01-01T17:22:10+09:00: ERROR: Backup failed: repository not found
 ```
+
+Format: `YYYY-MM-DDTHH:MM:SS±TZ: SEVERITY: message` (localtime with timezone)
 
 #### 5.2 Log Levels
 
