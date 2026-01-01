@@ -19,7 +19,13 @@ impl Default for RusticBackup {
 }
 
 impl BackupOps for RusticBackup {
-    fn run_backup(&self, _config: &BackupConfig) -> Result<BackupStats, Error> {
+    fn run_backup(&self, config: &BackupConfig) -> Result<BackupStats, Error> {
+        log::debug!("Starting backup with config: {:?}", config.snapshot_path);
+        log::debug!("Glob patterns: {:?}", config.glob_patterns);
+        log::debug!("As-path: {:?}", config.as_path);
+        log::debug!("Description: {:?}", config.description);
+        log::debug!("Timestamp: {:?}", config.timestamp);
+
         // TODO: Implement using rustic_core
         //
         // This will involve:
@@ -53,6 +59,7 @@ impl BackupOps for RusticBackup {
         //     bytes_processed: result.data_added,
         // })
 
+        log::error!("rustic_core integration not implemented yet");
         Err(Error::BackupError(
             "rustic_core integration not implemented yet".to_string(),
         ))

@@ -38,9 +38,15 @@ impl LockGuard {
     /// ```
     pub fn acquire(uuid: &str) -> Result<Self, Error> {
         let lock_path = Self::lock_path(uuid);
+        log::debug!("Attempting to acquire lock: {}", lock_path.display());
 
         // Create lock file (or open if exists)
         let file = File::create(&lock_path).map_err(|error| {
+            log::error!(
+                "Failed to create lock file {}: {}",
+                lock_path.display(),
+                error
+            );
             Error::Other(format!(
                 "Failed to create lock file {}: {}",
                 lock_path.display(),
@@ -50,12 +56,14 @@ impl LockGuard {
 
         // Try to acquire exclusive lock (non-blocking)
         file.try_lock_exclusive().map_err(|error| {
+            log::error!("Another backup is already running for this subvolume");
             Error::Other(format!(
                 "Another backup is already running for this subvolume: {}",
                 error
             ))
         })?;
 
+        log::debug!("Lock acquired successfully");
         Ok(Self {
             _file: file,
             path: lock_path,

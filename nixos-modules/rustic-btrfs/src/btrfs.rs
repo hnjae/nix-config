@@ -33,6 +33,8 @@ impl Default for LibBtrfs {
 
 impl BtrfsOps for LibBtrfs {
     fn get_subvolume_uuid(&self, path: &Path) -> Result<String, Error> {
+        log::debug!("Getting UUID for subvolume: {}", path.display());
+
         let path_str = path
             .to_str()
             .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_string()))?;
@@ -51,7 +53,9 @@ impl BtrfsOps for LibBtrfs {
 
             // Extract UUID from info.uuid (16 bytes)
             let uuid: [u8; 16] = info.uuid;
-            Ok(format_uuid(&uuid))
+            let uuid_str = format_uuid(&uuid);
+            log::debug!("Subvolume UUID: {uuid_str}");
+            Ok(uuid_str)
         }
     }
 
@@ -77,6 +81,13 @@ impl BtrfsOps for LibBtrfs {
     }
 
     fn create_snapshot(&self, source: &Path, dest: &Path, readonly: bool) -> Result<(), Error> {
+        log::info!(
+            "Creating {} snapshot: {} -> {}",
+            if readonly { "read-only" } else { "writable" },
+            source.display(),
+            dest.display()
+        );
+
         let source_str = source
             .to_str()
             .ok_or_else(|| Error::Other("Invalid UTF-8 in source path".to_string()))?;
@@ -106,16 +117,20 @@ impl BtrfsOps for LibBtrfs {
             );
 
             if err != ffi::btrfs_util_error::BTRFS_UTIL_OK {
+                log::error!("Failed to create snapshot: error code {err:?}");
                 return Err(Error::BtrfsError(format!(
                     "Failed to create snapshot: error code {err:?}"
                 )));
             }
 
+            log::info!("Snapshot created successfully");
             Ok(())
         }
     }
 
     fn delete_subvolume(&self, path: &Path) -> Result<(), Error> {
+        log::info!("Deleting subvolume: {}", path.display());
+
         let path_str = path
             .to_str()
             .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_string()))?;
@@ -126,11 +141,13 @@ impl BtrfsOps for LibBtrfs {
             let err = ffi::btrfs_util_delete_subvolume(c_path.as_ptr(), 0);
 
             if err != ffi::btrfs_util_error::BTRFS_UTIL_OK {
+                log::warn!("Failed to delete subvolume: error code {err:?}");
                 return Err(Error::BtrfsError(format!(
                     "Failed to delete subvolume: error code {err:?}"
                 )));
             }
 
+            log::info!("Subvolume deleted successfully");
             Ok(())
         }
     }
