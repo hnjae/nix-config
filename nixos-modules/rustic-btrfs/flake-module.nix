@@ -102,7 +102,45 @@ in
       packages.${projectName} = my-crate;
 
       # Build the crate as part of `nix flake check` for convenience
-      checks.${projectName} = my-crate;
+      checks = {
+        ${projectName} = my-crate;
+        nixos-module-test = pkgs.testers.nixosTest {
+          name = "rustic-btrfs-basic";
+
+          nodes.machine =
+            { config, pkgs, ... }:
+            {
+              imports = [ self.nixosModules.${projectName} ];
+
+              my.services.rustic-btrfs.backups.test = {
+                subvolume = "/test-subvol";
+                environmentFile = "${pkgs.writeText "rustic.env" ''
+                  RUSTIC_REPOSITORY=/tmp/test-repo
+                  RUSTIC_PASSWORD=test
+                ''}";
+                timerConfig.OnCalendar = "daily";
+              };
+            };
+
+          testScript = ''
+            machine.start()
+
+            # Check service exists
+            machine.succeed("systemctl list-unit-files | grep rustic-btrfs-test.service")
+
+            # Check timer exists and is enabled
+            machine.succeed("systemctl is-enabled rustic-btrfs-test.timer")
+
+            # Check restic user was created
+            machine.succeed("id restic")
+
+            # Check lock directory exists
+            machine.succeed("test -d /run/lock/rustic-btrfs")
+
+            # Note: Not testing actual backup (requires btrfs filesystem setup)
+          '';
+        };
+      };
 
       apps.${projectName} = {
         type = "app";
