@@ -1,4 +1,3 @@
-# TODO: add btrfs balance <2025-12-27>
 let
   serviceName = "btrfs-maintenance";
   target = "/nix";
@@ -12,7 +11,7 @@ in
 {
   systemd =
     let
-      description = "btrfs scrub on /nix";
+      description = "Run btrfs balance and scrub on /nix";
       documentation = [ "man:btrfs-scrub(8)" ];
     in
     {
@@ -29,7 +28,7 @@ in
         ];
 
         serviceConfig = {
-          Type = "oneshot";
+          Type = "simple"; # Scrub is long-running operations
 
           # 커널 스케쥴링
           Nice = 19;
@@ -54,12 +53,12 @@ in
                 PATH="${lib.makeBinPath [ pkgs.btrfs-progs ]}"
 
                 for BB in 0 5 10; do
-                  echo "Starting data balance with usage threshold: ''${BB}%" >&2
+                  echo "<6>Starting data balance with usage threshold: ''${BB}%" >&2
                   btrfs balance start -dusage="$BB" -- "${target}"
                 done
 
                 for BB in 0 5; do
-                  echo "Starting metadata balance with usage threshold: ''${BB}%" >&2
+                  echo "<6>Starting metadata balance with usage threshold: ''${BB}%" >&2
                   btrfs balance start -musage="$BB" -- "${target}"
                 done
               '')
@@ -69,9 +68,12 @@ in
                   "scrub"
                   "start"
                   "-B"
-                  # TODO: test if limit is working <2025-12-27>
-                  "--limit"
-                  "100M"
+                  /*
+                    NOTE:
+                      NixOS 25.11, 6.18
+                      `--limit` 플래그가 모든 디바이스가 아니라 한 디바이스에만 limit 이 걸림.
+                      -`btrfs scrub start` 할때 건내는 `--limit` 플래그는 모든 디바이스가 아니라 한 디바이스에만 limit 이 걸림.
+                  */
                   (lib.lists.optionals isIOPrioClassIdleSupported [
                     "-c"
                     "3" # idle class
