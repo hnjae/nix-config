@@ -19,49 +19,24 @@ impl Default for RusticBackup {
 }
 
 impl BackupOps for RusticBackup {
-    fn run_backup(&self, config: &BackupConfig) -> Result<BackupStats, Error> {
-        log::debug!("Starting backup with config: {:?}", config.snapshot_path);
-        log::debug!("Glob patterns: {:?}", config.glob_patterns);
-        log::debug!("As-path: {:?}", config.as_path);
-        log::debug!("Description: {:?}", config.description);
-        log::debug!("Timestamp: {:?}", config.timestamp);
-
-        // TODO: Implement using rustic_core
+    fn run_backup(&self, _config: &BackupConfig) -> Result<BackupStats, Error> {
+        // NOTE: This is a placeholder implementation.
+        // The rustic_core API in version 0.3 may differ from what we expected.
+        // For now, return an informative error.
         //
-        // This will involve:
-        // 1. Creating a Repository from environment variables / config
-        // 2. Opening the repository with password
-        // 3. Creating a backup with:
-        //    - Source: config.snapshot_path
-        //    - Glob patterns: config.glob_patterns (if partial backup)
-        //    - As-path: config.as_path
-        //    - Description: config.description
-        //    - Timestamp: config.timestamp
-        //    - Fixed flags: --no-scan, --one-file-system, --ignore-devid
-        // 4. Collecting statistics (files processed, bytes processed)
-        //
-        // Example structure:
-        // let repo = Repository::from_env()?;
-        // let backup_opts = BackupOptions {
-        //     source: config.snapshot_path,
-        //     glob: config.glob_patterns,
-        //     as_path: config.as_path,
-        //     description: config.description,
-        //     time: config.timestamp,
-        //     no_scan: true,
-        //     one_file_system: true,
-        //     ignore_devid: true,
-        //     ..Default::default()
-        // };
-        // let result = repo.backup(&backup_opts)?;
-        // Ok(BackupStats {
-        //     files_processed: result.files_new + result.files_changed + result.files_unmodified,
-        //     bytes_processed: result.data_added,
-        // })
+        // TODO: Update this implementation once we verify the exact rustic_core 0.3 API.
+        // The implementation should:
+        // 1. Configure and open repository from environment variables
+        // 2. Build backup options with all parameters from BackupConfig
+        // 3. Create local source with globs and excludes
+        // 4. Run the backup
+        // 5. Collect and return statistics
 
-        log::error!("rustic_core integration not implemented yet");
+        log::error!("rustic_core 0.3 integration requires API verification");
+        log::error!("Please refer to rustic_core documentation for the correct API");
+
         Err(Error::BackupError {
-            message: "rustic_core integration not implemented yet".to_string(),
+            message: "rustic_core integration requires API update for version 0.3".to_string(),
             exit_code: None,
         })
     }
@@ -75,16 +50,17 @@ mod tests {
     #[test]
     fn test_rustic_backup_new() {
         let backup = RusticBackup::new();
-        let config = BackupConfig {
-            snapshot_path: PathBuf::from("/test/.snapshot"),
-            glob_patterns: None,
-            as_path: None,
-            description: None,
-            timestamp: None,
-        };
+        let config = BackupConfig::test_default(PathBuf::from("/test/.snapshot"));
 
-        // Currently returns error since not implemented
+        // Returns error - placeholder implementation
         let result = backup.run_backup(&config);
         assert!(result.is_err());
+
+        // Verify it's a backup error
+        match result {
+            Err(Error::BackupError { .. }) => {} // Expected (placeholder)
+            Err(e) => panic!("Expected BackupError, got: {:?}", e),
+            Ok(_) => panic!("Expected error, got success"),
+        }
     }
 }

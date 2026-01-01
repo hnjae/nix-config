@@ -87,13 +87,7 @@ mod tests {
     fn test_workflow_success() {
         let btrfs = MockBtrfs::new();
         let backup = MockBackup::new();
-        let config = BackupConfig {
-            snapshot_path: PathBuf::from("/test/.snapshot"),
-            glob_patterns: None,
-            as_path: None,
-            description: None,
-            timestamp: None,
-        };
+        let config = BackupConfig::test_default(PathBuf::from("/test/.snapshot"));
 
         let result = run_backup_workflow(&btrfs, &backup, Path::new("/test"), &config);
 
@@ -111,13 +105,7 @@ mod tests {
         let mut backup = MockBackup::new();
         backup.fail_backup = true;
 
-        let config = BackupConfig {
-            snapshot_path: PathBuf::from("/test/.snapshot"),
-            glob_patterns: None,
-            as_path: None,
-            description: None,
-            timestamp: None,
-        };
+        let config = BackupConfig::test_default(PathBuf::from("/test/.snapshot"));
 
         let result = run_backup_workflow(&btrfs, &backup, Path::new("/test"), &config);
 
@@ -135,13 +123,7 @@ mod tests {
         btrfs.fail_delete = true; // Delete will fail
 
         let backup = MockBackup::new(); // Backup will succeed
-        let config = BackupConfig {
-            snapshot_path: PathBuf::from("/test/.snapshot"),
-            glob_patterns: None,
-            as_path: None,
-            description: None,
-            timestamp: None,
-        };
+        let config = BackupConfig::test_default(PathBuf::from("/test/.snapshot"));
 
         let result = run_backup_workflow(&btrfs, &backup, Path::new("/test"), &config);
 
@@ -158,13 +140,7 @@ mod tests {
         btrfs.fail_snapshot = true; // Snapshot creation will fail
 
         let backup = MockBackup::new();
-        let config = BackupConfig {
-            snapshot_path: PathBuf::from("/test/.snapshot"),
-            glob_patterns: None,
-            as_path: None,
-            description: None,
-            timestamp: None,
-        };
+        let config = BackupConfig::test_default(PathBuf::from("/test/.snapshot"));
 
         let result = run_backup_workflow(&btrfs, &backup, Path::new("/test"), &config);
 

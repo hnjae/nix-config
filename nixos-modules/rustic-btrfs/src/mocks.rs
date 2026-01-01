@@ -168,13 +168,7 @@ impl BackupOps for MockBackup {
             });
         }
 
-        self.backups_run.borrow_mut().push(BackupConfig {
-            snapshot_path: config.snapshot_path.clone(),
-            glob_patterns: config.glob_patterns.clone(),
-            as_path: config.as_path.clone(),
-            description: config.description.clone(),
-            timestamp: config.timestamp.clone(),
-        });
+        self.backups_run.borrow_mut().push(config.clone());
 
         Ok(BackupStats {
             files_processed: self.fake_stats.files_processed,
@@ -232,13 +226,7 @@ mod tests {
     #[test]
     fn test_mock_backup_run() {
         let mock = MockBackup::new();
-        let config = BackupConfig {
-            snapshot_path: PathBuf::from("/test/.snapshot"),
-            glob_patterns: None,
-            as_path: None,
-            description: None,
-            timestamp: None,
-        };
+        let config = BackupConfig::test_default(PathBuf::from("/test/.snapshot"));
         let result = mock.run_backup(&config);
         assert!(result.is_ok());
         assert_eq!(mock.backup_count(), 1);
@@ -248,13 +236,7 @@ mod tests {
     fn test_mock_backup_failure() {
         let mut mock = MockBackup::new();
         mock.fail_backup = true;
-        let config = BackupConfig {
-            snapshot_path: PathBuf::from("/test/.snapshot"),
-            glob_patterns: None,
-            as_path: None,
-            description: None,
-            timestamp: None,
-        };
+        let config = BackupConfig::test_default(PathBuf::from("/test/.snapshot"));
         let result = mock.run_backup(&config);
         assert!(result.is_err());
     }

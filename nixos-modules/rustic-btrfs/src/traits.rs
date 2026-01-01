@@ -76,19 +76,124 @@ impl From<std::io::Error> for Error {
 }
 
 /// Configuration for backup operation.
-/// Will be expanded with specific fields during implementation.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BackupConfig {
     /// Snapshot path to backup from
     pub snapshot_path: std::path::PathBuf,
-    /// Optional glob patterns for partial backup
+
+    /// Optional glob patterns for partial backup (from --paths)
     pub glob_patterns: Option<Vec<String>>,
+
     /// Optional as-path for repository storage
     pub as_path: Option<String>,
+
     /// Backup description
     pub description: Option<String>,
-    /// Snapshot timestamp
+
+    /// Snapshot timestamp (ISO 8601)
     pub timestamp: Option<String>,
+
+    // Parent processing options
+    /// Group snapshots by criterion (default: host,paths)
+    pub group_by: Option<String>,
+
+    /// Specific parent snapshot
+    pub parent: Option<String>,
+
+    /// Skip backup if unchanged vs parent
+    pub skip_if_unchanged: bool,
+
+    /// No parent, read all files
+    pub force: bool,
+
+    /// Ignore ctime changes
+    pub ignore_ctime: bool,
+
+    /// Ignore inode changes
+    pub ignore_inode: bool,
+
+    // Exclude options
+    /// Additional glob patterns (from --glob)
+    pub extra_globs: Option<Vec<String>>,
+
+    /// Case-insensitive glob patterns
+    pub iglobs: Option<Vec<String>>,
+
+    /// Read glob patterns from file
+    pub glob_file: Option<std::path::PathBuf>,
+
+    /// Read case-insensitive glob patterns from file
+    pub iglob_file: Option<std::path::PathBuf>,
+
+    /// Use .gitignore rules
+    pub git_ignore: bool,
+
+    /// Don't require git repo for git-ignore
+    pub no_require_git: bool,
+
+    /// Treat file as .gitignore
+    pub custom_ignorefile: Option<std::path::PathBuf>,
+
+    /// Exclude directories containing this file
+    pub exclude_if_present: Option<std::path::PathBuf>,
+
+    /// Exclude files larger than size
+    pub exclude_larger_than: Option<String>,
+
+    // Snapshot metadata
+    /// Label for snapshot
+    pub label: Option<String>,
+
+    /// Tags for snapshot
+    pub tags: Option<Vec<String>>,
+
+    /// Mark snapshot as uneraseable
+    pub delete_never: bool,
+
+    /// Auto-delete snapshot after duration
+    pub delete_after: Option<String>,
+
+    /// Override hostname
+    pub host: Option<String>,
+
+    /// Dry-run mode
+    pub dry_run: bool,
+}
+
+impl BackupConfig {
+    /// Create a minimal test configuration
+    #[cfg(test)]
+    #[must_use]
+    pub fn test_default(snapshot_path: std::path::PathBuf) -> Self {
+        Self {
+            snapshot_path,
+            glob_patterns: None,
+            as_path: None,
+            description: None,
+            timestamp: None,
+            group_by: None,
+            parent: None,
+            skip_if_unchanged: false,
+            force: false,
+            ignore_ctime: false,
+            ignore_inode: false,
+            extra_globs: None,
+            iglobs: None,
+            glob_file: None,
+            iglob_file: None,
+            git_ignore: false,
+            no_require_git: false,
+            custom_ignorefile: None,
+            exclude_if_present: None,
+            exclude_larger_than: None,
+            label: None,
+            tags: None,
+            delete_never: false,
+            delete_after: None,
+            host: None,
+            dry_run: false,
+        }
+    }
 }
 
 /// Statistics from backup operation.

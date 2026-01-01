@@ -190,6 +190,35 @@ fn build_backup_config(
         as_path,
         description,
         timestamp: cli.backup_opts.time.clone(),
+
+        // Parent processing options
+        group_by: cli.backup_opts.group_by.clone(),
+        parent: cli.backup_opts.parent.clone(),
+        skip_if_unchanged: cli.backup_opts.skip_if_unchanged,
+        force: cli.backup_opts.force,
+        ignore_ctime: cli.backup_opts.ignore_ctime,
+        ignore_inode: cli.backup_opts.ignore_inode,
+
+        // Exclude options
+        extra_globs: cli.backup_opts.glob.clone(),
+        iglobs: cli.backup_opts.iglob.clone(),
+        glob_file: cli.backup_opts.glob_file.clone(),
+        iglob_file: cli.backup_opts.iglob_file.clone(),
+        git_ignore: cli.backup_opts.git_ignore,
+        no_require_git: cli.backup_opts.no_require_git,
+        custom_ignorefile: cli.backup_opts.custom_ignorefile.clone(),
+        exclude_if_present: cli.backup_opts.exclude_if_present.clone(),
+        exclude_larger_than: cli.backup_opts.exclude_larger_than.clone(),
+
+        // Snapshot metadata
+        label: cli.backup_opts.label.clone(),
+        tags: cli.backup_opts.tag.clone(),
+        delete_never: cli.backup_opts.delete_never,
+        delete_after: cli.backup_opts.delete_after.clone(),
+        host: cli.backup_opts.host.clone(),
+
+        // Dry-run
+        dry_run: cli.backup_opts.dry_run,
     })
 }
 
