@@ -16,6 +16,9 @@ mod cli;
 /// Logging configuration
 mod logging;
 
+/// Progress reporting
+mod progress;
+
 /// Mock implementations for testing
 #[cfg(test)]
 mod mocks;
