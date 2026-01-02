@@ -174,7 +174,6 @@ pub enum Shell {
 impl Cli {
     /// Parse command-line arguments
     #[must_use]
-    #[allow(dead_code)]
     pub fn parse_args() -> Self {
         Self::parse()
     }

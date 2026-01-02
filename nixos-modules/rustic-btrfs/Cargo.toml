@@ -44,9 +44,6 @@ nursery = { level = "warn", priority = -1 }
 cargo = { level = "allow", priority = -1 }
 cargo_common_metadata = "allow"
 
-# =================================================================
-# Restriction lints (개별 활성화)
-# =================================================================
 # DENIED
 unwrap_used = "deny"
 
@@ -55,8 +52,13 @@ expect_used = "allow"
 todo = "allow"
 unimplemented = "allow"
 
+# ALLOWED for library public API
+dead_code = "allow"  # Public library APIs are intentionally unused in the binary but exported for external consumers
+
+# =================================================================
+# 개별 활성화
+# =================================================================
 # ALLOWED
-allow_attributes = "allow"              # #[allow(...)] is still the standard and #[expect(...)] is not widely adopted. Using expect would require maintaining expected warning counts which is brittle.
 exhaustive_enums = "allow"              # Adding #[non_exhaustive] to all enums reduces API ergonomics without clear benefit for this project
 exhaustive_structs = "allow"            # Adding #[non_exhaustive] to all structs reduces API ergonomics without clear benefit for this project
 implicit_return = "allow"               # Omitting the return keyword whenever possible is idiomatic Rust code
@@ -75,6 +77,7 @@ undocumented_unsafe_blocks = "allow"    # While safety comments are good practic
 unseparated_literal_suffix = "allow"    # Triggers on generated code (bindgen) which we cannot control
 
 # WARNED
+allow_attributes = "warn"
 arithmetic_side_effects = "warn"
 as_conversions = "warn"
 as_pointer_underscore = "warn"

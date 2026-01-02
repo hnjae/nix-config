@@ -2,7 +2,6 @@ use std::path::Path;
 
 /// Error type for rustic-btrfs operations with exit code mapping.
 #[derive(Debug)]
-#[allow(dead_code)] // Fields used in Display/Debug implementations
 pub enum Error {
     /// Lock acquisition failed (another backup running)
     /// Exit code: 1

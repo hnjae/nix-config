@@ -3,13 +3,11 @@ use indicatif::{ProgressBar, ProgressStyle};
 use std::io::IsTerminal as _;
 
 /// Progress reporter that adapts to TTY vs non-TTY environments.
-#[allow(dead_code)]
 pub struct ProgressReporter {
     /// Progress bar (only created if stdout is a TTY)
     progress_bar: Option<ProgressBar>,
 }
 
-#[allow(dead_code)]
 impl ProgressReporter {
     /// Create a new progress reporter.
     ///
