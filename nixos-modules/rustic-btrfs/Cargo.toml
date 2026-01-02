@@ -52,11 +52,8 @@ expect_used = "allow"
 todo = "allow"
 unimplemented = "allow"
 
-# ALLOWED for library public API
-dead_code = "allow"  # Public library APIs are intentionally unused in the binary but exported for external consumers
-
 # =================================================================
-# 개별 활성화
+# Restriction linters 개별 활성화
 # =================================================================
 # ALLOWED
 exhaustive_enums = "allow"              # Adding #[non_exhaustive] to all enums reduces API ergonomics without clear benefit for this project

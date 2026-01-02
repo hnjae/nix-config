@@ -1,0 +1,12 @@
+# Configuration of `panic`
+allow-panic-in-tests = true
+
+# Configuration of `expect_used`
+allow-expect-in-tests = true
+
+# Configuration of `indexing_slicing`
+allow-indexing-slicing-in-tests = true
+suppress-restriction-lint-in-const = true
+
+# Configuration of `dbg_macro`
+allow-dbg-in-tests = true
