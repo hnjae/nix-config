@@ -1,4 +1,4 @@
-/// Backup operations using rustic_core
+/// Backup operations using `rustic_core`
 use crate::traits::{BackupConfig, BackupOps, BackupStats, Error};
 use rustic_backend::BackendOptions;
 use rustic_core::{
@@ -8,11 +8,11 @@ use rustic_core::{
 use std::env;
 use std::path::PathBuf;
 
-/// Production implementation of BackupOps using rustic_core.
+/// Production implementation of `BackupOps` using `rustic_core`.
 pub struct RusticBackup;
 
 impl RusticBackup {
-    /// Create a new RusticBackup instance.
+    /// Create a new `RusticBackup` instance.
     #[must_use]
     pub const fn new() -> Self {
         Self
@@ -22,14 +22,14 @@ impl RusticBackup {
     ///
     /// # Errors
     ///
-    /// Returns error if RUSTIC_REPOSITORY is not set or password method is not configured.
+    /// Returns error if `RUSTIC_REPOSITORY` is not set or password method is not configured.
     fn configure_repository() -> Result<(RepositoryOptions, BackendOptions), Error> {
         // Get repository path from environment
         let repository = env::var("RUSTIC_REPOSITORY").map_err(|_| {
-            Error::Config("RUSTIC_REPOSITORY environment variable not set".to_string())
+            Error::Config("RUSTIC_REPOSITORY environment variable not set".to_owned())
         })?;
 
-        log::debug!("Using repository: {}", repository);
+        log::debug!("Using repository: {repository}");
 
         // Create backend options
         let backend_opts = BackendOptions::default().repository(&repository);
@@ -39,7 +39,7 @@ impl RusticBackup {
 
         // Try password methods in order: PASSWORD_FILE, PASSWORD_COMMAND, PASSWORD
         if let Ok(password_file) = env::var("RUSTIC_PASSWORD_FILE") {
-            log::debug!("Using password from file: {}", password_file);
+            log::debug!("Using password from file: {password_file}");
             repo_opts = repo_opts.password_file(PathBuf::from(password_file));
         } else if let Ok(_password_command) = env::var("RUSTIC_PASSWORD_COMMAND") {
             log::debug!("Using password from command");
@@ -49,7 +49,7 @@ impl RusticBackup {
                 repo_opts = repo_opts.password(password);
             } else {
                 return Err(Error::Config(
-                    "PASSWORD_COMMAND not supported yet. Use RUSTIC_PASSWORD_FILE or RUSTIC_PASSWORD".to_string(),
+                    "PASSWORD_COMMAND not supported yet. Use RUSTIC_PASSWORD_FILE or RUSTIC_PASSWORD".to_owned(),
                 ));
             }
         } else if let Ok(password) = env::var("RUSTIC_PASSWORD") {
@@ -58,14 +58,14 @@ impl RusticBackup {
         } else {
             return Err(Error::Config(
                 "No password method configured. Set one of: RUSTIC_PASSWORD_FILE, RUSTIC_PASSWORD"
-                    .to_string(),
+                    .to_owned(),
             ));
         }
 
         Ok((repo_opts, backend_opts))
     }
 
-    /// Build BackupOptions from BackupConfig.
+    /// Build `BackupOptions` from `BackupConfig`.
     fn build_backup_options(config: &BackupConfig) -> BackupOptions {
         let mut opts = BackupOptions::default();
 
@@ -86,7 +86,7 @@ impl RusticBackup {
         if let Some(group_by_str) = &config.group_by {
             // Parse group_by string to SnapshotGroupCriterion
             // For now, use default - this needs proper parsing implementation
-            log::debug!("Group by: {}", group_by_str);
+            log::debug!("Group by: {group_by_str}");
         }
 
         if let Some(parent) = &config.parent {
@@ -143,13 +143,13 @@ impl RusticBackup {
         if let Some(glob_file) = &config.glob_file
             && let Some(path_str) = glob_file.to_str()
         {
-            filter_opts = filter_opts.glob_files(vec![path_str.to_string()]);
+            filter_opts = filter_opts.glob_files(vec![path_str.to_owned()]);
         }
 
         if let Some(iglob_file) = &config.iglob_file
             && let Some(path_str) = iglob_file.to_str()
         {
-            filter_opts = filter_opts.iglob_files(vec![path_str.to_string()]);
+            filter_opts = filter_opts.iglob_files(vec![path_str.to_owned()]);
         }
 
         // Git ignore
@@ -164,19 +164,19 @@ impl RusticBackup {
         if let Some(ignorefile) = &config.custom_ignorefile
             && let Some(path_str) = ignorefile.to_str()
         {
-            filter_opts = filter_opts.custom_ignorefiles(vec![path_str.to_string()]);
+            filter_opts = filter_opts.custom_ignorefiles(vec![path_str.to_owned()]);
         }
 
         // Exclude options
         if let Some(exclude_file) = &config.exclude_if_present
             && let Some(path_str) = exclude_file.to_str()
         {
-            filter_opts = filter_opts.exclude_if_present(vec![path_str.to_string()]);
+            filter_opts = filter_opts.exclude_if_present(vec![path_str.to_owned()]);
         }
 
         if let Some(size_str) = &config.exclude_larger_than {
             // Parse size string to ByteSize - for now log it
-            log::debug!("Exclude larger than: {}", size_str);
+            log::debug!("Exclude larger than: {size_str}");
             // TODO: Parse size_str to ByteSize and set filter_opts.exclude_larger_than
         }
 
@@ -185,7 +185,7 @@ impl RusticBackup {
         opts
     }
 
-    /// Build SnapshotOptions from BackupConfig.
+    /// Build `SnapshotOptions` from `BackupConfig`.
     ///
     /// # Errors
     ///
@@ -216,7 +216,7 @@ impl RusticBackup {
         if let Some(time_str) = &config.timestamp {
             // Parse ISO 8601 timestamp
             // For now, log it - needs proper DateTime parsing
-            log::debug!("Backup time: {}", time_str);
+            log::debug!("Backup time: {time_str}");
             // TODO: Parse time_str to DateTime<Local> and set opts.time
         }
 
@@ -228,7 +228,7 @@ impl RusticBackup {
         if let Some(delete_after_str) = &config.delete_after {
             // Parse duration string using humantime
             // For now, just log it - needs humantime::parse_duration
-            log::debug!("Delete after: {}", delete_after_str);
+            log::debug!("Delete after: {delete_after_str}");
             // TODO: Parse delete_after_str using humantime and set opts.delete_after
         }
 
@@ -295,14 +295,14 @@ impl BackupOps for RusticBackup {
         let source_path = config
             .snapshot_path
             .to_str()
-            .ok_or_else(|| Error::Config("Invalid snapshot path".to_string()))?;
+            .ok_or_else(|| Error::Config("Invalid snapshot path".to_owned()))?;
 
         let source = PathList::from_string(source_path)
             .map_err(|e| Error::Config(format!("Failed to create path list: {e:?}")))?
             .sanitize()
             .map_err(|e| Error::Config(format!("Failed to sanitize paths: {e:?}")))?;
 
-        log::info!("Backing up: {}", source_path);
+        log::info!("Backing up: {source_path}");
 
         // 8. Run backup
         let _result_snapshot =
@@ -322,7 +322,7 @@ impl BackupOps for RusticBackup {
             bytes_processed: 0, // TODO: Extract from _result_snapshot if available
         };
 
-        log::debug!("Backup stats: {:?}", stats);
+        log::debug!("Backup stats: {stats:?}");
 
         Ok(stats)
     }

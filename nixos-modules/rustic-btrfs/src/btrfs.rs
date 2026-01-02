@@ -14,11 +14,11 @@ use crate::traits::{BtrfsOps, Error};
 use std::ffi::CString;
 use std::path::Path;
 
-/// Production implementation of BtrfsOps using libbtrfsutil.
+/// Production implementation of `BtrfsOps` using libbtrfsutil.
 pub struct LibBtrfs;
 
 impl LibBtrfs {
-    /// Create a new LibBtrfs instance.
+    /// Create a new `LibBtrfs` instance.
     #[must_use]
     pub const fn new() -> Self {
         Self
@@ -37,13 +37,13 @@ impl BtrfsOps for LibBtrfs {
 
         let path_str = path
             .to_str()
-            .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_string()))?;
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_owned()))?;
         let c_path = CString::new(path_str)
             .map_err(|e| Error::Other(format!("Invalid path (contains null byte): {e}")))?;
 
         unsafe {
             let mut info: ffi::btrfs_util_subvolume_info = std::mem::zeroed();
-            let err = ffi::btrfs_util_subvolume_info(c_path.as_ptr(), 0, &mut info);
+            let err = ffi::btrfs_util_subvolume_info(c_path.as_ptr(), 0, &raw mut info);
 
             if err != ffi::btrfs_util_error::BTRFS_UTIL_OK {
                 return Err(Error::Btrfs(format!(
@@ -62,7 +62,7 @@ impl BtrfsOps for LibBtrfs {
     fn is_subvolume(&self, path: &Path) -> Result<bool, Error> {
         let path_str = path
             .to_str()
-            .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_string()))?;
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_owned()))?;
         let c_path = CString::new(path_str)
             .map_err(|e| Error::Other(format!("Invalid path (contains null byte): {e}")))?;
 
@@ -90,10 +90,10 @@ impl BtrfsOps for LibBtrfs {
 
         let source_str = source
             .to_str()
-            .ok_or_else(|| Error::Other("Invalid UTF-8 in source path".to_string()))?;
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in source path".to_owned()))?;
         let dest_str = dest
             .to_str()
-            .ok_or_else(|| Error::Other("Invalid UTF-8 in dest path".to_string()))?;
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in dest path".to_owned()))?;
 
         let c_source = CString::new(source_str)
             .map_err(|e| Error::Other(format!("Invalid source path (contains null byte): {e}")))?;
@@ -133,7 +133,7 @@ impl BtrfsOps for LibBtrfs {
 
         let path_str = path
             .to_str()
-            .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_string()))?;
+            .ok_or_else(|| Error::Other("Invalid UTF-8 in path".to_owned()))?;
         let c_path = CString::new(path_str)
             .map_err(|e| Error::Other(format!("Invalid path (contains null byte): {e}")))?;
 

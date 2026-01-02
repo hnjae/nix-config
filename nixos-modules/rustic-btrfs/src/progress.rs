@@ -1,6 +1,6 @@
 /// Progress reporting with TTY detection
 use indicatif::{ProgressBar, ProgressStyle};
-use std::io::IsTerminal;
+use std::io::IsTerminal as _;
 
 /// Progress reporter that adapts to TTY vs non-TTY environments.
 pub struct ProgressReporter {
@@ -25,8 +25,7 @@ impl ProgressReporter {
     /// ```
     #[must_use]
     pub fn new() -> Self {
-        let progress_bar = if std::io::stdout().is_terminal() {
-            // TTY mode: create progress bar
+        let progress_bar = std::io::stdout().is_terminal().then(|| {
             let pb = ProgressBar::new(0);
             pb.set_style(
                 ProgressStyle::default_bar()
@@ -34,11 +33,8 @@ impl ProgressReporter {
                     .ok()
                     .unwrap_or_else(ProgressStyle::default_bar),
             );
-            Some(pb)
-        } else {
-            // Non-TTY mode: no progress bar, use logging only
-            None
-        };
+            pb
+        });
 
         Self { progress_bar }
     }
@@ -83,7 +79,7 @@ impl ProgressReporter {
             }
             pb.set_position(files_processed);
             if let Some(msg) = message {
-                pb.set_message(msg.to_string());
+                pb.set_message(msg.to_owned());
             }
         }
         // Non-TTY: no need to log every update, only milestones

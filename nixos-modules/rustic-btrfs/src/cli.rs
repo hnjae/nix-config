@@ -28,20 +28,20 @@ pub struct Cli {
 /// Global options
 #[derive(Args, Debug)]
 pub struct GlobalOptions {
-    /// Enable debug logging (sets RUST_LOG=rustic_btrfs=debug)
+    /// Enable debug logging (sets `RUST_LOG=rustic_btrfs=debug`)
     #[arg(long)]
     pub debug: bool,
 
-    /// Override RUSTIC_REPOSITORY environment variable
+    /// Override `RUSTIC_REPOSITORY` environment variable
     #[arg(long, value_name = "REPO", env = "RUSTIC_REPOSITORY")]
     pub repository: Option<String>,
 
-    /// Override RUSTIC_PASSWORD_FILE environment variable
+    /// Override `RUSTIC_PASSWORD_FILE` environment variable
     #[arg(long, value_name = "FILE", env = "RUSTIC_PASSWORD_FILE")]
     pub password_file: Option<PathBuf>,
 }
 
-/// Rustic backup options (passthrough to rustic_core)
+/// Rustic backup options (passthrough to `rustic_core`)
 #[derive(Args, Debug)]
 pub struct BackupOptions {
     /// Backup only specific paths within subvolume (comma-separated, relative paths)
@@ -173,6 +173,7 @@ pub enum Shell {
 
 impl Cli {
     /// Parse command-line arguments
+    #[must_use]
     pub fn parse_args() -> Self {
         Self::parse()
     }
@@ -192,7 +193,7 @@ impl Cli {
 
         // Otherwise, subvolume is required
         if self.subvolume.is_none() {
-            return Err("SUBVOLUME argument is required".to_string());
+            return Err("SUBVOLUME argument is required".to_owned());
         }
 
         // Validate --paths if specified
@@ -252,6 +253,7 @@ pub fn validate_partial_path(path: &str) -> Result<(), String> {
 /// let desc = generate_partial_backup_description(&paths);
 /// assert_eq!(desc, r#"{"included_paths":["user/Documents","user/Photos"]}"#);
 /// ```
+#[must_use]
 pub fn generate_partial_backup_description(paths: &[String]) -> String {
     serde_json::json!({
         "included_paths": paths

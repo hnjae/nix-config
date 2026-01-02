@@ -3,7 +3,7 @@ use crate::traits::{BackupConfig, BackupOps, BackupStats, BtrfsOps, Error};
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 
-/// Mock implementation of BtrfsOps for testing.
+/// Mock implementation of `BtrfsOps` for testing.
 /// Tracks operations and allows configurable failures.
 #[derive(Debug)]
 pub struct MockBtrfs {
@@ -13,9 +13,9 @@ pub struct MockBtrfs {
     pub fail_delete: bool,
     /// If true, UUID retrieval will fail
     pub fail_uuid: bool,
-    /// If true, is_subvolume check will fail
+    /// If true, `is_subvolume` check will fail
     pub fail_is_subvolume: bool,
-    /// If true, is_subvolume returns true
+    /// If true, `is_subvolume` returns true
     pub return_is_subvolume: bool,
     /// Snapshots that have been created (source, dest pairs)
     pub snapshots_created: RefCell<Vec<(PathBuf, PathBuf)>>,
@@ -28,7 +28,7 @@ pub struct MockBtrfs {
 }
 
 impl MockBtrfs {
-    /// Create a new MockBtrfs with default settings.
+    /// Create a new `MockBtrfs` with default settings.
     #[must_use]
     pub fn new() -> Self {
         Self {
@@ -40,7 +40,7 @@ impl MockBtrfs {
             snapshots_created: RefCell::new(Vec::new()),
             subvolumes_deleted: RefCell::new(Vec::new()),
             uuids_requested: RefCell::new(Vec::new()),
-            fake_uuid: "5ea01852-b4f9-4e4a-9c9d-f9c8b7a6e5d4".to_string(),
+            fake_uuid: "5ea01852-b4f9-4e4a-9c9d-f9c8b7a6e5d4".to_owned(),
         }
     }
 
@@ -71,7 +71,7 @@ impl BtrfsOps for MockBtrfs {
         self.uuids_requested.borrow_mut().push(path.to_path_buf());
 
         if self.fail_uuid {
-            return Err(Error::Btrfs("Mock UUID retrieval failed".to_string()));
+            return Err(Error::Btrfs("Mock UUID retrieval failed".to_owned()));
         }
 
         Ok(self.fake_uuid.clone())
@@ -79,7 +79,7 @@ impl BtrfsOps for MockBtrfs {
 
     fn is_subvolume(&self, _path: &Path) -> Result<bool, Error> {
         if self.fail_is_subvolume {
-            return Err(Error::Btrfs("Mock is_subvolume check failed".to_string()));
+            return Err(Error::Btrfs("Mock is_subvolume check failed".to_owned()));
         }
 
         Ok(self.return_is_subvolume)
@@ -87,7 +87,7 @@ impl BtrfsOps for MockBtrfs {
 
     fn create_snapshot(&self, source: &Path, dest: &Path, _readonly: bool) -> Result<(), Error> {
         if self.fail_snapshot {
-            return Err(Error::Btrfs("Mock snapshot creation failed".to_string()));
+            return Err(Error::Btrfs("Mock snapshot creation failed".to_owned()));
         }
 
         self.snapshots_created
@@ -99,7 +99,7 @@ impl BtrfsOps for MockBtrfs {
     fn delete_subvolume(&self, path: &Path) -> Result<(), Error> {
         if self.fail_delete {
             return Err(Error::SnapshotDeletion(
-                "Mock subvolume deletion failed".to_string(),
+                "Mock subvolume deletion failed".to_owned(),
             ));
         }
 
@@ -116,7 +116,7 @@ impl BtrfsOps for MockBtrfs {
     }
 }
 
-/// Mock implementation of BackupOps for testing.
+/// Mock implementation of `BackupOps` for testing.
 /// Tracks operations and allows configurable failures.
 #[derive(Debug)]
 pub struct MockBackup {
@@ -129,9 +129,9 @@ pub struct MockBackup {
 }
 
 impl MockBackup {
-    /// Create a new MockBackup with default settings.
+    /// Create a new `MockBackup` with default settings.
     #[must_use]
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             fail_backup: false,
             backups_run: RefCell::new(Vec::new()),
@@ -159,7 +159,7 @@ impl BackupOps for MockBackup {
     fn run_backup(&self, config: &BackupConfig) -> Result<BackupStats, Error> {
         if self.fail_backup {
             return Err(Error::Backup {
-                message: "Mock backup failed".to_string(),
+                message: "Mock backup failed".to_owned(),
                 exit_code: None,
             });
         }

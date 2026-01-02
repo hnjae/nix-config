@@ -7,7 +7,7 @@ mod btrfs;
 /// File-based locking to prevent concurrent backups
 mod lock;
 
-/// Backup operations using rustic_core
+/// Backup operations using `rustic_core`
 mod backup;
 
 /// Command-line interface
@@ -26,7 +26,7 @@ mod workflow;
 #[cfg(test)]
 mod mocks;
 
-use clap::{CommandFactory, Parser};
+use clap::{CommandFactory as _, Parser as _};
 use clap_complete::{Shell as CompletionShell, generate};
 use clap_mangen::Man;
 use std::io;
@@ -59,7 +59,7 @@ fn main() {
 
     // Run backup workflow
     if let Err(e) = run_backup(&cli) {
-        log::error!("Backup failed: {:?}", e);
+        log::error!("Backup failed: {e:?}");
         process::exit(e.exit_code());
     }
 
@@ -71,7 +71,7 @@ fn run_backup(cli: &cli::Cli) -> Result<(), traits::Error> {
     use backup::RusticBackup;
     use btrfs::LibBtrfs;
     use lock::LockGuard;
-    use traits::BtrfsOps;
+    use traits::BtrfsOps as _;
 
     log::info!("Starting rustic-btrfs backup");
 

@@ -25,11 +25,11 @@ pub enum Error {
     Btrfs(String),
 
     /// Backup operation error
-    /// Exit code: configurable (rustic_core error code)
+    /// Exit code: configurable (`rustic_core` error code)
     Backup {
         /// Error message
         message: String,
-        /// Exit code from rustic_core (if available)
+        /// Exit code from `rustic_core` (if available)
         exit_code: Option<i32>,
     },
 
@@ -53,7 +53,7 @@ impl Error {
     ///
     /// Exit code as specified in SPEC.md section 4.1:
     /// - General errors: 1
-    /// - Backup errors: rustic_core error code (or 1 if not available)
+    /// - Backup errors: `rustic_core` error code (or 1 if not available)
     #[must_use]
     pub fn exit_code(&self) -> i32 {
         match self {

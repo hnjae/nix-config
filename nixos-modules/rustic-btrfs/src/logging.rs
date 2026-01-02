@@ -2,7 +2,7 @@
 use chrono::Local;
 use env_logger::Builder;
 use log::LevelFilter;
-use std::io::Write as IoWrite;
+use std::io::Write as _;
 
 /// Initialize the logger based on CLI options.
 ///
@@ -16,7 +16,7 @@ use std::io::Write as IoWrite;
 /// - Falls back to INFO level by default, DEBUG if `debug` is true
 /// - Detects systemd journal via `JOURNAL_STREAM` env var
 /// - Custom format:
-///   - systemd (JOURNAL_STREAM present): `SEVERITY: message`
+///   - systemd (`JOURNAL_STREAM` present): `SEVERITY: message`
 ///   - terminal: `YYYY-MM-DDTHH:MM:SS+TZ: SEVERITY: message` (localtime)
 ///
 /// # Example

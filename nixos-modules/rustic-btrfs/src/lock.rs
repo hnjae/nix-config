@@ -1,6 +1,6 @@
 /// File-based locking to prevent concurrent backups
 use crate::traits::Error;
-use fs4::fs_std::FileExt;
+use fs4::fs_std::FileExt as _;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 
@@ -58,8 +58,7 @@ impl LockGuard {
         file.try_lock_exclusive().map_err(|error| {
             log::error!("Another backup is already running for this subvolume");
             Error::Lock(format!(
-                "Another backup is already running for this subvolume: {}",
-                error
+                "Another backup is already running for this subvolume: {error}"
             ))
         })?;
 
