@@ -72,8 +72,6 @@ pub fn init_logger(debug: bool) {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     /// Test that init_logger can be called without panicking.
     ///
     /// Note: We can't easily test the actual log output or level in unit tests,

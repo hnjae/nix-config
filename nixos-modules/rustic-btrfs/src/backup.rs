@@ -26,7 +26,7 @@ impl RusticBackup {
     fn configure_repository() -> Result<(RepositoryOptions, BackendOptions), Error> {
         // Get repository path from environment
         let repository = env::var("RUSTIC_REPOSITORY").map_err(|_| {
-            Error::ConfigError("RUSTIC_REPOSITORY environment variable not set".to_string())
+            Error::Config("RUSTIC_REPOSITORY environment variable not set".to_string())
         })?;
 
         log::debug!("Using repository: {}", repository);
@@ -41,14 +41,14 @@ impl RusticBackup {
         if let Ok(password_file) = env::var("RUSTIC_PASSWORD_FILE") {
             log::debug!("Using password from file: {}", password_file);
             repo_opts = repo_opts.password_file(PathBuf::from(password_file));
-        } else if let Ok(password_command) = env::var("RUSTIC_PASSWORD_COMMAND") {
+        } else if let Ok(_password_command) = env::var("RUSTIC_PASSWORD_COMMAND") {
             log::debug!("Using password from command");
             // CommandInput requires proper parsing - use password as fallback
             log::warn!("PASSWORD_COMMAND support not implemented yet, falling back to PASSWORD");
             if let Ok(password) = env::var("RUSTIC_PASSWORD") {
                 repo_opts = repo_opts.password(password);
             } else {
-                return Err(Error::ConfigError(
+                return Err(Error::Config(
                     "PASSWORD_COMMAND not supported yet. Use RUSTIC_PASSWORD_FILE or RUSTIC_PASSWORD".to_string(),
                 ));
             }
@@ -56,7 +56,7 @@ impl RusticBackup {
             log::warn!("Using RUSTIC_PASSWORD environment variable (not recommended for security)");
             repo_opts = repo_opts.password(password);
         } else {
-            return Err(Error::ConfigError(
+            return Err(Error::Config(
                 "No password method configured. Set one of: RUSTIC_PASSWORD_FILE, RUSTIC_PASSWORD"
                     .to_string(),
             ));
@@ -70,7 +70,7 @@ impl RusticBackup {
         let mut opts = BackupOptions::default();
 
         // Set as-path if specified
-        if let Some(ref as_path) = config.as_path {
+        if let Some(as_path) = &config.as_path {
             opts = opts.as_path(PathBuf::from(as_path));
         }
 
@@ -83,13 +83,13 @@ impl RusticBackup {
         // Build parent options
         let mut parent_opts = ParentOptions::default();
 
-        if let Some(ref group_by_str) = config.group_by {
+        if let Some(group_by_str) = &config.group_by {
             // Parse group_by string to SnapshotGroupCriterion
             // For now, use default - this needs proper parsing implementation
             log::debug!("Group by: {}", group_by_str);
         }
 
-        if let Some(ref parent) = config.parent {
+        if let Some(parent) = &config.parent {
             parent_opts = parent_opts.parent(parent.clone());
         }
 
@@ -118,14 +118,14 @@ impl RusticBackup {
         filter_opts = filter_opts.one_file_system(true);
 
         // Add glob patterns from --paths (for partial backup)
-        if let Some(ref patterns) = config.glob_patterns {
+        if let Some(patterns) = &config.glob_patterns {
             filter_opts = filter_opts.globs(patterns.clone());
         }
 
         // Add additional globs
-        if let Some(ref globs) = config.extra_globs {
+        if let Some(globs) = &config.extra_globs {
             // Merge with existing globs from glob_patterns
-            if let Some(ref patterns) = config.glob_patterns {
+            if let Some(patterns) = &config.glob_patterns {
                 let mut all_globs = patterns.clone();
                 all_globs.extend(globs.clone());
                 filter_opts = filter_opts.globs(all_globs);
@@ -135,21 +135,21 @@ impl RusticBackup {
         }
 
         // Add iglobs (case-insensitive)
-        if let Some(ref iglobs) = config.iglobs {
+        if let Some(iglobs) = &config.iglobs {
             filter_opts = filter_opts.iglobs(iglobs.clone());
         }
 
         // Add glob files - convert PathBuf to String
-        if let Some(ref glob_file) = config.glob_file {
-            if let Some(path_str) = glob_file.to_str() {
-                filter_opts = filter_opts.glob_files(vec![path_str.to_string()]);
-            }
+        if let Some(glob_file) = &config.glob_file
+            && let Some(path_str) = glob_file.to_str()
+        {
+            filter_opts = filter_opts.glob_files(vec![path_str.to_string()]);
         }
 
-        if let Some(ref iglob_file) = config.iglob_file {
-            if let Some(path_str) = iglob_file.to_str() {
-                filter_opts = filter_opts.iglob_files(vec![path_str.to_string()]);
-            }
+        if let Some(iglob_file) = &config.iglob_file
+            && let Some(path_str) = iglob_file.to_str()
+        {
+            filter_opts = filter_opts.iglob_files(vec![path_str.to_string()]);
         }
 
         // Git ignore
@@ -161,20 +161,20 @@ impl RusticBackup {
             filter_opts = filter_opts.no_require_git(true);
         }
 
-        if let Some(ref ignorefile) = config.custom_ignorefile {
-            if let Some(path_str) = ignorefile.to_str() {
-                filter_opts = filter_opts.custom_ignorefiles(vec![path_str.to_string()]);
-            }
+        if let Some(ignorefile) = &config.custom_ignorefile
+            && let Some(path_str) = ignorefile.to_str()
+        {
+            filter_opts = filter_opts.custom_ignorefiles(vec![path_str.to_string()]);
         }
 
         // Exclude options
-        if let Some(ref exclude_file) = config.exclude_if_present {
-            if let Some(path_str) = exclude_file.to_str() {
-                filter_opts = filter_opts.exclude_if_present(vec![path_str.to_string()]);
-            }
+        if let Some(exclude_file) = &config.exclude_if_present
+            && let Some(path_str) = exclude_file.to_str()
+        {
+            filter_opts = filter_opts.exclude_if_present(vec![path_str.to_string()]);
         }
 
-        if let Some(ref size_str) = config.exclude_larger_than {
+        if let Some(size_str) = &config.exclude_larger_than {
             // Parse size string to ByteSize - for now log it
             log::debug!("Exclude larger than: {}", size_str);
             // TODO: Parse size_str to ByteSize and set filter_opts.exclude_larger_than
@@ -194,26 +194,26 @@ impl RusticBackup {
         let mut opts = SnapshotOptions::default();
 
         // Set label
-        if let Some(ref label) = config.label {
+        if let Some(label) = &config.label {
             opts = opts.label(label.clone());
         }
 
         // Add tags
-        if let Some(ref tags) = config.tags {
+        if let Some(tags) = &config.tags {
             for tag in tags {
                 opts = opts
                     .add_tags(tag.as_str())
-                    .map_err(|e| Error::ConfigError(format!("Failed to add tag '{tag}': {e:?}")))?;
+                    .map_err(|e| Error::Config(format!("Failed to add tag '{tag}': {e:?}")))?;
             }
         }
 
         // Set description
-        if let Some(ref description) = config.description {
+        if let Some(description) = &config.description {
             opts = opts.description(description.clone());
         }
 
         // Set time
-        if let Some(ref time_str) = config.timestamp {
+        if let Some(time_str) = &config.timestamp {
             // Parse ISO 8601 timestamp
             // For now, log it - needs proper DateTime parsing
             log::debug!("Backup time: {}", time_str);
@@ -225,7 +225,7 @@ impl RusticBackup {
             opts = opts.delete_never(true);
         }
 
-        if let Some(ref delete_after_str) = config.delete_after {
+        if let Some(delete_after_str) = &config.delete_after {
             // Parse duration string using humantime
             // For now, just log it - needs humantime::parse_duration
             log::debug!("Delete after: {}", delete_after_str);
@@ -233,7 +233,7 @@ impl RusticBackup {
         }
 
         // Set host
-        if let Some(ref host) = config.host {
+        if let Some(host) = &config.host {
             opts = opts.host(host.clone());
         }
 
@@ -257,23 +257,23 @@ impl BackupOps for RusticBackup {
         // 2. Convert BackendOptions to backends
         let backends = backend_opts
             .to_backends()
-            .map_err(|e| Error::ConfigError(format!("Failed to create backends: {e:?}")))?;
+            .map_err(|e| Error::Config(format!("Failed to create backends: {e:?}")))?;
 
         log::debug!("Created repository backends");
 
         // 3. Create and open repository
         let repo = Repository::new(&repo_opts, &backends)
-            .map_err(|e| Error::BackupError {
+            .map_err(|e| Error::Backup {
                 message: format!("Failed to create repository: {e:?}"),
                 exit_code: None,
             })?
             .open()
-            .map_err(|e| Error::BackupError {
+            .map_err(|e| Error::Backup {
                 message: format!("Failed to open repository: {e:?}"),
                 exit_code: None,
             })?
             .to_indexed_ids()
-            .map_err(|e| Error::BackupError {
+            .map_err(|e| Error::Backup {
                 message: format!("Failed to index repository: {e:?}"),
                 exit_code: None,
             })?;
@@ -289,25 +289,25 @@ impl BackupOps for RusticBackup {
         // 6. Create snapshot file
         let snapshot = snapshot_opts
             .to_snapshot()
-            .map_err(|e| Error::ConfigError(format!("Failed to create snapshot: {e:?}")))?;
+            .map_err(|e| Error::Config(format!("Failed to create snapshot: {e:?}")))?;
 
         // 7. Create source path list
         let source_path = config
             .snapshot_path
             .to_str()
-            .ok_or_else(|| Error::ConfigError("Invalid snapshot path".to_string()))?;
+            .ok_or_else(|| Error::Config("Invalid snapshot path".to_string()))?;
 
         let source = PathList::from_string(source_path)
-            .map_err(|e| Error::ConfigError(format!("Failed to create path list: {e:?}")))?
+            .map_err(|e| Error::Config(format!("Failed to create path list: {e:?}")))?
             .sanitize()
-            .map_err(|e| Error::ConfigError(format!("Failed to sanitize paths: {e:?}")))?;
+            .map_err(|e| Error::Config(format!("Failed to sanitize paths: {e:?}")))?;
 
         log::info!("Backing up: {}", source_path);
 
         // 8. Run backup
-        let result_snapshot =
+        let _result_snapshot =
             repo.backup(&backup_opts, &source, snapshot)
-                .map_err(|e| Error::BackupError {
+                .map_err(|e| Error::Backup {
                     message: format!("Backup failed: {e:?}"),
                     exit_code: None,
                 })?;
@@ -318,8 +318,8 @@ impl BackupOps for RusticBackup {
         // Note: SnapshotFile doesn't expose detailed statistics in public API
         // We'll return basic stats for now
         let stats = BackupStats {
-            files_processed: 0, // TODO: Extract from result_snapshot if available
-            bytes_processed: 0, // TODO: Extract from result_snapshot if available
+            files_processed: 0, // TODO: Extract from _result_snapshot if available
+            bytes_processed: 0, // TODO: Extract from _result_snapshot if available
         };
 
         log::debug!("Backup stats: {:?}", stats);

@@ -196,7 +196,7 @@ impl Cli {
         }
 
         // Validate --paths if specified
-        if let Some(ref paths) = self.backup_opts.paths {
+        if let Some(paths) = &self.backup_opts.paths {
             for path in paths {
                 validate_partial_path(path)?;
             }
@@ -290,7 +290,8 @@ mod tests {
         let desc = generate_partial_backup_description(&paths);
 
         // Parse to verify it's valid JSON
-        let parsed: serde_json::Value = serde_json::from_str(&desc).ok().unwrap();
+        let parsed: serde_json::Value =
+            serde_json::from_str(&desc).expect("Generated description should be valid JSON");
         assert_eq!(
             parsed["included_paths"].as_array().map(|a| a.len()),
             Some(2)

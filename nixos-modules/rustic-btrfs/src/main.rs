@@ -38,7 +38,7 @@ fn main() {
     let cli = cli::Cli::parse();
 
     // Handle special commands (before logging initialization to avoid log output)
-    if let Some(ref shell) = cli.special.generate_completion {
+    if let Some(shell) = &cli.special.generate_completion {
         generate_completion(shell);
         return;
     }
@@ -79,7 +79,7 @@ fn run_backup(cli: &cli::Cli) -> Result<(), traits::Error> {
     let subvolume = cli
         .subvolume
         .as_ref()
-        .ok_or_else(|| traits::Error::ConfigError("Subvolume is required".to_owned()))?;
+        .ok_or_else(|| traits::Error::Config("Subvolume is required".to_owned()))?;
 
     log::info!("Backup source: {}", subvolume.display());
 
@@ -89,14 +89,14 @@ fn run_backup(cli: &cli::Cli) -> Result<(), traits::Error> {
     // Validate subvolume exists and is a Btrfs subvolume
     log::debug!("Validating subvolume path");
     if !subvolume.exists() {
-        return Err(traits::Error::ConfigError(format!(
+        return Err(traits::Error::Config(format!(
             "Subvolume does not exist: {}",
             subvolume.display()
         )));
     }
 
     if !btrfs.is_subvolume(subvolume)? {
-        return Err(traits::Error::ConfigError(format!(
+        return Err(traits::Error::Config(format!(
             "Path is not a Btrfs subvolume: {}",
             subvolume.display()
         )));
@@ -169,13 +169,12 @@ fn build_backup_config(
     };
 
     // Build description
-    let description = if let Some(ref desc) = cli.backup_opts.description {
+    let description = if let Some(desc) = &cli.backup_opts.description {
         Some(desc.clone())
-    } else if let Some(ref desc_file) = cli.backup_opts.description_from {
+    } else if let Some(desc_file) = &cli.backup_opts.description_from {
         // Read description from file
-        let content = std::fs::read_to_string(desc_file).map_err(|e| {
-            traits::Error::ConfigError(format!("Failed to read description file: {e}"))
-        })?;
+        let content = std::fs::read_to_string(desc_file)
+            .map_err(|e| traits::Error::Config(format!("Failed to read description file: {e}")))?;
         Some(content.trim().to_owned())
     } else {
         cli.backup_opts

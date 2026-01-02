@@ -71,7 +71,7 @@ impl BtrfsOps for MockBtrfs {
         self.uuids_requested.borrow_mut().push(path.to_path_buf());
 
         if self.fail_uuid {
-            return Err(Error::BtrfsError("Mock UUID retrieval failed".to_string()));
+            return Err(Error::Btrfs("Mock UUID retrieval failed".to_string()));
         }
 
         Ok(self.fake_uuid.clone())
@@ -79,9 +79,7 @@ impl BtrfsOps for MockBtrfs {
 
     fn is_subvolume(&self, _path: &Path) -> Result<bool, Error> {
         if self.fail_is_subvolume {
-            return Err(Error::BtrfsError(
-                "Mock is_subvolume check failed".to_string(),
-            ));
+            return Err(Error::Btrfs("Mock is_subvolume check failed".to_string()));
         }
 
         Ok(self.return_is_subvolume)
@@ -89,9 +87,7 @@ impl BtrfsOps for MockBtrfs {
 
     fn create_snapshot(&self, source: &Path, dest: &Path, _readonly: bool) -> Result<(), Error> {
         if self.fail_snapshot {
-            return Err(Error::BtrfsError(
-                "Mock snapshot creation failed".to_string(),
-            ));
+            return Err(Error::Btrfs("Mock snapshot creation failed".to_string()));
         }
 
         self.snapshots_created
@@ -162,7 +158,7 @@ impl Default for MockBackup {
 impl BackupOps for MockBackup {
     fn run_backup(&self, config: &BackupConfig) -> Result<BackupStats, Error> {
         if self.fail_backup {
-            return Err(Error::BackupError {
+            return Err(Error::Backup {
                 message: "Mock backup failed".to_string(),
                 exit_code: None,
             });

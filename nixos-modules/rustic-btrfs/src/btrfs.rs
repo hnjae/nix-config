@@ -46,7 +46,7 @@ impl BtrfsOps for LibBtrfs {
             let err = ffi::btrfs_util_subvolume_info(c_path.as_ptr(), 0, &mut info);
 
             if err != ffi::btrfs_util_error::BTRFS_UTIL_OK {
-                return Err(Error::BtrfsError(format!(
+                return Err(Error::Btrfs(format!(
                     "Failed to get subvolume info: error code {err:?}"
                 )));
             }
@@ -73,7 +73,7 @@ impl BtrfsOps for LibBtrfs {
                 ffi::btrfs_util_error::BTRFS_UTIL_OK => Ok(true),
                 ffi::btrfs_util_error::BTRFS_UTIL_ERROR_NOT_BTRFS
                 | ffi::btrfs_util_error::BTRFS_UTIL_ERROR_NOT_SUBVOLUME => Ok(false),
-                _ => Err(Error::BtrfsError(format!(
+                _ => Err(Error::Btrfs(format!(
                     "Failed to check if path is subvolume: error code {err:?}"
                 ))),
             }

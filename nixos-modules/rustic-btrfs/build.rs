@@ -1,3 +1,12 @@
+//! Build script for generating Btrfs FFI bindings.
+//!
+//! This script generates Rust bindings for libbtrfsutil using bindgen.
+//! The bindings are written to the `OUT_DIR` for inclusion in the library.
+
+// Build scripts are allowed to panic on errors - it's expected behavior for build failures
+#![allow(clippy::expect_used)]
+#![allow(clippy::missing_docs_in_private_items)]
+
 use std::env;
 use std::path::PathBuf;
 

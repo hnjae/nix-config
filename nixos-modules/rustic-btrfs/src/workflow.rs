@@ -1,6 +1,6 @@
 /// Backup workflow with cleanup guarantees
 use crate::traits::{BackupConfig, BackupOps, BackupStats, BtrfsOps, Error};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 /// Run the complete backup workflow with cleanup guarantees.
 ///
@@ -82,6 +82,7 @@ pub fn run_backup_workflow<B: BtrfsOps, R: BackupOps>(
 mod tests {
     use super::*;
     use crate::mocks::{MockBackup, MockBtrfs};
+    use std::path::PathBuf;
 
     #[test]
     fn test_workflow_success() {

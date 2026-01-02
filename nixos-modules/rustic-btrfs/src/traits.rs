@@ -2,10 +2,11 @@ use std::path::Path;
 
 /// Error type for rustic-btrfs operations with exit code mapping.
 #[derive(Debug)]
+#[allow(dead_code)] // Fields used in Display/Debug implementations
 pub enum Error {
     /// Lock acquisition failed (another backup running)
     /// Exit code: 1
-    LockError(String),
+    Lock(String),
 
     /// Snapshot conflict: .snapshot exists but is not a subvolume
     /// Exit code: 1
@@ -21,11 +22,11 @@ pub enum Error {
 
     /// Btrfs operation error
     /// Exit code: 1
-    BtrfsError(String),
+    Btrfs(String),
 
     /// Backup operation error
     /// Exit code: configurable (rustic_core error code)
-    BackupError {
+    Backup {
         /// Error message
         message: String,
         /// Exit code from rustic_core (if available)
@@ -34,11 +35,11 @@ pub enum Error {
 
     /// I/O error
     /// Exit code: 1
-    IoError(std::io::Error),
+    Io(std::io::Error),
 
     /// Configuration error
     /// Exit code: 1
-    ConfigError(String),
+    Config(String),
 
     /// Other error
     /// Exit code: 1
@@ -56,14 +57,14 @@ impl Error {
     #[must_use]
     pub fn exit_code(&self) -> i32 {
         match self {
-            Self::BackupError { exit_code, .. } => exit_code.unwrap_or(1),
-            Self::LockError(_)
+            Self::Backup { exit_code, .. } => exit_code.unwrap_or(1),
+            Self::Lock(_)
             | Self::SnapshotConflict(_)
             | Self::SnapshotCreation(_)
             | Self::SnapshotDeletion(_)
-            | Self::BtrfsError(_)
-            | Self::IoError(_)
-            | Self::ConfigError(_)
+            | Self::Btrfs(_)
+            | Self::Io(_)
+            | Self::Config(_)
             | Self::Other(_) => 1,
         }
     }
@@ -71,7 +72,7 @@ impl Error {
 
 impl From<std::io::Error> for Error {
     fn from(error: std::io::Error) -> Self {
-        Self::IoError(error)
+        Self::Io(error)
     }
 }
 
@@ -256,20 +257,20 @@ mod tests {
     #[test]
     fn test_error_exit_code_general_errors() {
         // General errors should return exit code 1
-        assert_eq!(Error::LockError("test".to_string()).exit_code(), 1);
-        assert_eq!(Error::SnapshotConflict("test".to_string()).exit_code(), 1);
-        assert_eq!(Error::SnapshotCreation("test".to_string()).exit_code(), 1);
-        assert_eq!(Error::SnapshotDeletion("test".to_string()).exit_code(), 1);
-        assert_eq!(Error::BtrfsError("test".to_string()).exit_code(), 1);
-        assert_eq!(Error::ConfigError("test".to_string()).exit_code(), 1);
-        assert_eq!(Error::Other("test".to_string()).exit_code(), 1);
+        assert_eq!(Error::Lock("test".to_owned()).exit_code(), 1);
+        assert_eq!(Error::SnapshotConflict("test".to_owned()).exit_code(), 1);
+        assert_eq!(Error::SnapshotCreation("test".to_owned()).exit_code(), 1);
+        assert_eq!(Error::SnapshotDeletion("test".to_owned()).exit_code(), 1);
+        assert_eq!(Error::Btrfs("test".to_owned()).exit_code(), 1);
+        assert_eq!(Error::Config("test".to_owned()).exit_code(), 1);
+        assert_eq!(Error::Other("test".to_owned()).exit_code(), 1);
     }
 
     #[test]
     fn test_error_exit_code_backup_error_default() {
         // Backup error without exit code should return 1
-        let error = Error::BackupError {
-            message: "test".to_string(),
+        let error = Error::Backup {
+            message: "test".to_owned(),
             exit_code: None,
         };
         assert_eq!(error.exit_code(), 1);
@@ -278,8 +279,8 @@ mod tests {
     #[test]
     fn test_error_exit_code_backup_error_custom() {
         // Backup error with custom exit code should return that code
-        let error = Error::BackupError {
-            message: "test".to_string(),
+        let error = Error::Backup {
+            message: "test".to_owned(),
             exit_code: Some(42),
         };
         assert_eq!(error.exit_code(), 42);
@@ -287,7 +288,7 @@ mod tests {
 
     #[test]
     fn test_error_from_io_error() {
-        // IoError should convert from std::io::Error
+        // Io error should convert from std::io::Error
         let io_err = std::io::Error::new(std::io::ErrorKind::NotFound, "test");
         let error = Error::from(io_err);
         assert_eq!(error.exit_code(), 1);

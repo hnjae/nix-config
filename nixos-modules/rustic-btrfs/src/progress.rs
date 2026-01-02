@@ -49,7 +49,7 @@ impl ProgressReporter {
     ///
     /// * `subvolume` - Path to the subvolume being backed up
     pub fn start_backup(&self, subvolume: &str) {
-        if let Some(ref pb) = self.progress_bar {
+        if let Some(pb) = &self.progress_bar {
             pb.set_message(format!("Backing up {subvolume}"));
         } else {
             log::info!("Starting backup of subvolume {subvolume}");
@@ -62,7 +62,7 @@ impl ProgressReporter {
     ///
     /// * `snapshot_path` - Path to the created snapshot
     pub fn snapshot_created(&self, snapshot_path: &str) {
-        if let Some(ref pb) = self.progress_bar {
+        if let Some(pb) = &self.progress_bar {
             pb.set_message(format!("Snapshot created at {snapshot_path}"));
         } else {
             log::info!("Created snapshot at {snapshot_path}");
@@ -77,7 +77,7 @@ impl ProgressReporter {
     /// * `total_files` - Total number of files (if known)
     /// * `message` - Optional status message
     pub fn update(&self, files_processed: u64, total_files: Option<u64>, message: Option<&str>) {
-        if let Some(ref pb) = self.progress_bar {
+        if let Some(pb) = &self.progress_bar {
             if let Some(total) = total_files {
                 pb.set_length(total);
             }
@@ -95,7 +95,7 @@ impl ProgressReporter {
     ///
     /// * `stats` - Summary statistics (e.g., "1.8GB in 45s")
     pub fn finish(&self, stats: &str) {
-        if let Some(ref pb) = self.progress_bar {
+        if let Some(pb) = &self.progress_bar {
             pb.finish_with_message(format!("Backup completed: {stats}"));
         } else {
             log::info!("Backup completed: {stats}");
@@ -108,7 +108,7 @@ impl ProgressReporter {
     ///
     /// * `error` - Error message
     pub fn fail(&self, error: &str) {
-        if let Some(ref pb) = self.progress_bar {
+        if let Some(pb) = &self.progress_bar {
             pb.abandon_with_message(format!("Backup failed: {error}"));
         } else {
             log::error!("Backup failed: {error}");

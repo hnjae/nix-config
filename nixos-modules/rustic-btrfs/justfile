@@ -14,7 +14,15 @@ build:
     nix --quiet --log-format raw --no-warn-dirty build '.#{{ PROJECT }}'
 
 test:
-    cargo --quiet test
+    @echo "Running library unit tests..."
+    @cargo --quiet test --lib
+    @echo ""
+    @echo "Note: Integration tests require Nix devShell (provides libbtrfsutil)"
+    @echo "Run 'just test-integration' inside 'nix develop' to run them"
+
+test-integration:
+    @echo "Running integration tests (requires devShell)..."
+    @cargo --quiet test --test workflow_test --test lock_test
 
 check:
     cargo --quiet clippy

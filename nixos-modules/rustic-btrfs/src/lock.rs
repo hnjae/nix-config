@@ -47,7 +47,7 @@ impl LockGuard {
                 lock_path.display(),
                 error
             );
-            Error::LockError(format!(
+            Error::Lock(format!(
                 "Failed to create lock file {}: {}",
                 lock_path.display(),
                 error
@@ -57,7 +57,7 @@ impl LockGuard {
         // Try to acquire exclusive lock (non-blocking)
         file.try_lock_exclusive().map_err(|error| {
             log::error!("Another backup is already running for this subvolume");
-            Error::LockError(format!(
+            Error::Lock(format!(
                 "Another backup is already running for this subvolume: {}",
                 error
             ))
@@ -97,6 +97,37 @@ impl Drop for LockGuard {
         // We don't need to explicitly unlock or delete the file.
         // The file persists but the lock is released, which is fine.
     }
+}
+
+/// Acquire an exclusive lock for a UUID with a custom lock directory.
+///
+/// This function is exported for testing purposes.
+///
+/// # Errors
+///
+/// Returns `Error::Lock` if the lock cannot be acquired.
+pub fn acquire_lock(lock_dir: &Path, uuid: &str) -> Result<LockGuard, Error> {
+    // Ensure lock directory exists
+    std::fs::create_dir_all(lock_dir)
+        .map_err(|error| Error::Lock(format!("Failed to create lock directory: {error}")))?;
+
+    let lock_path = lock_dir.join(format!("{uuid}.lock"));
+
+    // Create lock file
+    let file = File::create(&lock_path)
+        .map_err(|error| Error::Lock(format!("Failed to create lock file: {error}")))?;
+
+    // Try to acquire exclusive lock (non-blocking)
+    file.try_lock_exclusive().map_err(|error| {
+        Error::Lock(format!(
+            "Another backup is already running for this subvolume: {error}"
+        ))
+    })?;
+
+    Ok(LockGuard {
+        _file: file,
+        path: lock_path,
+    })
 }
 
 #[cfg(test)]
