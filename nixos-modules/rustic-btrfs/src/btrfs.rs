@@ -107,7 +107,7 @@ impl BtrfsOps for LibBtrfs {
                 0
             };
 
-            #[allow(clippy::as_conversions)]
+            #[allow(clippy::as_conversions, clippy::cast_possible_wrap)]
             let err = ffi::btrfs_util_create_snapshot(
                 c_source.as_ptr(),
                 c_dest.as_ptr(),

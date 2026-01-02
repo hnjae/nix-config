@@ -51,8 +51,7 @@ pub fn init_logger(debug: bool) {
                 log::Level::Error => 3,
                 log::Level::Warn => 4,
                 log::Level::Info => 6,
-                log::Level::Debug => 7,
-                log::Level::Trace => 7,
+                log::Level::Debug | log::Level::Trace => 7,
             };
             writeln!(buf, "<{priority}>{}: {}", record.level(), record.args())
         } else {

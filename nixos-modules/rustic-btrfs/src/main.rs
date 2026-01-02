@@ -239,5 +239,6 @@ fn generate_completion(shell: &cli::Shell) {
 fn generate_manpage() {
     let cmd = cli::Cli::command();
     let man = Man::new(cmd);
-    man.render(&mut io::stdout()).ok();
+    // Ignore errors in man page generation - this is a utility function
+    drop(man.render(&mut io::stdout()));
 }
