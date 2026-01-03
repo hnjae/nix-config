@@ -1,3 +1,6 @@
+# Configuration of `print_stderr`
+allow-print-in-tests = true
+
 # Configuration of `panic`
 allow-panic-in-tests = true
 
