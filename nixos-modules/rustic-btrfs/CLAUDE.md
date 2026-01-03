@@ -10,6 +10,8 @@ This is a Rust project (edition 2024) built with Nix flakes and managed with `ju
 
 ## Build System
 
+**Important**: Always use `just build` or the Nix develop environment for builds. Never run `cargo build` directly - use `just build` instead.
+
 The project uses a dual build system:
 
 - **Cargo builds**: `just build` (runs `cargo build` in Nix develop environment) - Fast iterative development
