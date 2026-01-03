@@ -11,6 +11,9 @@ _:
     @just --list
 
 build:
+    nix --quiet --log-format raw --no-warn-dirty develop --command cargo --quiet build
+
+build-nix:
     nix --quiet --log-format raw --no-warn-dirty build '.#{{ PROJECT }}'
 
 test:

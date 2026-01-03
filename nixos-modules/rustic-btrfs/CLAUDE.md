@@ -12,8 +12,8 @@ This is a Rust project (edition 2024) built with Nix flakes and managed with `ju
 
 The project uses a dual build system:
 
-- **Nix builds**: `just build` (runs `nix --no-warn-dirty --quiet --log-format raw build '.#rustic-btrfs'`) - Builds via Nix flakes using crane
-- **Cargo builds**: Standard `cargo build` for development
+- **Cargo builds**: `just build` (runs `cargo build` in Nix develop environment) - Fast iterative development
+- **Nix builds**: `just build-nix` (runs `nix build '.#rustic-btrfs'`) - Reproducible package builds via crane
 
 The Nix build configuration is split across:
 
@@ -23,8 +23,11 @@ The Nix build configuration is split across:
 ## Common Commands
 
 ```sh
-# Build (via Nix)
+# Build (via Cargo in Nix environment)
 just build
+
+# Build (via Nix flakes)
+just build-nix
 
 # Format code
 just format  # Runs cargo clippy --fix and cargo fmt
