@@ -19,6 +19,8 @@ pub struct MockBtrfs {
     pub return_is_subvolume: bool,
     /// Snapshots that have been created (source, dest pairs)
     pub snapshots_created: RefCell<Vec<(PathBuf, PathBuf)>>,
+    /// Historical record of all snapshots ever created (never cleaned up)
+    pub snapshots_created_history: RefCell<Vec<(PathBuf, PathBuf)>>,
     /// Subvolumes that have been deleted
     pub subvolumes_deleted: RefCell<Vec<PathBuf>>,
     /// UUIDs requested
@@ -38,16 +40,18 @@ impl MockBtrfs {
             fail_is_subvolume: false,
             return_is_subvolume: true,
             snapshots_created: RefCell::new(Vec::new()),
+            snapshots_created_history: RefCell::new(Vec::new()),
             subvolumes_deleted: RefCell::new(Vec::new()),
             uuids_requested: RefCell::new(Vec::new()),
             fake_uuid: "5ea01852-b4f9-4e4a-9c9d-f9c8b7a6e5d4".to_owned(),
         }
     }
 
-    /// Check if a snapshot was created.
+    /// Check if a snapshot was created (checks historical record).
+    /// This returns true even if the snapshot has been deleted.
     #[must_use]
     pub fn snapshot_created(&self, source: &Path, dest: &Path) -> bool {
-        self.snapshots_created
+        self.snapshots_created_history
             .borrow()
             .iter()
             .any(|(s, d)| s == source && d == dest)
@@ -91,9 +95,17 @@ impl BtrfsOps for MockBtrfs {
             return Err(Error::Btrfs("Mock snapshot creation failed".to_owned()));
         }
 
+        let source_buf = source.to_path_buf();
+        let dest_buf = dest.to_path_buf();
+
         self.snapshots_created
             .borrow_mut()
-            .push((source.to_path_buf(), dest.to_path_buf()));
+            .push((source_buf.clone(), dest_buf.clone()));
+
+        self.snapshots_created_history
+            .borrow_mut()
+            .push((source_buf, dest_buf));
+
         Ok(())
     }
 
