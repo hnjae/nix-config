@@ -10,7 +10,7 @@ This is a Rust project (edition 2024) built with Nix flakes and managed with `ju
 
 ## Build System
 
-**Important**: Always use `just build` or the Nix develop environment for builds. Never run `cargo build` directly - use `just build` instead.
+**Important**: Always use `just` commands or the Nix develop environment for builds and tests. Never run `cargo build` or `cargo test` directly - use `just build` and `just test` instead.
 
 The project uses a dual build system:
 
@@ -37,8 +37,8 @@ just format  # Runs cargo clippy --fix and cargo fmt
 # Lint
 just check   # Runs cargo clippy
 
-# Test
-just test    # Runs cargo test
+# Test (library unit tests in Nix environment)
+just test    # Runs cargo test --lib in Nix develop
 ```
 
 ## Development Workflow
@@ -58,6 +58,7 @@ This project combines **Spec-Driven Development (SDD)** and **Test-Driven Develo
 
 - Write tests first based on the specification
 - Run `just test` to verify tests fail initially (Red)
+    - **Important**: Always use `just test`, never `cargo test` directly
 - Implement the minimal code to make tests pass (Green)
 - Refactor while keeping tests green (Refactor)
 

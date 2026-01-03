@@ -11,17 +11,14 @@ _:
     @just --list
 
 build:
-    nix --quiet --log-format raw --no-warn-dirty develop --command cargo --quiet build
+    nix --quiet --log-format raw --no-warn-dirty develop --command -- cargo --quiet build
 
 build-nix:
     nix --quiet --log-format raw --no-warn-dirty build '.#{{ PROJECT }}'
 
 test:
     @echo "Running library unit tests..."
-    @cargo --quiet test --lib
-    @echo ""
-    @echo "Note: Integration tests require Nix devShell (provides libbtrfsutil)"
-    @echo "Run 'just test-integration' inside 'nix develop' to run them"
+    nix --quiet --log-format raw --no-warn-dirty develop --command -- cargo --quiet test --lib
 
 test-integration:
     @echo "Running integration tests (requires devShell)..."
