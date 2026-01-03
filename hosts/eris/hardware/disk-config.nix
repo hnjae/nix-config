@@ -225,6 +225,14 @@
   systemd.coredump.extraConfig = ''
     Compress=no
   '';
+  /*
+    Extra config options for systemd-journald. See journald.conf(5) for available options.
+
+    /etc/systemd/journald.conf
+  */
+  services.journald.extraConfig = ''
+    Compress=no
+  '';
 
   # stateless 를 설정하면, cups 가 켜질때 /var/lib/cups 를 지워버림.
   # 어차피 `/` 가 tmpfs 라서 의미 없고, 복잡도 증가.
