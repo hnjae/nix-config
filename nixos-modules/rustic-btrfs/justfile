@@ -24,6 +24,65 @@ test-integration:
     @echo "Running integration tests..."
     nix --quiet --log-format raw --no-warn-dirty develop '.#{{ PROJECT }}' --command -- cargo --quiet test --test workflow_test --test lock_test
 
+test-btrfs-real:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # Check for root privileges
+    if [ "$EUID" -ne 0 ]; then
+        echo "Error: Must run as root (required for loop device and Btrfs operations)"
+        echo "Usage: sudo -E just test-btrfs-real"
+        exit 1
+    fi
+
+    # Setup variables
+    IMAGE="/tmp/rustic-btrfs-test-$$.img"
+    MOUNT="/tmp/rustic-btrfs-test-mount-$$"
+    LOOP=""
+
+    # Cleanup function
+    cleanup() {
+        echo "Cleaning up..."
+        if [ -n "$MOUNT" ] && mountpoint -q "$MOUNT" 2>/dev/null; then
+            umount "$MOUNT" 2>/dev/null || true
+        fi
+        if [ -n "$LOOP" ] && [ -e "$LOOP" ]; then
+            losetup -d "$LOOP" 2>/dev/null || true
+        fi
+        if [ -f "$IMAGE" ]; then
+            rm -f "$IMAGE"
+        fi
+        if [ -d "$MOUNT" ]; then
+            rmdir "$MOUNT" 2>/dev/null || true
+        fi
+    }
+    trap cleanup EXIT
+
+    # Create 100MB image file
+    echo "Creating 100MB image at $IMAGE..."
+    dd if=/dev/zero of="$IMAGE" bs=1M count=100 status=none
+
+    # Setup loop device
+    echo "Setting up loop device..."
+    LOOP=$(losetup -f --show "$IMAGE")
+    echo "Loop device: $LOOP"
+
+    # Format as Btrfs
+    echo "Formatting as Btrfs..."
+    mkfs.btrfs -q "$LOOP"
+
+    # Mount
+    echo "Mounting at $MOUNT..."
+    mkdir -p "$MOUNT"
+    mount "$LOOP" "$MOUNT"
+
+    # Run tests
+    echo "Running real Btrfs integration tests..."
+    BTRFS_TEST_PATH="$MOUNT" nix --quiet --log-format raw --no-warn-dirty develop '.#{{ PROJECT }}' --command -- \
+        cargo test --test btrfs_real_test
+
+    echo "Tests completed successfully"
+
 check:
     cargo --quiet clippy
 
