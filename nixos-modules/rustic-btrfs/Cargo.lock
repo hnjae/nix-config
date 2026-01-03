@@ -2911,6 +2911,7 @@ dependencies = [
  "indicatif",
  "log",
  "pkg-config",
+ "regex",
  "rustic_backend",
  "rustic_core",
  "serde",
