@@ -1,0 +1,163 @@
+프롬프트: rustic-btrfs 전체 백업 워크플로우 테스트 구현
+
+컨텍스트
+
+rustic-btrfs 프로젝트에서 실제 Btrfs 통합 테스트를 구현했습니다. 현재 상태:
+
+- ✅ tests/btrfs_real_test.rs: Btrfs 기본 동작 테스트 (스냅샷, UUID, is_subvolume)
+- ✅ just test-btrfs-real: Loop device로 임시 Btrfs 파일시스템 생성
+- ✅ SPEC.md에 문서화 완료
+
+목표
+
+전체 백업 워크플로우를 테스트하는 통합 테스트 추가:
+
+1. Rustic 저장소 초기화 (rustic init)
+2. Btrfs subvolume 생성 및 더미 파일 추가
+3. rustic-btrfs로 실제 백업 수행
+4. 백업 검증 (rustic snapshots, 복원 등)
+
+구현 계획
+
+1. Justfile 확장 (test-btrfs-workflow 명령어)
+
+현재 test-btrfs-real을 확장하여:
+
+test-btrfs-workflow:
+    # 기존 loop device 설정 (test-btrfs-real과 동일)
+    # + Rustic 저장소 초기화
+    RUSTIC_REPO="/tmp/rustic-test-repo-$$"
+    RUSTIC_PASSWORD="test-password-$$"
+
+    # rustic init 실행
+    # 환경 변수 설정: RUSTIC_REPOSITORY, RUSTIC_PASSWORD
+
+    # 테스트 실행
+    BTRFS_TEST_PATH="$MOUNT" \
+    RUSTIC_REPOSITORY="$RUSTIC_REPO" \
+    RUSTIC_PASSWORD="$RUSTIC_PASSWORD" \
+      cargo test --test btrfs_workflow_test
+
+    # 정리: rustic repo, loop device, 등
+
+2. 새 테스트 파일 (tests/btrfs_workflow_test.rs)
+
+/// End-to-end workflow test: Btrfs snapshot → rustic backup → verification
+
+#[test]
+fn test_complete_backup_workflow() {
+    // 환경 변수 확인 (BTRFS_TEST_PATH, RUSTIC_REPOSITORY, RUSTIC_PASSWORD)
+
+    // 1. Btrfs subvolume 생성
+    // 2. 더미 파일 추가 (예: 100개 파일, 다양한 크기)
+    // 3. rustic-btrfs 실행 (실제 바이너리 호출)
+    // 4. rustic snapshots로 백업 확인
+    // 5. (선택) rustic restore로 복원 테스트
+    // 6. 정리
+}
+
+#[test]
+fn test_multiple_backups() {
+    // 첫 번째 백업
+    // 파일 수정
+    // 두 번째 백업 (incremental)
+    // 스냅샷 2개 확인
+}
+
+#[test]
+fn test_partial_backup_with_paths() {
+    // --paths 옵션 테스트
+    // 특정 디렉토리만 백업
+    // description에 JSON 생성 확인
+}
+
+3. 파일 변경 요약
+
+- 수정: justfile - test-btrfs-workflow 명령어 추가
+- 생성: tests/btrfs_workflow_test.rs - 전체 워크플로우 테스트
+- 수정: SPEC.md - 섹션 4에 워크플로우 테스트 설명 추가
+
+구현 지침
+
+패턴 따르기
+
+- Justfile에서 환경 설정: Rustic repo init, 환경 변수 설정
+- Rust 테스트는 단순하게: 환경 변수 확인 후 테스트 실행
+- RAII 정리 패턴: Drop guard로 정리 보장
+- 각 단계마다 커밋: Commit after EACH step completes
+
+Rustic 저장소 설정
+
+# Justfile에서
+RUSTIC_REPO="/tmp/rustic-test-repo-$$"
+mkdir -p "$RUSTIC_REPO"
+
+# rustic init (nix develop 환경에서)
+RUSTIC_REPOSITORY="$RUSTIC_REPO" \
+RUSTIC_PASSWORD="test-password" \
+  nix develop '.#rustic-btrfs' --command -- \
+    rustic init
+
+더미 데이터 생성
+
+// Rust 테스트에서
+fn create_test_files(base: &Path) {
+    // 다양한 크기의 파일 생성
+    std::fs::write(base.join("small.txt"), b"small content");
+    std::fs::write(base.join("large.bin"), vec![0u8; 10 * 1024 * 1024]); // 10MB
+
+    // 디렉토리 구조
+    std::fs::create_dir_all(base.join("dir1/subdir"));
+    std::fs::write(base.join("dir1/file.txt"), b"content");
+}
+
+rustic-btrfs 바이너리 실행
+
+use std::process::Command;
+
+let output = Command::new("rustic-btrfs")
+    .arg("--dry-run") // 처음엔 dry-run으로 테스트
+    .arg("/path/to/subvolume")
+    .env("RUSTIC_REPOSITORY", repo_path)
+    .env("RUSTIC_PASSWORD", password)
+    .output()
+    .expect("Failed to run rustic-btrfs");
+
+assert!(output.status.success());
+
+백업 검증
+
+# rustic snapshots로 확인
+RUSTIC_REPOSITORY="$REPO" RUSTIC_PASSWORD="$PASS" \
+  rustic snapshots --json
+
+# 또는 Rust에서
+Command::new("rustic")
+    .args(["snapshots", "--json"])
+    .env("RUSTIC_REPOSITORY", repo)
+    .output()
+
+실행 방법
+
+# 워크플로우 테스트 (root 필요)
+sudo -E just test-btrfs-workflow
+
+# 기존 테스트는 그대로
+just test
+just test-integration
+just test-btrfs-real
+
+주의사항
+
+- rustic-btrfs 바이너리가 빌드되어 있어야 함 → justfile에서 just build 먼저 실행
+- Rustic 저장소 정리 잊지 말기 (trap cleanup)
+- 테스트 격리: 각 테스트마다 고유한 repo/subvolume 사용 (PID 활용)
+- 환경 변수 3개 필요: BTRFS_TEST_PATH, RUSTIC_REPOSITORY, RUSTIC_PASSWORD
+
+커밋 전략
+
+각 단계별로 커밋 (Conventional Commits):
+1. test(rustic-btrfs): add btrfs_workflow_test.rs skeleton
+2. chore(rustic-btrfs): add test-btrfs-workflow justfile command
+3. test(rustic-btrfs): implement complete backup workflow test
+4. docs(rustic-btrfs): document workflow tests in SPEC.md
