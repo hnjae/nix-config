@@ -28,8 +28,8 @@
         "nodev"
         "nosuid"
         "noatime"
-        "noacl"
-        "compress=zstd:11"
+        # "noacl" # acl 이 있어야, group:wheel:r-x 등 설정을 할수 있음.
+        "compress-force=zstd:11"
         "degraded"
         "nodiscard" # use fsync instead
       ];
