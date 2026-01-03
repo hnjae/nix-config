@@ -56,12 +56,17 @@ in
     };
 
     # to use nix-shell, run `nix repl :l <nixpkgs>`
-    channel.enable = true;
+    # nix-channel --list
+    channel.enable = lib.mkOverride 999 true;
     nixPath = lib.lists.optionals config.nix.channel.enable [
       # "/nix/var/nix/profiles/per-user/root/channels"
       "nixpkgs-unstable=${inputs.nixpkgs-unstable}"
       "nixpkgs=${inputs.nixpkgs}"
       "nix-config=${localFlake}"
+
+      # "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      # "nixos-config=/etc/nixos/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
     ];
   };
 
