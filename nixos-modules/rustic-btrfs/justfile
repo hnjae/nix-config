@@ -21,8 +21,8 @@ test:
     nix --quiet --log-format raw --no-warn-dirty develop '.#{{ PROJECT }}' --command -- cargo --quiet test --lib
 
 test-integration:
-    @echo "Running integration tests (requires devShell)..."
-    @cargo --quiet test --test workflow_test --test lock_test
+    @echo "Running integration tests..."
+    nix --quiet --log-format raw --no-warn-dirty develop '.#{{ PROJECT }}' --command -- cargo --quiet test --test workflow_test --test lock_test
 
 check:
     cargo --quiet clippy
