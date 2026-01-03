@@ -151,10 +151,13 @@ in
         # Inherit build inputs from commonArgs
         inputsFrom = [ my-crate ];
 
+        # Explicitly add build dependencies (required for linking)
+        buildInputs = commonArgs.buildInputs;
+        nativeBuildInputs = commonArgs.nativeBuildInputs;
+
         LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib"; # bindgen requirement
 
         packages = with pkgs; [
-          btrfs-progs
           cargo-tarpaulin # code coverage tool
           rust-analyzer # (official) rust compiler front-end for IDEs
           rclone # Required for rustic_core remote backends

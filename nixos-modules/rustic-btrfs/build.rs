@@ -11,13 +11,21 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
+    eprintln!("build.rs: Starting build script");
+
     // Use pkg-config to find libbtrfsutil
     let lib = pkg_config::Config::new()
         .probe("libbtrfsutil")
         .expect("Failed to find libbtrfsutil via pkg-config");
 
-    // Explicitly add the link directive (in case pkg-config doesn't do it automatically)
-    println!("cargo:rustc-link-lib=btrfsutil");
+    eprintln!("build.rs: Found libbtrfsutil at {:?}", lib.link_paths);
+
+    // Explicitly add the link directive with KIND specified
+    println!("cargo:rustc-link-lib=dylib=btrfsutil");
+    eprintln!("build.rs: Added cargo:rustc-link-lib=dylib=btrfsutil");
+
+    // Tell Cargo to rerun if build.rs changes
+    println!("cargo:rerun-if-changed=build.rs");
 
     let out_path = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR not set"));
 

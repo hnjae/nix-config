@@ -1,30 +1,5 @@
-/// Trait definitions for testability
-mod traits;
-
-/// Btrfs operations using libbtrfsutil
-mod btrfs;
-
-/// File-based locking to prevent concurrent backups
-mod lock;
-
-/// Backup operations using `rustic_core`
-mod backup;
-
-/// Command-line interface
-mod cli;
-
-/// Logging configuration
-mod logging;
-
-/// Progress reporting
-mod progress;
-
-/// Backup workflow with cleanup guarantees
-mod workflow;
-
-/// Mock implementations for testing
-#[cfg(test)]
-mod mocks;
+// Use the library modules instead of re-declaring them
+use rustic_btrfs::*;
 
 use clap::{CommandFactory as _, Parser as _};
 use clap_complete::{Shell as CompletionShell, generate};
