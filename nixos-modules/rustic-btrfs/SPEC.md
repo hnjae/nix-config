@@ -1082,7 +1082,88 @@ fn test_concurrent_backup_prevented() {
 }
 ```
 
-### 4. Manual Testing
+### 4. Real Btrfs Integration Tests
+
+**Location**: `tests/btrfs_real_test.rs`
+
+**Purpose**: Verify actual Btrfs operations using real kernel interfaces and FFI bindings.
+
+**Environment Setup**:
+
+The test environment is automatically created using a loop device:
+
+- **Image file**: `/tmp/rustic-btrfs-test-{pid}.img` (100MB)
+- **Loop device**: Automatically allocated (e.g., `/dev/loop0`)
+- **Mount point**: `/tmp/rustic-btrfs-test-mount-{pid}`
+- **Cleanup**: Guaranteed via shell trap (umount, detach loop device, remove files)
+
+**Requirements**:
+
+- Root privileges (required for loop device management and Btrfs operations)
+- System commands: `losetup`, `mkfs.btrfs`, `mount`, `umount`
+- Kernel with Btrfs support
+- `btrfs-progs` package installed
+
+**Coverage**:
+
+- **Snapshot creation and deletion**: Verify actual Btrfs snapshot operations on real filesystem
+- **UUID retrieval**: Test UUID extraction from real subvolumes
+- **UUID format validation**: Verify RFC 4122 format (lowercase, hyphenated)
+- **`is_subvolume()` verification**: Differentiate between real subvolumes and regular directories
+- **Read-only snapshot enforcement**: Verify write operations fail on read-only snapshots
+- **Actual error codes**: Validate error messages from libbtrfsutil FFI calls
+
+**Running Tests**:
+
+```bash
+# Via justfile (recommended - handles loop device setup/cleanup)
+sudo -E just test-btrfs-real
+
+# Output example:
+# Creating 100MB image at /tmp/rustic-btrfs-test-12345.img...
+# Setting up loop device...
+# Loop device: /dev/loop0
+# Formatting as Btrfs...
+# Mounting at /tmp/rustic-btrfs-test-mount-12345...
+# Running real Btrfs integration tests...
+# running 4 tests
+# test test_real_is_subvolume ... ok
+# test test_real_readonly_snapshot ... ok
+# test test_real_snapshot_creation_and_deletion ... ok
+# test test_real_uuid_retrieval_and_format ... ok
+# test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured
+# Cleaning up...
+# Tests completed successfully
+```
+
+**Automatic Skipping**:
+
+Tests automatically skip if `BTRFS_TEST_PATH` environment variable is not set. This allows running the regular test suite without root privileges:
+
+```bash
+# These skip real Btrfs tests automatically
+cargo test
+just test
+just test-integration
+```
+
+**CI/CD Considerations**:
+
+- Typically skipped in CI unless running in privileged container
+- Requires privileged mode in Docker: `docker run --privileged`
+- GitHub Actions: Requires Linux runner with root access
+
+**Why Real Tests Matter**:
+
+Mock-based tests cannot catch:
+
+- FFI binding signature mismatches
+- Incorrect libbtrfsutil function calls
+- Actual Btrfs kernel behavior differences
+- Real permission and capability issues
+- Actual error codes and messages from the kernel
+
+### 5. Manual Testing
 
 **Prerequisites**:
 
