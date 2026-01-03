@@ -68,9 +68,9 @@ in
       vd-lavc-framedrop = "nonref";
       vd-lavc-show-all = true;
       vd-lavc-skiploopfilter = "none";
-      libplacebo-opts = builtins.concatStringsSep "," [
-        "deinterlace_algo=bwdif" # default yadif
-      ]; # requires vo=gpu-next
+      # libplacebo-opts = builtins.concatStringsSep "," [
+      #   "deinterlace_algo=bwdif" # default yadif
+      # ]; # requires vo=gpu-next
 
       # Scaling
       /*

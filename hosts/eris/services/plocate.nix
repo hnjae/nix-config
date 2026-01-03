@@ -1,9 +1,15 @@
 { pkgs, ... }:
 {
+  systemd.tmpfiles.rules = [
+    "z /zlocal/cache/locatedb 0640 root plocate"
+    "L /var/cache/locatedb - - - - /zlocal/cache/locatedb"
+  ];
+
   services.locate = {
     enable = true;
     package = pkgs.plocate;
     interval = "never";
+    output = "/zlocal/cache/locatedb";
     prunePaths = [
       # NixOS 25.11 Default:
       "/tmp"
@@ -26,7 +32,8 @@
       ".svn"
 
       # Snapshots
-      ".snapshots"
+      ".snapshot"
+      ".snapshots" # snapper
       ".zfs"
 
       # Disposable directories

@@ -500,10 +500,10 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1766778916,
-        "narHash": "sha256-iuzW8OqCz9JxenY48PF7IddJ4/l2/o20JdESPe4gQjc=",
+        "lastModified": 1767265006,
+        "narHash": "sha256-bbirr99gxPfzqxMXe0Wj69XOo3U0MACZsxpP7ZGzLBY=",
         "ref": "refs/heads/main",
-        "rev": "2c5a95e58773ede17e2303bcd7ee485a714a5a46",
+        "rev": "07b148932c6b189ef8fea4c2a20aaebcef2cab96",
         "revCount": 63,
         "type": "git",
         "url": "ssh://git@github.com/hnjae/py-utils"

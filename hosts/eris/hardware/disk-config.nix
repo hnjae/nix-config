@@ -194,9 +194,9 @@
           mode = "0700";
         }
       ];
-      files = [
-        "/var/cache/locatedb" # plocate
-      ];
+      # files = [
+      #   "/var/cache/locatedb" # plocate
+      # ];
     };
     "/zsafe/@" = {
       hideMounts = true;

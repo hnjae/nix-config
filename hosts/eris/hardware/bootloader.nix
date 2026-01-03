@@ -45,6 +45,9 @@
     kernelParams = [
       "zswap.enabled=1"
       "zswap.compressor=lz4"
+
+      "zfs.l2arc_exclude_special=1"
+      "zfs.l2arc_trim_ahead=100" # default is 0
     ];
   };
 

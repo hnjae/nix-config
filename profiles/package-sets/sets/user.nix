@@ -132,4 +132,5 @@ pkgs:
   ######################
   pkgs.timg # image/video viewer in terminal
   pkgs.glow # markdown previewer
+  pkgs.skopeo # Command line utility for various operations on container images and image repositories
 ])
