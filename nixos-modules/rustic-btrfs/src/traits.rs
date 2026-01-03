@@ -69,6 +69,31 @@ impl Error {
     }
 }
 
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Lock(msg) => write!(f, "Lock error: {msg}"),
+            Self::SnapshotConflict(msg) => write!(f, "Snapshot conflict: {msg}"),
+            Self::SnapshotCreation(msg) => write!(f, "Snapshot creation failed: {msg}"),
+            Self::SnapshotDeletion(msg) => write!(f, "Snapshot deletion failed: {msg}"),
+            Self::Btrfs(msg) => write!(f, "Btrfs error: {msg}"),
+            Self::Backup { message, .. } => write!(f, "Backup error: {message}"),
+            Self::Io(err) => write!(f, "I/O error: {err}"),
+            Self::Config(msg) => write!(f, "Configuration error: {msg}"),
+            Self::Other(msg) => write!(f, "{msg}"),
+        }
+    }
+}
+
+impl std::error::Error for Error {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            Self::Io(err) => Some(err),
+            _ => None,
+        }
+    }
+}
+
 impl From<std::io::Error> for Error {
     fn from(error: std::io::Error) -> Self {
         Self::Io(error)

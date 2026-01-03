@@ -3,7 +3,6 @@
 /// Tests concurrent backup prevention using real file locks
 use rustic_btrfs::lock::acquire_lock;
 use std::fs;
-use std::path::PathBuf;
 use tempfile::TempDir;
 
 #[test]

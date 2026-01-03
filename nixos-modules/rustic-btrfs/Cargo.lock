@@ -2910,6 +2910,7 @@ dependencies = [
  "fs4",
  "indicatif",
  "log",
+ "pkg-config",
  "rustic_backend",
  "rustic_core",
  "serde",

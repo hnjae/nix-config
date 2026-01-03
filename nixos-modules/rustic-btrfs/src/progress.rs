@@ -3,6 +3,7 @@ use indicatif::{ProgressBar, ProgressStyle};
 use std::io::IsTerminal as _;
 
 /// Progress reporter that adapts to TTY vs non-TTY environments.
+#[allow(dead_code)]
 pub struct ProgressReporter {
     /// Progress bar (only created if stdout is a TTY)
     progress_bar: Option<ProgressBar>,
@@ -24,6 +25,7 @@ impl ProgressReporter {
     /// reporter.finish("1.8GB in 45s");
     /// ```
     #[must_use]
+    #[allow(dead_code)]
     pub fn new() -> Self {
         let progress_bar = std::io::stdout().is_terminal().then(|| {
             let pb = ProgressBar::new(0);
@@ -44,6 +46,7 @@ impl ProgressReporter {
     /// # Arguments
     ///
     /// * `subvolume` - Path to the subvolume being backed up
+    #[allow(dead_code)]
     pub fn start_backup(&self, subvolume: &str) {
         if let Some(pb) = &self.progress_bar {
             pb.set_message(format!("Backing up {subvolume}"));
@@ -57,6 +60,7 @@ impl ProgressReporter {
     /// # Arguments
     ///
     /// * `snapshot_path` - Path to the created snapshot
+    #[allow(dead_code)]
     pub fn snapshot_created(&self, snapshot_path: &str) {
         if let Some(pb) = &self.progress_bar {
             pb.set_message(format!("Snapshot created at {snapshot_path}"));
@@ -72,6 +76,7 @@ impl ProgressReporter {
     /// * `files_processed` - Number of files processed so far
     /// * `total_files` - Total number of files (if known)
     /// * `message` - Optional status message
+    #[allow(dead_code)]
     pub fn update(&self, files_processed: u64, total_files: Option<u64>, message: Option<&str>) {
         if let Some(pb) = &self.progress_bar {
             if let Some(total) = total_files {
@@ -90,6 +95,7 @@ impl ProgressReporter {
     /// # Arguments
     ///
     /// * `stats` - Summary statistics (e.g., "1.8GB in 45s")
+    #[allow(dead_code)]
     pub fn finish(&self, stats: &str) {
         if let Some(pb) = &self.progress_bar {
             pb.finish_with_message(format!("Backup completed: {stats}"));
@@ -103,6 +109,7 @@ impl ProgressReporter {
     /// # Arguments
     ///
     /// * `error` - Error message
+    #[allow(dead_code)]
     pub fn fail(&self, error: &str) {
         if let Some(pb) = &self.progress_bar {
             pb.abandon_with_message(format!("Backup failed: {error}"));

@@ -13,6 +13,7 @@ pub struct LockGuard {
     /// The lock file
     _file: File,
     /// Path to the lock file for cleanup
+    #[allow(dead_code)]
     path: PathBuf,
 }
 
@@ -85,6 +86,7 @@ impl LockGuard {
 
     /// Get the path to this lock file.
     #[must_use]
+    #[allow(dead_code)]
     pub fn path(&self) -> &Path {
         &self.path
     }
@@ -106,6 +108,7 @@ impl Drop for LockGuard {
 /// # Errors
 ///
 /// Returns `Error::Lock` if the lock cannot be acquired.
+#[allow(dead_code)]
 pub fn acquire_lock(lock_dir: &Path, uuid: &str) -> Result<LockGuard, Error> {
     // Ensure lock directory exists
     std::fs::create_dir_all(lock_dir)

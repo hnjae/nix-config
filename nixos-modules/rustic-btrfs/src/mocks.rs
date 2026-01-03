@@ -55,6 +55,7 @@ impl MockBtrfs {
 
     /// Check if a subvolume was deleted.
     #[must_use]
+    #[allow(dead_code)]
     pub fn subvolume_deleted(&self, path: &Path) -> bool {
         self.subvolumes_deleted.borrow().iter().any(|p| p == path)
     }
