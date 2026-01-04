@@ -256,12 +256,12 @@
           TIMELINE_LIMIT_DAILY = 14;
           TIMELINE_LIMIT_HOURLY = 12;
 
-          NUMBER_CLEANUP = true;
+          NUMBER_CLEANUP = false;
           NUMBER_MIN_AGE = 1;
           NUMBER_LIMIT = 0;
           NUMBER_LIMIT_IMPORTANT = 0;
 
-          EMPTY_PRE_POST_CLEANUP = true;
+          EMPTY_PRE_POST_CLEANUP = false;
           EMPTY_PRE_POST_MIN_AGE = 1;
         };
       in

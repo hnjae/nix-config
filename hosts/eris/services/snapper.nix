@@ -10,6 +10,9 @@
     OnBootSec = "1h";
     OnUnitActiveSec = "4h";
     RandomizedDelaySec = "5m";
+    OnCalendar = [
+      "*-*-* 03:55:00"
+    ];
   };
 
   systemd.timers.snapper-cleanup.timerConfig = lib.mkForce {
