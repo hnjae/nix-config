@@ -30,9 +30,14 @@ let
       fi
 
       # /boot의 내용을 다른 EFI 파티션에 복사
-      rsync -aHAXWEs --numeric-ids --delete \
-        --exclude='lost+found' \
-        -- '/boot/' "$target"
+      if rsync -aHAXWEs --numeric-ids --delete --exclude='lost+found' -- '/boot/' "$target"; then
+        echo "<6>INFO: Sync to $target successful."
+      else
+        echo "<3>ERROR: rsync failed for $target with exit code $?"
+        return 1
+      fi
+
+      return 0
     }
 
     main () {
@@ -41,8 +46,11 @@ let
         return 1
       fi
 
-      sync_boot "/boot_fallback_a/"
-      sync_boot "/boot_fallback_b/"
+      exit_status=0
+      sync_boot "/boot_fallback_a/" || exit_status=1
+      sync_boot "/boot_fallback_b/" || exit_status=1
+
+      return "$exit_status"
     }
 
     main
