@@ -30,27 +30,6 @@
   environment.defaultPackages = with pkgs; [
     amdgpu_top
     nvtopPackages.amd
-    (pkgs.runCommandLocal "nvtop-icon-fix" { } ''
-      mkdir -p "$out/share/icons/hicolor/scalable/apps/"
-
-      cp --reflink=auto \
-        "${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/nvtop.svg" \
-        "$out/share/icons/hicolor/scalable/apps/nvtop.svg"
-    '')
-    (lib.hiPrio (
-      pkgs.makeDesktopItem {
-        name = "nvtop";
-        desktopName = "nvtop";
-        genericName = "GPU Process Monitor";
-        icon = "nvtop";
-        exec = ''${pkgs.wezterm}/bin/wezterm start --class=nvtop -e nvtop'';
-        categories = [
-          "System"
-          "Monitor"
-        ];
-      }
-    ))
-
     rocmPackages.rocminfo
     rocmPackages.rocm-smi
   ];

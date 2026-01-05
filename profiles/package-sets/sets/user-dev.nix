@@ -143,24 +143,45 @@ pkgs:
     # pkgs.nvimpager # use neovim as pager
     (lib.hiPrio (
       let
-        # NOTE: 여기서 PATH 가 user 가 사용하는 PATH 를 지정하고 싶은데 방법이 읎는 것 같음. <2025-09-14>
-        # wrapper = pkgs.writeScript "nvim-terminal-wrapper" ''
-        #   #!${pkgs.dash}/bin/dash
-        #
-        #   PATH="$1"
-        #
-        #   [ "$1" != "" ] && cwd="$1" || cwd="$HOME"
-        #   [ -f "$1" ] && cwd="$(dirname "$1")"
-        #
-        #   exec wezterm start --class=nvim --cwd="$path" -e nvim "$1"
-        # '';
+        nvimWrapper = pkgs.writeScript "nvim-wrapper" ''
+          #!${pkgs.dash}/bin/dash
+
+          if [ -n "$1" ]; then
+            # 파일이 전달된 경우, 해당 파일의 부모 디렉토리를 working directory로 설정
+            file_path="$1"
+            if [ -f "$file_path" ]; then
+              work_dir="$(dirname "$file_path")"
+            else
+              work_dir="$HOME"
+            fi
+          else
+            # 파일이 전달되지 않은 경우 홈 디렉토리 사용
+            work_dir="$HOME"
+          fi
+
+          exec alacritty \
+            --class=nvim,nvim \
+            --command=nvim \
+            --title="Neovim" \
+            --working-directory="$work_dir" \
+            "$@"
+        '';
       in
-      pkgs.makeDesktopItem {
+      pkgs.makeDesktopItem rec {
         name = "nvim";
         desktopName = "Neovim";
         genericName = "Text Editor";
         icon = "nvim";
-        exec = ''wezterm start --class=nvim -e nvim %F'';
+        # exec = "${nvimWrapper} %F";
+        exec = builtins.concatStringsSep " " [
+          "alacritty"
+          "--class=nvim"
+          "--title=${desktopName}"
+          # "--working-directory="
+          "-e"
+          "nvim"
+          "%F"
+        ];
         categories = [
           "Utility"
           "TextEditor"
@@ -182,8 +203,8 @@ pkgs:
         app_id='nvim'
 
         cp --reflink=auto \
-        "$icon" \
-        "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
+          "$icon" \
+          "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
 
         for size in 16 22 24 32 48 64 96 128 256 512; do
           mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"

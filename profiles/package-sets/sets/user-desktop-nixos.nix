@@ -63,12 +63,9 @@ lib.flatten [
     pkgs.unstable.warp-terminal
   ])
 
+  pkgs.wezterm
+  pkgs.alacritty-graphics # sixel and iTerm2 patched alacritty
   (lib.lists.optionals pkgs.stdenv.hostPlatform.isLinux [
-    pkgs.wezterm
     pkgs.unstable.ghostty
-    (pkgs.runCommandLocal "kitten" { } ''
-      mkdir -p "$out/bin"
-      ln -s "${pkgs.kitty}/bin/kitten" "$out/bin/kitten"
-    '')
   ])
 ]

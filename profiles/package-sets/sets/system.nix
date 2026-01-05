@@ -77,13 +77,31 @@ pkgs:
   pkgs.kmon # linux kernel activity monitor
   pkgs.htop
   (lib.hiPrio (
-    pkgs.makeDesktopItem {
+    pkgs.makeDesktopItem rec {
       name = "htop";
       desktopName = "Htop";
       genericName = "Process Viewer";
       icon = "htop";
-      # exec = ''${pkgs.wezterm}/bin/wezterm start --class=htop -e htop'';
-      exec = ''wezterm start --class=htop -e htop'';
+      exec = ''alacritty --class=${icon},${icon} --command=htop --title=${desktopName}'';
+      categories = [
+        "System"
+        "Monitor"
+      ];
+      keywords = [
+        "system"
+        "process"
+        "task"
+      ];
+    }
+  ))
+  pkgs.btop
+  (lib.hiPrio (
+    pkgs.makeDesktopItem rec {
+      name = "btop";
+      desktopName = "btop++";
+      genericName = "System Monitor";
+      icon = "btop";
+      exec = ''alacritty --class=${icon},${icon} --command=btop --title=${desktopName}'';
       categories = [
         "System"
         "Monitor"
@@ -130,28 +148,27 @@ pkgs:
     ];
   })
   pkgs.unstable.joshuto
-  (lib.hiPrio (
-    pkgs.makeDesktopItem {
-      name = "joshuto";
-      desktopName = "joshuto";
-      genericName = "File Manager";
-      icon = "system-file-manager";
-      mimeTypes = [ "inode/directory" ];
-      # exec = ''${pkgs.wezterm}/bin/wezterm start --class=joshuto -e joshuto'';
-      exec = ''wezterm start --class=joshuto -e joshuto'';
-      categories = [
-        "System"
-        "FileTools"
-        "FileManager"
-      ];
-      keywords = [
-        "File"
-        "Manager"
-        "Browser"
-        "Explorer"
-      ];
-    }
-  ))
+  # (lib.hiPrio (
+  #   pkgs.makeDesktopItem {
+  #     name = "joshuto";
+  #     desktopName = "joshuto";
+  #     genericName = "File Manager";
+  #     icon = "system-file-manager";
+  #     mimeTypes = [ "inode/directory" ];
+  #     exec = ''alacritty --class=joshuto --command=joshuto'';
+  #     categories = [
+  #       "System"
+  #       "FileTools"
+  #       "FileManager"
+  #     ];
+  #     keywords = [
+  #       "File"
+  #       "Manager"
+  #       "Browser"
+  #       "Explorer"
+  #     ];
+  #   }
+  # ))
   pkgs.jq
   pkgs.yq # sed for json/yaml
   pkgs.fio

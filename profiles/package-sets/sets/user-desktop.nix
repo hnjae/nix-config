@@ -97,13 +97,22 @@ lib.flatten [
           "${icon}" \
           "$out/share/icons/hicolor/scalable/apps/${appId}.svg"
       '')
-      (pkgs.makeDesktopItem {
+      (pkgs.makeDesktopItem rec {
         genericName = "Obsidian Nvim";
         name = appId;
         desktopName = appId;
         categories = [ "Office" ];
-        exec = ''sh -c "exec wezterm start --class=${appId} --cwd=\"/home/hnjae/Projects/obsidian/home\" -e nvim ."'';
         icon = appId;
+        # NOTE: desktop entry 에서는 lib.escapeShellArgs 사용 못함.
+        exec = builtins.concatStringsSep " " [
+          "alacritty"
+          "--class=${appId},${appId}"
+          ''--title="${genericName}"''
+          "--working-directory=/home/hnjae/Projects/obsidian/home"
+          "-e"
+          "nvim"
+          "index.md"
+        ];
       })
     ]
   )
