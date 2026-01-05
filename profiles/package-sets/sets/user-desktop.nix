@@ -3,16 +3,18 @@ pkgs:
 lib.flatten [
   pkgs.mkvtoolnix
 
-  pkgs.unstable.gpac # modify mp4
-  (lib.hiPrio (
-    # hide gpac's desktop file
-    pkgs.makeDesktopItem {
-      name = "gpac";
-      desktopName = "This should not be displayed.";
-      exec = ":";
-      noDisplay = true;
-    }
-  ))
+  [
+    pkgs.unstable.gpac # modify mp4
+    (lib.hiPrio (
+      # hide gpac's desktop file
+      pkgs.makeDesktopItem {
+        name = "gpac";
+        desktopName = "This should not be displayed.";
+        exec = ":";
+        noDisplay = true;
+      }
+    ))
+  ]
 
   # pkgs.beets # organize music collection, unstable 은 빌드 실패가 잦으니 stable 사용. NixOS 25.10
   pkgs.unstable.rsgain # Calculates ReplayGain, use this instead of vorbisgain, mp3gain and aacgain
@@ -41,28 +43,30 @@ lib.flatten [
   pkgs.resources # pretty system info
   # pkgs.unstable.scrcpy # display and control android
 
-  pkgs.zathura
-  (lib.hiPrio (
-    pkgs.runCommandLocal "zathura-icon-fix" { } ''
-      mkdir -p "$out/share/icons/hicolor/scalable/apps/"
+  [
+    pkgs.zathura
+    (lib.hiPrio (
+      pkgs.runCommandLocal "zathura-icon-fix" { } ''
+        mkdir -p "$out/share/icons/hicolor/scalable/apps/"
 
-      icon='${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/org.pwmt.zathura.svg'
-      app_id='org.pwmt.zathura'
+        icon='${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/org.pwmt.zathura.svg'
+        app_id='org.pwmt.zathura'
 
-      cp --reflink=auto \
-        "$icon" \
-        "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
+        cp --reflink=auto \
+          "$icon" \
+          "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
 
-      for size in 16 22 24 32 48 64 96 128 256 512; do
-        mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
-        '${pkgs.librsvg}/bin/rsvg-convert' \
-          --keep-aspect-ratio \
-          --height="$size" \
-          --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
-          "$icon"
-      done
-    ''
-  ))
+        for size in 16 22 24 32 48 64 96 128 256 512; do
+          mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+          '${pkgs.librsvg}/bin/rsvg-convert' \
+            --keep-aspect-ratio \
+            --height="$size" \
+            --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+            "$icon"
+        done
+      ''
+    ))
+  ]
   pkgs.beancount # cli double-entry accounting tool
   pkgs.unstable.beancount-language-server
   pkgs.unstable.beanprice
@@ -70,7 +74,6 @@ lib.flatten [
   ##################################
   # Obsidian                       #
   ##################################
-
   # install as linux package to use https://github.com/hideakitai/obsidian-vim-im-control
   (lib.lists.optional pkgs.config.allowUnfree (
     pkgs.unstable.obsidian.override {
@@ -85,8 +88,6 @@ lib.flatten [
   (
     let
       appId = "obsidian-nvim";
-      # icon = "${pkgs.pantheon.elementary-icon-theme}/share/icons/elementary/apps/128/utilities-system-monitor.svg";
-      # icon = "${pkgs.whitesur-icon-theme}/share/icons/WhiteSur/apps/scalable/accessories-notes.svg";
       icon = "${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/org.standardnotes.standardnotes.svg";
     in
     [
@@ -96,6 +97,16 @@ lib.flatten [
         cp --reflink=auto \
           "${icon}" \
           "$out/share/icons/hicolor/scalable/apps/${appId}.svg"
+
+        for size in 16 22 24 32 48 64 96 128 256 512; do
+          mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+
+          '${pkgs.librsvg}/bin/rsvg-convert' \
+            --keep-aspect-ratio \
+            --height="$size" \
+            --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+            "${icon}"
+        done
       '')
       (pkgs.makeDesktopItem rec {
         genericName = "Obsidian Nvim";

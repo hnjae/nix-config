@@ -53,18 +53,64 @@ lib.flatten [
     xsel
     wmctrl
     libnotify # notify-send command
-
   ])
   pkgs.qdirstat
-
   (lib.lists.optionals pkgs.config.allowUnfree [
     # pkgs.davinci-resolve
     pkgs.my.cider-2
     pkgs.unstable.warp-terminal
   ])
 
-  pkgs.wezterm
-  pkgs.alacritty-graphics # sixel and iTerm2 patched alacritty
+  [
+    pkgs.alacritty-graphics # sixel and iTerm2 patched alacritty
+    (lib.hiPrio (
+      pkgs.runCommandLocal "alacritty-icon-fix" { } ''
+        mkdir -p "$out/share/icons/hicolor/scalable/apps/"
+
+        app_id='Alacritty'
+        icon="${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/''${app_id}.svg"
+
+        cp --reflink=auto \
+          "$icon" \
+          "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
+
+        for size in 16 22 24 32 48 64 96 128 256 512; do
+          mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+
+          '${pkgs.librsvg}/bin/rsvg-convert' \
+            --keep-aspect-ratio \
+            --height="$size" \
+            --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+            "$icon"
+        done
+      ''
+    ))
+  ]
+  [
+    pkgs.wezterm
+    (lib.hiPrio (
+      pkgs.runCommandLocal "wezterm-icon-fix" { } ''
+        mkdir -p "$out/share/icons/hicolor/scalable/apps/"
+
+        app_id='org.wezfurlong.wezterm'
+        icon="${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/''${app_id}.svg"
+
+        cp --reflink=auto \
+          "$icon" \
+          "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
+
+        for size in 16 22 24 32 48 64 96 128 256 512; do
+          mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+
+          '${pkgs.librsvg}/bin/rsvg-convert' \
+            --keep-aspect-ratio \
+            --height="$size" \
+            --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+            "$icon"
+        done
+      ''
+    ))
+  ]
   (lib.lists.optionals pkgs.stdenv.hostPlatform.isLinux [
     pkgs.unstable.ghostty
   ])

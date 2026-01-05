@@ -75,44 +75,92 @@ pkgs:
   # Monitor
   ###############
   pkgs.kmon # linux kernel activity monitor
-  pkgs.htop
-  (lib.hiPrio (
-    pkgs.makeDesktopItem rec {
-      name = "htop";
-      desktopName = "Htop";
-      genericName = "Process Viewer";
-      icon = "htop";
-      exec = ''alacritty --class=${icon},${icon} --command=htop --title=${desktopName}'';
-      categories = [
-        "System"
-        "Monitor"
-      ];
-      keywords = [
-        "system"
-        "process"
-        "task"
-      ];
-    }
-  ))
-  pkgs.btop
-  (lib.hiPrio (
-    pkgs.makeDesktopItem rec {
-      name = "btop";
-      desktopName = "btop++";
-      genericName = "System Monitor";
-      icon = "btop";
-      exec = ''alacritty --class=${icon},${icon} --command=btop --title=${desktopName}'';
-      categories = [
-        "System"
-        "Monitor"
-      ];
-      keywords = [
-        "system"
-        "process"
-        "task"
-      ];
-    }
-  ))
+  [
+    pkgs.htop
+    (lib.hiPrio (
+      pkgs.runCommandLocal "htop-icon-fix" { } ''
+        mkdir -p "$out/share/icons/hicolor/scalable/apps/"
+
+        app_id='htop'
+        icon="${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/''${app_id}.svg"
+
+        cp --reflink=auto \
+          "$icon" \
+          "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
+
+        for size in 16 22 24 32 48 64 96 128 256 512; do
+          mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+
+          '${pkgs.librsvg}/bin/rsvg-convert' \
+            --keep-aspect-ratio \
+            --height="$size" \
+            --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+            "$icon"
+        done
+      ''
+    ))
+    (lib.hiPrio (
+      pkgs.makeDesktopItem rec {
+        name = "htop";
+        desktopName = "Htop";
+        genericName = "Process Viewer";
+        icon = "htop";
+        exec = ''alacritty --class=${icon},${icon} --command=htop --title=${desktopName}'';
+        categories = [
+          "System"
+          "Monitor"
+        ];
+        keywords = [
+          "system"
+          "process"
+          "task"
+        ];
+      }
+    ))
+  ]
+  [
+    pkgs.btop
+    (lib.hiPrio (
+      pkgs.runCommandLocal "btop-icon-fix" { } ''
+        mkdir -p "$out/share/icons/hicolor/scalable/apps/"
+
+        app_id='btop'
+        icon="${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/''${app_id}.svg"
+
+        cp --reflink=auto \
+          "$icon" \
+          "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
+
+        for size in 16 22 24 32 48 64 96 128 256 512; do
+          mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+
+          '${pkgs.librsvg}/bin/rsvg-convert' \
+            --keep-aspect-ratio \
+            --height="$size" \
+            --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+            "$icon"
+        done
+      ''
+    ))
+    (lib.hiPrio (
+      pkgs.makeDesktopItem rec {
+        name = "btop";
+        desktopName = "btop++";
+        genericName = "System Monitor";
+        icon = "btop";
+        exec = ''alacritty --class=${icon},${icon} --command=btop --title=${desktopName}'';
+        categories = [
+          "System"
+          "Monitor"
+        ];
+        keywords = [
+          "system"
+          "process"
+          "task"
+        ];
+      }
+    ))
+  ]
   pkgs.iftop
   pkgs.iotop
   pkgs.sysdig

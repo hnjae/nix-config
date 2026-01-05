@@ -104,9 +104,21 @@ pkgs:
       (pkgs.runCommandLocal "nvtop-icon-fix" { } ''
         mkdir -p "$out/share/icons/hicolor/scalable/apps/"
 
+        icon='${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/nvtop.svg'
+        app_id='nvtop'
+
         cp --reflink=auto \
-          "${pkgs.morewaita-icon-theme}/share/icons/MoreWaita/scalable/apps/nvtop.svg" \
-          "$out/share/icons/hicolor/scalable/apps/nvtop.svg"
+          "$icon" \
+          "$out/share/icons/hicolor/scalable/apps/''${app_id}.svg"
+
+        for size in 16 22 24 32 48 64 96 128 256 512; do
+          mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
+          '${pkgs.librsvg}/bin/rsvg-convert' \
+            --keep-aspect-ratio \
+            --height="$size" \
+            --output="$out/share/icons/hicolor/''${size}x''${size}/apps/''${app_id}.png" \
+            "$icon"
+        done
       '')
       (lib.hiPrio (
         pkgs.makeDesktopItem rec {
