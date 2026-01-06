@@ -1,7 +1,7 @@
 /*
   NOTE:
 
-  #### nix-collect-garbage -d vs nix-store --gc
+  #### nix-collect-garbage -d vs nix-store --gc vs nix store gc
   <https://discourse.nixos.org/t/what-is-the-difference-if-any-between-nix-collect-garbage-and-nix-store-gc/45078/2>
 
   `nix.gc` (`nix-collect-garbage`) 는 old profiles 도 추가로 지우는 차이가 있다.
@@ -22,10 +22,10 @@
 let
   serviceName = "nix-store-gc";
   documentation = [
+    "man:nix3-store-gc(1)"
     "https://nix.dev/manual/nix/2.28/command-ref/new-cli/nix3-store-gc"
-    # "nix store gc --help"
   ];
-  description = "run nix store gc";
+  description = "Perform garbage collection on a Nix store";
   cfg = config.my.services.${serviceName};
 
   inherit (lib)
@@ -45,22 +45,28 @@ in
 
       unitConfig = {
         Requires = [ "multi-user.target" ];
-        After = [ "multi-user.target" ];
+        After = [
+          "multi-user.target"
+          "nixos-gc.service"
+        ];
       };
 
       serviceConfig = {
         Type = "oneshot";
 
         # systemd.exec
-        Nice = 19;
+        CPUSchedulingPolicy = "batch";
         IOSchedulingPriority = 7;
 
         ExecStart = lib.escapeShellArgs [
           "${config.nix.package.out}/bin/nix"
+          "--verbose"
           "store"
           "gc"
-          "--verbose"
         ];
+
+        PrivateNetwork = true; # No network needed
+        ProtectClock = true;
       };
     };
 
