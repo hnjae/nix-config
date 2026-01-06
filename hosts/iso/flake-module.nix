@@ -3,8 +3,18 @@
 {
   self,
   inputs,
+  flake-parts-lib,
   ...
 }:
+let
+  inherit (flake-parts-lib) importApply;
+  flakeArgs = {
+    localFlake = self;
+    inherit flake-parts-lib;
+    inherit importApply;
+    inherit inputs;
+  };
+in
 {
   flake.nixosConfigurations.iso = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
@@ -31,6 +41,7 @@
         }
       )
       "${self}/profiles/base-nixos/core/keyboard.nix"
+      (importApply "${self}/profiles/base-nixos/config/nix.nix" flakeArgs)
       (
         { lib, pkgs, ... }:
         {
@@ -74,6 +85,46 @@
             ];
             config.allowUnfree = true;
           };
+
+          # nix = {
+          #   settings = {
+          #     experimental-features = [
+          #       "nix-command"
+          #       "flakes"
+          #     ];
+          #   };
+          #   max-jobs = 4; # max concurrent build
+          #   registry = {
+          #     nixpkgs = {
+          #       flake = inputs.nixpkgs;
+          #       to = {
+          #         path = "${inputs.nixpkgs}";
+          #         type = "path";
+          #       };
+          #     };
+          #     nixpkgs-unstable = {
+          #       flake = inputs.nixpkgs-unstable;
+          #       to = {
+          #         path = "${inputs.nixpkgs-unstable}";
+          #         type = "path";
+          #       };
+          #     };
+          #     nix-config = {
+          #       flake = self;
+          #       to = {
+          #         path = "${self}";
+          #         type = "path";
+          #       };
+          #     };
+          #   };
+          # };
+          #
+          # channel.enable = true;
+          # nixPath = [
+          #   "nixpkgs-unstable=${inputs.nixpkgs-unstable}"
+          #   "nixpkgs=${inputs.nixpkgs}"
+          #   "nix-config=${self}"
+          # ];
 
           environment.systemPackages = lib.flatten [
             (self.packageSets.system pkgs)

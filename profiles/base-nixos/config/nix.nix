@@ -2,6 +2,11 @@
 { lib, config, ... }:
 let
   fromGiBtoB = num: toString (num * 1024 * 1024 * 1024);
+
+  flakes = lib.filterAttrs (_: input: ((input ? _type) && input._type == "flake")) (
+    # merge localFlake
+    inputs // { nix-config = localFlake; }
+  );
 in
 {
   nix = {
@@ -29,41 +34,39 @@ in
       min-free = lib.mkOverride 999 "${fromGiBtoB 4}";
     };
 
-    # for nix shell nixpkgs#foo
-    # run `nix registry list` to list current registry
-    registry = {
-      nixpkgs = {
-        flake = inputs.nixpkgs;
-        to = {
-          path = "${inputs.nixpkgs}";
-          type = "path";
-        };
-      };
-      nixpkgs-unstable = {
-        flake = inputs.nixpkgs-unstable;
-        to = {
-          path = "${inputs.nixpkgs-unstable}";
-          type = "path";
-        };
-      };
-      nix-config = {
-        flake = localFlake;
-        to = {
-          path = "${localFlake}";
-          type = "path";
-        };
-      };
-    };
+    /*
+      - man:nix3-registry(1)
+      - used in `nix shell nixpkgs#foo`
+      - run `nix registry list` to list current registry
 
-    # to use nix-shell, run `nix repl :l <nixpkgs>`
-    channel.enable = true;
-    nixPath = lib.lists.optionals config.nix.channel.enable [
-      # "/nix/var/nix/profiles/per-user/root/channels"
-      "nixpkgs-unstable=${inputs.nixpkgs-unstable}"
-      "nixpkgs=${inputs.nixpkgs}"
-      "nix-config=${localFlake}"
-    ];
+      ※ `system` registry로 등록됨. stateful 한 registry 는 `global` 혹은 `user 로 등록됨.
+    */
+    registry = lib.mkOverride 51 (
+      builtins.mapAttrs (_: input: {
+        to = {
+          path = "${input}";
+          type = "path";
+        };
+      }) flakes
+    );
+
+    /*
+      configuration of "$NIX_PATH":
+      default (NixOS 25.11):
+        - "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+            - 여기서 `/nixos` 가 nixpkgs의 git-root 임.
+        - "nixos-config=/etc/nixos/configuration.nix"
+        - "/nix/var/nix/profiles/per-user/root/channels"
+    */
+    nixPath = lib.mkOverride 51 (lib.mapAttrsToList (name: _: "${name}=flake:${name}") flakes);
+
+    # nix-channel --list
+    channel.enable = lib.mkOverride 51 false; # nix-channel 은 stateful 하게 관리되니 기피.
   };
+
+  # 위에서 수동으로 설정하였음.
+  nixpkgs.flake.setNixPath = lib.mkOverride 999 false;
+  nixpkgs.flake.setFlakeRegistry = lib.mkOverride 999 false;
 
   # Whether to use ‘nixos-rebuild-ng’ in place of ‘nixos-rebuild’, the Python-based re-implementation of the original in Bash.
   system.rebuild.enableNg = true;
