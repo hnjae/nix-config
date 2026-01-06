@@ -1,5 +1,5 @@
 { inputs, localFlake, ... }:
-{ lib, config, ... }:
+{ lib, ... }:
 let
   fromGiBtoB = num: toString (num * 1024 * 1024 * 1024);
 
@@ -10,8 +10,10 @@ let
 in
 {
   nix = {
-    daemonCPUSchedPolicy = "idle";
-    daemonIOSchedClass = "idle";
+    # man:systemd.exec(5)
+    daemonCPUSchedPolicy = lib.mkOverride 999 "batch"; # default: other (NixOS 25.11)
+    daemonIOSchedClass = lib.mkOverride 999 "best-effort"; # default: best-effort (NixOS 25.11)
+    daemonIOSchedPriority = lib.mkOverride 999 7; # default: 4  (NixOS 25.11)
 
     # HELP: run `man 5 nix.conf`
     settings = {
@@ -20,16 +22,14 @@ in
         "flakes"
       ];
 
-      max-jobs = 4; # max concurrent build
+      max-jobs = lib.mkOverride 999 4; # max concurrent build; default: "auto" <NixOS 25.11>;
 
       # make builders to use cache
       builders-use-substitutes = lib.mkOverride 999 true;
       auto-optimise-store = lib.mkOverride 999 false;
       keep-failed = lib.mkOverride 999 true;
 
-      trusted-users = [
-        "@wheel"
-      ];
+      trusted-users = [ "@wheel" ];
 
       min-free = lib.mkOverride 999 "${fromGiBtoB 4}";
     };
