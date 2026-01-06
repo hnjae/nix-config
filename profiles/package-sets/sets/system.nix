@@ -257,4 +257,5 @@ pkgs:
   pkgs.man-pages-posix
   pkgs.nmap
   pkgs.strace
+  pkgs.inotify-tools # inotifywatch
 ])
