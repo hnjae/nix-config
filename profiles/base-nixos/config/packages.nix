@@ -16,6 +16,9 @@ in
     [
       config.boot.kernelPackages.cpupower
       config.boot.kernelPackages.x86_energy_perf_policy
+      (lib.lists.optionals (cfg.role == "desktop") [
+        pkgs.kdiskmark # requires privileges and needs to be installed as a system package
+      ])
     ]
   ];
 

@@ -32,7 +32,6 @@ lib.flatten [
 
     # gui apps
     my.xdg-terminal-exec
-    kdiskmark
 
     (appimage-run.override {
       extraPkgs =
