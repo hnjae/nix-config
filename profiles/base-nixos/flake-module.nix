@@ -68,7 +68,7 @@ in
         programs.nix-index-database.comma.enable = true;
       }
 
-      inputs.xremap.nixosModules.default
+      inputs.xremap-nix.nixosModules.default
       (
         { lib, ... }:
         {

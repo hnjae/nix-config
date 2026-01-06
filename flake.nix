@@ -9,15 +9,16 @@
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
-
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs = {
         nixpkgs-lib.follows = "nixpkgs";
       };
     };
-    flake-utils.url = "github:numtide/flake-utils";
-
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
+    };
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs = {
@@ -26,6 +27,7 @@
         flake-compat.follows = "";
       };
     };
+    crane.url = "github:ipetkov/crane";
 
     ############################################################################
     # nixosModules / homeManagerModule
@@ -39,7 +41,9 @@
       url = "github:nix-community/lanzaboote";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        rust-overlay.follows = "rust-overlay";
+        rust-overlay.follows = "z_rust-overlay";
+        crane.follows = "crane";
+        pre-commit.follows = "";
       };
     };
     disko = {
@@ -75,11 +79,12 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    xremap = {
+    xremap-nix = {
       url = "github:xremap/nix-flake";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
+        crane.follows = "crane";
       };
     };
 
@@ -98,6 +103,7 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
+        systems.follows = "systems";
         nuschtosSearch.follows = "";
       };
     };
@@ -116,24 +122,28 @@
       url = "github:euank/yaml2nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        cargo2nix.follows = "cargo2nix_0110";
+        cargo2nix.follows = "z_cargo2nix_0110";
         flake-utils.follows = "flake-utils";
       };
     };
 
     ############################################################################
-    # Used in input dependency only
+    # Used as an input dependency only
     ############################################################################
-    cargo2nix_0110 = {
+    # https://github.com/NixOS/flake-registry 에 등재.
+    systems.url = "github:nix-systems/default";
+
+    # NOTE: `z_` prefix 는 hidden 이라는 의미임. `nix.nix` 에서 활용.
+    z_cargo2nix_0110 = {
       url = "github:cargo2nix/cargo2nix/release-0.11.0";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        rust-overlay.follows = "rust-overlay";
+        rust-overlay.follows = "z_rust-overlay";
         flake-utils.follows = "flake-utils";
         flake-compat.follows = "";
       };
     };
-    rust-overlay = {
+    z_rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };

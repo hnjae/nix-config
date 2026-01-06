@@ -3,10 +3,13 @@
 let
   fromGiBtoB = num: toString (num * 1024 * 1024 * 1024);
 
-  flakes = lib.filterAttrs (_: input: ((input ? _type) && input._type == "flake")) (
-    # merge localFlake
-    inputs // { nix-config = localFlake; }
-  );
+  flakes =
+    lib.filterAttrs
+      (name: input: ((!lib.hasPrefix "z_" name) && (input ? _type) && input._type == "flake"))
+      (
+        # merge localFlake
+        inputs // { nix-config = localFlake; }
+      );
 in
 {
   nix = {
