@@ -26,9 +26,19 @@
   services.nfs.server = {
     nproc = 12;
     enable = true;
-    # NOTE: 같은 filesystem 을 여러번 export 할때 fsid=uuid 필요.
-    # exports = lib.mkBefore ''
-    #   /srv/nfs 100.64.0.0/10(ro,fsid=0,no_subtree_check,all_squash)
-    # '';
+    # NOTE: 서로 다른 btrfs subvolume 을 여러번 export 할때 fsid=uuid 필요한듯.
+    exports =
+      let
+        opts = builtins.concatStringsSep "," [
+          "rw"
+          "async"
+          "no_subtree_check"
+          "all_squash,anonuid=1000,anongid=100"
+          "fsid=022439b3-5f06-4df3-97e6-7cf0cdf2c8f8"
+        ];
+      in
+      ''
+        /home/hnjae 100.64.0.0/10(${opts})
+      '';
   };
 }
