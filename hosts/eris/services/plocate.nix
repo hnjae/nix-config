@@ -1,10 +1,22 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   systemd.tmpfiles.rules = [
     "z /zlocal/cache/locatedb 0640 root plocate"
     "L /var/cache/locatedb - - - - /zlocal/cache/locatedb"
   ];
 
+  environment.defaultPackages = [
+    (lib.hiPrio (
+      pkgs.writeScriptBin "updatedb" ''
+        #!${pkgs.dash}/bin/dash
+
+        nohup sudo systemctl start update-locatedb.service >/dev/null 2>&1 &
+        exec journalctl --follow --since "4s ago" --output=short-full --unit update-locatedb.service
+      ''
+    ))
+  ];
+
+  # HELP: man:updatedb.conf(5)
   services.locate = {
     enable = true;
     package = pkgs.plocate;
@@ -21,10 +33,23 @@
       "/nix/store"
       "/nix/var/log/nix"
 
-      "/zlocal"
-      "/zsafe"
+      # 내가 추가한 경로:
+      "/boot"
+      "/boot_fallback_a"
+      "/boot_fallback_b"
+      "/mnt" # Temporary mounts
+      "/srv"
+      "/var"
+      "/zlocal/@"
+      "/zsafe/@"
     ];
     pruneNames = [
+      /*
+        NOTE:
+          - Pattern mechanism is not used
+          - Only directory names ase skipped
+      */
+
       # VCS directories
       ".bzr"
       ".git"
