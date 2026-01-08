@@ -29,5 +29,9 @@
 {
   services.fstrim = {
     enable = true;
+    interval = "Mon *-*-* 01:50:00";
   };
+
+  # Override nix module
+  systemd.timers.fstrim.timerConfig.RandomizedDelaySec = "10m";
 }

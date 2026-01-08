@@ -23,7 +23,7 @@ let
     "bfq"
     "kyber"
   ];
-  script = pkgs.writeShellScript "btrfs-scrub@${target}" ''
+  script = pkgs.writeShellScriptBin serviceName ''
     set -Eeuo pipefail
 
     PATH="${
@@ -185,7 +185,7 @@ in
           Nice = 19;
           IOSchedulingClass = "idle";
 
-          ExecStart = script;
+          ExecStart = lib.getExe script;
 
           # Hardening
           NoNewPrivileges = true;

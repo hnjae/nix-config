@@ -15,7 +15,7 @@ in
   ...
 }:
 let
-  script = pkgs.writeShellScript "btrfs-balance@${target}" ''
+  script = pkgs.writeShellScriptBin serviceName ''
     set -Eeuo pipefail
 
     PATH="${
@@ -146,7 +146,7 @@ in
           IOSchedulingClass = "idle";
 
           # NOTE: https://github.com/kdave/btrfsmaintenance
-          ExecStart = script;
+          ExecStart = lib.getExe script;
 
           # Hardening
           NoNewPrivileges = true;
@@ -160,7 +160,7 @@ in
         inherit description documentation;
         timerConfig = {
           OnCalendar = [
-            "Mon *-*-* 01:55:00"
+            "Wednesday *-*-* 01:55:00"
           ];
           RandomizedDelaySec = "5m";
           Persistent = "true";
