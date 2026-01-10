@@ -33,7 +33,7 @@ pkgs:
     # pkgs.unstable.nixpkgs-lint # nix linter
     pkgs.unstable.statix # nix linter
     pkgs.unstable.deadnix # nix linter
-    pkgs.unstable.nixfmt-rfc-style # nix formatter
+    pkgs.unstable.nixfmt # nix formatter
     pkgs.unstable.hydra-check
     pkgs.unstable.shellify # make shell.nix, flake.nix based on nix-shell
     pkgs.unstable.nurl # create nix fetche calls from repository URLs

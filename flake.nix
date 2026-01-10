@@ -206,7 +206,7 @@
                 prek
 
                 # Formatters
-                nixfmt-rfc-style
+                nixfmt
 
                 shellcheck
                 shellharden

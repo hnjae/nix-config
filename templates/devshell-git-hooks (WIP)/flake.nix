@@ -73,7 +73,7 @@
             programs = {
               nixfmt = {
                 enable = true;
-                package = pkgs.nixfmt-rfc-style;
+                package = pkgs.nixfmt;
               };
               just.enable = true;
               mdformat.enable = true;
@@ -97,7 +97,7 @@
                   enable = true;
                   # packageOverrides.treefmt = self'.formatter;
                   settings.formatters = with pkgs; [
-                    nixfmt-rfc-style
+                    nixfmt
                   ];
                 };
               };

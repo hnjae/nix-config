@@ -67,7 +67,7 @@
               programs = {
                 nixfmt = {
                   enable = true;
-                  package = pkgs.nixfmt-rfc-style;
+                  package = pkgs.nixfmt;
                 };
                 just.enable = true;
                 mdformat.enable = true;
