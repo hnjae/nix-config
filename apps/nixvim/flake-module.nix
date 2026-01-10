@@ -61,21 +61,26 @@ in
               exec "${package}/bin/nvim" -d "$@"
             '';
           in
-          pkgs.runCommandLocal "vim" { } ''
-            mkdir -p "$out/bin"
+          pkgs.symlinkJoin {
+            name = "nvim";
+            paths = [
+              (pkgs.runCommandLocal "compatible-layer" { } ''
+                mkdir -p "$out/bin"
 
-            ln -s "${package}/bin/nvim" "$out/bin/vi"
-            ln -s "${package}/bin/nvim" "$out/bin/vim"
-            ln -s "${package}/bin/nvim" "$out/bin/nano"
-            ln -s "${vimdiff}" "$out/bin/vimdiff"
-            # ln -s "${package}/bin/nvim" "$out/bin/nvim"
-          '';
+                ln -s "${package}/bin/nvim" "$out/bin/vi"
+                ln -s "${package}/bin/nvim" "$out/bin/vim"
+                ln -s "${package}/bin/nvim" "$out/bin/nano"
+                ln -s "${vimdiff}" "$out/bin/vimdiff"
+              '')
+              package
+            ];
+          };
       };
 
       apps = {
         nixvim = {
           type = "app";
-          program = "${config.packages.nixvim}/bin/vi";
+          program = "${config.packages.nixvim}/bin/nvim";
         };
       };
     };

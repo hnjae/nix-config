@@ -11,7 +11,7 @@ check:
     nix build --no-warn-dirty --no-link --show-trace '.#checks.{{ system }}.nixvim'
 
 build:
-    nix build --no-warn-dirty --no-link --show-trace '.#nixvim'
+    nix build --no-warn-dirty --show-trace '.#nixvim'
 
 run:
     nix --no-warn-dirty run '.#nixvim'

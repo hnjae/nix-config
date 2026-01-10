@@ -40,7 +40,6 @@ pkgs:
     pkgs.unstable.nix-init # auto-generate nix stderivation
     # pkgs.unstable.comma # run nixpkgs' pkg with , (comma) (use nix-index-database's)
     pkgs.sops
-    # pkgs.deploy-rs
     inputs.deploy-rs.packages.${hostPlatform.system}.default
     inputs.yaml2nix.packages.${hostPlatform.system}.default
 
@@ -60,11 +59,13 @@ pkgs:
     (pkgs.python3.withPackages (
       python-pkgs: with python-pkgs; [
         ipython
-        mypy
+        pytest
+        ipdb
       ]
     ))
     pkgs.unstable.ruff # includes lsp via `ruff server`
     pkgs.unstable.uv
+    pkgs.unstable.ty # type checker
     pkgs.unstable.basedpyright
 
     ######################

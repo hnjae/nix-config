@@ -18,6 +18,8 @@ pkgs:
   pkgs.iputils # ping
   pkgs.sysstat # iostat
   pkgs.python3 # ansible / etc
+  pkgs.tmux
+  pkgs.my.nixvim
 
   # lsxxx
   pkgs.lsof
@@ -178,7 +180,6 @@ pkgs:
   pkgs.viddy # replace watch
   pkgs.fzf
   pkgs.ripgrep
-  pkgs.my.nixvim
   pkgs.nushell
   pkgs.unstable.lazydocker
   pkgs.starship

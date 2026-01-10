@@ -111,6 +111,11 @@ lib.flatten [
     ))
   ]
   (lib.lists.optionals pkgs.stdenv.hostPlatform.isLinux [
-    pkgs.unstable.ghostty
+    (pkgs.ghostty.overrideAttrs (oldAttrs: {
+      postFixup = (oldAttrs.postFixup or "") + ''
+        substituteInPlace $out/share/applications/com.mitchellh.ghostty.desktop \
+          --replace-fail " --gtk-single-instance=true" ""
+      '';
+    }))
   ])
 ]
