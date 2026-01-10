@@ -263,7 +263,7 @@
           TIMELINE_LIMIT_MONTHLY = 0;
           TIMELINE_LIMIT_WEEKLY = 0;
           TIMELINE_LIMIT_DAILY = 14;
-          TIMELINE_LIMIT_HOURLY = 12;
+          TIMELINE_LIMIT_HOURLY = 16;
 
           NUMBER_CLEANUP = false;
           NUMBER_MIN_AGE = 1;
@@ -280,6 +280,14 @@
         };
         "zsafe" = commonOpts // {
           SUBVOLUME = "/zsafe";
+        };
+        "home" = commonOpts // {
+          SUBVOLUME = "/home";
+          TIMELINE_LIMIT_YEARLY = 0;
+          TIMELINE_LIMIT_QUARTERLY = 0;
+          TIMELINE_LIMIT_MONTHLY = 0;
+          TIMELINE_LIMIT_WEEKLY = 0;
+          TIMELINE_LIMIT_DAILY = 3;
         };
       };
   };
