@@ -83,6 +83,23 @@
         "type": "github"
       }
     },
+    "dotfiles": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1768027430,
+        "narHash": "sha256-Fc7cirB0/KOylAgIooDpX3k9BnBF+8q4LYgIqI/SO6Y=",
+        "ref": "refs/heads/main",
+        "rev": "c8fb1f4ba811f2576a52efcf49fbbdd153b8b94e",
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/hnjae/dotfiles"
+      },
+      "original": {
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/hnjae/dotfiles"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -386,6 +403,7 @@
         "crane": "crane",
         "deploy-rs": "deploy-rs",
         "disko": "disko",
+        "dotfiles": "dotfiles",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
