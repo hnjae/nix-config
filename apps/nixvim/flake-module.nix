@@ -66,14 +66,14 @@ in
 
             ln -s "${package}/bin/nvim" "$out/bin/vi"
             ln -s "${package}/bin/nvim" "$out/bin/vim"
-            # ln -s "${package}/bin/nvim" "$out/bin/nvim"
             ln -s "${package}/bin/nvim" "$out/bin/nano"
             ln -s "${vimdiff}" "$out/bin/vimdiff"
+            # ln -s "${package}/bin/nvim" "$out/bin/nvim"
           '';
       };
 
       apps = {
-        vi = {
+        nixvim = {
           type = "app";
           program = "${config.packages.nixvim}/bin/vi";
         };
