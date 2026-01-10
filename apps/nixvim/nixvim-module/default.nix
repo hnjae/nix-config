@@ -4,6 +4,7 @@ flakeArgs@{ importApply, ... }:
     (importApply ./ftplugin.nix flakeArgs)
     (importApply ./ftdetect.nix flakeArgs)
     (importApply ./syntax.nix flakeArgs)
+    (importApply ./spell.nix flakeArgs)
     ./cmp.nix
     ./lazyvim-keys.nix
     ./ui.nix
