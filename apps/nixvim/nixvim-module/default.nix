@@ -5,6 +5,7 @@ flakeArgs@{ importApply, ... }:
     ./cmp.nix
     ./colorscheme.nix
     ./lazyvim-keys.nix
+    (importApply ./luasnip.nix flakeArgs)
     ./snacks-explorer.nix
     ./ui.nix
     ./which-key.nix

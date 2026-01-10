@@ -1,3 +1,4 @@
+{ lib, ... }:
 {
   plugins.cmp = {
     autoEnableSources = true;
@@ -8,26 +9,42 @@
         { name = "buffer"; }
         # { name = "tmux"; }
       ];
-      mapping = {
-        __raw = ''
-          cmp.mapping.preset.insert({
-            ["<C-n>"] = cmp.mapping(function()
-              if cmp.visible() then
-                cmp.select_next_item()
-              else
-                cmp.complete()
-              end
-            end, { "i" }),
-            ["<C-p>"] = cmp.mapping(function()
-              if cmp.visible() then
-                cmp.select_prev_item()
-              else
-                cmp.complete()
-              end
-            end, { "i" }),
-          })
-        '';
-      };
+      mapping =
+        lib.nixvim.mkRaw # lua
+          ''
+            cmp.mapping.preset.insert({
+              ["<C-n>"] = cmp.mapping(function()
+                if cmp.visible() then
+                  cmp.select_next_item()
+                else
+                  cmp.complete()
+                end
+              end, { "i" }),
+              ["<C-p>"] = cmp.mapping(function()
+                if cmp.visible() then
+                  cmp.select_prev_item()
+                else
+                  cmp.complete()
+                end
+              end, { "i" }),
+              ["<Tab>"] = cmp.mapping(function(fallback)
+                if require("luasnip").expand_or_locally_jumpable() then
+                  require("luasnip").expand_or_jump()
+                elseif cmp.get_active_entry() then
+                  cmp.confirm()
+                else
+                  fallback()
+                end
+              end, { "i" ,"s" }),
+              ["<S-Tab>"] = cmp.mapping(function(fallback)
+                if require("luasnip").locally_jumpable(-1) then
+                  require("luasnip").jump(-1)
+                else
+                  fallback()
+                end
+              end, { "i" ,"s" }),
+            })
+          '';
       formatting = {
         format = ''
           function(entry, item)

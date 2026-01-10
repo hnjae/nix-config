@@ -28,11 +28,11 @@ let
           let
             # allFiles: list of absolute path
             allFiles = lib.filesystem.listFilesRecursive "${nvimConfigSrc}/${type}";
-            filtered = builtins.filter (path: fileFilter (baseNameOf path)) allFiles;
+            filtered = builtins.filter (path: (fileFilter (baseNameOf path))) allFiles;
           in
           builtins.listToAttrs (
             map (filtered: {
-              name = lib.removePrefix "${nvimConfigSrc}" filtered;
+              name = lib.removePrefix "${nvimConfigSrc}/" filtered;
               value = filtered;
             }) filtered
           )
