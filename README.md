@@ -1,6 +1,31 @@
-## 주의 사항
+## 업데이트 방법
 
-- nixpkgs 를 업데이트하기전에 <https://status.nixos.org/> 에서 이슈 확인할 것.
+단지 nix flake update 를 해서는, 빌드가 안되는 패키지가 있기 쉽다. 다음의 방법을 사용하자.
+
+### hydra-check 활용
+
+```sh
+hydra-check --channel=unstable zed-editor-fhs
+```
+
+- 위와 같은 커맨드로 latest hydra job 에서 빌드가 성공적으로 되었는지 확인.
+- "latest successful build" 가 가리키는 revision 으로 수정.
+    - link 의 input 탭에, revision 정보 있음.
+
+```sh
+nix flake lock --override-input nixpkgs-unstable github:nixos/nixpkgs/5912c1772a44e31bf1c63c0390b90501e5026886
+```
+
+위와 같은 커맨드로 특정 revision 을 가리키도록 할 수 있다.
+
+다음의 패키지들이 자주 빌드에 실패하니 참고하자.
+
+- zed-editor-fhs
+
+### 같이보기
+
+- <https://status.nixos.org/> 에서 이슈 확인 가능
+    - ※ 여기서는 중요 패키지의 빌드 여부만 확인이 가능함.
 - 만일 nixpkgs 를 고정할 필요가 있다면 다음 링크를 참고하여, hydra 빌드가 제공 되는 커밋을 사용할 것.
     - [nixos-unstable hydra build](https://hydra.nixos.org/job/nixos/trunk-combined/tested)
     - [nixos-unstable-small hydra build](https://hydra.nixos.org/job/nixos/unstable-small/tested)
