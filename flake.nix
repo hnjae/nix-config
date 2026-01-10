@@ -112,7 +112,7 @@
       flake = false;
     };
     py-utils = {
-      url = "git+ssh://git@github.com/hnjae/py-utils";
+      url = "git+ssh://git@github.com/hnjae/py-utils?shallow=1";
       # url = "path:/home/hnjae/Projects/py-utils";
       inputs = {
         nixpkgs.follows = "nixpkgs";
