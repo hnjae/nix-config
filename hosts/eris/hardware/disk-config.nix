@@ -107,6 +107,14 @@
         fsType = "btrfs";
         options = opts ++ [ "subvol=@srv" ];
       };
+      "/home" = {
+        label = "ERIS_OS";
+        fsType = "btrfs";
+        options = opts ++ [
+          "subvol=@home"
+          "nofail"
+        ];
+      };
     };
 
   swapDevices =
@@ -169,10 +177,11 @@
     "/zlocal/@" = {
       hideMounts = true;
       directories = [
-        {
-          directory = "/home";
-          mode = "0755";
-        }
+        # NOTE: 가끔 `home.mount` 를 restart 하려는 경우가 있어서 persistence 로 관리하면 안됨. <NixOS 25.11>
+        # {
+        #   directory = "/home";
+        #   mode = "0755";
+        # }
         {
           directory = "/var/log";
           mode = "0755";
