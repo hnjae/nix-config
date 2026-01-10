@@ -12,3 +12,6 @@ check:
 
 build:
     nix build --no-warn-dirty --no-link --show-trace '.#nixvim'
+
+run:
+    nix --no-warn-dirty run '.#nixvim'
