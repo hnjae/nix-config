@@ -4,6 +4,7 @@ flakeArgs@{ importApply, ... }:
     (importApply ./load-dotfiles.nix flakeArgs)
     ./cmp.nix
     ./lazyvim-keys.nix
+    ./snacks-explorer.nix
     ./ui.nix
     ./which-key.nix
     ./window-picker.nix
