@@ -21,7 +21,16 @@ let
         "regular"
         "symlink"
       ])
-      && (lib.hasSuffix ".lua" path)
+      && (
+        let
+          length = builtins.stringLength path;
+          last4Chars = builtins.substring (length - 4) length path;
+        in
+        builtins.elem last4Chars [
+          ".lua"
+          ".vim"
+        ]
+      )
     )
   ) files;
 in
