@@ -7,19 +7,22 @@
 { lib, ... }:
 {
   systemd.timers.snapper-timeline.timerConfig = lib.mkForce {
-    OnBootSec = "1h";
-    OnUnitActiveSec = "4h";
-    RandomizedDelaySec = "5m";
+    OnBootSec = "60m";
+    OnUnitActiveSec = "150m";
+    RandomizedDelaySec = "299s";
     OnCalendar = [
-      "*-*-* 03:55:00"
+      "*-*-* 04:00:00"
+      "*-*-* 12:00:00"
+      "*-*-* 20:00:00"
     ];
   };
 
   systemd.timers.snapper-cleanup.timerConfig = lib.mkForce {
-    OnBootSec = "10m";
+    OnBootSec = "20m";
     OnCalendar = [
-      "*-*-* 04:00:00"
-      "*-*-* 16:00:00"
+      "*-*-* 04:05:00"
+      "*-*-* 12:05:00"
+      "*-*-* 20:05:00"
     ];
     RandomizedDelaySec = "5m";
   };
