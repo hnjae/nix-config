@@ -107,6 +107,10 @@
         nuschtosSearch.follows = "";
       };
     };
+    dotfiles = {
+      url = "git+ssh://git@github.com/hnjae/dotfiles?shallow=1";
+      flake = false;
+    };
     py-utils = {
       url = "git+ssh://git@github.com/hnjae/py-utils";
       # url = "path:/home/hnjae/Projects/py-utils";
