@@ -3,6 +3,7 @@ flakeArgs@{ importApply, ... }:
   imports = [
     (importApply ./load-dotfiles.nix flakeArgs)
     ./cmp.nix
+    ./colorscheme.nix
     ./lazyvim-keys.nix
     ./snacks-explorer.nix
     ./ui.nix
