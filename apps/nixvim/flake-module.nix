@@ -38,6 +38,7 @@ in
     }:
     let
       nixvimLib = nixvim.lib.${system};
+      nixvim' = nixvim.legacyPackages.${system};
       nixvimModule = {
         inherit system; # or alternatively, set `pkgs`
         module = importApply ./nixvim-module flakeArgs;
@@ -53,7 +54,7 @@ in
       packages = {
         nixvim =
           let
-            package = nixvim.legacyPackages.${system}.makeNixvimWithModule nixvimModule;
+            package = nixvim'.makeNixvimWithModule nixvimModule;
             vimdiff = pkgs.writeScript "vimdiff" ''
               #!${pkgs.dash}/bin/dash
 

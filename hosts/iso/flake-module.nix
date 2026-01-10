@@ -86,46 +86,6 @@ in
             config.allowUnfree = true;
           };
 
-          # nix = {
-          #   settings = {
-          #     experimental-features = [
-          #       "nix-command"
-          #       "flakes"
-          #     ];
-          #   };
-          #   max-jobs = 4; # max concurrent build
-          #   registry = {
-          #     nixpkgs = {
-          #       flake = inputs.nixpkgs;
-          #       to = {
-          #         path = "${inputs.nixpkgs}";
-          #         type = "path";
-          #       };
-          #     };
-          #     nixpkgs-unstable = {
-          #       flake = inputs.nixpkgs-unstable;
-          #       to = {
-          #         path = "${inputs.nixpkgs-unstable}";
-          #         type = "path";
-          #       };
-          #     };
-          #     nix-config = {
-          #       flake = self;
-          #       to = {
-          #         path = "${self}";
-          #         type = "path";
-          #       };
-          #     };
-          #   };
-          # };
-          #
-          # channel.enable = true;
-          # nixPath = [
-          #   "nixpkgs-unstable=${inputs.nixpkgs-unstable}"
-          #   "nixpkgs=${inputs.nixpkgs}"
-          #   "nix-config=${self}"
-          # ];
-
           environment.systemPackages = lib.flatten [
             (self.packageSets.system pkgs)
             (self.packageSets.user pkgs)
