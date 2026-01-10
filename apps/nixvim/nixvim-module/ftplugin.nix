@@ -1,27 +1,35 @@
+/*
+  ---
+  date: 2026-01-10
+  ---
+
+  ## extraFiles 에서 `source` 가 아니라 `text 를 사용한 이유:
+
+  `source` 를 사용하면, `dotfiles` 이 업데이트 되었을 때 무조건 derivation 이 업데이트 됨. (`ftplugin/<name>.lua` 가 바뀌지 않더라도.)
+*/
+{ inputs, ... }:
+{ lib, ... }:
 let
-  sw2 = ''
-    vim.opt.shiftwidth = 2
-    vim.opt.expandtab = true
-  '';
-  sw4 = ''
-    vim.opt.shiftwidth = 2
-    vim.opt.expandtab = true
-  '';
+  inherit (inputs) dotfiles;
+
+  ftpluginDir = "${dotfiles}/profiles/00-default/xdg-config/nvim/ftplugin";
+  files = builtins.readDir ftpluginDir;
+  luaFiles = lib.filterAttrs (
+    path: filetype:
+    (
+      (builtins.elem filetype [
+        "regular"
+        "symlink"
+      ])
+      && (lib.hasSuffix ".lua" path)
+    )
+  ) files;
 in
 {
-  extraFiles = {
-    "ftplugin/just.lua".text = sw4;
-    "ftplugin/python.lua".text = sw4;
-
-    "ftplugin/markdown.lua".text = sw2;
-    "ftplugin/asciidoc.lua".text = sw2;
-    "ftplugin/asciidoctor.lua".text = sw2;
-    "ftplugin/json.lua".text = sw2;
-    "ftplugin/kdl.lua".text = sw2;
-    "ftplugin/lua.lua".text = sw2;
-    "ftplugin/nix.lua".text = sw2;
-    "ftplugin/sh.lua".text = sw2;
-    "ftplugin/yaml.lua".text = sw2;
-    "ftplugin/zsh.lua".text = sw2;
-  };
+  extraFiles = lib.mapAttrs' (
+    name: _:
+    lib.nameValuePair "ftplugin/${name}" {
+      text = builtins.readFile "${ftpluginDir}/${name}";
+    }
+  ) luaFiles;
 }

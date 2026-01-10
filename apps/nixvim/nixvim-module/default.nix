@@ -1,7 +1,8 @@
+flakeArgs@{ importApply, ... }:
 {
   imports = [
     ./cmp.nix
-    ./ftplugin.nix
+    (importApply ./ftplugin.nix flakeArgs)
     ./lazyvim-keys.nix
     ./ui.nix
     ./which-key.nix

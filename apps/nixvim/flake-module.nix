@@ -1,5 +1,17 @@
-{ inputs, ... }:
+{
+  inputs,
+  self,
+  flake-parts-lib,
+  ...
+}:
 let
+  inherit (flake-parts-lib) importApply;
+  flakeArgs = {
+    localFlake = self;
+    inherit flake-parts-lib;
+    inherit importApply;
+    inherit inputs;
+  };
   inherit (inputs) nixvim;
 in
 {
@@ -14,7 +26,7 @@ in
       nixvimLib = nixvim.lib.${system};
       nixvimModule = {
         inherit system; # or alternatively, set `pkgs`
-        module = import ./nixvim-module;
+        module = importApply ./nixvim-module flakeArgs;
         # You can use `extraSpecialArgs` to pass additional arguments to your module files
         extraSpecialArgs = { };
       };
