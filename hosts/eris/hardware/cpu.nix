@@ -7,8 +7,6 @@
   nixpkgs.hostPlatform = "x86_64-linux";
   boot.kernelModules = [ "kvm-amd" ];
 
-  nix.settings.cores = 6;
-
   hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
   programs.ryzen-monitor-ng.enable = true;
 

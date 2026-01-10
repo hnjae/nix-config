@@ -1,3 +1,4 @@
+# 8c16t cpu
 {
   inputs,
   config,
@@ -28,9 +29,6 @@
     "gccarch-znver3"
     "gccarch-znver4" # amd zen4 (7840U)
   ];
-
-  # 8c16t cpu
-  nix.settings.cores = 8;
 
   boot.kernelParams = [
     # "nosmt"

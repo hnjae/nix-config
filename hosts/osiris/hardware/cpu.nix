@@ -1,10 +1,7 @@
-# CPU: AMD 5600X  (Zen 3)
+# CPU: AMD 5600X  (Zen 3) 6C12T
 { config, ... }:
 {
   nixpkgs.hostPlatform = "x86_64-linux";
-
-  # 6C12T
-  nix.settings.cores = 6;
 
   hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
 
