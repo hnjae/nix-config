@@ -14,7 +14,7 @@ in
       nixvimLib = nixvim.lib.${system};
       nixvimModule = {
         inherit system; # or alternatively, set `pkgs`
-        module = import ./config;
+        module = import ./nixvim-module;
         # You can use `extraSpecialArgs` to pass additional arguments to your module files
         extraSpecialArgs = { };
       };
