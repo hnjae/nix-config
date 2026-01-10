@@ -15,6 +15,20 @@ let
   inherit (inputs) nixvim;
 in
 {
+  flake.nixosModules.nixvim = {
+    imports = [
+      inputs.nixvim.nixosModules.nixvim
+      {
+        programs.nixvim = {
+          enable = true;
+          imports = [
+            (importApply ./nixvim-module flakeArgs)
+          ];
+        };
+      }
+    ];
+  };
+
   perSystem =
     {
       pkgs,
