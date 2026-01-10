@@ -1,0 +1,14 @@
+#!/usr/bin/env -S just --justfile
+
+set fallback := true
+
+_:
+    @just --list
+
+system := `nix --extra-experimental-features nix-command eval --raw --impure --expr builtins.currentSystem`
+
+check:
+    nix build --no-warn-dirty --no-link --show-trace '.#checks.{{ system }}.nixvim'
+
+build:
+    nix build --no-warn-dirty --no-link --show-trace '.#nixvim'
