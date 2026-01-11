@@ -13,6 +13,11 @@ let
       );
 in
 {
+  systemd.tmpfiles.rules = lib.mkIf (!config.nix.channel.enable) [
+    "R /nix/var/nix/profiles/per-user/root/channels - - - - "
+    "R /root/.nix-defexpr - - - - "
+  ];
+
   nix = {
     # man:systemd.exec(5)
     daemonCPUSchedPolicy = lib.mkOverride 999 (if isDesktop then "batch" else "idle"); # default: other (NixOS 25.11)
