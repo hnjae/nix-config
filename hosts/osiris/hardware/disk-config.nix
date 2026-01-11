@@ -48,6 +48,9 @@
           driver = "overlay"
         '';
       };
+      home.sessionVariables = {
+        UV_LINK_MODE = "copy"; # ~/.cache 가 다른 볼륨에 있음.
+      };
     }
   ];
 

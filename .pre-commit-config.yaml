@@ -30,7 +30,7 @@ repos:
         files: \.(sh|bash|envrc|envrc.*)$
       - id: shfmt
         name: format shell
-        entry: shfmt --indent 2 --simplify --write
+        entry: shfmt --indent 4 --simplify --write
         language: system
         files: \.(sh|bash|envrc|envrc.*)$
   - repo: local
@@ -42,7 +42,7 @@ repos:
         types: [nix]
       - id: just-fmt
         name: format just
-        entry: bash -c 'just --fmt --unstable --justfile "$1"' --
+        entry: sh -c 'just --fmt --unstable --justfile "$1"' --
         language: system
         files: (^|/)(\.)?justfile$
       - id: fish-indent
